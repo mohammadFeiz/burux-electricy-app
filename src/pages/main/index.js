@@ -1,678 +1,1041 @@
-import React, { Component } from 'react';
-import RVD from 'react-virtual-dom';
-import getSvg from '../../utils/getSvg';
-import Home from './../home/index';
-import MyBurux from './../my-burux/index';
-import Buy from './../buy/index';
-import appContext from '../../app-context';
-import Table from './../../coponents/aio-table/aio-table';
-import SideMenu from '../../coponents/sidemenu';
-import Loading from '../../coponents/loading';
-import LampSrc from './../../images/lamp.png';
-import services from './../../services';
-import layout from '../../layout';
-import './index.css';
+import React, { Component } from "react";
+import RVD from "react-virtual-dom";
+import getSvg from "../../utils/getSvg";
+import Home from "./../home/index";
+import MyBurux from "./../my-burux/index";
+import Buy from "./../buy/index";
+import appContext from "../../app-context";
+import Table from "./../../coponents/aio-table/aio-table";
+import SideMenu from "../../coponents/sidemenu";
+import Loading from "../../coponents/loading";
+import LampSrc from "./../../images/lamp.png";
+import services from "./../../services";
+import layout from "../../layout";
+import "./index.css";
 export default class Main extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            theme:false,
-            testedChance:true,
-            sidemenuOpen:false,
-            cart:{},
-            bottomMenuItems: [
-                { text: 'خانه', icon: 19, id: 'a'},
-                { text: 'خرید', icon: 15, id: 'b'},
-                { text: 'بازارگاه', icon: 20, id: 'c'},
-                { text: 'بروکس من', icon: 21, id: 'd'},
-            ],
-            guaranteeItems: [],
-            guaranteeExistItems:[],
-            activeBottomMenu: 'a',
-            popup:{},
-            searchValue:''
-        }
-    }
-    async componentDidMount(){
-        let guaranteeItems = await services('kalahaye_garanti_shode');
-        let guaranteeExistItems = await services('kalahaye_mojoode_garanti');
-        let testedChance = await services('get_tested_chance');
-        this.setState({guaranteeItems,guaranteeExistItems,testedChance});
-    }
-    getBottomMenu() {
-        let { activeBottomMenu, bottomMenuItems } = this.state;
+  constructor(props) {
+    super(props);
+    this.state = {
+      theme: false,
+      testedChance: true,
+      sidemenuOpen: false,
+      cart: {},
+      bottomMenuItems: [
+        { text: "خانه", icon: 19, id: "a" },
+        { text: "خرید", icon: 15, id: "b" },
+        { text: "بازارگاه", icon: 20, id: "c" },
+        { text: "بروکس من", icon: 21, id: "d" },
+      ],
+      guaranteeItems: [],
+      guaranteeExistItems: [],
+      activeBottomMenu: "a",
+      popup: {},
+      searchValue: "",
+    };
+  }
+  async componentDidMount() {
+    let guaranteeItems = await services("kalahaye_garanti_shode");
+    let guaranteeExistItems = await services("kalahaye_mojoode_garanti");
+    let testedChance = await services("get_tested_chance");
+    let allProducts = await services("getAllProducts");
+    this.setState({
+      guaranteeItems,
+      guaranteeExistItems,
+      testedChance,
+      allProducts,
+    });
+  }
+  getBottomMenu() {
+    let { activeBottomMenu, bottomMenuItems } = this.state;
+    return {
+      size: 60,
+      className: "bottom-menu",
+      row: bottomMenuItems.map(({ text, icon, id }) => {
+        let active = id === activeBottomMenu;
         return {
-            size: 60,className:'bottom-menu',
-            row: bottomMenuItems.map(({ text, icon, id }) => {
-                let active = id === activeBottomMenu;
-                return {
-                    flex: 1, attrs: { onClick: () => this.setState({ activeBottomMenu: id }) },
-                    column: [
-                        { size: 12 },
-                        { html: getSvg(icon, { fill: active ? '#0094D4' : '#605E5C' }), align: 'vh' },
-                        { html: text, align: 'vh',style: { fontSize: 12, color: active ? '#0094D4' : '#6E6E6E' } },
-                    ]
-                }
-            })
-        }
-    }
-    getContent() {
-        let { activeBottomMenu } = this.state;
-        if (activeBottomMenu === 'a') { return <Home /> }
-        if (activeBottomMenu === 'b') { return <Buy /> }
-        if (activeBottomMenu === 'd') { return <MyBurux /> }
-    }
-    getHeaderLayout(title,onBack){
-        return (
+          flex: 1,
+          attrs: { onClick: () => this.setState({ activeBottomMenu: id }) },
+          column: [
+            { size: 12 },
             {
-                size:48,className:'header',
-                row:[
-                    {size:48,html:getSvg('chevronLeft',{flip:true}),align:'vh',attrs:{onClick:()=>onBack()}},
-                    {size:6},
-                    {flex:1,html:title,align:'v',className:'size16 bold color605E5C'}
-                ]
-            }
-        )
+              html: getSvg(icon, { fill: active ? "#0094D4" : "#605E5C" }),
+              align: "vh",
+            },
+            {
+              html: text,
+              align: "vh",
+              style: { fontSize: 12, color: active ? "#0094D4" : "#6E6E6E" },
+            },
+          ],
+        };
+      }),
+    };
+  }
+  getContent() {
+    let { activeBottomMenu } = this.state;
+    if (activeBottomMenu === "a") {
+      return <Home />;
     }
-    splitPrice(price){
-        if(!price){return price}
-        let str = price.toString()
-        let dotIndex = str.indexOf('.');
-        if(dotIndex !== -1){
-            str = str.slice(0,dotIndex)
+    if (activeBottomMenu === "b") {
+      return <Buy />;
+    }
+    if (activeBottomMenu === "d") {
+      return <MyBurux />;
+    }
+  }
+  getHeaderLayout(title, onBack) {
+    return {
+      size: 48,
+      className: "header",
+      row: [
+        {
+          size: 48,
+          html: getSvg("chevronLeft", { flip: true }),
+          align: "vh",
+          attrs: { onClick: () => onBack() },
+        },
+        { size: 6 },
+        {
+          flex: 1,
+          html: title,
+          align: "v",
+          className: "size16 bold color605E5C",
+        },
+      ],
+    };
+  }
+  splitPrice(price) {
+    if (!price) {
+      return price;
+    }
+    let str = price.toString();
+    let dotIndex = str.indexOf(".");
+    if (dotIndex !== -1) {
+      str = str.slice(0, dotIndex);
+    }
+    let res = "";
+    let index = 0;
+    for (let i = str.length - 1; i >= 0; i--) {
+      res = str[i] + res;
+      if (index === 2) {
+        index = 0;
+        if (i > 0) {
+          res = "," + res;
         }
-        let res = ''
-        let index = 0;
-        for(let i = str.length - 1; i >= 0; i--){
-            res = str[i] + res;
-            if(index === 2){
-                index = 0;
-                if(i > 0){res = ',' + res;}
-            }
-            else{index++}
-        }
-        return res
+      } else {
+        index++;
+      }
     }
-    render() {
-        let context = {
-            ...this.state,SetState:(obj)=>this.setState(obj),
-            logout:this.props.logout,
-            getHeaderLayout:this.getHeaderLayout.bind(this),
-            splitPrice:this.splitPrice.bind(this)
-        }
-        let {popup,guaranteeItems,sidemenuOpen,theme} = this.state;
-        return (
-            <appContext.Provider value={context}>
-                <RVD
-                    layout={{
-                        className: 'main-page' + (theme?' ' + theme:''),
-                        column: [
-                            { flex: 1, html: this.getContent() },
-                            this.getBottomMenu()
-                        ]
-                    }}
-                />
-                {
-                    popup.mode === 'guarantee-popup' &&
-                    <GuaranteePopup 
-                        onClick={async (type,typeNumber)=>{
-                            if(typeNumber === 1){
-                                let res = await services('sabte_kalahaye_garanti');
-                                if (res){
-                                    this.setState({popup:{mode:type}})
-                                }
-                                else {alert('error')}
-                            }
-                            else {
-                                this.setState({popup:{mode:type}})
-                            }
-                            
-                        }}
-                    />
-                }
-                {
-                    popup.mode === 'guarantee-popup-without-submit-success' &&
-                    <GuaranteePopupSuccess submit={false} success={false} onClose={()=>this.setState({popup:{}})}/>
-                }
-                {
-                    popup.mode === 'guarantee-popup-with-submit-success' &&
-                    <GuaranteePopupSuccess submit={true} onClose={()=>this.setState({popup:{}})}/>
-                }
-                {
-                    popup.mode === 'guarantee-popup-with-submit-unsuccess' &&
-                    <GuaranteePopupSuccess submit={false} success={false} onClose={()=>this.setState({popup:{}})}/>
-                }
-                {
-                    popup.mode === 'guarantee-popup-with-submit' &&
-                    <GuaranteePopupWithSubmit 
-                        items={guaranteeItems} 
-                        onSubmit={async (Items)=>{
-                            let res = await services('sabte_kalahaye_garanti',Items);
-                            if(res){
-                                let guaranteeItems = await services('kalahaye_garanti_shode');
-                                this.setState({guaranteeItems,popup:{mode:'guarantee-popup-with-submit-success'}})
-                            }
-                            else{
-                                this.setState({guaranteeItems,popup:{mode:'guarantee-popup-with-submit-unsuccess'}})
-                            }
-                            
-                        }}
-                        onClose={()=>this.setState({popup:{}})}
-                    />
-                }
-                {
-                    popup.mode === 'peygiriye-sefareshe-kharid' &&
-                    <PeygiriyeSefaresheKharid onClose={()=>this.setState({popup:{}})}/>
-                }
-                {
-                    popup.mode === 'joziate-sefareshe-kharid' &&
-                    <JoziateSefaresheKharid order={popup.order} onClose={()=>this.setState({popup:{mode:'peygiriye-sefareshe-kharid'}})}/>
-                }
-                {
-                    popup.mode === 'search' &&
-                    <Search onClose={()=>this.setState({popup:{}})}/>
-                }
-                <SideMenu onClose={()=>this.setState({sidemenuOpen:false})} open={sidemenuOpen}/>
-                <Loading/>
-            </appContext.Provider>
-        )
-    }
-}
-
-class GuaranteePopup extends Component{
-    render(){
-        let {onClick} = this.props;
-        return (
-            <div className='popup-container'>
-                <RVD
-                    layout={{
-                        className:'guarantee-popup',
-                        column:[
-                            {
-                                size:36,
-                                row:[
-                                    {flex:1},
-                                    {size:36,html:getSvg(40),align:'vh',attrs:{onClick:()=>onClick(false)}}
-                                ]
-                            },
-                            {size:60,html:'درخواست جمع آوری کالاهای گارانتی',className:'size16 bold color323130',align:'vh'},
-                            {
-                                html:'با وارد کردن جزئیات کالاهای گارانتی، درخواست شما در اولین فرصت توسط ویزیتور بررسی میگردد.در غیر این صورت درخواست شما در ویزیت بعدی بررسی میگردد',
-                                className:'size14 color605E5C'
-                            },
-                            {size:24},
-                            {html:<button onClick={()=>onClick('guarantee-popup-without-submit-success',1)} className='button-1'>ادامه بدون ثبت جزئیات</button>},
-                            {size:12},
-                            {html:<button onClick={()=>onClick('guarantee-popup-with-submit',2)} className='button-2'>ثبت جزئیات کالاهای گارانتی</button>}
-                        ]
-                    }}
-                />
-            </div>
-        )
-    }
-}
-class GuaranteePopupSuccess extends Component{
-    render(){
-        let {submit,onClose,success} = this.props;
-        let text;
-        if(success === false){text = 'خطا'}
-        if(submit){text = 'درخواست گارانتی شما با موفقیت ثبت شد'}
-        else {text = 'درخواست گارانتی شما با موفقیت اعلام شد'}
-        return (
-            <div className='popup-container'>
-                <RVD
-                    layout={{
-                        className:'guarantee-popup-success',
-                        column:[
-                            {
-                                size:36,
-                                row:[
-                                    {size:36,html:getSvg('chevronLeft',{flip:true}),align:'vh',attrs:{onClick:()=>onClose()}},
-                                    {flex:1}
-                                ]
-                            },
-                            {size:48},
-                            {html:getSvg(41),align:'h'},
-                            {size:24},
-                            {html:text,className:'color107C10 size20 bold',align:'h'},
-                            {size:24},
-                            {html:'درخواست گارانتی شما در ویزیت بعدی بررسی خواهد شد',className:'size14 color605E5C',align:'h'},
-                            {flex:1},
-                            {size:60,html:'ثبت درخواست در    1401/1/8  16:32',className:'size16 bold color605E5C',align:'vh'},
-                            {html:<button onClick={()=>onClose()} className='button-2'>بازگشت</button>}
-                        ]
-                    }}
-                />
-            </div>
-        )
-    }
-}
-class GuaranteePopupWithSubmit extends Component{
-    static contextType = appContext;
-    constructor(props){
-        super(props);
-        this.state = {
-            items:[]
-        }
-    }
-    render(){
-        let {items} = this.state;
-        let {onClose,onSubmit} = this.props;
-        let {getHeaderLayout,guaranteeExistItems} = this.context;
-        return (
-            <div className='popup-container'>
-                <RVD
-                    layout={{
-                        className:'popup main-bg',
-                        column:[
-                            getHeaderLayout('ثبت درخواست گارانتی جدید',()=>onClose()),
-                            {size:12},
-                            {
-                                className:'box',style:{padding:12},
-                                column:[
-                                    {
-                                        row:[
-                                            {html:'تاریخ مراجعه ویزیتور : ',className:'size16 color605E5C'},
-                                            {html:'تا 72 ساعت آینده',className:'size16 color605E5C'},
-                                            
-                                        ]
-                                    },
-                                    {size:12},
-                                    {
-                                        row:[
-                                            {size:16,html:getSvg(42),align:'vh'},
-                                            {size:6},
-                                            {
-                                                flex:1,html:'ویزیتور جهت ثبت کالاهای گارانتی در تاریخ ذکر شده به فروشگاه شما مراجعه میکند',
-                                                className:'size12 color00B5A5 bold'
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            {size:12},
-                            {
-                                className:'box',style:{padding:12},
-                                column:[
-                                    {
-                                        html:'کالاهای گارانتی',
-                                        className:'size16 color605E5C'
-                                    },
-                                    {size:12},
-                                    {
-                                        row:[
-                                            {size:16,html:getSvg(42),align:'vh'},
-                                            {size:6},
-                                            {
-                                                flex:1,html:'با ثبت کالاهای درخواستی برای گارانتی، درخواست شما در اولویت قرار میگیرد.',
-                                                className:'size12 color00B5A5 bold'
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            {size:12},
-                            {
-                                flex:1,
-                                html:(
-                                    <Table
-                                        padding={6}
-                                        paging={false}
-                                        columns={[
-                                            {
-                                                title:'',width:36,template:(row)=>{
-                                                    return <button style={{border:'none',background:'none'}} className='color00B5A5'>{getSvg(40,{width:12,height:12})}</button>
-                                                }
-                                            },
-                                            {title:'عنوان',getValue:(row)=>row.Name},
-                                            {
-                                                title:'تعداد',getValue:(row)=>row.Qty,width:70,
-                                                inlineEdit:{
-                                                    type:'number',
-                                                    onChange:(row,value)=>{
-                                                        let {items} = this.state;
-                                                        row.Qty = value;
-                                                        this.setState({items})
-                                                    }
-                                                }
-                                            }
-                                        ]}
-                                        model={items}
-                                        toolbarItems={[
-                                            {
-                                                type:'select',
-                                                text:'افزودن کالا',
-                                                search:true,
-                                                caret:false,
-                                                style:{flex:125,fontWeight:'bold',borderRadius:4,background:'#fff',color:'dodgerblue',border:'1px solid dodgerblue'},
-                                                popupStyle:{maxHeight:400},
-                                                options:guaranteeExistItems.map((o,i)=>{
-                                                    return {text:o.Name,value:o.Code}
-                                                }),
-                                                onChange:(value,obj)=>{
-                                                    let {items} = this.state;
-                                                    items.push({Name:obj.text,Code:obj.value,Qty:0});
-                                                    this.setState({items})
-                                                }
-                                            },
-                                            {
-                                                type:'button',disabled:!items.length,
-                                                style:{fontFamily:'inherit',width:'fit-content',flex:125,borderRadius:4},
-                                                text:'ثبت درخواست',
-                                                onClick:()=>onSubmit(items)
-                                            }
-                                        ]}
-                                    />
-                                )
-                            }
-                            
-                        ]
-                    }}
-                />
-            </div>
-        )
-    }
-}
-
-class PeygiriyeSefaresheKharid extends Component{
-    static contextType = appContext;
-    constructor(props){
-        super(props);
-        this.state = {
-            visitorWait:[],
-            factored:[],
-            inProcess:[],
-            delivered:[],
-            rejected:[],
-            canceled:[],
-            tab:'inProcess'
-        }
-    }
-    async componentDidMount(){
-        let {visitorWait,factored,inProcess,delivered,rejected,canceled} = await services('peygiriye_sefareshe_kharid')
-        this.setState({visitorWait,factored,inProcess,delivered,rejected,canceled})
-    }
-    getTabsLayout(){
-        let {visitorWait,factored,inProcess,delivered,rejected,canceled,tab} = this.state;
-        let parameters = {
-            tabs:[
-                {title:'در انتظار تایید ویزیتور',badge:visitorWait.length,id:'visitorWait'},
-                {title:'فاکتور شده',badge:factored.length,id:'factored'},
-                {title:'در حال پردازش',badge:inProcess.length,id:'inProcess'},
-                {title:'تحویل شده',badge:delivered.length,id:'delivered'},
-                {title:'مرجوع شده',badge:rejected.length,id:'rejected'},
-                {title:'لغو شده',badge:canceled.length,id:'canceled'},
+    return res;
+  }
+  render() {
+    let context = {
+      ...this.state,
+      SetState: (obj) => this.setState(obj),
+      logout: this.props.logout,
+      getHeaderLayout: this.getHeaderLayout.bind(this),
+      splitPrice: this.splitPrice.bind(this),
+    };
+    let { popup, guaranteeItems, sidemenuOpen, theme } = this.state;
+    return (
+      <appContext.Provider value={context}>
+        <RVD
+          layout={{
+            className: "main-page" + (theme ? " " + theme : ""),
+            column: [
+              { flex: 1, html: this.getContent() },
+              this.getBottomMenu(),
             ],
-            activeTabId:tab,
-            onClick:async (obj)=>{
-                let {visitorWait,factored,inProcess,delivered,rejected,canceled} = await services('peygiriye_sefareshe_kharid')
-                this.setState({tab:obj.id,visitorWait,factored,inProcess,delivered,rejected,canceled})
+          }}
+        />
+        {popup.mode === "guarantee-popup" && (
+          <GuaranteePopup
+            onClick={async (type, typeNumber) => {
+              if (typeNumber === 1) {
+                let res = await services("sabte_kalahaye_garanti");
+                if (res) {
+                  this.setState({ popup: { mode: type } });
+                } else {
+                  alert("error");
+                }
+              } else {
+                this.setState({ popup: { mode: type } });
+              }
+            }}
+          />
+        )}
+        {popup.mode === "guarantee-popup-without-submit-success" && (
+          <GuaranteePopupSuccess
+            submit={false}
+            success={false}
+            onClose={() => this.setState({ popup: {} })}
+          />
+        )}
+        {popup.mode === "guarantee-popup-with-submit-success" && (
+          <GuaranteePopupSuccess
+            submit={true}
+            onClose={() => this.setState({ popup: {} })}
+          />
+        )}
+        {popup.mode === "guarantee-popup-with-submit-unsuccess" && (
+          <GuaranteePopupSuccess
+            submit={false}
+            success={false}
+            onClose={() => this.setState({ popup: {} })}
+          />
+        )}
+        {popup.mode === "guarantee-popup-with-submit" && (
+          <GuaranteePopupWithSubmit
+            items={guaranteeItems}
+            onSubmit={async (Items) => {
+              let res = await services("sabte_kalahaye_garanti", Items);
+              if (res) {
+                let guaranteeItems = await services("kalahaye_garanti_shode");
+                this.setState({
+                  guaranteeItems,
+                  popup: { mode: "guarantee-popup-with-submit-success" },
+                });
+              } else {
+                this.setState({
+                  guaranteeItems,
+                  popup: { mode: "guarantee-popup-with-submit-unsuccess" },
+                });
+              }
+            }}
+            onClose={() => this.setState({ popup: {} })}
+          />
+        )}
+        {popup.mode === "peygiriye-sefareshe-kharid" && (
+          <PeygiriyeSefaresheKharid
+            onClose={() => this.setState({ popup: {} })}
+          />
+        )}
+        {popup.mode === "joziate-sefareshe-kharid" && (
+          <JoziateSefaresheKharid
+            order={popup.order}
+            onClose={() =>
+              this.setState({ popup: { mode: "peygiriye-sefareshe-kharid" } })
             }
-        }
-        return layout('tabs',parameters)
-    }
-    render(){
-        let {onClose} = this.props;
-        let {tab} = this.state;
-        let {getHeaderLayout,SetState} = this.context;
-        let orders = this.state[tab];
-        console.log(orders)
-        return (
-            <div className='popup-container'>
-                <RVD
-                    layout={{
-                        className:'popup main-bg',
-                        column:[
-                            getHeaderLayout('پیگیری سفارش خرید',()=>onClose()),
-                            this.getTabsLayout(),
-                            {size:12},
-                            {
-                                flex:1,gap:12,
-                                column:orders.map((o)=>{
-                                    return {
-                                        html:<OrderCard {...o} onClick={()=>SetState({popup:{mode:'joziate-sefareshe-kharid',order:o}})}/>
-                                    }
-                                })
-                            }
-                        ]
-                    }}
-                />
-            </div>
-        )
-    }
+          />
+        )}
+        {popup.mode === "search" && (
+          <Search onClose={() => this.setState({ popup: {} })} />
+        )}
+        <SideMenu
+          onClose={() => this.setState({ sidemenuOpen: false })}
+          open={sidemenuOpen}
+        />
+        <Loading />
+      </appContext.Provider>
+    );
+  }
 }
-class OrderCard extends Component{
-    render(){
-        let {items,number,date,total,onClick} = this.props;
-        return (
-            <RVD
-                layout={{
-                    className:'box',style:{padding:12},
-                    column:[
-                        {
-                            align:'v',size:36,
-                            row:[
-                                {html:'پیش سفارش:',className:'colorA19F9D size12'},
-                                {size:4},
-                                {html:number,className:'color605E5C size14'},
-                                {flex:1},
-                                {html:date,className:'colorA19F9D size12'}
-                            ]
+
+class GuaranteePopup extends Component {
+  render() {
+    let { onClick } = this.props;
+    return (
+      <div className="popup-container">
+        <RVD
+          layout={{
+            className: "guarantee-popup",
+            column: [
+              {
+                size: 36,
+                row: [
+                  { flex: 1 },
+                  {
+                    size: 36,
+                    html: getSvg(40),
+                    align: "vh",
+                    attrs: { onClick: () => onClick(false) },
+                  },
+                ],
+              },
+              {
+                size: 60,
+                html: "درخواست جمع آوری کالاهای گارانتی",
+                className: "size16 bold color323130",
+                align: "vh",
+              },
+              {
+                html: "با وارد کردن جزئیات کالاهای گارانتی، درخواست شما در اولین فرصت توسط ویزیتور بررسی میگردد.در غیر این صورت درخواست شما در ویزیت بعدی بررسی میگردد",
+                className: "size14 color605E5C",
+              },
+              { size: 24 },
+              {
+                html: (
+                  <button
+                    onClick={() =>
+                      onClick("guarantee-popup-without-submit-success", 1)
+                    }
+                    className="button-1"
+                  >
+                    ادامه بدون ثبت جزئیات
+                  </button>
+                ),
+              },
+              { size: 12 },
+              {
+                html: (
+                  <button
+                    onClick={() => onClick("guarantee-popup-with-submit", 2)}
+                    className="button-2"
+                  >
+                    ثبت جزئیات کالاهای گارانتی
+                  </button>
+                ),
+              },
+            ],
+          }}
+        />
+      </div>
+    );
+  }
+}
+class GuaranteePopupSuccess extends Component {
+  render() {
+    let { submit, onClose, success } = this.props;
+    let text;
+    if (success === false) {
+      text = "خطا";
+    }
+    if (submit) {
+      text = "درخواست گارانتی شما با موفقیت ثبت شد";
+    } else {
+      text = "درخواست گارانتی شما با موفقیت اعلام شد";
+    }
+    return (
+      <div className="popup-container">
+        <RVD
+          layout={{
+            className: "guarantee-popup-success",
+            column: [
+              {
+                size: 36,
+                row: [
+                  {
+                    size: 36,
+                    html: getSvg("chevronLeft", { flip: true }),
+                    align: "vh",
+                    attrs: { onClick: () => onClose() },
+                  },
+                  { flex: 1 },
+                ],
+              },
+              { size: 48 },
+              { html: getSvg(41), align: "h" },
+              { size: 24 },
+              { html: text, className: "color107C10 size20 bold", align: "h" },
+              { size: 24 },
+              {
+                html: "درخواست گارانتی شما در ویزیت بعدی بررسی خواهد شد",
+                className: "size14 color605E5C",
+                align: "h",
+              },
+              { flex: 1 },
+              {
+                size: 60,
+                html: "ثبت درخواست در    1401/1/8  16:32",
+                className: "size16 bold color605E5C",
+                align: "vh",
+              },
+              {
+                html: (
+                  <button onClick={() => onClose()} className="button-2">
+                    بازگشت
+                  </button>
+                ),
+              },
+            ],
+          }}
+        />
+      </div>
+    );
+  }
+}
+class GuaranteePopupWithSubmit extends Component {
+  static contextType = appContext;
+  constructor(props) {
+    super(props);
+    this.state = {
+      items: [],
+    };
+  }
+  render() {
+    let { items } = this.state;
+    let { onClose, onSubmit } = this.props;
+    let { getHeaderLayout, guaranteeExistItems } = this.context;
+    return (
+      <div className="popup-container">
+        <RVD
+          layout={{
+            className: "popup main-bg",
+            column: [
+              getHeaderLayout("ثبت درخواست گارانتی جدید", () => onClose()),
+              { size: 12 },
+              {
+                className: "box",
+                style: { padding: 12 },
+                column: [
+                  {
+                    row: [
+                      {
+                        html: "تاریخ مراجعه ویزیتور : ",
+                        className: "size16 color605E5C",
+                      },
+                      {
+                        html: "تا 72 ساعت آینده",
+                        className: "size16 color605E5C",
+                      },
+                    ],
+                  },
+                  { size: 12 },
+                  {
+                    row: [
+                      { size: 16, html: getSvg(42), align: "vh" },
+                      { size: 6 },
+                      {
+                        flex: 1,
+                        html: "ویزیتور جهت ثبت کالاهای گارانتی در تاریخ ذکر شده به فروشگاه شما مراجعه میکند",
+                        className: "size12 color00B5A5 bold",
+                      },
+                    ],
+                  },
+                ],
+              },
+              { size: 12 },
+              {
+                className: "box",
+                style: { padding: 12 },
+                column: [
+                  {
+                    html: "کالاهای گارانتی",
+                    className: "size16 color605E5C",
+                  },
+                  { size: 12 },
+                  {
+                    row: [
+                      { size: 16, html: getSvg(42), align: "vh" },
+                      { size: 6 },
+                      {
+                        flex: 1,
+                        html: "با ثبت کالاهای درخواستی برای گارانتی، درخواست شما در اولویت قرار میگیرد.",
+                        className: "size12 color00B5A5 bold",
+                      },
+                    ],
+                  },
+                ],
+              },
+              { size: 12 },
+              {
+                flex: 1,
+                html: (
+                  <Table
+                    padding={6}
+                    paging={false}
+                    columns={[
+                      {
+                        title: "",
+                        width: 36,
+                        template: (row) => {
+                          return (
+                            <button
+                              style={{ border: "none", background: "none" }}
+                              className="color00B5A5"
+                            >
+                              {getSvg(40, { width: 12, height: 12 })}
+                            </button>
+                          );
                         },
-                        {
-                            size:40,className:'color605E5C size12',scroll:'v',
-                            style:{whiteSpcae:'nowrap',flexWrap:'nowrap'},
-                            html:items.map((o)=>{
-                                return `${o.Qty} عدد ${o.name} `
-                            }).toString()
+                      },
+                      { title: "عنوان", getValue: (row) => row.Name },
+                      {
+                        title: "تعداد",
+                        getValue: (row) => row.Qty,
+                        width: 70,
+                        inlineEdit: {
+                          type: "number",
+                          onChange: (row, value) => {
+                            let { items } = this.state;
+                            row.Qty = value;
+                            this.setState({ items });
+                          },
                         },
-                        {
-                            size:36,childsProps:{align:'v'},row:[
-                                {html:'مشاهده',className:'size14 color0094D4',attrs:{
-                                    onClick:()=>onClick()
-                                }},
-                                {flex:1},
-                                {html:total,className:'size14 color323130'},
-                                {size:6},
-                                {html:'تومان',className:'size12 color605E5C'}
-                            ]
+                      },
+                    ]}
+                    model={items}
+                    toolbarItems={[
+                      {
+                        type: "select",
+                        text: "افزودن کالا",
+                        search: true,
+                        caret: false,
+                        style: {
+                          flex: 125,
+                          fontWeight: "bold",
+                          borderRadius: 4,
+                          background: "#fff",
+                          color: "dodgerblue",
+                          border: "1px solid dodgerblue",
+                        },
+                        popupStyle: { maxHeight: 400 },
+                        options: guaranteeExistItems.map((o, i) => {
+                          return { text: o.Name, value: o.Code };
+                        }),
+                        onChange: (value, obj) => {
+                          let { items } = this.state;
+                          items.push({
+                            Name: obj.text,
+                            Code: obj.value,
+                            Qty: 0,
+                          });
+                          this.setState({ items });
+                        },
+                      },
+                      {
+                        type: "button",
+                        disabled: !items.length,
+                        style: {
+                          fontFamily: "inherit",
+                          width: "fit-content",
+                          flex: 125,
+                          borderRadius: 4,
+                        },
+                        text: "ثبت درخواست",
+                        onClick: () => onSubmit(items),
+                      },
+                    ]}
+                  />
+                ),
+              },
+            ],
+          }}
+        />
+      </div>
+    );
+  }
+}
+
+class PeygiriyeSefaresheKharid extends Component {
+  static contextType = appContext;
+  constructor(props) {
+    super(props);
+    this.state = {
+      visitorWait: [],
+      factored: [],
+      inProcess: [],
+      delivered: [],
+      rejected: [],
+      canceled: [],
+      tab: "inProcess",
+    };
+  }
+  async componentDidMount() {
+    let { visitorWait, factored, inProcess, delivered, rejected, canceled } =
+      await services("peygiriye_sefareshe_kharid");
+    this.setState({
+      visitorWait,
+      factored,
+      inProcess,
+      delivered,
+      rejected,
+      canceled,
+    });
+  }
+  getTabsLayout() {
+    let {
+      visitorWait,
+      factored,
+      inProcess,
+      delivered,
+      rejected,
+      canceled,
+      tab,
+    } = this.state;
+    let parameters = {
+      tabs: [
+        {
+          title: "در انتظار تایید ویزیتور",
+          badge: visitorWait.length,
+          id: "visitorWait",
+        },
+        { title: "فاکتور شده", badge: factored.length, id: "factored" },
+        { title: "در حال پردازش", badge: inProcess.length, id: "inProcess" },
+        { title: "تحویل شده", badge: delivered.length, id: "delivered" },
+        { title: "مرجوع شده", badge: rejected.length, id: "rejected" },
+        { title: "لغو شده", badge: canceled.length, id: "canceled" },
+      ],
+      activeTabId: tab,
+      onClick: async (obj) => {
+        let {
+          visitorWait,
+          factored,
+          inProcess,
+          delivered,
+          rejected,
+          canceled,
+        } = await services("peygiriye_sefareshe_kharid");
+        this.setState({
+          tab: obj.id,
+          visitorWait,
+          factored,
+          inProcess,
+          delivered,
+          rejected,
+          canceled,
+        });
+      },
+    };
+    return layout("tabs", parameters);
+  }
+  render() {
+    let { onClose } = this.props;
+    let { tab } = this.state;
+    let { getHeaderLayout, SetState } = this.context;
+    let orders = this.state[tab];
+    console.log(orders);
+    return (
+      <div className="popup-container">
+        <RVD
+          layout={{
+            className: "popup main-bg",
+            column: [
+              getHeaderLayout("پیگیری سفارش خرید", () => onClose()),
+              this.getTabsLayout(),
+              { size: 12 },
+              {
+                flex: 1,
+                gap: 12,
+                column: orders.map((o) => {
+                  return {
+                    html: (
+                      <OrderCard
+                        {...o}
+                        onClick={() =>
+                          SetState({
+                            popup: {
+                              mode: "joziate-sefareshe-kharid",
+                              order: o,
+                            },
+                          })
                         }
-                    ]
-                }}
-            />
-        )
-    }
-}
-
-class JoziateSefaresheKharid extends Component{
-    static contextType = appContext;
-    constructor(props){
-        super(props);
-        this.state = {
-            number:'',
-            date:'',
-            cusotmerName:'',
-            customerCode:'',
-            customerGroup:'',
-            campain:'',
-            basePrice:'',
-            visitorName:'',
-            address:'',
-            mobile:'',
-            phone:'',
-            total:'',
-            paymentMethod:'',
-            items:[]
-        }
-    }
-    getRow(key,value){
-        return {
-            align:'v',
-            row:[
-                {size:110,html:key + ' : ',className:'size12 colorA19F9D'},
-                {flex:1,html:value,className:'size12'}
-            ]
-        }
-    }
-    getStatus(status){
-        let statuses = [
-            {title:'در حال پردازش',color:'#662D91',percent:50},
-            {title:'مرسوله در مسیر فروشگاه است',color:'#108ABE',percent:65},
-            {title:'تحویل شده',color:'#107C10',percent:100},
-            {title:'لغو شده',color:'#A4262C',percent:100},
-        ]
-        let obj = statuses[status];
-        if(!obj){return null}
-        return {
-            style:{padding:'0 24px'},className:'box',
-            column:[
-                {size:16},
-                {size:24,html:obj.title,style:{color:obj.color},className:'size14 bold'},
-                {
-                    html:(
-                        <div style={{height:12,display:'flex',width:'100%',borderRadius:3,overflow:'hidden'}}>
-                            <div style={{width:obj.percent + '%',background:obj.color}}></div>
-                            <div style={{flex:1,background:obj.color,opacity:0.3}}></div>
-                        </div>
-                    )
-                },
-                {size:16}
-            ]
-        }
-    }
-    async componentDidMount(){
-        let {order} = this.props;
-        let res = await services('joziatepeygiriyesefareshekharid',order.number);
-        this.setState(res)
-    }
-    render(){
-        let {getHeaderLayout} = this.context;
-        let {number,date,customerName,customerCode,customerGroup,campain,basePrice,visitorName,address,mobile,phone,total,paymentMethod,items} = this.state;
-        let {onClose,order} = this.props;
-        debugger;
-        return (
-            <div className='popup-container'>
-                <RVD
-                    layout={{
-                        className:'popup main-bg',
-                        column:[
-                            getHeaderLayout('جزيیات سفارش خرید',()=>onClose()),
-                            {size:12},
-                            {
-                                flex:1,scroll:'v',gap:12,
-                                column:[
-                                    {
-                                        className:'box gap-no-color',style:{padding:12},gap:12,
-                                        column:[
-                                            this.getRow('پیش فاکتور',number),
-                                            this.getRow('تاریخ ثبت',date),
-                                            {size:12},
-                                            this.getRow('نام مشتری',customerName + ' - ' + customerCode),
-                                            this.getRow('گروه مشتری',customerGroup),
-                                            this.getRow('نام کمپین',campain),
-                                            this.getRow('قیمت پایه',basePrice),
-                                            this.getRow('نام ویزیتور',visitorName),
-                                            {size:12},
-                                            this.getRow('آدرس',address),
-                                            this.getRow('تلفن همراه',mobile),
-                                            this.getRow('تلفن ثابت',phone),
-                                            {size:12},
-                                            this.getRow('مبلغ پرداختی کل',total),
-                                            this.getRow('نحوه پرداخت',paymentMethod),
-                                        ]
-                                    },
-                                    this.getStatus(order.status),
-                                    {gap:2,column:items.map((o,i)=>layout('productCard2',{...o,isFirst:i === 0,isLast:i === order.items.length - 1}))}
-                                ]
-                            }
-                        ]
-                    }}
-                />
-            </div>
-        )
-    }
-}
-class Search extends Component{
-    static contextType = appContext;
-    constructor(props){
-        super(props);
-        this.state = {
-            searchValue:'',
-            searchFamilies:[
-                {name:'جنرال'},
-                {name:'جاینت'},
-                {name:'پنلی'},
-                {name:'سیم و کابل'},
-                
+                      />
+                    ),
+                  };
+                }),
+              },
             ],
-            result:[
-                {src:LampSrc,name:'لامپ',color:'آفتابی',unit:'',discountPercent:1000,discountPrice:10,Qty:3,price:324000},
-                {src:LampSrc,name:'لامپ',color:'آفتابی',unit:'',discountPercent:1000,discountPrice:10,Qty:3,price:324000},
-                {src:LampSrc,name:'لامپ',color:'آفتابی',unit:'',discountPercent:1000,discountPrice:10,Qty:3,price:324000},
-                {src:LampSrc,name:'لامپ',color:'آفتابی',unit:'',discountPercent:1000,discountPrice:10,Qty:3,price:324000},
-                {src:LampSrc,name:'لامپ',color:'آفتابی',unit:'',discountPercent:1000,discountPrice:10,Qty:3,price:324000},
-                {src:LampSrc,name:'لامپ',color:'آفتابی',unit:'',discountPercent:1000,discountPrice:10,Qty:3,price:324000},
-                {src:LampSrc,name:'لامپ',color:'آفتابی',unit:'',discountPercent:1000,discountPrice:10,Qty:3,price:324000},
-                {src:LampSrc,name:'لامپ',color:'آفتابی',unit:'',discountPercent:1000,discountPrice:10,Qty:3,price:324000},
-                {src:LampSrc,name:'لامپ',color:'آفتابی',unit:'',discountPercent:1000,discountPrice:10,Qty:3,price:324000},
-                {src:LampSrc,name:'لامپ',color:'آفتابی',unit:'',discountPercent:1000,discountPrice:10,Qty:3,price:324000}
-            ]
-        }
-    }
-    async changeSearch(searchValue){
-        clearTimeout(this.timeout);
-        this.setState({searchValue})
-        this.timeout = setTimeout(async ()=>{
-            let res = await services('search',searchValue);
-            this.setState({result:res})
-        },2000)
-    }
-    render(){
-        let {getHeaderLayout} = this.context;
-        let {searchValue,searchFamilies,result} = this.state;
-        let {onClose} = this.props;
-        return (
-            <div className='popup-container'>
-                <RVD
-                    layout={{
-                        className:'popup main-bg',
-                        column:[
-                            getHeaderLayout('جستجوی کالا',()=>onClose()),
-                            layout('search',{value:searchValue,onChange:(searchValue)=>this.changeSearch(searchValue)}),
-                            {
-                                size:200,align:'vh',className:'size20 color323130 bold',
-                                show:false,
-                                html:'در میان ان کالا جستجو'
-                            },
-                            {
-                                size:48,align:'v',className:'size14 color323130 bold',
-                                html:'جستجو در خانواده ها',style:{padding:'0 24px'}
-                            },
-                            {
-                                gap:12,row:searchFamilies.map((o)=>{
-                                    return {
-                                        size:90,html:o.name,className:'color605E5C size14',align:'vh',style:{
-                                            border:'1px solid #999',borderRadius:24
-                                        }
-                                    }
-                                })
-                            },
-                            {
-                                size:48,align:'v',className:'size14 color323130 bold',
-                                html:'محصولات',style:{padding:'0 24px'}
-                            },
-                            {size:24},
-                            {
-                                flex:1,
-                                column:result.map((o,i)=>{
-                                    return layout('productCard2',{...o,isFirst:i === 0, isLast:i === result.length - 1})
-                                })
+          }}
+        />
+      </div>
+    );
+  }
+}
+class OrderCard extends Component {
+  render() {
+    let { items, number, date, total, onClick } = this.props;
+    return (
+      <RVD
+        layout={{
+          className: "box",
+          style: { padding: 12 },
+          column: [
+            {
+              align: "v",
+              size: 36,
+              row: [
+                { html: "پیش سفارش:", className: "colorA19F9D size12" },
+                { size: 4 },
+                { html: number, className: "color605E5C size14" },
+                { flex: 1 },
+                { html: date, className: "colorA19F9D size12" },
+              ],
+            },
+            {
+              size: 40,
+              className: "color605E5C size12",
+              scroll: "v",
+              style: { whiteSpcae: "nowrap", flexWrap: "nowrap" },
+              html: items
+                .map((o) => {
+                  return `${o.Qty} عدد ${o.name} `;
+                })
+                .toString(),
+            },
+            {
+              size: 36,
+              childsProps: { align: "v" },
+              row: [
+                {
+                  html: "مشاهده",
+                  className: "size14 color0094D4",
+                  attrs: {
+                    onClick: () => onClick(),
+                  },
+                },
+                { flex: 1 },
+                { html: total, className: "size14 color323130" },
+                { size: 6 },
+                { html: "تومان", className: "size12 color605E5C" },
+              ],
+            },
+          ],
+        }}
+      />
+    );
+  }
+}
 
-                            }
-                        ]
-                    }}
-                />
-            </div>
-        )
+class JoziateSefaresheKharid extends Component {
+  static contextType = appContext;
+  constructor(props) {
+    super(props);
+    this.state = {
+      number: "",
+      date: "",
+      cusotmerName: "",
+      customerCode: "",
+      customerGroup: "",
+      campain: "",
+      basePrice: "",
+      visitorName: "",
+      address: "",
+      mobile: "",
+      phone: "",
+      total: "",
+      paymentMethod: "",
+      items: [],
+    };
+  }
+  getRow(key, value) {
+    return {
+      align: "v",
+      row: [
+        { size: 110, html: key + " : ", className: "size12 colorA19F9D" },
+        { flex: 1, html: value, className: "size12" },
+      ],
+    };
+  }
+  getStatus(status) {
+    let statuses = [
+      { title: "در حال پردازش", color: "#662D91", percent: 50 },
+      { title: "مرسوله در مسیر فروشگاه است", color: "#108ABE", percent: 65 },
+      { title: "تحویل شده", color: "#107C10", percent: 100 },
+      { title: "لغو شده", color: "#A4262C", percent: 100 },
+    ];
+    let obj = statuses[status];
+    if (!obj) {
+      return null;
     }
+    return {
+      style: { padding: "0 24px" },
+      className: "box",
+      column: [
+        { size: 16 },
+        {
+          size: 24,
+          html: obj.title,
+          style: { color: obj.color },
+          className: "size14 bold",
+        },
+        {
+          html: (
+            <div
+              style={{
+                height: 12,
+                display: "flex",
+                width: "100%",
+                borderRadius: 3,
+                overflow: "hidden",
+              }}
+            >
+              <div
+                style={{ width: obj.percent + "%", background: obj.color }}
+              ></div>
+              <div
+                style={{ flex: 1, background: obj.color, opacity: 0.3 }}
+              ></div>
+            </div>
+          ),
+        },
+        { size: 16 },
+      ],
+    };
+  }
+  async componentDidMount() {
+    let { order } = this.props;
+    let res = await services("joziatepeygiriyesefareshekharid", order.number);
+    this.setState(res);
+  }
+  render() {
+    let { getHeaderLayout } = this.context;
+    let {
+      number,
+      date,
+      customerName,
+      customerCode,
+      customerGroup,
+      campain,
+      basePrice,
+      visitorName,
+      address,
+      mobile,
+      phone,
+      total,
+      paymentMethod,
+      items,
+    } = this.state;
+    let { onClose, order } = this.props;
+    debugger;
+    return (
+      <div className="popup-container">
+        <RVD
+          layout={{
+            className: "popup main-bg",
+            column: [
+              getHeaderLayout("جزيیات سفارش خرید", () => onClose()),
+              { size: 12 },
+              {
+                flex: 1,
+                scroll: "v",
+                gap: 12,
+                column: [
+                  {
+                    className: "box gap-no-color",
+                    style: { padding: 12 },
+                    gap: 12,
+                    column: [
+                      this.getRow("پیش فاکتور", number),
+                      this.getRow("تاریخ ثبت", date),
+                      { size: 12 },
+                      this.getRow(
+                        "نام مشتری",
+                        customerName + " - " + customerCode
+                      ),
+                      this.getRow("گروه مشتری", customerGroup),
+                      this.getRow("نام کمپین", campain),
+                      this.getRow("قیمت پایه", basePrice),
+                      this.getRow("نام ویزیتور", visitorName),
+                      { size: 12 },
+                      this.getRow("آدرس", address),
+                      this.getRow("تلفن همراه", mobile),
+                      this.getRow("تلفن ثابت", phone),
+                      { size: 12 },
+                      this.getRow("مبلغ پرداختی کل", total),
+                      this.getRow("نحوه پرداخت", paymentMethod),
+                    ],
+                  },
+                  this.getStatus(order.status),
+                  {
+                    gap: 2,
+                    column: items.map((o, i) =>
+                      layout("productCard2", {
+                        ...o,
+                        isFirst: i === 0,
+                        isLast: i === order.items.length - 1,
+                      })
+                    ),
+                  },
+                ],
+              },
+            ],
+          }}
+        />
+      </div>
+    );
+  }
+}
+class Search extends Component {
+  static contextType = appContext;
+  constructor(props) {
+    super(props);
+    this.state = {
+      searchValue: "",
+      searchFamilies: [
+        { name: "جنرال" },
+        { name: "جاینت" },
+        { name: "پنلی" },
+        { name: "سیم و کابل" },
+      ],
+      result: [
+        {
+          src: LampSrc,
+          name: "لامپ",
+          color: "آفتابی",
+          unit: "",
+          discountPercent: 1000,
+          discountPrice: 10,
+          Qty: 3,
+          price: 324000,
+        },
+        {
+          src: LampSrc,
+          name: "لامپ",
+          color: "آفتابی",
+          unit: "",
+          discountPercent: 1000,
+          discountPrice: 10,
+          Qty: 3,
+          price: 324000,
+        },
+        {
+          src: LampSrc,
+          name: "لامپ",
+          color: "آفتابی",
+          unit: "",
+          discountPercent: 1000,
+          discountPrice: 10,
+          Qty: 3,
+          price: 324000,
+        },
+        {
+          src: LampSrc,
+          name: "لامپ",
+          color: "آفتابی",
+          unit: "",
+          discountPercent: 1000,
+          discountPrice: 10,
+          Qty: 3,
+          price: 324000,
+        },
+        {
+          src: LampSrc,
+          name: "لامپ",
+          color: "آفتابی",
+          unit: "",
+          discountPercent: 1000,
+          discountPrice: 10,
+          Qty: 3,
+          price: 324000,
+        },
+        {
+          src: LampSrc,
+          name: "لامپ",
+          color: "آفتابی",
+          unit: "",
+          discountPercent: 1000,
+          discountPrice: 10,
+          Qty: 3,
+          price: 324000,
+        },
+        {
+          src: LampSrc,
+          name: "لامپ",
+          color: "آفتابی",
+          unit: "",
+          discountPercent: 1000,
+          discountPrice: 10,
+          Qty: 3,
+          price: 324000,
+        },
+        {
+          src: LampSrc,
+          name: "لامپ",
+          color: "آفتابی",
+          unit: "",
+          discountPercent: 1000,
+          discountPrice: 10,
+          Qty: 3,
+          price: 324000,
+        },
+        {
+          src: LampSrc,
+          name: "لامپ",
+          color: "آفتابی",
+          unit: "",
+          discountPercent: 1000,
+          discountPrice: 10,
+          Qty: 3,
+          price: 324000,
+        },
+        {
+          src: LampSrc,
+          name: "لامپ",
+          color: "آفتابی",
+          unit: "",
+          discountPercent: 1000,
+          discountPrice: 10,
+          Qty: 3,
+          price: 324000,
+        },
+      ],
+    };
+  }
+  async changeSearch(searchValue) {
+    clearTimeout(this.timeout);
+    this.setState({ searchValue });
+    this.timeout = setTimeout(async () => {
+      let res = await services("search", searchValue);
+      this.setState({ result: res });
+    }, 2000);
+  }
+  render() {
+    let { getHeaderLayout } = this.context;
+    let { searchValue, searchFamilies, result } = this.state;
+    let { onClose } = this.props;
+    return (
+      <div className="popup-container">
+        <RVD
+          layout={{
+            className: "popup main-bg",
+            column: [
+              getHeaderLayout("جستجوی کالا", () => onClose()),
+              layout("search", {
+                value: searchValue,
+                onChange: (searchValue) => this.changeSearch(searchValue),
+              }),
+              {
+                size: 200,
+                align: "vh",
+                className: "size20 color323130 bold",
+                show: false,
+                html: "در میان ان کالا جستجو",
+              },
+              {
+                size: 48,
+                align: "v",
+                className: "size14 color323130 bold",
+                html: "جستجو در خانواده ها",
+                style: { padding: "0 24px" },
+              },
+              {
+                gap: 12,
+                row: searchFamilies.map((o) => {
+                  return {
+                    size: 90,
+                    html: o.name,
+                    className: "color605E5C size14",
+                    align: "vh",
+                    style: {
+                      border: "1px solid #999",
+                      borderRadius: 24,
+                    },
+                  };
+                }),
+              },
+              {
+                size: 48,
+                align: "v",
+                className: "size14 color323130 bold",
+                html: "محصولات",
+                style: { padding: "0 24px" },
+              },
+              { size: 24 },
+              {
+                flex: 1,
+                column: result.map((o, i) => {
+                  return layout("productCard2", {
+                    ...o,
+                    isFirst: i === 0,
+                    isLast: i === result.length - 1,
+                  });
+                }),
+              },
+            ],
+          }}
+        />
+      </div>
+    );
+  }
 }

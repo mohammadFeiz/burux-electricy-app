@@ -1,0 +1,15 @@
+.slider-dots{
+    height:24px;
+}
+.slider-dots .r-layout-gap{
+    background:none !important;
+}
+.slider-dots-item{
+    width:5px;
+    height:5px;
+    border-radius:100%;
+    background:#ddd;
+}
+.slider-dots-item.active{
+    background:dodgerblue;
+}

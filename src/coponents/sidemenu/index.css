@@ -1,0 +1,26 @@
+.sidemenu{
+    position:fixed !important;
+    right:-250px;
+    top:0;
+    flex:none !important;
+    height:100%;
+    width:250px;
+    font-size:14px;
+    color:#605E5C;
+    transition: 0.3s;
+    background:#fff;
+    box-shadow:-6px 0 12px 0 rgba(0,0,0,.15)}
+.sidemenu.open{
+    right:0;
+    transition: 0.3s;
+}
+.sidemenu-header{
+    padding:0 24px;
+}
+.sidemenu-backdrop{
+    position:fixed;
+    left:0;
+    top:0;
+    height:100%;
+    width:calc(100% - 250px);
+}

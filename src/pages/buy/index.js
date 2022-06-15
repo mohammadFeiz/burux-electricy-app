@@ -1209,14 +1209,14 @@ class Product extends Component {
   }
   bodyLayout() {
     let { product } = this.props;
-    let { name, code, optionTypes, campaignsPrices, details } = product;
+    let { name, code, optionTypes, campaignsPrices, details, srcs } = product;
     return {
       flex: 1,
       scroll: "v",
       gap: 12,
       style: { padding: "12px 0" },
       column: [
-        this.pictureLayout(name, code, src1),
+        this.pictureLayout(name, code, srcs[0]),
         this.optionTypesLayout(optionTypes),
         this.compairePricesLayout(campaignsPrices),
         this.detailsLayout(details),

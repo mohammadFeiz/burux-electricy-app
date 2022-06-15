@@ -424,78 +424,326 @@ export default async function services(type, parameter, loading = true) {
       //   item.relationships.option_types.data.map((p) => p.id);
       // const variants_included_ids =
       //   item.relationships.variants.data.map((p) => p.id);
-      const product_properties_included_values = included
-        .filter((p) => p.type === "product_property")
-        .map((p) => [p.attributes.name, p.attributes.value]);
 
-      const option_types_included_values = included
-        .filter((p) => p.type === "option_type")
-        .map((p) => {
-          const firstItem = meta.filters.option_types.find(
-            (v) => v.id === p.id
-          );
-          let option_values =
-            firstItem !== undefined
-              ? firstItem.option_values.map((v) => {
-                  return { name: v.presentation, id: v.id };
-                })
-              : null;
-          return { id: p.id, name: p.attributes.name, items: option_values };
-        });
+      var finalResult = [];
+      let test = [];
 
-      const variants_included_values = included
-        .filter((p) => p.type === "variant")
-        .map((p) => {
-          let option_values = p.relationships.option_values.data;
-          const variant_id = p.id; // int
-          const b1_item = b1Result.find((i) => i.itemCode === p.attributes.sku);
+      for (let spreeItem of result) {
+        // const product_properties_included_values = included
+        // .filter((p) => p.type === "product_property")
+        // .map((p) => [p.attributes.name, p.attributes.value]);
 
-          const variant_price =
-            b1_item !== undefined
-              ? b1_item.priceAfterCalculate
-              : p.attributes.price; // int
+        // const product_properties_included_values = included.map((p) => {
+        //   return p.type === "product_property"
+        //     ? [p.attributes.name, p.attributes.value]
+        //     : null;
+        // });
 
-          const variant_discount_price =
-            b1_item !== undefined ? b1_item.priceAfterVat : p.attributes.price; // int
+        // const option_types_included_values = included
+        //   .filter((p) => p.type === "option_type")
+        //   .map((p) => {
+        //     const firstItem = meta.filters.option_types.find(
+        //       (v) => v.id === p.id
+        //     );
+        //     let option_values =
+        //       firstItem !== undefined
+        //         ? firstItem.option_values.map((v) => {
+        //             return { name: v.presentation, id: v.id };
+        //           })
+        //         : null;
+        //     return { id: p.id, name: p.attributes.name, items: option_values };
+        //   });
 
-          const variant_discount_precent =
-            b1_item !== undefined ? b1_item.discountPercent : 0; // int
-          const variant_in_stock = b1_item !== undefined ? b1_item.totalQty : 0;
-          const variant_option_values = p.relationships.option_values.data; // array -> {id, type}
-          const option_types_with_option_values = option_types_included_values; // array -> { id: p.id, name: p.attributes.name, items: option_values }
+        // const option_types_included_values = included.map((p) => {
+        //   if (p.type === "option_type") {
+        //     const firstItem = meta.filters.option_types.find(
+        //       (v) => v.id === p.id
+        //     );
+        //     let option_values =
+        //       firstItem !== undefined
+        //         ? firstItem.option_values.map((v) => {
+        //             return { name: v.presentation, id: v.id };
+        //           })
+        //         : null;
+        //     return { id: p.id, name: p.attributes.name, items: option_values };
+        //   } else {
+        //     return null;
+        //   }
+        // });
 
-          let option_values_result = {};
+        // const variants_included_values = included
+        //   .filter((p) => p.type === "variant")
+        //   .map((p) => {
+        //     let option_values = p.relationships.option_values.data;
+        //     const variant_id = p.id; // int
+        //     const imgData = p.relationships.images.data;
+        //     let srcs = [];
+        //     if (imgData.length) {
+        //       const imgIds = imgData.id;
+        //       srcs = included.map((m) => {
+        //         return m.type === "image" && imgIds.includes(m.id)
+        //           ? m.attributes.original_url
+        //           : null;
+        //       });
+        //     }
+        //     const b1_item = b1Result.find(
+        //       (i) => i.itemCode === p.attributes.sku
+        //     );
 
-          for (const op_val of variant_option_values) {
-            const selected_option_type = option_types_with_option_values.find(
-              (x) =>
-                x.items !== null && x.items.map((i) => i.id).includes(op_val.id)
-            );
+        //     const variant_price =
+        //       b1_item !== undefined
+        //         ? b1_item.priceAfterCalculate
+        //         : p.attributes.price; // int
 
+        //     const variant_discount_price =
+        //       b1_item !== undefined
+        //         ? b1_item.priceAfterVat
+        //         : p.attributes.price; // int
+
+        //     const variant_discount_precent =
+        //       b1_item !== undefined ? b1_item.discountPercent : 0; // int
+        //     const variant_in_stock =
+        //       b1_item !== undefined ? b1_item.totalQty : 0;
+        //     const variant_option_values = p.relationships.option_values.data; // array -> {id, type}
+        //     const option_types_with_option_values =
+        //       option_types_included_values; // array -> { id: p.id, name: p.attributes.name, items: option_values }
+
+        //     let option_values_result = {};
+
+        //     for (const op_val of variant_option_values) {
+        //       const selected_option_type = option_types_with_option_values.find(
+        //         (x) =>
+        //           x.items !== null &&
+        //           x.items.map((i) => i.id).includes(op_val.id)
+        //       );
+
+        //       if (
+        //         selected_option_type === undefined ||
+        //         selected_option_type === null
+        //       )
+        //         continue;
+
+        //       option_values_result[selected_option_type.id.toString()] =
+        //         selected_option_type.items.find((ov) => ov.id === op_val.id).id;
+        //     }
+        //     return {
+        //       // optionValues: {
+        //       //   color: "yellow",
+        //       //   power: "10wat",
+        //       // },
+        //       id: variant_id,
+        //       optionValues: option_values_result,
+        //       discountPrice: variant_discount_price,
+        //       discountPercent: variant_discount_precent,
+        //       price: variant_price,
+        //       inStock: variant_in_stock,
+        //       srcs: srcs,
+        //     };
+        //   });
+
+        // const variants_included_values = included.map((p) => {
+        //   if (p.type === "variant") {
+        //     let option_values = p.relationships.option_values.data;
+        //     const variant_id = p.id; // int
+        //     const imgData = p.relationships.images.data;
+        //     let srcs = [];
+        //     if (imgData.length) {
+        //       const imgIds = imgData.id;
+        //       srcs = included.map((m) => {
+        //         return m.type === "image" && imgIds.includes(m.id)
+        //           ? m.attributes.original_url
+        //           : null;
+        //       });
+        //     }
+        //     const b1_item = b1Result.find(
+        //       (i) => i.itemCode === p.attributes.sku
+        //     );
+
+        //     const variant_price =
+        //       b1_item !== undefined
+        //         ? b1_item.priceAfterCalculate
+        //         : p.attributes.price; // int
+
+        //     const variant_discount_price =
+        //       b1_item !== undefined
+        //         ? b1_item.priceAfterVat
+        //         : p.attributes.price; // int
+
+        //     const variant_discount_precent =
+        //       b1_item !== undefined ? b1_item.discountPercent : 0; // int
+        //     const variant_in_stock =
+        //       b1_item !== undefined ? b1_item.totalQty : 0;
+        //     const variant_option_values = p.relationships.option_values.data; // array -> {id, type}
+        //     const option_types_with_option_values =
+        //       option_types_included_values; // array -> { id: p.id, name: p.attributes.name, items: option_values }
+
+        //     let option_values_result = {};
+
+        //     for (const op_val of variant_option_values) {
+        //       const selected_option_type = option_types_with_option_values.find(
+        //         (x) =>
+        //           x !== null &&
+        //           x.items !== null &&
+        //           x.items.map((i) => i.id).includes(op_val.id)
+        //       );
+
+        //       if (
+        //         selected_option_type === undefined ||
+        //         selected_option_type === null
+        //       )
+        //         continue;
+
+        //       option_values_result[selected_option_type.id.toString()] =
+        //         selected_option_type.items.find((ov) => ov.id === op_val.id).id;
+        //     }
+        //     return {
+        //       // optionValues: {
+        //       //   color: "yellow",
+        //       //   power: "10wat",
+        //       // },
+        //       id: variant_id,
+        //       optionValues: option_values_result,
+        //       discountPrice: variant_discount_price,
+        //       discountPercent: variant_discount_precent,
+        //       price: variant_price,
+        //       inStock: variant_in_stock,
+        //       srcs: srcs,
+        //     };
+        //   } else {
+        //     return null;
+        //   }
+        // });
+
+        let product_properties_included_values = [];
+        let option_types_included_values = [];
+        let variants_included_values = [];
+        let mainSrcs = [];
+        for (let includeItem of included) {
+          if (includeItem.type === "product_property") {
+            const product_properties_data =
+              spreeItem.relationships.product_properties.data;
             if (
-              selected_option_type === undefined ||
-              selected_option_type === null
-            )
-              continue;
+              product_properties_data.length &&
+              product_properties_data.map((x) => x.id).includes(includeItem.id)
+            ) {
+              product_properties_included_values.push([
+                includeItem.attributes.name,
+                includeItem.attributes.value,
+              ]);
+            }
+          } else if (includeItem.type === "option_type") {
+            const option_types_data = spreeItem.relationships.option_types.data;
+            if (
+              option_types_data.length &&
+              option_types_data.map((x) => x.id).includes(includeItem.id)
+            ) {
+              const option_type_values_data = meta.filters.option_types
+                .find((x) => x.id.toString() === includeItem.id.toString())
+                .option_values.map((v) => {
+                  return { name: v.presentation, id: v.id };
+                });
 
-            option_values_result[selected_option_type.id.toString()] =
-              selected_option_type.items.find((ov) => ov.id === op_val.id).id;
+              option_types_included_values.push({
+                id: includeItem.id,
+                name: includeItem.attributes.name,
+                items: option_type_values_data,
+              });
+            }
+          } else if (includeItem.type === "variant") {
+            const variant_id = includeItem.id; // int
+            const imgData = includeItem.relationships.images.data;
+            let srcs = [];
+            if (imgData.length) {
+              const imgIds = imgData.id;
+              srcs = included.map((m) => {
+                return m.type === "image" && imgIds.includes(m.id)
+                  ? m.attributes.original_url
+                  : null;
+              });
+            }
+            const variants_ids_data = spreeItem.relationships.variants.data;
+            if (
+              variants_ids_data.length &&
+              variants_ids_data.map((x) => x.id).includes(includeItem.id)
+            ) {
+              const b1_item = b1Result.find(
+                (i) => i.itemCode === includeItem.attributes.sku
+              );
+
+              const variant_price =
+                b1_item !== undefined
+                  ? b1_item.priceAfterCalculate
+                  : includeItem.attributes.price; // int
+
+              const variant_discount_price =
+                b1_item !== undefined
+                  ? b1_item.priceAfterVat
+                  : includeItem.attributes.price; // int
+
+              const variant_discount_precent =
+                b1_item !== undefined ? b1_item.discountPercent : 0; // int
+              const variant_in_stock =
+                b1_item !== undefined ? b1_item.totalQty : 0;
+              const variant_option_values =
+                includeItem.relationships.option_values.data; // array -> {id, type}
+              let option_values_result = {};
+              for (const op_val of variant_option_values) {
+                const selected_option_type = option_types_included_values // array -> { id: p.id, name: p.attributes.name, items: [{ name: v.presentation, id: v.id }] }
+                  .find((x) =>
+                    // x !== null &&
+                    // x.items !== null &&
+                    x.items
+                      .map((i) => i.id.toString())
+                      .includes(op_val.id.toString())
+                  );
+
+                if (
+                  selected_option_type === undefined ||
+                  selected_option_type === null
+                )
+                  continue;
+
+                option_values_result[selected_option_type.id.toString()] =
+                  selected_option_type.items.find(
+                    (ov) => ov.id.toString() === op_val.id.toString()
+                  ).id;
+              }
+              variants_included_values.push({
+                // optionValues: {
+                //   color: "yellow",
+                //   power: "10wat",
+                // },
+                id: variant_id,
+                optionValues: option_values_result,
+                discountPrice: variant_discount_price,
+                discountPercent: variant_discount_precent,
+                price: variant_price,
+                inStock: variant_in_stock,
+                srcs: srcs,
+              });
+            }
+          } else if (includeItem.type === "image") {
+            const imgData = spreeItem.relationships.images.data;
+            const imgIds = imgData.map((x) => x.id);
+            if (imgData.length && imgIds.includes(includeItem.id)) {
+              mainSrcs.push(
+                "http://spree.burux.com" + includeItem.attributes.original_url
+              );
+            }
           }
-          return {
-            // optionValues: {
-            //   color: "yellow",
-            //   power: "10wat",
-            // },
-            id: variant_id,
-            optionValues: option_values_result,
-            discountPrice: variant_discount_price,
-            discountPercent: variant_discount_precent,
-            price: variant_price,
-            inStock: variant_in_stock,
-          };
-        });
+        }
 
-      console.log(variants_included_values);
+        finalResult.push({
+          name: spreeItem.attributes.name,
+          code: `code_${spreeItem.id}`,
+          id: spreeItem.id,
+          details: product_properties_included_values,
+          optionTypes: option_types_included_values,
+          variants: variants_included_values,
+          srcs: mainSrcs,
+        });
+      }
+
       // return {
       //   name: item.attributes.name,
       //   code: `Code_${item.id}`,
@@ -503,6 +751,7 @@ export default async function services(type, parameter, loading = true) {
       //   details: product_properties_included_values,
       //   optionTypes: option_types_included_values,
       //   variants: variants_included_values,
+      //   srcs: mainSrcs,
       //   campaignsPrices: [
       //     { name: "خرید عادی", price: false, id: "10178" },
       //     { name: "فروش ویژه 10 وات", price: 235600, id: "10181" },

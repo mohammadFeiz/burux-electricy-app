@@ -69,16 +69,16 @@ export default function layout(type, parameters) {
             />
         },
         productCard(){
-            let {src,name,discountPrice,discountPercent,price,style = {},stockType = true,onClick = ()=>{}} = parameters;
+            let {src,name,discountPrice,discountPercent,price,style = {},inStock,onClick = ()=>{}} = parameters;
             return {
                 size:168,style:{background:'#fff',borderRadius:12,fontSize:14,...style},
                 attrs:{onClick:()=>onClick()},
                 column:[
-                    {html:<img src={src} alt=''/>,align:'vh',size:136},
+                    {html:<img src={src} alt='' height='100%'/>,align:'vh',size:136},
+                    {html:name,className:'color323130 bold padding-12',style:{whiteSpace:'normal'}},
                     {flex:1},
-                    {html:name,style:{padding:'0 12px'},className:'color323130 bold'},
                     {
-                        show:!!discountPrice,
+                        show:!!discountPercent,
                         row:[
                             {flex:1},
                             {html:$$.splitPrice(discountPrice),className:'colorA19F9D'},
@@ -89,7 +89,7 @@ export default function layout(type, parameters) {
                         ]
                     },
                     {
-                        show:!!price && stockType === true,
+                        show:!!price && inStock,
                         row:[
                             {flex:1},
                             {html:$$.splitPrice(price),className:'color323130 bold'},
@@ -99,41 +99,43 @@ export default function layout(type, parameters) {
                         ]
                     },
                     {
-                        show:stockType === false,
+                        show:inStock === 0,
                         row:[
                             {flex:1},
                             {html:'نا موجود',className:'colorD83B01 bold size12'},
                             {size:12}
                         ]
                     },
-                    {
-                        show:typeof stockType === 'string',
-                        row:[
-                            {flex:1},
-                            {html:'در این طرح موجود نیست',className:'colorD83B01 size10'},
-                            {size:12}
-                        ]
-                    },
-                    {
-                        show:price!== undefined && typeof stockType === 'string',
-                        row:[
-                            {flex:1},
-                            {html:'در طرح ',className:'color323130 size10',align:'v'},
-                            {html:stockType,className:'color323130 size10',align:'v'},
-                            {size:6},
-                            {html:$$.splitPrice(price),className:'color323130 bold',align:'v'},
-                            {size:6},
-                            {html:'تومان',className:'color323130 bold',align:'v'},
-                            {size:12}
-                        ]
-                    },
-                    {size:12}
+                    // {
+                    //     show:typeof stockType === 'string',
+                    //     row:[
+                    //         {flex:1},
+                    //         {html:'در این طرح موجود نیست',className:'colorD83B01 size10'},
+                    //         {size:12}
+                    //     ]
+                    // },
+                    // {
+                    //     show:price!== undefined && typeof stockType === 'string',
+                    //     row:[
+                    //         {flex:1},
+                    //         {html:'در طرح ',className:'color323130 size10',align:'v'},
+                    //         {html:stockType,className:'color323130 size10',align:'v'},
+                    //         {size:6},
+                    //         {html:$$.splitPrice(price),className:'color323130 bold',align:'v'},
+                    //         {size:6},
+                    //         {html:'تومان',className:'color323130 bold',align:'v'},
+                    //         {size:12}
+                    //     ]
+                    // },
+                    {size:12},
+                    
+                    
                 ]
             }
         },
         
         productCard2(){
-            let {isLast,isFirst,src,name,discountPercent,discountPrice,Qty,price,stockType = true} = parameters;
+            let {isLast,isFirst,src,name,discountPercent,discountPrice,Qty,price,inStock} = parameters;
             return {
                 className:'box gap-no-color',
                 style:{
@@ -165,7 +167,7 @@ export default function layout(type, parameters) {
                                 
                             },
                             {
-                                show:stockType === false,
+                                show:!!!inStock,
                                 row:[
                                     {flex:1},
                                     {html:'نا موجود',className:'colorD83B01 bold size12'},
@@ -173,32 +175,32 @@ export default function layout(type, parameters) {
                                 ]
                             },
                             {
-                                childsAttrs:{align:'v'},show:stockType === true,
+                                childsAttrs:{align:'v'},show:!!inStock,
                                 row:[
                                     {flex:1},
                                     {html:$$.splitPrice(price) + ' تومان',className:'size12 color404040 bold'}
                                 ],
                                 
                             },
-                            {
-                                show:typeof stockType === 'string',
-                                row:[
-                                    {flex:1},
-                                    {html:'در این طرح موجود نیست',className:'colorD83B01 size10'},
-                                    {size:12}
-                                ]
-                            },
-                            {
-                                childsAttrs:{align:'v'},show:typeof stockType === 'string',
-                                row:[
-                                    {flex:1},
-                                    {html:'در طرح ',className:'size10 color404040'},
-                                    {html:stockType,className:'size10 color404040'},
-                                    {size:6},
-                                    {html:$$.splitPrice(price) + ' تومان',className:'size12 color404040 bold'}
-                                ],
+                            // {
+                            //     show:typeof stockType === 'string',
+                            //     row:[
+                            //         {flex:1},
+                            //         {html:'در این طرح موجود نیست',className:'colorD83B01 size10'},
+                            //         {size:12}
+                            //     ]
+                            // },
+                            // {
+                            //     childsAttrs:{align:'v'},show:typeof stockType === 'string',
+                            //     row:[
+                            //         {flex:1},
+                            //         {html:'در طرح ',className:'size10 color404040'},
+                            //         {html:stockType,className:'size10 color404040'},
+                            //         {size:6},
+                            //         {html:$$.splitPrice(price) + ' تومان',className:'size12 color404040 bold'}
+                            //     ],
                                 
-                            }
+                            // }
                         ]
                     }
                 ]

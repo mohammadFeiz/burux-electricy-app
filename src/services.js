@@ -1,7 +1,7 @@
 import Axios from "axios";
 import dateCalculator from "./utils/date-calculator";
 import $ from "jquery";
-import axios from "axios";
+import src1 from './utils/brx66.png';
 export default async function services(type, parameter, loading = true) {
   let d = dateCalculator();
   let $$ = {
@@ -94,7 +94,6 @@ export default async function services(type, parameter, loading = true) {
       );
     },
     async save_catched_chance(award) {
-      debugger;
       let res = await Axios.post(
         "https://retailerapp.bbeta.ir/api/v1/UserAwards",
         { UserId: 1, AwardId: award.award.id, Win: award.result }
@@ -261,54 +260,39 @@ export default async function services(type, parameter, loading = true) {
         };
       });
     },
-    async activeCampaignItems(id) {
-      let res = await Axios.get(
-        `https://retailerapp.bbeta.ir/api/v1/Spree/GetTaxonByIdWithItsProducts?id=${id}`
-      );
-      // let res = await Axios.post(`https://retailerapp.bbeta.ir/api/v1/Visit/GetAllSpreeProducts`,{
-      //     "SpreeTaxon":id,
-      //     "CardCode":"c50000"
-      // });
-      let result = res.data.data.included;
-      // result = result.filter((o)=>{
-      //     return o.attributes.in_stock
-      // })
-      return result.map((o) => {
-        return {
-          name: o.attributes.name,
-          discountPrice: 0,
-          discountPercent: 0,
-          price: o.attributes.price,
-        };
-      });
+    getProductById(id,allProducts){
+      let product = allProducts[id.toString()];
+      let {defaultVariant} = product
+      return {
+        name: product.name,
+        id:product.id,
+        discountPrice: defaultVariant.discountPrice,
+        discountPercent: defaultVariant.discountPercent,
+        price: defaultVariant.price,
+        src:product.srcs[0]
+      };
     },
-    async getLastOrders() {
-      let res = await Axios.post(
-        `https://retailerapp.bbeta.ir/api/v1/Visit/GetAllUserPreOrder`,
-        {
-          CardCode: "c50000",
-          Page: 1,
-        }
-      );
-      let result = res.data.data.Items;
-      result = result.filter((o, i) => o.Status === 2);
-      result = result.slice(0, Math.min(result.length, 5));
-      let items = [];
-      for (let i = 0; i < result.length; i++) {
-        items = items.concat(
-          result[i].Items.map((item) => {
-            return {
-              name: item.ProductName,
-              discountPrice: 0,
-              discountPercent: 0,
-              price: item.MinPrice,
-            };
-          })
-        );
-      }
-      return items;
+    async activeCampaignItems({id,allProducts,count}) {
+      let products = Object.keys(allProducts);
+      if(count !== undefined){products = products.slice(0,Math.min(count,products.length))}
+      return products.map((o) => this.getProductById(o,allProducts))
     },
-    async getPreOrders() {
+    async lastOrders({allProducts,count}) {
+      let products = Object.keys(allProducts);
+      if(count !== undefined){products = products.slice(0,Math.min(count,products.length))}
+      return products.map((o) => this.getProductById(o,allProducts))
+    },
+    async recommendeds({allProducts,count}) {
+      let products = Object.keys(allProducts);
+      if(count !== undefined){products = products.slice(0,Math.min(count,products.length))}
+      return products.map((o) => this.getProductById(o,allProducts))
+    },
+    async bestCellings({allProducts,count}){
+      let products = Object.keys(allProducts);
+      if(count !== undefined){products = products.slice(0,Math.min(count,products.length))}
+      return products.map((o) => this.getProductById(o,allProducts))
+    },
+    async preOrders() {
       let res = await Axios.post(
         `https://retailerapp.bbeta.ir/api/v1/Visit/PreOrderStat`,
         {
@@ -396,232 +380,26 @@ export default async function services(type, parameter, loading = true) {
       }
       return categories;
     },
-    async getAllProducts() {
-      let res = localStorage.getItem("electricyLastFetch");
-      if (res === null || res === undefined) {
-        res = await Axios.post(
-          `https://retailerapp.bbeta.ir/api/v1/Spree/AllProducts`,
-          {
-            CardCode: "c50000",
-            Taxons: "10181,10178,10182",
-            Include: "variants,option_types,product_properties,taxons,images",
-            IsItemPriceNeeded: true,
-          }
-        );
-
-        localStorage.setItem("electricyLastFetch", JSON.stringify(res));
-      } else {
-        res = JSON.parse(res);
-      }
-      let result = res.data.data.spreeResult.data;
-      let included = res.data.data.spreeResult.included;
-      let meta = res.data.data.spreeResult.meta;
-      //   const item = res.data.data.data[0];
-      const b1Result = res.data.data.b1Result; // all products
-      // const product_properties_included_ids =
-      //   item.relationships.product_properties.data.map((p) => p.id);
-      // const option_types_included_ids =
-      //   item.relationships.option_types.data.map((p) => p.id);
-      // const variants_included_ids =
-      //   item.relationships.variants.data.map((p) => p.id);
-
-      var finalResult = [];
-      let test = [];
-
+    async families(){
+      return [
+        { src: src1, name: "جنرال", id: "1" },
+        { src: src1, name: "جاینت", id: "2" },
+        { src: src1, name: "پنلی توکار", id: "3" },
+      ]
+    },
+    getMappedAllProducts({spreeResult,b1Result}){
+      let result = spreeResult.data,included = spreeResult.included,meta = spreeResult.meta;
+      var finalResult = {};
       for (let spreeItem of result) {
-        // const product_properties_included_values = included
-        // .filter((p) => p.type === "product_property")
-        // .map((p) => [p.attributes.name, p.attributes.value]);
-
-        // const product_properties_included_values = included.map((p) => {
-        //   return p.type === "product_property"
-        //     ? [p.attributes.name, p.attributes.value]
-        //     : null;
-        // });
-
-        // const option_types_included_values = included
-        //   .filter((p) => p.type === "option_type")
-        //   .map((p) => {
-        //     const firstItem = meta.filters.option_types.find(
-        //       (v) => v.id === p.id
-        //     );
-        //     let option_values =
-        //       firstItem !== undefined
-        //         ? firstItem.option_values.map((v) => {
-        //             return { name: v.presentation, id: v.id };
-        //           })
-        //         : null;
-        //     return { id: p.id, name: p.attributes.name, items: option_values };
-        //   });
-
-        // const option_types_included_values = included.map((p) => {
-        //   if (p.type === "option_type") {
-        //     const firstItem = meta.filters.option_types.find(
-        //       (v) => v.id === p.id
-        //     );
-        //     let option_values =
-        //       firstItem !== undefined
-        //         ? firstItem.option_values.map((v) => {
-        //             return { name: v.presentation, id: v.id };
-        //           })
-        //         : null;
-        //     return { id: p.id, name: p.attributes.name, items: option_values };
-        //   } else {
-        //     return null;
-        //   }
-        // });
-
-        // const variants_included_values = included
-        //   .filter((p) => p.type === "variant")
-        //   .map((p) => {
-        //     let option_values = p.relationships.option_values.data;
-        //     const variant_id = p.id; // int
-        //     const imgData = p.relationships.images.data;
-        //     let srcs = [];
-        //     if (imgData.length) {
-        //       const imgIds = imgData.id;
-        //       srcs = included.map((m) => {
-        //         return m.type === "image" && imgIds.includes(m.id)
-        //           ? m.attributes.original_url
-        //           : null;
-        //       });
-        //     }
-        //     const b1_item = b1Result.find(
-        //       (i) => i.itemCode === p.attributes.sku
-        //     );
-
-        //     const variant_price =
-        //       b1_item !== undefined
-        //         ? b1_item.priceAfterCalculate
-        //         : p.attributes.price; // int
-
-        //     const variant_discount_price =
-        //       b1_item !== undefined
-        //         ? b1_item.priceAfterVat
-        //         : p.attributes.price; // int
-
-        //     const variant_discount_precent =
-        //       b1_item !== undefined ? b1_item.discountPercent : 0; // int
-        //     const variant_in_stock =
-        //       b1_item !== undefined ? b1_item.totalQty : 0;
-        //     const variant_option_values = p.relationships.option_values.data; // array -> {id, type}
-        //     const option_types_with_option_values =
-        //       option_types_included_values; // array -> { id: p.id, name: p.attributes.name, items: option_values }
-
-        //     let option_values_result = {};
-
-        //     for (const op_val of variant_option_values) {
-        //       const selected_option_type = option_types_with_option_values.find(
-        //         (x) =>
-        //           x.items !== null &&
-        //           x.items.map((i) => i.id).includes(op_val.id)
-        //       );
-
-        //       if (
-        //         selected_option_type === undefined ||
-        //         selected_option_type === null
-        //       )
-        //         continue;
-
-        //       option_values_result[selected_option_type.id.toString()] =
-        //         selected_option_type.items.find((ov) => ov.id === op_val.id).id;
-        //     }
-        //     return {
-        //       // optionValues: {
-        //       //   color: "yellow",
-        //       //   power: "10wat",
-        //       // },
-        //       id: variant_id,
-        //       optionValues: option_values_result,
-        //       discountPrice: variant_discount_price,
-        //       discountPercent: variant_discount_precent,
-        //       price: variant_price,
-        //       inStock: variant_in_stock,
-        //       srcs: srcs,
-        //     };
-        //   });
-
-        // const variants_included_values = included.map((p) => {
-        //   if (p.type === "variant") {
-        //     let option_values = p.relationships.option_values.data;
-        //     const variant_id = p.id; // int
-        //     const imgData = p.relationships.images.data;
-        //     let srcs = [];
-        //     if (imgData.length) {
-        //       const imgIds = imgData.id;
-        //       srcs = included.map((m) => {
-        //         return m.type === "image" && imgIds.includes(m.id)
-        //           ? m.attributes.original_url
-        //           : null;
-        //       });
-        //     }
-        //     const b1_item = b1Result.find(
-        //       (i) => i.itemCode === p.attributes.sku
-        //     );
-
-        //     const variant_price =
-        //       b1_item !== undefined
-        //         ? b1_item.priceAfterCalculate
-        //         : p.attributes.price; // int
-
-        //     const variant_discount_price =
-        //       b1_item !== undefined
-        //         ? b1_item.priceAfterVat
-        //         : p.attributes.price; // int
-
-        //     const variant_discount_precent =
-        //       b1_item !== undefined ? b1_item.discountPercent : 0; // int
-        //     const variant_in_stock =
-        //       b1_item !== undefined ? b1_item.totalQty : 0;
-        //     const variant_option_values = p.relationships.option_values.data; // array -> {id, type}
-        //     const option_types_with_option_values =
-        //       option_types_included_values; // array -> { id: p.id, name: p.attributes.name, items: option_values }
-
-        //     let option_values_result = {};
-
-        //     for (const op_val of variant_option_values) {
-        //       const selected_option_type = option_types_with_option_values.find(
-        //         (x) =>
-        //           x !== null &&
-        //           x.items !== null &&
-        //           x.items.map((i) => i.id).includes(op_val.id)
-        //       );
-
-        //       if (
-        //         selected_option_type === undefined ||
-        //         selected_option_type === null
-        //       )
-        //         continue;
-
-        //       option_values_result[selected_option_type.id.toString()] =
-        //         selected_option_type.items.find((ov) => ov.id === op_val.id).id;
-        //     }
-        //     return {
-        //       // optionValues: {
-        //       //   color: "yellow",
-        //       //   power: "10wat",
-        //       // },
-        //       id: variant_id,
-        //       optionValues: option_values_result,
-        //       discountPrice: variant_discount_price,
-        //       discountPercent: variant_discount_precent,
-        //       price: variant_price,
-        //       inStock: variant_in_stock,
-        //       srcs: srcs,
-        //     };
-        //   } else {
-        //     return null;
-        //   }
-        // });
-
-        let product_properties_included_values = [];
-        let option_types_included_values = [];
-        let variants_included_values = [];
-        let mainSrcs = [];
+        let defaultVariantId;
+        try{defaultVariantId = spreeItem.relationships.default_variant.data.id;}
+        catch{debugger;}
+        
+        let defaultVariant;
+        let product_properties_included_values = [],option_types_included_values = [],variants_included_values = [],mainSrcs = [];
         for (let includeItem of included) {
           if (includeItem.type === "product_property") {
-            const product_properties_data =
-              spreeItem.relationships.product_properties.data;
+            const product_properties_data = spreeItem.relationships.product_properties.data;
             if (
               product_properties_data.length &&
               product_properties_data.map((x) => x.id).includes(includeItem.id)
@@ -680,185 +458,72 @@ export default async function services(type, parameter, loading = true) {
                   ? b1_item.priceAfterVat
                   : includeItem.attributes.price; // int
 
-              const variant_discount_precent =
-                b1_item !== undefined ? b1_item.discountPercent : 0; // int
-              const variant_in_stock =
-                b1_item !== undefined ? b1_item.totalQty : 0;
-              const variant_option_values =
-                includeItem.relationships.option_values.data; // array -> {id, type}
+              //const variant_discount_precent = b1_item !== undefined ? b1_item.discountPercent : 0; // int
+              const variant_in_stock = b1_item !== undefined ? b1_item.totalQty : 0;
+              const variant_option_values = includeItem.relationships.option_values.data; // array -> {id, type}
               let option_values_result = {};
               for (const op_val of variant_option_values) {
-                const selected_option_type = option_types_included_values // array -> { id: p.id, name: p.attributes.name, items: [{ name: v.presentation, id: v.id }] }
-                  .find((x) =>
-                    // x !== null &&
-                    // x.items !== null &&
-                    x.items
-                      .map((i) => i.id.toString())
-                      .includes(op_val.id.toString())
-                  );
-
-                if (
-                  selected_option_type === undefined ||
-                  selected_option_type === null
-                )
-                  continue;
-
-                option_values_result[selected_option_type.id.toString()] =
-                  selected_option_type.items.find(
-                    (ov) => ov.id.toString() === op_val.id.toString()
-                  ).id;
+                // array -> { id: p.id, name: p.attributes.name, items: [{ name: v.presentation, id: v.id }] }
+                const selected_option_type = option_types_included_values.find((x) =>x.items.map((i) => i.id.toString()).includes(op_val.id.toString()));
+                if (selected_option_type === undefined || selected_option_type === null) continue;
+                option_values_result[selected_option_type.id.toString()] = selected_option_type.items.find((ov) => ov.id.toString() === op_val.id.toString()).id;
               }
-              variants_included_values.push({
-                // optionValues: {
-                //   color: "yellow",
-                //   power: "10wat",
-                // },
+              let obj = {
                 id: variant_id,
                 optionValues: option_values_result,
                 discountPrice: variant_discount_price,
-                discountPercent: variant_discount_precent,
+                discountPercent: Math.round((variant_price - variant_discount_price) * 100 / variant_price),
                 price: variant_price,
                 inStock: variant_in_stock,
                 srcs: srcs,
-              });
+              }
+              if(defaultVariantId === variant_id){
+                obj.isDefault = true;
+                defaultVariant = obj;
+              }
+              variants_included_values.push(obj);
             }
-          } else if (includeItem.type === "image") {
+          } 
+          else if (includeItem.type === "image") {
             const imgData = spreeItem.relationships.images.data;
             const imgIds = imgData.map((x) => x.id);
             if (imgData.length && imgIds.includes(includeItem.id)) {
-              mainSrcs.push(
-                "http://spree.burux.com" + includeItem.attributes.original_url
-              );
+              mainSrcs.push("http://spree.burux.com" + includeItem.attributes.original_url);
             }
           }
         }
 
-        finalResult.push({
+        finalResult[spreeItem.id] = {
           name: spreeItem.attributes.name,
+          defaultVariant,
           code: `code_${spreeItem.id}`,
           id: spreeItem.id,
           details: product_properties_included_values,
           optionTypes: option_types_included_values,
           variants: variants_included_values,
           srcs: mainSrcs,
-        });
+        };
       }
-
-      // return {
-      //   name: item.attributes.name,
-      //   code: `Code_${item.id}`,
-      //   id: item.id,
-      //   details: product_properties_included_values,
-      //   optionTypes: option_types_included_values,
-      //   variants: variants_included_values,
-      //   srcs: mainSrcs,
-      //   campaignsPrices: [
-      //     { name: "خرید عادی", price: false, id: "10178" },
-      //     { name: "فروش ویژه 10 وات", price: 235600, id: "10181" },
-      //   ],
-      // };
+      return finalResult;
     },
-    // async getProducts() {
-    //   let res = localStorage.getItem("electricyLastFetch");
-    //   if (res === null || res === undefined) {
-    //     const apiResult = await Axios.post(
-    //       "https://retailerapp.bbeta.ir/api/v1/Spree/AllProducts",
-    //       {
-    //         CardCode: "c50000",
-    //         Taxons: "10181,10178,10182",
-    //         Include: "variants,option_types,product_properties,taxons,images",
-    //         IsItemPriceNeeded: true,
-    //       }
-    //     );
-
-    //     // let result = apiResult.data.data.spreeResult.data;
-    //     let included = apiResult.data.data.spreeResult.included;
-    //     let meta = apiResult.data.data.spreeResult.meta;
-    //     // const item = apiResult.data.data.data[0];
-    //     const b1Result = apiResult.data.data.b1Result.items; // all products
-
-    //     let product_properties_included_values = [];
-    //     let option_types_included_values = [];
-    //     // let variants_included_values = [];
-    //     let option_types_dictionary = {};
-    //     for (let i = 0; i < meta.filters.option_types.length; i++) {
-    //       let o = meta.filters.option_types[i];
-    //       option_types_dictionary[o.id] = o;
-    //     }
-    //     for (let i = 0; i < included.length; i++) {
-    //       let o = included[i];
-    //       if (o.type === "product_property") {
-    //         product_properties_included_values.push([
-    //           o.attributes.name,
-    //           o.attributes.value,
-    //         ]);
-    //       } else if (o.type === "option_type") {
-    //         let option_type = option_types_dictionary[o.id];
-    //         option_types_included_values.push({
-    //           ...option_type,
-    //           items: option_type.option_values.map((x) => {
-    //             return { id: x.id, name: x.attributes.name };
-    //           }),
-    //         });
-    //       } else if (o.type === "variant") {
-    //       }
-    //     }
-
-    //     const variants_included_values = included
-    //       .filter((p) => p.type === "variant")
-    //       .map((p) => {
-    //         let option_values = p.relationships.option_values.data;
-    //         const variant_id = p.id; // int
-    //         const b1_item = b1Result.find(
-    //           (i) => i.itemCode === p.id.toString()
-    //         );
-    //         const variant_price = b1_item.length
-    //           ? b1_item.price
-    //           : p.attributes.price; // int
-    //         const variant_in_stock = p.attributes.in_stock; // boolean
-    //         const variant_option_values = p.relationships.option_values.data; // array -> {id, type}
-    //         const option_types_with_option_values =
-    //           product_properties_included_values; // array -> { id: p.id, name: p.attributes.name, items: option_values }
-
-    //         let option_values_result = {};
-
-    //         for (const op_val of variant_option_values) {
-    //           const selected_option_type = option_types_with_option_values.find(
-    //             (x) => x.items.map((i) => i.id).includes(op_val.id)
-    //           );
-
-    //           if (!selected_option_type.length) continue;
-
-    //           option_values_result[selected_option_type.id.toString()] =
-    //             selected_option_type.items.find((ov) => ov.id === op_val.id).id;
-    //         }
-    //         return {
-    //           // optionValues: {
-    //           //   color: "yellow",
-    //           //   power: "10wat",
-    //           // },
-    //           optionValues: option_values_result,
-    //           discountPrice: 0,
-    //           discountPercent: 0,
-    //           price: variant_price,
-    //           inStock: variant_in_stock,
-    //         };
-    //       });
-
-    //     console.log(
-    //       "product_properties_included_values : ",
-    //       product_properties_included_values
-    //     );
-    //     console.log(
-    //       "option_types_included_values : ",
-    //       option_types_included_values
-    //     );
-    //     console.log("variants_included_values : ", variants_included_values);
-
-    //     // let time=new Date().getTime();
-    //     // localStorage.setItem()
-    //   }
-    // },
+    async getAllProducts() {
+      let res = localStorage.getItem("electricyLastFetch");
+      if (res === null || res === undefined) {
+        res = await Axios.post(`https://retailerapp.bbeta.ir/api/v1/Spree/AllProducts`,
+          {
+            CardCode: "c50000",
+            Taxons: "10181,10178,10182",
+            Include: "variants,option_types,product_properties,taxons,images,default_variant",
+            IsItemPriceNeeded: true,
+          }
+        );
+        res = $$.getMappedAllProducts(res.data.data);
+        localStorage.setItem("electricyLastFetch", JSON.stringify(res));
+      } else {
+        res = JSON.parse(res);
+      }
+      return res;
+    }
   };
   if (loading) {
     $(".loading").css("display", "flex");

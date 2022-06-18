@@ -19,6 +19,7 @@ export default class Main extends Component {
       theme: false,
       testedChance: true,
       sidemenuOpen: false,
+      allProducts:[],
       cart: {},
       bottomMenuItems: [
         { text: "خانه", icon: 19, id: "a" },
@@ -37,8 +38,7 @@ export default class Main extends Component {
     let guaranteeItems = await services("kalahaye_garanti_shode");
     let guaranteeExistItems = await services("kalahaye_mojoode_garanti");
     let testedChance = await services("get_tested_chance");
-    let allProducts = await services("getAllProducts");
-    this.setState({
+    let allProducts = await services("getAllProducts");    this.setState({
       guaranteeItems,
       guaranteeExistItems,
       testedChance,

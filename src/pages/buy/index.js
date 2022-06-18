@@ -119,185 +119,45 @@ export default class Buy extends Component {
     };
   }
   async getCampaignsData() {
+    let {allProducts} = this.context;
     let campaigns = await services("getCampaigns");
     let activeCampaignId = campaigns[0].id;
-    let activeCampaignItems = await services(
-      "activeCampaignItems",
-      activeCampaignId
-    );
+    let activeCampaignItems = await services("activeCampaignItems",{id:activeCampaignId,allProducts,count:10});
     this.setState({ campaigns, activeCampaignId, activeCampaignItems });
   }
-  async getLastOrders() {
-    let lastOrders = await services("getLastOrders");
-    this.setState({ lastOrders });
-  }
   async getPreOrders() {
-    let preOrders = await services("getPreOrders");
+    let {allProducts} = this.context;
+    let preOrders = await services("preOrders",{allProducts});
     this.setState({ preOrders });
   }
   async getCategories() {
-    let categories = await services("getCategories");
+    let {allProducts} = this.context;
+    let categories = await services("getCategories",{allProducts});
     this.setState({ categories });
   }
-  getFamilies() {
-    let families = [
-      { src: src1, name: "جنرال", id: "1" },
-      { src: src1, name: "جاینت", id: "2" },
-      { src: src1, name: "پنلی توکار", id: "3" },
-    ];
+  async getFamilies() {
+    let {allProducts} = this.context;
+    let families = await services('families',{allProducts});
     this.setState({ families });
   }
-  getRecommendeds() {
-    let recommendeds = [
-      {
-        src: src1,
-        name: "لامپ حبابی 10 وات بروکس",
-        discountPrice: 60000,
-        discountPercent: 30,
-        price: 50000,
-      },
-      {
-        src: src1,
-        name: "لامپ حبابی 10 وات بروکس",
-        discountPrice: 60000,
-        discountPercent: 30,
-        price: 50000,
-      },
-      {
-        src: src1,
-        name: "لامپ حبابی 10 وات بروکس",
-        discountPrice: 60000,
-        discountPercent: 30,
-        price: 50000,
-      },
-      {
-        src: src1,
-        name: "لامپ حبابی 10 وات بروکس",
-        discountPrice: 60000,
-        discountPercent: 30,
-        price: 50000,
-      },
-      {
-        src: src1,
-        name: "لامپ حبابی 10 وات بروکس",
-        discountPrice: 60000,
-        discountPercent: 30,
-        price: 50000,
-      },
-      {
-        src: src1,
-        name: "لامپ حبابی 10 وات بروکس",
-        discountPrice: 60000,
-        discountPercent: 30,
-        price: 50000,
-      },
-      {
-        src: src1,
-        name: "لامپ حبابی 10 وات بروکس",
-        discountPrice: 60000,
-        discountPercent: 30,
-        price: 50000,
-      },
-      {
-        src: src1,
-        name: "لامپ حبابی 10 وات بروکس",
-        discountPrice: 60000,
-        discountPercent: 30,
-        price: 50000,
-      },
-      {
-        src: src1,
-        name: "لامپ حبابی 10 وات بروکس",
-        discountPrice: 60000,
-        discountPercent: 30,
-        price: 50000,
-      },
-      {
-        src: src1,
-        name: "لامپ حبابی 10 وات بروکس",
-        discountPrice: 60000,
-        discountPercent: 30,
-        price: 50000,
-      },
-    ];
-    this.setState({ recommendeds });
+  async getRecommendeds(count) {
+    let {allProducts} = this.context;
+    let recommendeds = await services('recommendeds',{allProducts,count});
+    if(count){this.setState({ recommendeds });}
+    else {return recommendeds}
   }
-  getBestSellings() {
-    let bestSellings = [
-      {
-        src: src1,
-        name: "لامپ حبابی 10 وات بروکس",
-        discountPrice: 60000,
-        discountPercent: 30,
-        price: 50000,
-        stockType: false,
-      },
-      {
-        src: src1,
-        name: "لامپ حبابی 10 وات بروکس",
-        discountPrice: 60000,
-        discountPercent: 30,
-        price: 50000,
-        stockType: "نورواره 2",
-      },
-      {
-        src: src1,
-        name: "لامپ حبابی 10 وات بروکس",
-        discountPrice: 60000,
-        discountPercent: 30,
-        price: 50000,
-      },
-      {
-        src: src1,
-        name: "لامپ حبابی 10 وات بروکس",
-        discountPrice: 60000,
-        discountPercent: 30,
-        price: 50000,
-      },
-      {
-        src: src1,
-        name: "لامپ حبابی 10 وات بروکس",
-        discountPrice: 60000,
-        discountPercent: 30,
-        price: 50000,
-      },
-      {
-        src: src1,
-        name: "لامپ حبابی 10 وات بروکس",
-        discountPrice: 60000,
-        discountPercent: 30,
-        price: 50000,
-      },
-      {
-        src: src1,
-        name: "لامپ حبابی 10 وات بروکس",
-        discountPrice: 60000,
-        discountPercent: 30,
-        price: 50000,
-      },
-      {
-        src: src1,
-        name: "لامپ حبابی 10 وات بروکس",
-        discountPrice: 60000,
-        discountPercent: 30,
-        price: 50000,
-      },
-      {
-        src: src1,
-        name: "لامپ حبابی 10 وات بروکس",
-        discountPrice: 60000,
-        discountPercent: 30,
-        price: 50000,
-      },
-      {
-        src: src1,
-        name: "لامپ حبابی 10 وات بروکس",
-        discountPrice: 60000,
-        discountPercent: 30,
-        price: 50000,
-      },
-    ];
-    this.setState({ bestSellings });
+  async getLastOrders(count) {
+    let {allProducts} = this.context;
+    let lastOrders = await services("lastOrders",{allProducts,count});
+    this.setState({ lastOrders });
+    if(count){this.setState({ lastOrders });}
+    else {return lastOrders}
+  }
+  async getBestSellings(count) {
+    let {allProducts} = this.context;
+    let bestSellings = await services('bestCellings',{allProducts,count});
+    if(count){this.setState({ bestSellings });}
+    else {return bestSellings}
   }
   getActiveFamilyItems() {
     return [
@@ -378,14 +238,15 @@ export default class Buy extends Component {
   //dont set async for parallel data fetching
   componentDidMount() {
     this.getCampaignsData();
-    this.getLastOrders();
+    this.getLastOrders(10);
     this.getFamilies();
     this.getPreOrders();
-    this.getRecommendeds();
-    this.getBestSellings();
+    this.getRecommendeds(10);
+    this.getBestSellings(10);
     this.getCategories();
   }
   selectCampaignLayout() {
+    let {allProducts} = this.context;
     let { campaigns, activeCampaignId } = this.state;
     return {
       className: "box gap-no-color",
@@ -405,10 +266,7 @@ export default class Buy extends Component {
                 active,
                 ...style,
                 onClick: async () => {
-                  let activeCampaignItems = await services(
-                    "activeCampaignItems",
-                    id
-                  );
+                  let activeCampaignItems = await services("activeCampaignItems",{id,allProducts,count:10});
                   this.setState({ activeCampaignId: id, activeCampaignItems });
                 },
               }),
@@ -420,6 +278,7 @@ export default class Buy extends Component {
   }
   viewCampaignLayout() {
     let { activeCampaignItems } = this.state;
+    let {allProducts} = this.context;
     return {
       size: 292,
       style: {
@@ -427,10 +286,11 @@ export default class Buy extends Component {
         color: this.activeCampaign.color,
         padding: 16,
       },
-      gap: 16,
+      gap: 16,scroll:'h',
       row: [
         {
           size: 100,
+          style:{overflow:'hidden'},
           childsAttrs: { className: "bold" },
           column: [
             { size: 12 },
@@ -450,13 +310,8 @@ export default class Buy extends Component {
               align: "vh",
               html: "مشاهده همه",
               attrs: {
-                onClick: () =>
-                  this.setState({
-                    view: "category",
-                    activeCategoryItems: activeCampaignItems,
-                    activeCategoryName: this.activeCampaign.text,
-                  }),
-              },
+                onClick: async () =>this.showCategory(await services('activeCampaignItems',{allProducts}),this.activeCampaign.name)
+              }
             },
             { size: 12 },
           ],
@@ -464,7 +319,7 @@ export default class Buy extends Component {
         {
           gap: 16,
           row: activeCampaignItems.map((o) =>
-            layout("productCard", { ...o, src: src1 })
+            layout("productCard", { ...o })
           ),
         },
       ],
@@ -517,31 +372,6 @@ export default class Buy extends Component {
       ],
     };
   }
-  bestCellingsLayout() {
-    let { bestSellings } = this.state;
-    return {
-      className: "box gap-no-color",
-      style: { padding: 12 },
-      column: [
-        {
-          html: "پر فروش ترین محصولات",
-          className: "size14 color323130 bold",
-          size: 36,
-          align: "v",
-        },
-        {
-          gap: 16,
-          row: bestSellings.map((o) =>
-            layout("productCard", {
-              ...o,
-              src: src1,
-              style: { border: "1px solid #ddd" },
-            })
-          ),
-        },
-      ],
-    };
-  }
   familiesLayout() {
     let { families } = this.state;
     return {
@@ -556,7 +386,7 @@ export default class Buy extends Component {
           align: "v",
         },
         {
-          gap: 16,
+          gap: 16,scroll:'h',
           row: families.map((o) => {
             let config = {
               ...o,
@@ -577,26 +407,61 @@ export default class Buy extends Component {
       ],
     };
   }
+  bestCellingsLayout() {
+    let { bestSellings } = this.state;
+    let title =  "پر فروش ترین محصولات";
+    return {
+      className: "box gap-no-color",show:bestSellings.length > 0,
+      style: { padding: 12 },
+      column: [
+        {
+          size:36,
+          row:[
+            {html:title,className: "size14 color323130 bold",align: "v"},
+            {size:6},
+            {
+              html: "مشاهده همه",className: "size12 color0094D4 bold",align: "v",
+              attrs:{
+                onClick:async ()=>{
+                  this.showCategory(await this.getBestSellings(),title)
+                }
+              }
+            },
+          ]
+        },
+        {
+          gap: 16,scroll:'h',
+          row: bestSellings.map((o) =>layout("productCard", {...o,style: { border: "1px solid #ddd" }})),
+        },
+      ],
+    };
+  }
   lastOrdersLayout() {
     let { lastOrders } = this.state;
+    let title = "آخرین سفارشات شما";
     return {
       className: "box gap-no-color",
       style: { padding: 12 },
       column: [
         {
-          html: "آخرین سفارشات شما",
-          className: "size14 color323130 bold",
-          size: 36,
-          align: "v",
+          size:36,
+          row:[
+            {html: title,className: "size14 color323130 bold",align: "v"},
+            {size:6},
+            {
+              html: "مشاهده همه",className: "size12 color0094D4 bold",align: "v",
+              attrs:{
+                onClick:async ()=>{
+                  this.showCategory(await this.getLastOrders(),title)
+                }
+              }
+            },
+          ]
         },
         {
-          gap: 16,
+          gap: 16,scroll:'h',
           row: lastOrders.map((o) =>
-            layout("productCard", {
-              ...o,
-              src: src1,
-              style: { border: "1px solid #ddd" },
-            })
+            layout("productCard", {...o,style: { border: "1px solid #ddd" }})
           ),
         },
       ],
@@ -604,24 +469,30 @@ export default class Buy extends Component {
   }
   recommendedsLayout() {
     let { recommendeds } = this.state;
+    let title =  "پیشنهاد سفارش";
     return {
       className: "box gap-no-color",
       style: { padding: 12 },
       column: [
         {
-          html: "پیشنهاد سفارش",
-          className: "size14 color323130 bold",
-          size: 36,
-          align: "v",
+          size:36,
+          row:[
+            {html:title,className: "size14 color323130 bold",align: "v"},
+            {size:6},
+            {
+              html: "مشاهده همه",className: "size12 color0094D4 bold",align: "v",
+              attrs:{
+                onClick:async ()=>{
+                  this.showCategory(await this.getRecommendeds(),title)
+                }
+              }
+            },
+          ]
         },
         {
-          gap: 16,
+          gap: 16,scroll:'h',
           row: recommendeds.map((o) =>
-            layout("productCard", {
-              ...o,
-              src: src1,
-              style: { border: "1px solid #ddd" },
-            })
+            layout("productCard", {...o,style: { border: "1px solid #ddd" }})
           ),
         },
       ],
@@ -631,6 +502,7 @@ export default class Buy extends Component {
     return {
       flex: 1,
       scroll: "v",
+      className:'buy-tab-1',
       gap: 12,
       column: [
         this.selectCampaignLayout(),
@@ -679,14 +551,18 @@ export default class Buy extends Component {
       }),
     };
   }
+  showCategory(items,name){
+    this.setState({
+      view: "category",
+      activeCategoryItems: items,
+      activeCategoryName: name,
+    })
+  }
   categoryLayout() {
-    let { view, activeCategoryItems, searchValue, activeCategoryName } =
-      this.state;
-    if (view !== "category") {
-      return { html: "" };
-    }
+    let { view, activeCategoryItems, searchValue, activeCategoryName } = this.state;
+    if (view !== "category") {return { html: "" };}
     return {
-      flex: 1,
+      flex: 1,style:{overflow:'hidden'},
       column: [
         {
           size: 36,
@@ -803,17 +679,11 @@ export default class Buy extends Component {
   }
   tabsLayout() {
     let { tabs, activeTabId, view } = this.state;
-    if (view !== "main") {
-      return { html: "" };
-    }
+    if (view !== "main") {return { html: "" };}
     return {
-      flex: 1,
+      flex: 1,style:{overflow:'hidden'},
       column: [
-        layout("tabs", {
-          tabs,
-          activeTabId,
-          onClick: (obj) => this.setState({ activeTabId: obj.id }),
-        }),
+        layout("tabs", {tabs,activeTabId,onClick: (obj) => this.setState({ activeTabId: obj.id })}),
         activeTabId === "1" ? this.tab1Layout() : this.tab2Layout(),
       ],
     };

@@ -135,9 +135,10 @@ export default function layout(type, parameters) {
         },
         
         productCard2(){
-            let {isLast,isFirst,src,name,discountPercent,discountPrice,Qty,price,inStock} = parameters;
+            let {isLast,isFirst,src,name,discountPercent,discountPrice,Qty,price,inStock,onClick = ()=>{}} = parameters;
             return {
                 className:'box gap-no-color',
+                attrs:{onClick:()=>onClick()},
                 style:{
                     padding:6,
                     borderBottomLeftRadius:!isLast?0:undefined,

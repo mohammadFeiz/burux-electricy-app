@@ -579,7 +579,14 @@ export default class Buy extends Component {
             if (searchValue && o.name.indexOf(searchValue) === -1) {
               return false;
             }
-            return layout("productCard2", o);
+            return layout("productCard2", {...o,onClick:()=>{
+              debugger;
+              let {allProducts} = this.context;
+              this.setState({
+                view:'product',
+                activeProduct:allProducts[o.id]
+              })
+            }});
           }),
         },
       ],

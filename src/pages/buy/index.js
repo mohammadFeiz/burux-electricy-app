@@ -580,11 +580,9 @@ export default class Buy extends Component {
               return false;
             }
             return layout("productCard2", {...o,onClick:()=>{
-              debugger;
-              let {allProducts} = this.context;
               this.setState({
                 view:'product',
-                activeProduct:allProducts[o.id]
+                activeProduct:o
               })
             }});
           }),
@@ -819,10 +817,11 @@ class Product extends Component {
   constructor(props) {
     super(props);
     let { product } = this.props;
-    let firstVariant = product.variants.filter((o) => o.inStock === true)[0];
+    product = {...product,inStock:true,variants:product.variants.map((o)=>{return {...o,inStock:10}})}
+    let firstVariant = product.inStock?product.variants.filter((o) => o.inStock === null?false:!!o.inStock)[0]:undefined;
     this.state = {
-      optionValues: { ...firstVariant.optionValues },
-      selectedVariant: firstVariant,
+      optionValues: firstVariant?{ ...firstVariant.optionValues }:undefined,
+      selectedVariant: firstVariant,srcIndex:0
     };
   }
   getVariantBySelected(selected) {
@@ -862,6 +861,7 @@ class Product extends Component {
   }
   optionTypesLayout(optionTypes) {
     let { optionValues } = this.state;
+    if(!optionValues || !optionTypes){return {html:''}}
     return {
       className: "box gap-no-color",
       column: [
@@ -960,29 +960,13 @@ class Product extends Component {
       style: { padding: 12 },
       html: (
         <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "auto auto",
-            gridGap: 1,
-            width: "100%",
-            background: "#DADADA",
-          }}
+          style={{display: "grid",gridTemplateColumns: "auto auto",gridGap: 1,width: "100%",background: "#DADADA"}}
         >
           {details.map((o) => {
             return (
               <>
-                <div
-                  className="size12 color605E5C padding-6-12"
-                  style={{ background: "#F4F4F4" }}
-                >
-                  {o[0]}
-                </div>
-                <div
-                  className="size12 color605E5C padding-6-12"
-                  style={{ background: "#F4F4F4" }}
-                >
-                  {o[1]}
-                </div>
+                <div className="size12 color605E5C padding-6-12" style={{ background: "#F4F4F4" }}>{o[0]}</div>
+                <div className="size12 color605E5C padding-6-12" style={{ background: "#F4F4F4" }}>{o[1]}</div>
               </>
             );
           })}
@@ -991,31 +975,25 @@ class Product extends Component {
     };
   }
   pictureLayout(name, code, src) {
+    let {product} = this.props;
+    let {srcIndex} = this.state;
     return {
       size: 346,
       className: "box",
       column: [
         { size: 24 },
         {
-          flex: 1,
+          flex: 1,style:{overflow:'hidden'},
           childsProps: { align: "vh" },
           row: [
-            { size: 36, html: getSvg("chevronLeft", { flip: true }) },
+            { size: 36, html: getSvg("chevronLeft", { flip: true }) ,style:{opacity:srcIndex === 0?0.5:1}},
             { flex: 1, html: <img src={src} alt="" height="100%" /> },
-            { size: 36, html: getSvg("chevronLeft") },
+            { size: 36, html: getSvg("chevronLeft") ,style:{opacity:srcIndex === product?0.5:1} },
           ],
         },
         { size: 12 },
-        {
-          size: 36,
-          html: name,
-          className: "size16 color323130 bold padding-0-12",
-        },
-        {
-          size: 36,
-          html: "کد کالا : " + (code || ""),
-          className: "size14 color605E5C padding-0-12",
-        },
+        {size: 36,html: name,className: "size16 color323130 bold padding-0-12"},
+        {size: 36,html: "کد کالا : " + (code || ""),className: "size14 color605E5C padding-0-12"},
         { size: 12 },
       ],
     };
@@ -1024,21 +1002,13 @@ class Product extends Component {
     let { selectedVariant, variantInOtherCampaign } = this.state;
     if (!selectedVariant) {
       if (!variantInOtherCampaign) {
-        return { html: "" };
+        return { column:[{flex:1},{html:"ناموجود",className: "colorD83B01 bold size14" },{flex:1}]};
       }
       let [campaignName, campaignPrice] = variantInOtherCampaign;
       return {
         column: [
           { flex: 1 },
-          {
-            row: [
-              { flex: 1 },
-              {
-                html: "در این طرح موجود نیست",
-                className: "colorD83B01 size12",
-              },
-            ],
-          },
+          {row: [{ flex: 1 },{html: "در این طرح موجود نیست",className: "colorD83B01 size12"}]},
           {
             childsProps: { align: "v" },
             gap: 6,
@@ -1053,6 +1023,9 @@ class Product extends Component {
         ],
       };
     }
+    if(!selectedVariant.inStock){
+      return { column:[{flex:1},{html:"ناموجود",className: "colorD83B01 bold size14" },{flex:1}]};
+    }
     return {
       column: [
         { flex: 1 },
@@ -1063,12 +1036,7 @@ class Product extends Component {
             { size: 6 },
             {
               html: "%" + selectedVariant.discountPercent,
-              style: {
-                background: "#FDB913",
-                color: "#fff",
-                borderRadius: 8,
-                padding: "0 3px",
-              },
+              style: {background: "#FDB913",color: "#fff",borderRadius: 8,padding: "0 3px"},
             },
           ],
         },
@@ -1084,18 +1052,31 @@ class Product extends Component {
       ],
     };
   }
+  getSrcs(){
+    let { product } = this.props;
+    let { srcs = [] } = product;
+    let {selectedVariant,srcIndex = 0} = this.state || {};
+    if(selectedVariant && selectedVariant.srcs){
+      if(selectedVariant.srcs[srcIndex]){return {srcIndex,src:selectedVariant.srcs[srcIndex]}}
+      if(selectedVariant.srcs[0]){return {srcIndex:0,src:selectedVariant.srcs[0]}}
+    }
+    if(srcs[srcIndex]){return {src:srcs[srcIndex],srcIndex}}
+    if(srcs[0]){return {srcIndex:0,src:srcs[0]}}
+    return false;
+  }
   bodyLayout() {
     let { product } = this.props;
     let { name, code, optionTypes, campaignsPrices, details, srcs } = product;
+    let {srcIndex} = this.state;
     return {
       flex: 1,
       scroll: "v",
       gap: 12,
       style: { padding: "12px 0" },
       column: [
-        this.pictureLayout(name, code, srcs[0]),
+        this.pictureLayout(name, code, srcs[srcIndex]),
         this.optionTypesLayout(optionTypes),
-        this.compairePricesLayout(campaignsPrices),
+        //this.compairePricesLayout(campaignsPrices),
         this.detailsLayout(details),
       ],
     };
@@ -1103,13 +1084,9 @@ class Product extends Component {
   getCountByVariant() {
     let { selectedVariant } = this.state;
     let { cart } = this.props;
-    if (!Object.keys(cart).length) {
-      return 0;
-    }
+    if (!Object.keys(cart).length) {return 0;}
     let obj = cart[selectedVariant.id];
-    if (!obj) {
-      return 0;
-    }
+    if (!obj) {return 0;}
     let { count = 0 } = cart[selectedVariant.id];
     return count;
   }
@@ -1130,52 +1107,18 @@ class Product extends Component {
         align: "v",
       };
     }
-    let countButtonStyle = {
-      background: "#0094D4",
-      color: "#fff",
-      width: 20,
-      height: 20,
-      borderRadius: "100%",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-    };
     return {
       childsProps: { align: "vh" },
       row: [
-        {
-          html: (
-            <div
-              onClick={() =>
-                changeCart(selectedVariant.id, this.getCountByVariant() + 1)
-              }
-              style={countButtonStyle}
-            >
-              +
-            </div>
-          ),
-        },
+        {html: (<div onClick={()=>changeCart(selectedVariant.id, this.getCountByVariant() + 1)} className='product-count-button'>+</div>)},
         { size: 60, html: count },
-        {
-          html: (
-            <div
-              onClick={() =>
-                changeCart(selectedVariant.id, this.getCountByVariant() - 1)
-              }
-              style={countButtonStyle}
-            >
-              -
-            </div>
-          ),
-        },
+        {html: (<div onClick={() =>changeCart(selectedVariant.id, this.getCountByVariant() - 1)} className='product-count-button'>-</div>)},
       ],
     };
   }
   footerLayout() {
     return {
-      size: 72,
-      style: { background: "#fff" },
-      className: "padding-0-12",
+      size: 72,style: { background: "#fff" },className: "padding-0-12",
       row: [this.addToCartLayout(), { flex: 1 }, this.priceLayout()],
     };
   }

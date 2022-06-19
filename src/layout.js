@@ -69,7 +69,9 @@ export default function layout(type, parameters) {
             />
         },
         productCard(){
-            let {src,name,discountPrice,discountPercent,price,style = {},inStock,onClick = ()=>{}} = parameters;
+            let {name,style = {},inStock,onClick = ()=>{},defaultVariant = {},srcs = []} = parameters;
+            let {discountPrice,discountPercent,price} = defaultVariant;
+            let src = parameters.src || (srcs.length === 0?defaultVariant.srces || []:srcs)[0];
             return {
                 size:168,style:{background:'#fff',borderRadius:12,fontSize:14,...style},
                 attrs:{onClick:()=>onClick()},
@@ -135,7 +137,9 @@ export default function layout(type, parameters) {
         },
         
         productCard2(){
-            let {isLast,isFirst,src,name,discountPercent,discountPrice,Qty,price,inStock,onClick = ()=>{}} = parameters;
+            let {isLast,isFirst,name,Qty,inStock = 10,onClick = ()=>{},defaultVariant = {},srcs = []} = parameters;
+            let {discountPrice,discountPercent,price} = defaultVariant;
+            let src = parameters.src || (srcs.length === 0?defaultVariant.srces || []:srcs)[0];
             return {
                 className:'box gap-no-color',
                 attrs:{onClick:()=>onClick()},

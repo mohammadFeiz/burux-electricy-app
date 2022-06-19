@@ -247,10 +247,10 @@ export default async function services(type, parameter, loading = true) {
       let res = await Axios.get(
         "https://retailerapp.bbeta.ir/api/v1/Spree/GetAllCampaigns"
       );
-      let result = res.data.data.included;
-      result = result.filter((o) => {
-        return o.id.toString() === "10178" || o.id.toString() === "10181";
-      });
+      let result = res.data.data.data;
+      // result = result.filter((o) => {
+      //   return o.id.toString() === "10178" || o.id.toString() === "10181";
+      // });
       return result.map((o) => {
         return {
           name: o.attributes.name,
@@ -260,37 +260,25 @@ export default async function services(type, parameter, loading = true) {
         };
       });
     },
-    getProductById(id,allProducts){
-      let product = allProducts[id.toString()];
-      let {defaultVariant} = product
-      return {
-        name: product.name,
-        id:product.id,
-        discountPrice: defaultVariant.discountPrice,
-        discountPercent: defaultVariant.discountPercent,
-        price: defaultVariant.price,
-        src:product.srcs[0]
-      };
-    },
     async activeCampaignItems({id,allProducts,count}) {
       let products = Object.keys(allProducts);
       if(count !== undefined){products = products.slice(0,Math.min(count,products.length))}
-      return products.map((o) => this.getProductById(o,allProducts))
+      return products.map((o) =>allProducts[o.toString()])
     },
     async lastOrders({allProducts,count}) {
       let products = Object.keys(allProducts);
       if(count !== undefined){products = products.slice(0,Math.min(count,products.length))}
-      return products.map((o) => this.getProductById(o,allProducts))
+      return products.map((o) =>allProducts[o.toString()])
     },
     async recommendeds({allProducts,count}) {
       let products = Object.keys(allProducts);
       if(count !== undefined){products = products.slice(0,Math.min(count,products.length))}
-      return products.map((o) => this.getProductById(o,allProducts))
+      return products.map((o) =>allProducts[o.toString()])
     },
     async bestCellings({allProducts,count}){
       let products = Object.keys(allProducts);
       if(count !== undefined){products = products.slice(0,Math.min(count,products.length))}
-      return products.map((o) => this.getProductById(o,allProducts))
+      return products.map((o) =>allProducts[o.toString()])
     },
     async preOrders() {
       let res = await Axios.post(

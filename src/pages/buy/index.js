@@ -817,7 +817,6 @@ class Product extends Component {
   constructor(props) {
     super(props);
     let { product } = this.props;
-    product = {...product,inStock:true,variants:product.variants.map((o)=>{return {...o,inStock:10}})}
     let firstVariant = product.inStock?product.variants.filter((o) => o.inStock === null?false:!!o.inStock)[0]:undefined;
     this.state = {
       optionValues: firstVariant?{ ...firstVariant.optionValues }:undefined,

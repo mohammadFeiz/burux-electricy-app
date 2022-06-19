@@ -137,7 +137,7 @@ export default function layout(type, parameters) {
         },
         
         productCard2(){
-            let {isLast,isFirst,name,Qty,inStock = 10,onClick = ()=>{},defaultVariant = {},srcs = []} = parameters;
+            let {isLast,isFirst,name,Qty,inStock,onClick = ()=>{},defaultVariant = {},srcs = []} = parameters;
             let {discountPrice,discountPercent,price} = defaultVariant;
             let src = parameters.src || (srcs.length === 0?defaultVariant.srces || []:srcs)[0];
             return {

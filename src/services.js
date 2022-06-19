@@ -383,6 +383,7 @@ export default async function services(type, parameter, loading = true) {
         try{defaultVariantId = spreeItem.relationships.default_variant.data.id;}
         catch{debugger;}
         
+        let spreeItemTotalVariantsCount = 0;
         let defaultVariant;
         let product_properties_included_values = [],option_types_included_values = [],variants_included_values = [],mainSrcs = [];
         for (let includeItem of included) {
@@ -437,17 +438,21 @@ export default async function services(type, parameter, loading = true) {
               );
 
               const variant_price =
-                b1_item !== undefined
+                b1_item !== undefined && b1_item !== null
                   ? b1_item.priceAfterCalculate
                   : includeItem.attributes.price; // int
 
               const variant_discount_price =
-                b1_item !== undefined
+                b1_item !== undefined && b1_item !== null
                   ? b1_item.priceAfterVat
                   : includeItem.attributes.price; // int
 
               //const variant_discount_precent = b1_item !== undefined ? b1_item.discountPercent : 0; // int
-              const variant_in_stock = b1_item !== undefined ? b1_item.totalQty : 0;
+              const variant_in_stock = b1_item !== undefined  && b1_item !== null
+                  ? b1_item.totalQty 
+                  : 0;
+              spreeItemTotalVariantsCount += variant_in_stock;
+
               const variant_option_values = includeItem.relationships.option_values.data; // array -> {id, type}
               let option_values_result = {};
               for (const op_val of variant_option_values) {
@@ -464,6 +469,7 @@ export default async function services(type, parameter, loading = true) {
                 price: variant_price,
                 inStock: variant_in_stock,
                 srcs: srcs,
+                
               }
               if(defaultVariantId === variant_id){
                 obj.isDefault = true;
@@ -482,6 +488,7 @@ export default async function services(type, parameter, loading = true) {
         }
 
         finalResult[spreeItem.id] = {
+          inStock:spreeItemTotalVariantsCount,
           name: spreeItem.attributes.name,
           defaultVariant,
           code: `code_${spreeItem.id}`,
@@ -492,6 +499,7 @@ export default async function services(type, parameter, loading = true) {
           srcs: mainSrcs,
         };
       }
+      console.log(finalResult)
       return finalResult;
     },
     async getAllProducts() {

@@ -20,7 +20,7 @@ export default class Main extends Component {
       testedChance: true,
       sidemenuOpen: false,
       allProducts:[],
-      cart: {},
+      cart: {},//{variantId:{count,product,variant}}
       bottomMenuItems: [
         { text: "خانه", icon: 19, id: "a" },
         { text: "خرید", icon: 15, id: "b" },

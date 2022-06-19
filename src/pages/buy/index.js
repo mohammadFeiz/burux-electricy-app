@@ -7,6 +7,7 @@ import layout from "./../../layout";
 import src1 from "./../../utils/brx66.png";
 import "./index.css";
 import services from "../../services";
+import { toHaveStyle } from "@testing-library/jest-dom/dist/matchers";
 
 export default class Buy extends Component {
   static contextType = appContext;
@@ -34,6 +35,7 @@ export default class Buy extends Component {
       categories: [],
     };
   }
+  
   getProduct() {
     return {
       name: "لامپ LED جنرال 10 وات بروکس",
@@ -278,7 +280,7 @@ export default class Buy extends Component {
   }
   viewCampaignLayout() {
     let { activeCampaignItems } = this.state;
-    let {allProducts} = this.context;
+    let {allProducts,cart} = this.context;
     return {
       size: 292,
       style: {
@@ -319,7 +321,7 @@ export default class Buy extends Component {
         {
           gap: 16,
           row: activeCampaignItems.map((o) =>
-            layout("productCard", { ...o })
+            layout("productCard", { product:o,cart })
           ),
         },
       ],
@@ -409,6 +411,7 @@ export default class Buy extends Component {
   }
   bestCellingsLayout() {
     let { bestSellings } = this.state;
+    let {cart} = this.context;
     let title =  "پر فروش ترین محصولات";
     return {
       className: "box gap-no-color",show:bestSellings.length > 0,
@@ -431,13 +434,14 @@ export default class Buy extends Component {
         },
         {
           gap: 16,scroll:'h',
-          row: bestSellings.map((o) =>layout("productCard", {...o,style: { border: "1px solid #ddd" }})),
+          row: bestSellings.map((o) =>layout("productCard", {product:o,cart,style: { border: "1px solid #ddd" }})),
         },
       ],
     };
   }
   lastOrdersLayout() {
     let { lastOrders } = this.state;
+    let {cart} = this.context;
     let title = "آخرین سفارشات شما";
     return {
       className: "box gap-no-color",
@@ -461,7 +465,7 @@ export default class Buy extends Component {
         {
           gap: 16,scroll:'h',
           row: lastOrders.map((o) =>
-            layout("productCard", {...o,style: { border: "1px solid #ddd" }})
+            layout("productCard", {product:o,cart,style: { border: "1px solid #ddd" }})
           ),
         },
       ],
@@ -469,6 +473,7 @@ export default class Buy extends Component {
   }
   recommendedsLayout() {
     let { recommendeds } = this.state;
+    let {cart} = this.context;
     let title =  "پیشنهاد سفارش";
     return {
       className: "box gap-no-color",
@@ -492,7 +497,7 @@ export default class Buy extends Component {
         {
           gap: 16,scroll:'h',
           row: recommendeds.map((o) =>
-            layout("productCard", {...o,style: { border: "1px solid #ddd" }})
+            layout("productCard", {product:o,cart,style: { border: "1px solid #ddd" }})
           ),
         },
       ],
@@ -560,6 +565,7 @@ export default class Buy extends Component {
   }
   categoryLayout() {
     let { view, activeCategoryItems, searchValue, activeCategoryName } = this.state;
+    let {cart} = this.context;
     if (view !== "category") {return { html: "" };}
     return {
       flex: 1,style:{overflow:'hidden'},
@@ -579,7 +585,7 @@ export default class Buy extends Component {
             if (searchValue && o.name.indexOf(searchValue) === -1) {
               return false;
             }
-            return layout("productCard2", {...o,onClick:()=>{
+            return layout("productCard2", {product:o,cart,onClick:()=>{
               this.setState({
                 view:'product',
                 activeProduct:o
@@ -707,19 +713,21 @@ export default class Buy extends Component {
           onClose={() => this.setState({ activeProduct: false, view: "main" })}
           activeCampaignId={activeCampaignId}
           cart={cart}
-          changeCart={(id, count) => {
+          changeCart={(variantId, count) => {
             let { cart } = this.context;
-            cart[id] = cart[id] || {};
-            cart[id].count = count;
-            cart[id].variant = activeProduct.variants.filter(
-              (o) => o.id === id
-            )[0];
-            cart[id].product = activeProduct;
+            cart[variantId] = cart[variantId] || {};
+            cart[variantId].count = count;
+            cart[variantId].variant = activeProduct.variants.filter((o) => o.id === variantId)[0];
+            cart[variantId].product = activeProduct;
             SetState({ cart });
           }}
         />
       ),
     };
+  }
+  getProductSrc(product,variantId){
+    let {srcs = [],defaultVariant = {}} = product
+    return (srcs.length === 0?defaultVariant.srces || []:srcs)[0];
   }
   cartLayout() {
     let { view } = this.state;
@@ -728,35 +736,49 @@ export default class Buy extends Component {
     }
     let { splitPrice, cart } = this.context;
     let ids = Object.keys(cart);
+    let basketTotal = 0;
     let cartItems = ids.map((o, i) => {
       let { product, count, variant } = cart[o];
       let { name, optionTypes } = product;
       let { price, discountPrice, discountPercent, optionValues } = variant;
+      let total = price * count;
+      basketTotal += total;
       let details = [];
       for (let j = 0; j < optionTypes.length; j++) {
         let optionType = optionTypes[j];
         details.push([optionType.name, optionValues[optionType.id]]);
       }
       return {
-        name,
-        Qty: count,
-        src: src1,
-        price,
-        discountPrice,
-        discountPercent,
-        isFirst: i === 0,
-        isLast: i === ids.length - 1,
+        name,count,src: this.getProductSrc(product,o),price:total,details,
+        discountPrice,discountPercent,isFirst: i === 0,isLast: i === ids.length - 1,
+        changeCount:(count) => {
+          let { cart,SetState } = this.context;
+          if(count === 0){
+            let newCart = {};
+            for(let variantId in cart){if(variantId !== o){newCart[variantId] = cart[variantId]}}
+            cart = newCart;
+          }
+          else{
+            cart[o].count = count;  
+          }
+          SetState({ cart });
+        }
       };
     });
     return {
       flex: 1,
       column: [
         {
-          flex: 1,
-          column: cartItems.map((o) => layout("productCard2", o)),
+          show:cartItems.length !== 0,flex: 1,
+          column: cartItems.map((o) => layout("productCard2", {...o})),
         },
         {
-          size: 72,
+          show:cartItems.length === 0,
+          flex:1,align:'vh',
+          html:'سبد خرید شما خالی است'
+        },
+        {
+          size: 72,show:cartItems.length !== 0,
           className: "main-bg padding-0-12",
           row: [
             {
@@ -770,7 +792,7 @@ export default class Buy extends Component {
                 },
                 {
                   align: "v",
-                  html: splitPrice(2000000) + " تومان",
+                  html: splitPrice(basketTotal) + " ریال",
                   className: "color323130 size16",
                 },
                 { flex: 1 },
@@ -841,21 +863,13 @@ class Product extends Component {
     }
     return false;
   }
-  getVariantInOtherCampaign(selected) {
-    return ["نورواره 2", 23000];
-  }
   changeOptionType(key, value) {
     let { optionValues } = this.state;
     let newSelected = { ...optionValues, [key]: value };
     let variant = this.getVariantBySelected(newSelected);
-    let variantInOtherCampaign;
-    if (!variant) {
-      variantInOtherCampaign = this.getVariantInOtherCampaign(newSelected);
-    }
     this.setState({
       optionValues: newSelected,
-      selectedVariant: variant,
-      variantInOtherCampaign,
+      selectedVariant: variant
     });
   }
   optionTypesLayout(optionTypes) {
@@ -997,38 +1011,16 @@ class Product extends Component {
       ],
     };
   }
-  priceLayout() {
-    let { selectedVariant, variantInOtherCampaign } = this.state;
-    if (!selectedVariant) {
-      if (!variantInOtherCampaign) {
-        return { column:[{flex:1},{html:"ناموجود",className: "colorD83B01 bold size14" },{flex:1}]};
-      }
-      let [campaignName, campaignPrice] = variantInOtherCampaign;
-      return {
-        column: [
-          { flex: 1 },
-          {row: [{ flex: 1 },{html: "در این طرح موجود نیست",className: "colorD83B01 size12"}]},
-          {
-            childsProps: { align: "v" },
-            gap: 6,
-            row: [
-              { html: "در طرح", className: "color605E5C size12" },
-              { html: campaignName, className: "color605E5C size12" },
-              { html: campaignPrice, className: "color323130 bold" },
-              { html: "تومان", className: "color323130 bold" },
-            ],
-          },
-          { flex: 1 },
-        ],
-      };
-    }
-    if(!selectedVariant.inStock){
+  priceLayout(count) {
+    let { selectedVariant } = this.state;
+    if(!selectedVariant || !selectedVariant.inStock){
       return { column:[{flex:1},{html:"ناموجود",className: "colorD83B01 bold size14" },{flex:1}]};
     }
     return {
       column: [
         { flex: 1 },
         {
+          show:!!selectedVariant.discountPercent,
           row: [
             { flex: 1 },
             { html: selectedVariant.discountPrice, className: "colorA19F9D" },
@@ -1042,9 +1034,9 @@ class Product extends Component {
         {
           row: [
             { flex: 1 },
-            { html: selectedVariant.price, className: "color323130 bold" },
+            { html: selectedVariant.price * count, className: "color323130 bold" },
             { size: 6 },
-            { html: "تومان", className: "color323130 bold" },
+            { html: "ریال", className: "color323130 bold" },
           ],
         },
         { flex: 1 },
@@ -1089,10 +1081,9 @@ class Product extends Component {
     let { count = 0 } = cart[selectedVariant.id];
     return count;
   }
-  addToCartLayout() {
+  addToCartLayout(count) {
     let { selectedVariant } = this.state;
     let { changeCart } = this.props;
-    let count = this.getCountByVariant();
     if (!count) {
       return {
         html: (
@@ -1116,9 +1107,10 @@ class Product extends Component {
     };
   }
   footerLayout() {
+    let count = this.getCountByVariant();
     return {
       size: 72,style: { background: "#fff" },className: "padding-0-12",
-      row: [this.addToCartLayout(), { flex: 1 }, this.priceLayout()],
+      row: [this.addToCartLayout(count), { flex: 1 }, this.priceLayout(count)],
     };
   }
   render() {

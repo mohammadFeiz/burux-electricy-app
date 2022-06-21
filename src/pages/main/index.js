@@ -21,6 +21,7 @@ export default class Main extends Component {
       sidemenuOpen: false,
       allProducts:[],
       cart: {},//{variantId:{count,product,variant}}
+      
       bottomMenuItems: [
         { text: "خانه", icon: 19, id: "a" },
         { text: "خرید", icon: 15, id: "b" },
@@ -104,37 +105,13 @@ export default class Main extends Component {
       ],
     };
   }
-  splitPrice(price) {
-    if (!price) {
-      return price;
-    }
-    let str = price.toString();
-    let dotIndex = str.indexOf(".");
-    if (dotIndex !== -1) {
-      str = str.slice(0, dotIndex);
-    }
-    let res = "";
-    let index = 0;
-    for (let i = str.length - 1; i >= 0; i--) {
-      res = str[i] + res;
-      if (index === 2) {
-        index = 0;
-        if (i > 0) {
-          res = "," + res;
-        }
-      } else {
-        index++;
-      }
-    }
-    return res;
-  }
   render() {
     let context = {
       ...this.state,
       SetState: (obj) => this.setState(obj),
       logout: this.props.logout,
       getHeaderLayout: this.getHeaderLayout.bind(this),
-      splitPrice: this.splitPrice.bind(this),
+      layout:(type,parameters)=>layout(type,()=>this.state,parameters)
     };
     let { popup, guaranteeItems, sidemenuOpen, theme } = this.state;
     return (
@@ -521,45 +498,18 @@ class PeygiriyeSefaresheKharid extends Component {
   static contextType = appContext;
   constructor(props) {
     super(props);
-    this.state = {
-      visitorWait: [],
-      factored: [],
-      inProcess: [],
-      delivered: [],
-      rejected: [],
-      canceled: [],
-      tab: "inProcess",
-    };
+    this.state = {visitorWait: [],factored: [],inProcess: [],delivered: [],rejected: [],canceled: [],tab: "visitorWait"};
   }
   async componentDidMount() {
     let { visitorWait, factored, inProcess, delivered, rejected, canceled } =
       await services("peygiriye_sefareshe_kharid");
-    this.setState({
-      visitorWait,
-      factored,
-      inProcess,
-      delivered,
-      rejected,
-      canceled,
-    });
+    this.setState({visitorWait,factored,inProcess,delivered,rejected,canceled});
   }
   getTabsLayout() {
-    let {
-      visitorWait,
-      factored,
-      inProcess,
-      delivered,
-      rejected,
-      canceled,
-      tab,
-    } = this.state;
+    let {visitorWait,factored,inProcess,delivered,rejected,canceled,tab,} = this.state;
     let parameters = {
       tabs: [
-        {
-          title: "در انتظار تایید ویزیتور",
-          badge: visitorWait.length,
-          id: "visitorWait",
-        },
+        {title: "در انتظار تایید ویزیتور",badge: visitorWait.length,id: "visitorWait"},
         { title: "فاکتور شده", badge: factored.length, id: "factored" },
         { title: "در حال پردازش", badge: inProcess.length, id: "inProcess" },
         { title: "تحویل شده", badge: delivered.length, id: "delivered" },
@@ -568,26 +518,11 @@ class PeygiriyeSefaresheKharid extends Component {
       ],
       activeTabId: tab,
       onClick: async (obj) => {
-        let {
-          visitorWait,
-          factored,
-          inProcess,
-          delivered,
-          rejected,
-          canceled,
-        } = await services("peygiriye_sefareshe_kharid");
-        this.setState({
-          tab: obj.id,
-          visitorWait,
-          factored,
-          inProcess,
-          delivered,
-          rejected,
-          canceled,
-        });
+        let {visitorWait,factored,inProcess,delivered,rejected,canceled} = await services("peygiriye_sefareshe_kharid");
+        this.setState({tab: obj.id,visitorWait,factored,inProcess,delivered,rejected,canceled});
       },
     };
-    return layout("tabs", parameters);
+    return this.context.layout("tabs", parameters);
   }
   render() {
     let { onClose } = this.props;
@@ -605,24 +540,9 @@ class PeygiriyeSefaresheKharid extends Component {
               this.getTabsLayout(),
               { size: 12 },
               {
-                flex: 1,
-                gap: 12,
+                flex: 1,gap: 12,
                 column: orders.map((o) => {
-                  return {
-                    html: (
-                      <OrderCard
-                        {...o}
-                        onClick={() =>
-                          SetState({
-                            popup: {
-                              mode: "joziate-sefareshe-kharid",
-                              order: o,
-                            },
-                          })
-                        }
-                      />
-                    ),
-                  };
+                  return {html: (<OrderCard {...o} onClick={() =>SetState({popup: {mode: "joziate-sefareshe-kharid",order: o}})}/>)};
                 }),
               },
             ],
@@ -692,20 +612,8 @@ class JoziateSefaresheKharid extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      number: "",
-      date: "",
-      cusotmerName: "",
-      customerCode: "",
-      customerGroup: "",
-      campain: "",
-      basePrice: "",
-      visitorName: "",
-      address: "",
-      mobile: "",
-      phone: "",
-      total: "",
-      paymentMethod: "",
-      items: [],
+      number: "",date: "",cusotmerName: "",customerCode: "",customerGroup: "",campain: "",basePrice: "",visitorName: "",
+      address: "",mobile: "",phone: "",total: "",paymentMethod: "",items: [],
     };
   }
   getRow(key, value) {
@@ -725,37 +633,17 @@ class JoziateSefaresheKharid extends Component {
       { title: "لغو شده", color: "#A4262C", percent: 100 },
     ];
     let obj = statuses[status];
-    if (!obj) {
-      return null;
-    }
+    if (!obj) {return null;}
     return {
-      style: { padding: "0 24px" },
-      className: "box",
+      style: { padding: "0 24px" },className: "box",
       column: [
         { size: 16 },
-        {
-          size: 24,
-          html: obj.title,
-          style: { color: obj.color },
-          className: "size14 bold",
-        },
+        {size: 24,html: obj.title,style: { color: obj.color },className: "size14 bold"},
         {
           html: (
-            <div
-              style={{
-                height: 12,
-                display: "flex",
-                width: "100%",
-                borderRadius: 3,
-                overflow: "hidden",
-              }}
-            >
-              <div
-                style={{ width: obj.percent + "%", background: obj.color }}
-              ></div>
-              <div
-                style={{ flex: 1, background: obj.color, opacity: 0.3 }}
-              ></div>
+            <div style={{height: 12,display: "flex",width: "100%",borderRadius: 3,overflow: "hidden"}}>
+              <div style={{ width: obj.percent + "%", background: obj.color }}></div>
+              <div style={{ flex: 1, background: obj.color, opacity: 0.3 }}></div>
             </div>
           ),
         },
@@ -771,23 +659,10 @@ class JoziateSefaresheKharid extends Component {
   render() {
     let { getHeaderLayout } = this.context;
     let {
-      number,
-      date,
-      customerName,
-      customerCode,
-      customerGroup,
-      campain,
-      basePrice,
-      visitorName,
-      address,
-      mobile,
-      phone,
-      total,
-      paymentMethod,
-      items,
+      number,date,customerName,customerCode,customerGroup,campain,basePrice,visitorName,address,mobile,
+      phone,total,paymentMethod,items,
     } = this.state;
     let { onClose, order } = this.props;
-    debugger;
     return (
       <div className="popup-container">
         <RVD
@@ -797,9 +672,7 @@ class JoziateSefaresheKharid extends Component {
               getHeaderLayout("جزيیات سفارش خرید", () => onClose()),
               { size: 12 },
               {
-                flex: 1,
-                scroll: "v",
-                gap: 12,
+                flex: 1,scroll: "v",gap: 12,
                 column: [
                   {
                     className: "box gap-no-color",
@@ -829,13 +702,7 @@ class JoziateSefaresheKharid extends Component {
                   this.getStatus(order.status),
                   {
                     gap: 2,
-                    column: items.map((o, i) =>
-                      layout("productCard2", {
-                        ...o,
-                        isFirst: i === 0,
-                        isLast: i === order.items.length - 1,
-                      })
-                    ),
+                    column: items.map((o, i) => this.context.layout("productCard2", {...o,isFirst: i === 0,isLast: i === order.items.length - 1}))
                   },
                 ],
               },
@@ -852,113 +719,15 @@ class Search extends Component {
     super(props);
     this.state = {
       searchValue: "",
-      searchFamilies: [
-        { name: "جنرال" },
-        { name: "جاینت" },
-        { name: "پنلی" },
-        { name: "سیم و کابل" },
-      ],
+      searchFamilies: [{ name: "جنرال" },{ name: "جاینت" },{ name: "پنلی" },{ name: "سیم و کابل" }],
       result: [
-        {
-          src: LampSrc,
-          name: "لامپ",
-          color: "آفتابی",
-          unit: "",
-          discountPercent: 1000,
-          discountPrice: 10,
-          Qty: 3,
-          price: 324000,
-        },
-        {
-          src: LampSrc,
-          name: "لامپ",
-          color: "آفتابی",
-          unit: "",
-          discountPercent: 1000,
-          discountPrice: 10,
-          Qty: 3,
-          price: 324000,
-        },
-        {
-          src: LampSrc,
-          name: "لامپ",
-          color: "آفتابی",
-          unit: "",
-          discountPercent: 1000,
-          discountPrice: 10,
-          Qty: 3,
-          price: 324000,
-        },
-        {
-          src: LampSrc,
-          name: "لامپ",
-          color: "آفتابی",
-          unit: "",
-          discountPercent: 1000,
-          discountPrice: 10,
-          Qty: 3,
-          price: 324000,
-        },
-        {
-          src: LampSrc,
-          name: "لامپ",
-          color: "آفتابی",
-          unit: "",
-          discountPercent: 1000,
-          discountPrice: 10,
-          Qty: 3,
-          price: 324000,
-        },
-        {
-          src: LampSrc,
-          name: "لامپ",
-          color: "آفتابی",
-          unit: "",
-          discountPercent: 1000,
-          discountPrice: 10,
-          Qty: 3,
-          price: 324000,
-        },
-        {
-          src: LampSrc,
-          name: "لامپ",
-          color: "آفتابی",
-          unit: "",
-          discountPercent: 1000,
-          discountPrice: 10,
-          Qty: 3,
-          price: 324000,
-        },
-        {
-          src: LampSrc,
-          name: "لامپ",
-          color: "آفتابی",
-          unit: "",
-          discountPercent: 1000,
-          discountPrice: 10,
-          Qty: 3,
-          price: 324000,
-        },
-        {
-          src: LampSrc,
-          name: "لامپ",
-          color: "آفتابی",
-          unit: "",
-          discountPercent: 1000,
-          discountPrice: 10,
-          Qty: 3,
-          price: 324000,
-        },
-        {
-          src: LampSrc,
-          name: "لامپ",
-          color: "آفتابی",
-          unit: "",
-          discountPercent: 1000,
-          discountPrice: 10,
-          Qty: 3,
-          price: 324000,
-        },
+        {src: LampSrc,name: "لامپ",color: "آفتابی",unit: "",discountPercent: 1000,discountPrice: 10,Qty: 3,price: 324000},
+        {src: LampSrc,name: "لامپ",color: "آفتابی",unit: "",discountPercent: 1000,discountPrice: 10,Qty: 3,price: 324000},
+        {src: LampSrc,name: "لامپ",color: "آفتابی",unit: "",discountPercent: 1000,discountPrice: 10,Qty: 3,price: 324000},
+        {src: LampSrc,name: "لامپ",color: "آفتابی",unit: "",discountPercent: 1000,discountPrice: 10,Qty: 3,price: 324000},
+        {src: LampSrc,name: "لامپ",color: "آفتابی",unit: "",discountPercent: 1000,discountPrice: 10,Qty: 3,price: 324000},
+        {src: LampSrc,name: "لامپ",color: "آفتابی",unit: "",discountPercent: 1000,discountPrice: 10,Qty: 3,price: 324000},
+        {src: LampSrc,name: "لامپ",color: "آفتابی",unit: "",discountPercent: 1000,discountPrice: 10,Qty: 3,price: 324000}
       ],
     };
   }
@@ -981,55 +750,21 @@ class Search extends Component {
             className: "popup main-bg",
             column: [
               getHeaderLayout("جستجوی کالا", () => onClose()),
-              layout("search", {
-                value: searchValue,
-                onChange: (searchValue) => this.changeSearch(searchValue),
-              }),
-              {
-                size: 200,
-                align: "vh",
-                className: "size20 color323130 bold",
-                show: false,
-                html: "در میان ان کالا جستجو",
-              },
-              {
-                size: 48,
-                align: "v",
-                className: "size14 color323130 bold",
-                html: "جستجو در خانواده ها",
-                style: { padding: "0 24px" },
-              },
+              this.context.layout("search", {value: searchValue,onChange: (searchValue) => this.changeSearch(searchValue)}),
+              {size: 200,align: "vh",className: "size20 color323130 bold",show: false,html: "در میان ان کالا جستجو"},
+              {size: 48,align: "v",className: "size14 color323130 bold",html: "جستجو در خانواده ها",style: { padding: "0 24px" }},
               {
                 gap: 12,
                 row: searchFamilies.map((o) => {
-                  return {
-                    size: 90,
-                    html: o.name,
-                    className: "color605E5C size14",
-                    align: "vh",
-                    style: {
-                      border: "1px solid #999",
-                      borderRadius: 24,
-                    },
-                  };
+                  return {size: 90,html: o.name,className: "color605E5C size14",align: "vh",style: {border: "1px solid #999",borderRadius: 24}};
                 }),
               },
-              {
-                size: 48,
-                align: "v",
-                className: "size14 color323130 bold",
-                html: "محصولات",
-                style: { padding: "0 24px" },
-              },
+              {size: 48,align: "v",className: "size14 color323130 bold padding-0-24",html: "محصولات"},
               { size: 24 },
               {
                 flex: 1,
                 column: result.map((o, i) => {
-                  return layout("productCard2", {
-                    ...o,
-                    isFirst: i === 0,
-                    isLast: i === result.length - 1,
-                  });
+                  return this.context.layout("productCard2", {...o,isFirst: i === 0,isLast: i === result.length - 1});
                 }),
               },
             ],

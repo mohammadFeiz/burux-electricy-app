@@ -3,6 +3,7 @@ import RVD from 'react-virtual-dom';
 import myBuruxHeaderSrc from './../../utils/burux-header.jpg';
 import getSvg from './../../utils/getSvg';
 import appContext from '../../app-context';
+import functions from '../../functions';
 import './index.css';
 import services from '../../services';
 export default class MyBurux extends Component{
@@ -50,7 +51,7 @@ export default class MyBurux extends Component{
     }
     getContent(){
         let {user = '',customerCode,shopName,visitorName,nationalCode,wallet,parts} = this.state;
-        let {guaranteeItems,SetState,splitPrice} = this.context;
+        let {guaranteeItems,SetState} = this.context;
         return {
             scroll:'v',flex:1,className:'my-burux-page main-bg',
             column:[
@@ -99,7 +100,7 @@ export default class MyBurux extends Component{
                     style:{overflow:'visible'},
                     row:[
                         this.getPanel({
-                            text1:'کیف پول',text2:splitPrice(wallet) + ' ریال',text3:'افزایش موجودی',
+                            text1:'کیف پول',text2:functions.splitPrice(wallet) + ' ریال',text3:'افزایش موجودی',
                             className:'box'
                         }),
                         this.getPanel({
@@ -166,13 +167,30 @@ class JoziateDarkhasthayeGaranti extends Component{
                             {
                                 html:<input type='text' placeholder='شماره درخواست گارانتی را جستجو کنید' value={searchValue} onChange={(e)=>{
                                     this.setState({searchValue:e.target.value})
-                                }}/>
+                                }}
+                                style={{
+                                    height: 40,
+                                    background: 'rgb(241, 241, 241)',
+                                    border: 'none',
+                                    borderRadius: 4,
+                                    width: '100%',
+                                    margin: '0 12px',
+                                    padding: '0 12px',
+                                    outline:'none',
+                                    marginBottom: 12,
+                                    fontFamily: 'inherit'
+                                }}
+                                />
                             },
                             {
                                 flex:1,scroll:'v',gap:12,
                                 column:[
                                     {
-                                        gap:2,column:guaranteeItems.map((o,i)=>{
+                                        gap:2,column:guaranteeItems.filter(({RequestID})=>{
+                                            if(!searchValue){return true}
+                                            if(!RequestID || RequestID === null){return false}
+                                            return RequestID.toString().indexOf(searchValue) !== -1;
+                                        }).map((o,i)=>{
                                             return {
                                                 html:<GarantiCard {...o} isFirst={i === 0} isLast={i === guaranteeItems.length - 1}/>
                                             }
@@ -195,13 +213,12 @@ class GarantiCard extends Component{
         if(color === 'یخی'){return '#edf0d8'}
     }
     render(){
-        let {RequestID,CreateTime,_time,items,isFirst,isLast} = this.props;
+        let {RequestID,CreateTime,_time,Details,isFirst,isLast} = this.props;
         return (
             <RVD
                 layout={{
-                    className:'box gap-no-color',
+                    className:'box gap-no-color padding-12',
                     style:{
-                        padding:6,
                         borderBottomLeftRadius:!isLast?0:undefined,
                         borderBottomRightRadius:!isLast?0:undefined,
                         borderTopLeftRadius:!isFirst?0:undefined,
@@ -209,14 +226,42 @@ class GarantiCard extends Component{
                     },
                     column:[
                         {
+                            size:48,childsProps:{align:'v'},
                             row:[
-                                {html:'شماره درخواست :',className:'size14 color605E5C'},
-                                {html:RequestID,className:'size14 color605E5C'},
+                                {html:'شماره درخواست :',className:'size14 color605E5C bold'},
+                                {html:RequestID,className:'size14 color605E5C bold'},
                                 {flex:1},
                                 {html:_time,className:'size12 colorA19F9D'},
                                 {size:6},
                                 {html:CreateTime,className:'size12 colorA19F9D'}
                             ]
+                        },
+                        {
+                            column:Details.map(({Name,Quantity},i)=>{
+                                let height = 0,top = 0;
+                                if(Details.length < 2){height = 0; top = 0;}
+                                else if(i === 0){height = 18; top = 18;}
+                                else if(i === Details.length - 1){height = 18; top = 0;}
+                                else {height = 36; top = 0;}
+                                return {
+                                    size:36,childsProps:{align:'v'},gap:12,
+                                    childsAttrs:{className:'size12 color605E5C'},
+                                    row:[
+                                        {html:<div style={{positon:'relative',width:10,height:10,background:'#0094D4',borderRadius:'100%'}}>
+                                            <div style={{
+                                                width:2,
+                                                height,
+                                                top,
+                                                position:'absolute',
+                                                left:'calc(50% - 1px)',
+                                                background:'#0094D4'}}></div>
+                                        </div>},
+                                        {html:Name},
+                                        {html:Quantity + ' عدد'},
+                                        
+                                    ]
+                                }
+                            })
                         }
                     ]
                 }}

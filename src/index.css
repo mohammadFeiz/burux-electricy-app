@@ -49,6 +49,12 @@ body{
 	background:#fff;
 	box-shadow:3px 3px 5px 0 rgba(80,80,80,.1);
 }
+.bgF1F1F1{
+	background:#F1F1F1;
+}
+.round-6{
+	border-radius:6px;
+}
 .popup-container{
 	background:rgba(0,0,0,.3);
 	position: fixed;
@@ -133,6 +139,9 @@ button{
 }
 .theme-1 .color006F9E{
 	color:#ddd;
+}
+.colorFDB913{
+	color:#FDB913;
 }
 .size10{
 	font-size:10px;
@@ -265,6 +274,12 @@ button{
 }
 .padding-12{
 	padding:12px;
+}
+.padding-12-0{
+	padding:12px 0;
+}
+.padding-0-24{
+	padding:0 24px;
 }
 .check-button{
 	height:40px;

@@ -2,6 +2,7 @@ import Axios from "axios";
 import dateCalculator from "./utils/date-calculator";
 import $ from "jquery";
 import src1 from './utils/brx66.png';
+import bulb10w from './images/10w-bulb.png';
 export default async function services(type, parameter, loading = true) {
   let d = dateCalculator();
   let $$ = {
@@ -231,12 +232,13 @@ export default async function services(type, parameter, loading = true) {
         items: result.Items.map((o) => {
           return {
             name: o.ProductName,
-            Qty: o.Count,
+            count: o.Count,
             color: "آفتابی",
             discountPrice: 0,
             discountPercent: 0,
             unit: "",
             price: o.MinPrice,
+            src:src1
           };
         }),
       };
@@ -255,15 +257,16 @@ export default async function services(type, parameter, loading = true) {
         return {
           name: o.attributes.name,
           id: o.id,
-          background: "#0094D4",
-          color: "#fff",
+          background: "#FDB913",
+          color: "#173796",
+          src:bulb10w
         };
       });
     },
-    async activeCampaignItems({id,allProducts,count}) {
+    async activeCampaignItems({campaign,allProducts,count}) {
       let products = Object.keys(allProducts);
       if(count !== undefined){products = products.slice(0,Math.min(count,products.length))}
-      return products.map((o) =>allProducts[o.toString()])
+      return products.map((o) =>{return {...allProducts[o.toString()],campaign}})
     },
     async lastOrders({allProducts,count}) {
       let products = Object.keys(allProducts);
@@ -332,6 +335,7 @@ export default async function services(type, parameter, loading = true) {
       });
     },
     async getCategories() {
+      return []
       let res = await Axios.get(
         `https://retailerapp.bbeta.ir/api/v1/Spree/GetAllCategories`
       );

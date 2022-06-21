@@ -1,6 +1,4 @@
 import React,{Component,createRef,createContext} from 'react';
-import {Icon} from '@mdi/react';
-import {mdiClose,mdiCircleMedium,mdiMagnify} from '@mdi/js';
 import $ from 'jquery'
 import './index.css';
 let aioButtonContext = createContext();
@@ -79,6 +77,11 @@ export default class AIOButton extends Component {
       onSwap(from,to,this.swap)
     }
     swap(arr,from,to){
+      if(to === from + 1){
+        let a = to;
+        to = from;
+        from = a;
+      }
       let Arr = arr.map((o,i)=>{o._testswapindex = i; return o})
       let fromIndex = Arr[from]._testswapindex
       Arr.splice(to,0,{...Arr[from],_testswapindex:false})
@@ -159,13 +162,12 @@ export default class AIOButton extends Component {
       for(let realIndex = 0; realIndex < options.length; realIndex++){
         let option = options[realIndex];
         let value = this.getProp({option,index:realIndex,field:'value',def:undefined})
-        if(value === undefined){continue}
         let text = this.getProp({option,index:realIndex,field:'text',def:undefined});
         let checked,tagAttrs,className,round,before,after,close;
         if(type === 'select'){
           className = 'aio-button-option';
           checked = this.getProp({option,index:realIndex,field:'checked',def:undefined});
-          if(value === this.props.value && this.text === undefined){this.text = text}
+          if(value !== undefined && value === this.props.value && this.text === undefined){this.text = text}
           before = this.getProp({option,index:realIndex,field:'before',def:undefined});
           after = this.getProp({option,index:realIndex,field:'after',def:undefined});
           round = false;
@@ -260,6 +262,8 @@ export default class AIOButton extends Component {
       let options = this.getOptions();
       let text = this.getText();
       let subtext = this.getSubtext();
+      let show = typeof this.props.show === 'function'?this.props.show({options}):this.props.show;
+      if(show === false){return null}
       return (
         <aioButtonContext.Provider value={context}>
             {type === 'multiselect' && <Multiselect dataUniqId={dataUniqId} tags={this.tags} text={text} subtext={subtext} caret={caret === undefined?true:caret} style={style}/>}
@@ -339,7 +343,14 @@ function SearchBox(props){
   return (
     <div className='aio-button-search'>
       <div className={'aio-button-icon'} onClick={()=>{props.onChange('')}}>
-        <Icon path={props.value?mdiClose:mdiMagnify} size={0.8}/>
+        {
+          props.value && 
+          <svg viewBox="0 0 24 24" role="presentation" style={{width: '1.2rem',height: '1.2rem'}}><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" style={{fill: 'currentcolor'}}></path></svg>
+        }
+        {
+          !props.value &&
+          <svg viewBox="0 0 24 24" role="presentation" style={{width: '1.2rem',height: '1.2rem'}}><path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" style={{fill: 'currentcolor'}}></path></svg>
+        }
       </div>
       <input type='text' value={props.value} placeholder={props.placeholder} onChange={(e)=>props.onChange(e.target.value)}/>
     </div>
@@ -523,13 +534,19 @@ class Tags extends Component{
   }
 }
 function Tag(props){
-  let {text,before = <Icon path={mdiCircleMedium} size={0.6}/>,onClick,disabled,attrs = {}} = props;
+  let {
+    text,onClick,disabled,attrs = {},
+    before = (
+      <svg viewBox="0 0 24 24" role="presentation" style={{width: '0.9rem',height: '0.9rem'}}>
+        <path d="M12,8A4,4 0 0,0 8,12A4,4 0 0,0 12,16A4,4 0 0,0 16,12A4,4 0 0,0 12,8Z" style={{fill: 'currentcolor'}}></path>
+      </svg>
+    )} = props;
   return (
     <div className={'aio-button-tag' + (attrs.className?' ' + attrs.className:'') + (disabled?' disabled':'')} onClick={onClick} style={attrs.style}>
       <div className='aio-button-tag-icon'>{before}</div>
       <div className='aio-button-tag-text'>{text}</div>
       <div className='aio-button-tag-icon'>
-        <svg viewBox="0 0 24 24" role="presentation">
+        <svg viewBox="0 0 24 24" role="presentation" style={{width:'0.9rem'}}>
           <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" style={{fill: 'currentcolor'}}></path>
         </svg>
       </div>

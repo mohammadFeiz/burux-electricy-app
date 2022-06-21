@@ -4,8 +4,8 @@ import getSvg from './../../utils/getSvg';
 import SliderDots from '../../coponents/slider-dots';
 import appContext from '../../app-context';
 import AIOButton from './../../coponents/aio-button/aio-button';
-import layout from './../../layout';
-import $ from 'jquery';
+import functions from '../../functions';
+import ContentSlider from '../../coponents/content-slider';
 import './index.css';
 import Awards from './../awards/index';
 
@@ -19,35 +19,35 @@ export default class Home extends Component {
             searchValue: '',
             sliderItems: [
                 {
-                    icon: 27,
+                    icon: getSvg(27),
                     background: '#662D91',
                     color: '#fff',
                     title: 'باز طراحی اپ الکتریکی',
                     subtitle: 'طراحی راحت تر وجدید با کلی قابلیت جدید!'
                 },
                 {
-                    icon: 39,
+                    icon: getSvg(39),
                     background: 'linear-gradient(180deg, #0095DA 0%, #0191D6 100%)',
                     color: '#fff',
                     title: 'طرح نورواره 2',
                     subtitle: 'تعویض لامپ های سوخته با نو'
                 },
                 {
-                    icon: 27,
+                    icon: getSvg(27),
                     background: '#662D91',
                     color: '#fff',
                     title: 'باز طراحی اپ الکتریکی',
                     subtitle: 'طراحی راحت تر وجدید با کلی قابلیت جدید!'
                 },
                 {
-                    icon: 27,
+                    icon: getSvg(27),
                     background: '#662D91',
                     color: '#fff',
                     title: 'باز طراحی اپ الکتریکی',
                     subtitle: 'طراحی راحت تر وجدید با کلی قابلیت جدید!'
                 },
                 {
-                    icon: 27,
+                    icon: getSvg(27),
                     background: '#662D91',
                     color: '#fff',
                     title: 'باز طراحی اپ الکتریکی',
@@ -102,7 +102,7 @@ export default class Home extends Component {
                 {
                     flex:1,scroll:'v',
                     column: [
-                        layout('search',{onClick:()=>SetState({popup:{mode:'search'}})}),
+                        this.context.layout('search',{onClick:()=>SetState({popup:{mode:'search'}})}),
                         { html: <ContentSlider items={sliderItems} /> },
                         { size: 24 },
                         {
@@ -212,89 +212,6 @@ export default class Home extends Component {
     }
 }
 
-class ContentSlider extends Component {
-    constructor(props) {
-        super(props);
-        this.dom = createRef();
-        this.state = { index: 0 }
-    }
-    getItem(item) {
-        return (
-            <RVD
-                layout={{
-                    className: 'content-slider-item',
-                    style: { background: item.background, color: item.color },
-                    row: [
-                        { size: 36, html: getSvg('chevronLeft', { flip: true, fill: item.color }), align: 'vh' },
-                        { html: getSvg(item.icon), align: 'vh' },
-                        { size: 12 },
-                        {
-                            flex: 1, column: [
-                                { flex: 1 },
-                                { html: item.title,className: 'content-slider-title' },
-                                { html: item.subtitle,className: 'content-slider-subtitle'},
-                                { flex: 1 }
-                            ]
-                        },
-                        { size: 36, html: getSvg('chevronLeft', { fill: item.color }), align: 'vh' },
-
-                    ]
-                }}
-            />
-        )
-    }
-    fixScroll() {
-        let left = this.dom.current.scrollLeft;
-        this.isFixed = true;
-        let index = Math.round(left / window.innerWidth);
-        let final = index * window.innerWidth;
-        $(this.dom.current).animate({ 'scrollLeft': final }, 400, () => { this.setState({ index: Math.abs(index) }) });
-    }
-    onScroll() {
-        clearTimeout(this.timeout);
-        this.scrolling = true;
-        this.timeout = setTimeout(() => {
-            this.scrolling = false;
-            this.fixScroll();
-        }, this.isDown ? 500 : 60)
-    }
-    touchend() {
-        this.isDown = false;
-        if (!this.scrolling) this.fixScroll();
-        $(window).unbind('touchend', this.touchend)
-    }
-    render() {
-        let { items } = this.props;
-        let { index } = this.state;
-        return (
-            <RVD
-                layout={{
-                    className: 'content-slider-container',
-                    column: [
-                        {
-                            scroll: 'h',
-                            className: 'content-slider',
-                            attrs: {
-                                ref: this.dom,
-                                onScroll: () => this.onScroll(),
-                                onTouchStart: () => {
-                                    this.isDown = true;
-                                    $(window).bind('touchend', $.proxy(this.touchend, this))
-                                }
-                            },
-                            row: items.map((o) => {
-                                return { html: this.getItem(o) }
-                            })
-                        },
-                        {
-                            html: <SliderDots length={items.length} index={index} />
-                        }
-                    ]
-                }}
-            />
-        )
-    }
-}
 
 class MyNear extends Component {
     static contextType = appContext;
@@ -313,7 +230,6 @@ class MyNear extends Component {
     render() {
         let { items, index } = this.state;
         let item = items[index];
-        let {splitPrice} = this.context;
         return (
             <RVD
                 layout={{
@@ -335,7 +251,7 @@ class MyNear extends Component {
                                 {
                                     flex: 1,
                                     column: [
-                                        { size: 36, html: 'سفارش به مبلغ ' + splitPrice(item.price) + ' تومان', align: 'vh',className: 'color605E5C bold size14' },
+                                        { size: 36, html: 'سفارش به مبلغ ' + functions.splitPrice(item.price) + ' تومان', align: 'vh',className: 'color605E5C bold size14' },
                                         {
                                             size: 36, childsProps: { align: 'v' },
                                             row: [

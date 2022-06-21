@@ -1,13 +1,17 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import RVD from "react-virtual-dom";
 import getSvg from "./../../utils/getSvg";
 import appContext from "../../app-context";
 import AIOButton from "./../../coponents/aio-button/aio-button";
-import layout from "./../../layout";
+import functions from "../../functions";
 import src1 from "./../../utils/brx66.png";
+import catTools from './../../images/cat-tools.png';
+import catCable from './../../images/cat-cable.png';
+import catLamp from './../../images/cat-lamp.png';
+import $ from 'jquery';
 import "./index.css";
 import services from "../../services";
-import { toHaveStyle } from "@testing-library/jest-dom/dist/matchers";
+import ContentSlider from "../../coponents/content-slider";
 
 export default class Buy extends Component {
   static contextType = appContext;
@@ -15,18 +19,14 @@ export default class Buy extends Component {
     super(props);
     this.state = {
       searchValue: "",
-      view: "main", //main,category,product
-      viewCategory: false,
-      activeProduct: false,
-      activeCampaignId: false,
-      activeCampaignItems: [],
-      activeCategoryName: "",
+      view: {type:"main"}, //main,category,product
       campaigns: [],
       tabs: [
         { title: "نمایشگاه", id: "1", flex: 1 },
         { title: "دسته بندی کالاها", id: "2", flex: 1 },
       ],
       activeTabId: "1",
+      activeCartTabId:'regular',
       lastOrders: [],
       recommendeds: [],
       bestSellings: [],
@@ -120,12 +120,23 @@ export default class Buy extends Component {
       ],
     };
   }
+  changeView(o){
+    if(o === 'back'){
+      this.viewStack.pop();
+      let beforeView = {...this.viewStack[this.viewStack.length - 1]};
+      this.setState({view:{...beforeView}});
+      
+    }
+    else {
+      this.viewStack = this.viewStack || [{type:'main'}];
+      this.viewStack.push(o)
+      this.setState({view:{...o}});
+    }
+    
+  }
   async getCampaignsData() {
-    let {allProducts} = this.context;
     let campaigns = await services("getCampaigns");
-    let activeCampaignId = campaigns[0].id;
-    let activeCampaignItems = await services("activeCampaignItems",{id:activeCampaignId,allProducts,count:10});
-    this.setState({ campaigns, activeCampaignId, activeCampaignItems });
+    this.setState({ campaigns});
   }
   async getPreOrders() {
     let {allProducts} = this.context;
@@ -247,86 +258,6 @@ export default class Buy extends Component {
     this.getBestSellings(10);
     this.getCategories();
   }
-  selectCampaignLayout() {
-    let {allProducts} = this.context;
-    let { campaigns, activeCampaignId } = this.state;
-    return {
-      className: "box gap-no-color",
-      style: { padding: 12 },
-      column: [
-        { align: "v", html: "طرح فعال", className: "color323130 size14 bold" },
-        { size: 12 },
-        {
-          scroll: "h",
-          gap: 16,
-          row: campaigns.map(({ name, id, color, background }) => {
-            let active = activeCampaignId === id;
-            let style = active ? { color, background } : {};
-            return {
-              html: layout("checkButton", {
-                text: name,
-                active,
-                ...style,
-                onClick: async () => {
-                  let activeCampaignItems = await services("activeCampaignItems",{id,allProducts,count:10});
-                  this.setState({ activeCampaignId: id, activeCampaignItems });
-                },
-              }),
-            };
-          }),
-        },
-      ],
-    };
-  }
-  viewCampaignLayout() {
-    let { activeCampaignItems } = this.state;
-    let {allProducts,cart} = this.context;
-    return {
-      size: 292,
-      style: {
-        background: this.activeCampaign.background,
-        color: this.activeCampaign.color,
-        padding: 16,
-      },
-      gap: 16,scroll:'h',
-      row: [
-        {
-          size: 100,
-          style:{overflow:'hidden'},
-          childsAttrs: { className: "bold" },
-          column: [
-            { size: 12 },
-            {
-              html: this.activeCampaign.text,
-              style: { fontSize: 22 },
-              align: "vh",
-            },
-            { flex: 1 },
-            { size: 12 },
-            {
-              align: "vh",
-              size: 100,
-              html: <img src={src1} alt="" height="100%" />,
-            },
-            {
-              align: "vh",
-              html: "مشاهده همه",
-              attrs: {
-                onClick: async () =>this.showCategory(await services('activeCampaignItems',{allProducts}),this.activeCampaign.name)
-              }
-            },
-            { size: 12 },
-          ],
-        },
-        {
-          gap: 16,
-          row: activeCampaignItems.map((o) =>
-            layout("productCard", { product:o,cart })
-          ),
-        },
-      ],
-    };
-  }
   preOrdersLayout() {
     let { preOrders } = this.state;
     return {
@@ -391,217 +322,89 @@ export default class Buy extends Component {
           gap: 16,scroll:'h',
           row: families.map((o) => {
             let config = {
-              ...o,
-              src: src1,
-              style: { border: "1px solid #ddd" },
-              onClick: async () => {
-                let activeFamilyItems = this.getActiveFamilyItems(o.id);
-                this.setState({
-                  view: "category",
-                  activeCategoryName: o.name,
-                  activeCategoryItems: activeFamilyItems,
-                });
-              },
+              ...o,src: src1,
+              onClick: async () => this.changeView({type:"category",name:o.name,items:this.getActiveFamilyItems(o.id)}),
             };
-            return layout("productCard", config);
+            return this.context.layout("productCard", config);
           }),
         },
       ],
     };
   }
-  bestCellingsLayout() {
-    let { bestSellings } = this.state;
-    let {cart} = this.context;
-    let title =  "پر فروش ترین محصولات";
-    return {
-      className: "box gap-no-color",show:bestSellings.length > 0,
-      style: { padding: 12 },
-      column: [
-        {
-          size:36,
-          row:[
-            {html:title,className: "size14 color323130 bold",align: "v"},
-            {size:6},
-            {
-              html: "مشاهده همه",className: "size12 color0094D4 bold",align: "v",
-              attrs:{
-                onClick:async ()=>{
-                  this.showCategory(await this.getBestSellings(),title)
-                }
-              }
-            },
-          ]
-        },
-        {
-          gap: 16,scroll:'h',
-          row: bestSellings.map((o) =>layout("productCard", {product:o,cart,style: { border: "1px solid #ddd" }})),
-        },
-      ],
-    };
-  }
-  lastOrdersLayout() {
-    let { lastOrders } = this.state;
-    let {cart} = this.context;
-    let title = "آخرین سفارشات شما";
-    return {
-      className: "box gap-no-color",
-      style: { padding: 12 },
-      column: [
-        {
-          size:36,
-          row:[
-            {html: title,className: "size14 color323130 bold",align: "v"},
-            {size:6},
-            {
-              html: "مشاهده همه",className: "size12 color0094D4 bold",align: "v",
-              attrs:{
-                onClick:async ()=>{
-                  this.showCategory(await this.getLastOrders(),title)
-                }
-              }
-            },
-          ]
-        },
-        {
-          gap: 16,scroll:'h',
-          row: lastOrders.map((o) =>
-            layout("productCard", {product:o,cart,style: { border: "1px solid #ddd" }})
-          ),
-        },
-      ],
-    };
-  }
-  recommendedsLayout() {
-    let { recommendeds } = this.state;
-    let {cart} = this.context;
-    let title =  "پیشنهاد سفارش";
-    return {
-      className: "box gap-no-color",
-      style: { padding: 12 },
-      column: [
-        {
-          size:36,
-          row:[
-            {html:title,className: "size14 color323130 bold",align: "v"},
-            {size:6},
-            {
-              html: "مشاهده همه",className: "size12 color0094D4 bold",align: "v",
-              attrs:{
-                onClick:async ()=>{
-                  this.showCategory(await this.getRecommendeds(),title)
-                }
-              }
-            },
-          ]
-        },
-        {
-          gap: 16,scroll:'h',
-          row: recommendeds.map((o) =>
-            layout("productCard", {product:o,cart,style: { border: "1px solid #ddd" }})
-          ),
-        },
-      ],
-    };
-  }
   tab1Layout() {
+    let {bestSellings,lastOrders,recommendeds,campaigns} = this.state;
+    let {allProducts} = this.context;
     return {
-      flex: 1,
-      scroll: "v",
-      className:'buy-tab-1',
-      gap: 12,
+      flex: 1,scroll: "v",className:'buy-tab-1',gap: 12,
       column: [
-        this.selectCampaignLayout(),
-        this.viewCampaignLayout(),
+        {
+          html:(
+            <ContentSlider 
+              style={{borderRadius:16}} 
+              items={
+                campaigns.map((o)=>{
+                  let {color,background,name,src} = o;
+                  return {
+                    title:name,color,background,icon:<img src={src} alt='' height='100%'/>,
+                    button:{text:'خرید',onClick:async ()=>{
+                      this.changeView({type:'campaign',items:await services("activeCampaignItems",{campaign:o,allProducts}),name:o.name,campaign:o})
+                    }}
+                  }
+                })
+              }
+            />
+          )
+        },
         this.preOrdersLayout(),
-        this.bestCellingsLayout(),
+        {html:(<CategorySlider 
+            title='پر فروش ترین محصولات' items={bestSellings} 
+            showAll={async ()=>this.changeView({type:'category',items:await this.getBestSellings(),name:'پر فروش ترین محصولات'})}
+            onClick={(product)=>this.changeView({type:'product',product})}
+        />)},
         this.familiesLayout(),
-        this.lastOrdersLayout(),
-        this.recommendedsLayout(),
+        {html:(<CategorySlider 
+          title='آخرین سفارشات شما' items={lastOrders} 
+          showAll={async ()=>this.changeView({type:'category',items:await this.getLastOrders(),name:'آخرین سفارشات شما'})}
+          onClick={(product)=>this.changeView({type:'product',product})}
+        />)},
+        {html:(<CategorySlider 
+          title='پیشنهاد سفارش' items={recommendeds} 
+          showAll={async ()=>this.changeView({type:'category',items:await this.getRecommendeds(),name:'پیشنهاد سفارش'})}
+          onClick={(product)=>this.changeView({type:'product',product})}
+      />)},
       ],
     };
   }
   tab2Layout() {
     let { categories } = this.state;
     return {
-      flex: 1,
-      scroll: "v",
-      gap: 12,
-      column: categories.map((o) => {
-        let { name, items } = o;
-        return {
-          flex: 1,
-          className: "box gap-no-color",
-          style: { padding: 12 },
-          attrs: {
-            onClick: () => {},
-          },
-          column: [
-            {
-              html: name,
-              className: "size14 color323130 bold",
-              size: 36,
-              align: "v",
-            },
-            {
-              flex: 1,
-              html: "تصویر",
-              className: "size14 color323130 bold",
-              size: 36,
-              align: "vh",
-            },
-
-            //{ gap: 16, row: items.map((o) => layout('productCard', { ...o, src: src1, style: { border: '1px solid #ddd' } })) }
-          ],
-        };
-      }),
-    };
-  }
-  showCategory(items,name){
-    this.setState({
-      view: "category",
-      activeCategoryItems: items,
-      activeCategoryName: name,
-    })
-  }
-  categoryLayout() {
-    let { view, activeCategoryItems, searchValue, activeCategoryName } = this.state;
-    let {cart} = this.context;
-    if (view !== "category") {return { html: "" };}
-    return {
-      flex: 1,style:{overflow:'hidden'},
+      flex: 1,className:'box gap-no-color padding-12',
+      gap: 24,childsProps:{flex:1},
       column: [
         {
-          size: 36,
-          html: activeCategoryName,
-          align: "vh",
-          className: "color605E5C size14 bold",
+          column:[
+            {flex:1,html:<img src={catLamp} alt='' width='100%'/>},
+            {size:36,align:'vh',html:'لامپ و چراغ',className:'color323130 size16 bold'}
+          ]
         },
         {
-          flex: 1,
-          scroll: "v",
-          gap: 12,
-          show: view === "category",
-          column: activeCategoryItems.map((o) => {
-            if (searchValue && o.name.indexOf(searchValue) === -1) {
-              return false;
-            }
-            return layout("productCard2", {product:o,cart,onClick:()=>{
-              this.setState({
-                view:'product',
-                activeProduct:o
-              })
-            }});
-          }),
+          column:[
+            {flex:1,html:<img src={catCable} alt='' width='100%'/>},
+            {size:36,align:'vh',html:'سیم  کابل',className:'color323130 size16 bold'}
+          ]
         },
+        {
+          column:[
+            {flex:1,html:<img src={catTools} alt='' width='100%'/>},
+            {size:36,align:'vh',html:'ابزار وسایر',className:'color323130 size16 bold'}
+          ]
+        }
       ],
     };
   }
-
   cartButtonLayout() {
     let { view } = this.state;
-    if (view === "cart") {
-      return { html: "" };
-    }
+    if (view.type === "cart") {return { html: "" };}
     let { cart } = this.context;
     let badge = 0;
     let variantIds = Object.keys(cart).map((o) => o);
@@ -618,201 +421,42 @@ export default class Buy extends Component {
           text={getSvg(45)}
           badge={badge ? badge : undefined}
           badgeAttrs={{ className: "badge-1" }}
-          onClick={() => this.setState({ view: "cart" })}
+          onClick={() => this.changeView({type:"cart"})}
         />
       ),
     };
   }
   headerLayout() {
-    let { campaigns, activeCampaignId, view } = this.state;
+    let {view } = this.state;
     let { SetState } = this.context;
-    console.log(activeCampaignId);
     return {
       className: "buy-header",
       size: 60,
       childsProps: { align: "vh" },
       row: [
-        {
-          size: 60,
-          html: getSvg(22),
-          attrs: { onClick: () => SetState({ sidemenuOpen: true }) },
-          show: view === "main",
-        },
-        {
-          size: 60,
-          html: getSvg("chevronLeft", { flip: true }),
-          attrs: { onClick: () => this.setState({ view: "main" }) },
-          show: view !== "main",
-        },
-        {
-          html: {
-            main: "خرید کالا",
-            category: "خرید کالا",
-            product: "خرید کالا",
-            cart: "سبد خرید",
-          }[view],
-          className: "size16 color605E5C",
-        },
+        {size: 60,html: getSvg(22),attrs: { onClick: () => SetState({ sidemenuOpen: true }) },show: view.type === "main"},
+        {size: 60,html: getSvg("chevronLeft", { flip: true }),attrs: { onClick: () => this.changeView('back')},show: view.type !== "main"},
+        {html: {main: "خرید کالا",category: "خرید کالا",campaign: "خرید کالا",product: "خرید کالا",cart: "سبد خرید"}[view.type],className: "size16 color605E5C"},
         { flex: 1 },
-        {
-          html: (
-            <AIOButton
-              type="select"
-              className="buy-tarh-button"
-              before={getSvg(44)}
-              gap={6}
-              caret={false}
-              value={activeCampaignId}
-              optionStyle={'{borderBottom:"1px solid #ddd"}'}
-              optionValue="option.id"
-              optionText="option.name"
-              text={this.activeCampaign.name}
-              options={campaigns}
-              onChange={(value) => this.setState({ activeCampaignId: value })}
-            />
-          ),
-        },
-        { size: 16 },
         this.cartButtonLayout(),
         { size: 16 },
       ],
     };
   }
-  searchLayout() {
-    let { searchValue, view } = this.state;
-    if (view !== "category" && view !== "main") {
-      return { html: "" };
-    }
-    return layout("search", {
-      onChange: (searchValue) => this.setState({ searchValue }),
-      value: searchValue,
-    });
-  }
   tabsLayout() {
     let { tabs, activeTabId, view } = this.state;
-    if (view !== "main") {return { html: "" };}
+    if (view.type !== "main") {return { html: "" };}
     return {
       flex: 1,style:{overflow:'hidden'},
       column: [
-        layout("tabs", {tabs,activeTabId,onClick: (obj) => this.setState({ activeTabId: obj.id })}),
+        this.context.layout("tabs", {tabs,activeTabId,onClick: (obj) => this.setState({ activeTabId: obj.id })}),
         activeTabId === "1" ? this.tab1Layout() : this.tab2Layout(),
       ],
     };
   }
-  productLayout() {
-    let { cart, SetState } = this.context;
-    let { activeProduct, activeCampaignId, view } = this.state;
-    if (view !== "product") {
-      return { html: "" };
-    }
-    return {
-      flex: 1,
-      html: (
-        <Product
-          product={activeProduct}
-          onClose={() => this.setState({ activeProduct: false, view: "main" })}
-          activeCampaignId={activeCampaignId}
-          cart={cart}
-          changeCart={(variantId, count) => {
-            let { cart } = this.context;
-            cart[variantId] = cart[variantId] || {};
-            cart[variantId].count = count;
-            cart[variantId].variant = activeProduct.variants.filter((o) => o.id === variantId)[0];
-            cart[variantId].product = activeProduct;
-            SetState({ cart });
-          }}
-        />
-      ),
-    };
-  }
-  getProductSrc(product,variantId){
-    let {srcs = [],defaultVariant = {}} = product
-    return (srcs.length === 0?defaultVariant.srces || []:srcs)[0];
-  }
-  cartLayout() {
-    let { view } = this.state;
-    if (view !== "cart") {
-      return { html: "" };
-    }
-    let { splitPrice, cart } = this.context;
-    let ids = Object.keys(cart);
-    let basketTotal = 0;
-    let cartItems = ids.map((o, i) => {
-      let { product, count, variant } = cart[o];
-      let { name, optionTypes } = product;
-      let { price, discountPrice, discountPercent, optionValues } = variant;
-      let total = price * count;
-      basketTotal += total;
-      let details = [];
-      for (let j = 0; j < optionTypes.length; j++) {
-        let optionType = optionTypes[j];
-        details.push([optionType.name, optionValues[optionType.id]]);
-      }
-      return {
-        name,count,src: this.getProductSrc(product,o),price:total,details,
-        discountPrice,discountPercent,isFirst: i === 0,isLast: i === ids.length - 1,
-        changeCount:(count) => {
-          let { cart,SetState } = this.context;
-          if(count === 0){
-            let newCart = {};
-            for(let variantId in cart){if(variantId !== o){newCart[variantId] = cart[variantId]}}
-            cart = newCart;
-          }
-          else{
-            cart[o].count = count;  
-          }
-          SetState({ cart });
-        }
-      };
-    });
-    return {
-      flex: 1,
-      column: [
-        {
-          show:cartItems.length !== 0,flex: 1,
-          column: cartItems.map((o) => layout("productCard2", {...o})),
-        },
-        {
-          show:cartItems.length === 0,
-          flex:1,align:'vh',
-          html:'سبد خرید شما خالی است'
-        },
-        {
-          size: 72,show:cartItems.length !== 0,
-          className: "main-bg padding-0-12",
-          row: [
-            {
-              flex: 1,
-              column: [
-                { flex: 1 },
-                {
-                  align: "v",
-                  html: "مبلغ قابل پرداخت",
-                  className: "color5757656 size12",
-                },
-                {
-                  align: "v",
-                  html: splitPrice(basketTotal) + " ریال",
-                  className: "color323130 size16",
-                },
-                { flex: 1 },
-              ],
-            },
-            {
-              html: <button className="button-2">ادامه فرایند خرید</button>,
-              align: "v",
-            },
-          ],
-        },
-      ],
-    };
-  }
   render() {
-    let { campaigns, activeCampaignId } = this.state;
-    this.activeCampaign =
-      activeCampaignId !== false
-        ? campaigns.filter((o) => o.id === activeCampaignId)[0]
-        : {};
+    let { view,searchValue} = this.state;
+    let { cart,SetState } = this.context;
     return (
       <>
         <RVD
@@ -822,11 +466,39 @@ export default class Buy extends Component {
             style: { width: "100%" },
             column: [
               this.headerLayout(),
-              this.searchLayout(),
+              this.context.layout("search", {show:view.type === 'main',value: searchValue,onChange: (searchValue) => this.setState({ searchValue })}),
               this.tabsLayout(),
-              this.categoryLayout(),
-              this.productLayout(),
-              this.cartLayout(),
+              {
+                flex:1,show:view.type === "category" || view.type === 'campaign',
+                html:()=>(
+                  <CategoryView 
+                    items={view.items} name={view.name} type={view.type} cart={cart} campaign={view.campaign}
+                    onClick={(o)=>this.changeView({type:'product',product:o})}
+                  />
+                )
+              },
+              {
+                flex:1,show:view.type === 'shipping',
+                html:()=>(<Shipping items={view.items}/>)
+              },
+              {
+                flex: 1,show:view.type === "product",
+                html: ()=>(
+                  <Product
+                    product={view.product}
+                    onClose={() => this.changeView({type:"main"})}
+                    changeCart={(cart) => SetState({ cart })}
+                  />
+                ),
+              },
+              {
+                show:view.type === 'cart',flex: 1,
+                html:()=>(
+                  <Cart cart={cart} onChange={(cart)=>SetState({cart})} onContinue={(items)=>{
+                    this.changeView({type:'shipping',items})
+                  }}/>
+                )
+              },
             ],
           }}
         />
@@ -883,41 +555,15 @@ class Product extends Component {
             return {
               column: [
                 { size: 12 },
-                {
-                  html: name,
-                  align: "v",
-                  className: "size14 color605E5C padding-0-12",
-                },
+                {html: name,align: "v",className: "size14 color605E5C padding-0-12"},
                 { size: 6 },
                 {
-                  className: "padding-0-12",
-                  gap: 12,
+                  className: "padding-0-12",scroll:'h',gap: 12,
                   row: items.map((item) => {
-                    let active = optionValues[id] === item.id;
-                    let style;
-                    if (active) {
-                      style = {
-                        border: "2px solid #0094D4",
-                        color: "#fff",
-                        background: "#0094D4",
-                        borderRadius: 6,
-                      };
-                    } else {
-                      style = {
-                        border: "2px solid #999",
-                        color: "#605E5C",
-                        borderRadius: 6,
-                      };
-                    }
-                    return {
-                      html: item.name,
-                      align: "vh",
-                      className: "size14 padding-3-12",
-                      style,
-                      attrs: {
-                        onClick: () => this.changeOptionType(id, item.id),
-                      },
-                    };
+                    let active = optionValues[id] === item.id,style;
+                    if (active) {style = {border: "2px solid #0094D4",color: "#fff",background: "#0094D4",borderRadius: 6};} 
+                    else {style = {border: "2px solid #999",color: "#605E5C",borderRadius: 6}}
+                    return {html: item.name,align: "vh",className: "size14 padding-3-12",style,attrs: {onClick: () => this.changeOptionType(id, item.id),}};
                   }),
                 },
               ],
@@ -925,45 +571,6 @@ class Product extends Component {
           }),
         },
         { size: 12 },
-      ],
-    };
-  }
-  compairePricesLayout(campaignsPrices) {
-    let { activeCampaignId } = this.props;
-    let { splitPrice } = this.context;
-    return {
-      className: "box gap-no-color padding-6-12",
-      column: [
-        {
-          size: 36,
-          align: "v",
-          html: "مقایسه قیمت در طرح ها",
-          className: "size14 color605E5C",
-        },
-        {
-          gap: 36,
-          row: campaignsPrices.map((o) => {
-            return {
-              childsProps: { align: "vh", size: 30 },
-              column: [
-                {
-                  html: o.name,
-                  className:
-                    activeCampaignId === o.id
-                      ? "color0094D4 size12"
-                      : "colorA19F9D size12",
-                },
-                {
-                  html: o.price ? splitPrice(o.price) : "نا موجود",
-                  className:
-                    o.price || activeCampaignId !== o.id
-                      ? "size16 color605E5C bold"
-                      : "size14 colorD83B01 bold",
-                },
-              ],
-            };
-          }),
-        },
       ],
     };
   }
@@ -975,12 +582,12 @@ class Product extends Component {
         <div
           style={{display: "grid",gridTemplateColumns: "auto auto",gridGap: 1,width: "100%",background: "#DADADA"}}
         >
-          {details.map((o) => {
+          {details.map((o,i) => {
             return (
-              <>
+              <Fragment key={i}>
                 <div className="size12 color605E5C padding-6-12" style={{ background: "#F4F4F4" }}>{o[0]}</div>
                 <div className="size12 color605E5C padding-6-12" style={{ background: "#F4F4F4" }}>{o[1]}</div>
-              </>
+              </Fragment>
             );
           })}
         </div>
@@ -988,11 +595,9 @@ class Product extends Component {
     };
   }
   pictureLayout(name, code, src) {
-    let {product} = this.props;
-    let {srcIndex} = this.state;
+    let {product} = this.props,{srcIndex} = this.state;
     return {
-      size: 346,
-      className: "box",
+      size: 346,className: "box",
       column: [
         { size: 24 },
         {
@@ -1034,7 +639,7 @@ class Product extends Component {
         {
           row: [
             { flex: 1 },
-            { html: selectedVariant.price * count, className: "color323130 bold" },
+            { html: selectedVariant.price, className: "color323130 bold" },
             { size: 6 },
             { html: "ریال", className: "color323130 bold" },
           ],
@@ -1067,28 +672,61 @@ class Product extends Component {
       column: [
         this.pictureLayout(name, code, srcs[srcIndex]),
         this.optionTypesLayout(optionTypes),
-        //this.compairePricesLayout(campaignsPrices),
         this.detailsLayout(details),
       ],
     };
   }
+  changeCart(variantId,count){
+    let { product,changeCart } = this.props;
+    let {cart} = this.context;
+    let {selectedVariant} = this.state;
+    let {inStock = 0} = selectedVariant;
+    if(inStock === null){inStock = 0}
+    if(count > inStock){return;}
+    if(count < 0){return}
+    let newCart = {
+      ...cart,
+      [variantId]:{
+        ...(cart[variantId] || {}),
+        count,product,
+        variant:product.variants.filter((o) => o.id === variantId)[0]
+      }
+    };
+    changeCart(newCart);
+  }
   getCountByVariant() {
     let { selectedVariant } = this.state;
-    let { cart } = this.props;
+    if(!selectedVariant){return 0}
+    let { cart } = this.context;
     if (!Object.keys(cart).length) {return 0;}
     let obj = cart[selectedVariant.id];
     if (!obj) {return 0;}
     let { count = 0 } = cart[selectedVariant.id];
     return count;
   }
+  touchStart(variantId,dir,e){
+    this.changeCart(variantId, this.getCountByVariant() + dir)
+    $(window).bind('touchend',$.proxy(this.touchEnd,this))
+    this.timeout = setTimeout(()=>{
+      this.interval = setInterval(()=>{
+        this.changeCart(variantId,this.getCountByVariant() + dir)
+      },100)
+    },500)
+    
+  }
+  touchEnd(){
+    $(window).unbind('touchend',this.touchEnd)
+    clearTimeout(this.timeout)
+    clearInterval(this.interval) 
+  }
   addToCartLayout(count) {
     let { selectedVariant } = this.state;
-    let { changeCart } = this.props;
+    if(!selectedVariant){return {html:''}}
     if (!count) {
       return {
         html: (
           <button
-            onClick={() => changeCart(selectedVariant.id, 1)}
+            onClick={() => this.changeCart(selectedVariant.id, 1)}
             className={"button-2" + (!selectedVariant ? " disabled" : "")}
           >
             افزودن به سبد خرید
@@ -1100,9 +738,9 @@ class Product extends Component {
     return {
       childsProps: { align: "vh" },
       row: [
-        {html: (<div onClick={()=>changeCart(selectedVariant.id, this.getCountByVariant() + 1)} className='product-count-button'>+</div>)},
+        {html: (<div onTouchStart={(e)=>this.touchStart(selectedVariant.id,1,e)} className='product-count-button'>+</div>)},
         { size: 60, html: count },
-        {html: (<div onClick={() =>changeCart(selectedVariant.id, this.getCountByVariant() - 1)} className='product-count-button'>-</div>)},
+        {html: (<div onTouchStart={(e) =>this.touchStart(selectedVariant.id,-1,e)} className='product-count-button'>-</div>)},
       ],
     };
   }
@@ -1122,5 +760,370 @@ class Product extends Component {
         }}
       />
     );
+  }
+}
+//props : cart,onChange
+class Cart extends Component{
+  static contextType = appContext
+  constructor(props){
+    super(props);
+    this.state = {activeTabId:'regular'}
+  }
+  changeCount(variantId,count){
+    let { cart,onChange } = this.props;
+    let newCart;
+    if(count === 0){
+      newCart = {};
+      for(let id in cart){
+        if(id !== variantId){newCart[id] = cart[id]}
+      }
+    }
+    else{
+      newCart = {...cart,[variantId]:{...cart[variantId],count}} 
+    }
+    onChange(newCart);
+  }
+  getDetails(variantIds){
+      let { activeTabId } = this.state,{ cart } = this.props,tabsDictionary = {},tabs = [];
+    let cartItems = variantIds.map((variantId, i) => {
+      let { product, count, variant } = cart[variantId];
+      let { name, optionTypes,campaign } = product;
+      let { price, discountPrice, discountPercent, optionValues } = variant;
+      if(!campaign){
+        if(!tabsDictionary['regular']){
+          tabsDictionary['regular'] = 0;
+          tabs.push({title:'خرید عادی',id:'regular',flex:1,badge:()=>tabsDictionary['regular']})
+        }
+        tabsDictionary['regular'] += count;
+      }
+      else{
+        if(!tabsDictionary[campaign.id]){
+          tabsDictionary[campaign.id] = 0;
+          tabs.push({title:campaign.name,id:campaign.id,flex:1,badge:()=>tabsDictionary[campaign.id]})
+        }
+        tabsDictionary[campaign.id] += count;
+      }
+      let details = [];
+      for (let j = 0; j < optionTypes.length; j++) {
+        let optionType = optionTypes[j];
+        details.push([optionType.name, optionValues[optionType.id]]);
+      }
+      return {
+        name,count,src: functions.getProductSrc(product),price:price * count,details,campaign:product.campaign,
+        discountPrice,discountPercent,isFirst: i === 0,isLast: i === variantIds.length - 1,
+        changeCount:(count) => this.changeCount(variantId,count)
+      };
+    });
+    if(!tabsDictionary[activeTabId]){activeTabId = tabs[0].id; this.state.activeTabId = activeTabId;}
+    let basketTotal = 0;
+    let filteredCartItems = cartItems.filter(({campaign,price})=>{
+      if(activeTabId === 'regular'){
+        if(campaign === undefined){basketTotal += price; return true}
+        return false;
+      }
+      if(campaign && campaign.id === activeTabId){basketTotal += price; return true}
+      return false
+    });
+    return {cartItems,filteredCartItems,basketTotal,activeTabId,tabs}
+  }
+  render(){
+    let { cart } = this.props,variantIds = Object.keys(cart);
+    let {cartItems = [],filteredCartItems = [],basketTotal,activeTabId,tabs} = (variantIds.length?this.getDetails(variantIds):{});
+    let {onContinue} = this.props;
+    return (
+      <RVD
+        layout={{
+          flex: 1,
+          column: [
+            this.context.layout("tabs", {show:cartItems.length !== 0,tabs,activeTabId,onClick: (obj) => this.setState({ activeTabId: obj.id })}),
+            {
+              show:filteredCartItems.length !== 0,flex: 1,
+              column: filteredCartItems.map((o) => this.context.layout("productCard2", {...o})),
+            },
+            {show:cartItems.length === 0,flex:1,align:'vh',html:'سبد خرید شما خالی است'},
+            {
+              size: 72,show:cartItems.length !== 0,className: "main-bg padding-0-12",
+              row: [
+                {
+                  flex: 1,
+                  column: [
+                    { flex: 1 },
+                    {align: "v",html: "مبلغ قابل پرداخت",className: "color5757656 size12"},
+                    {align: "v",html: functions.splitPrice(basketTotal) + " ریال",className: "color323130 size16"},
+                    { flex: 1 },
+                  ],
+                },
+                {show:cartItems.length !== 0,html: ()=><button onClick={()=>onContinue(filteredCartItems)} className="button-2">ادامه فرایند خرید</button>,align: "v"},
+              ],
+            },
+          ],
+        }}
+      />
+    )
+  }
+}
+
+class CategorySlider extends Component{
+  static contextType = appContext;
+  render(){
+    let {items = [],title,showAll,onClick = ()=>{}} = this.props;
+    if(items.length === 0){return null}
+    return (
+      <RVD
+        layout={{
+          className: "box gap-no-color",style: { padding: 12 },scroll:'v',
+          column: [
+            {
+              size:36,
+              row:[
+                {html:title,className: "size14 color323130 bold",align: "v"},
+                {size:6},
+                {
+                  show:showAll !== undefined,html: "مشاهده همه",className: "size12 color0094D4 bold",align: "v",
+                  attrs:{onClick:()=>showAll()}
+                },
+              ]
+            },
+            {
+              gap: 16,scroll:'h',
+              row: items.map((o) =>this.context.layout("productCard", {product:o,onClick:()=>onClick(o)})),
+            },
+          ],
+        }}
+      />
+    )
+  }
+}
+class CategoryView extends Component{
+  static contextType = appContext;
+  constructor(props){
+    super(props);
+    this.state = {searchValue:''}
+  }
+  render(){
+    let {name,type,items,campaign} = this.props;
+    return (
+      <RVD
+        layout={{
+          flex: 1,style:{overflow:'hidden'},
+          column: [
+            {show:type === 'category',size: 36,html: name,align: "vh",className: "color605E5C size14 bold"},
+            {
+              show:type === 'campaign',
+              html:()=><ContentSlider items={[{title:campaign.name,color:campaign.color,background:campaign.background,icon:<img src={campaign.src} alt='' height='100%'/>,}]}/>
+            },
+            {
+              size:36,align:'vh',show:type === 'campaign',html:'معرفی جشنواره',className:'size12 colorA19F9D'
+            },
+            {
+              align:'vh',show:type === 'campaign',
+              html:'لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط فعلی تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد.',
+              className:'size14 color323130 padding-12'
+            },
+            {
+              size:36,align:'v',show:type === 'campaign',html:'کالاهای جشنواره',className:'size16 color323130 bold padding-0-12'
+            },
+            {
+              flex: 1,
+              scroll: "v",
+              gap: 12,
+              column: items.map((o) => {
+                let {searchValue} = this.state;
+                let {onClick = ()=>{}} = this.props;
+                if (searchValue && o.name.indexOf(searchValue) === -1) {return false;}
+                return this.context.layout("productCard2", {product:o,onClick:()=>onClick(o)});
+              }),
+            },
+          ],
+        }}
+      />
+    )
+  }
+}
+
+class Shipping extends Component{
+  static contextType = appContext;
+  constructor(props){
+    super(props);
+    this.state = {
+      name:'حسین تیموری',
+      code:'c42345',
+      campaign:'فروش ویژه 10 وات',
+      basePrice:'پاییز',
+      discountPercent:'الکتریکی',
+      address:'ونک - خیابان گاندی - نبش کوچه نوزدهم - بن بست چهارم - پلاک 122 طبقه',
+      phone:'09123534314',
+      shippingMethod:'0',
+      paymentMethod:'0'
+    }
+  }
+  render(){
+    let {phone,address,shippingMethod,name,code,campaign,basePrice,discountPercent,paymentMethod} = this.state;
+    let {items = []} = this.props;
+    return (
+      <RVD
+        layout={{
+          flex:1,scroll:'v',
+          column:[
+            {
+              className:'box padding-12',
+              column:[
+                {
+                  size:36,childsProps:{align:'v'},
+                  row:[
+                    {html:'نام مشتری:',className:'colorA19F9D size14'},
+                    {html:name,className:'size14'}
+                  ]
+                },
+                {
+                  size:36,childsProps:{align:'v'},
+                  row:[
+                    {html:'کد مشتری:',className:'colorA19F9D size14'},
+                    {html:code,className:'size14'},
+                    {flex:1},
+                    {html:'درصد تخفیف:',className:'colorA19F9D size14'},
+                    {html:discountPercent,className:'size14'},
+                  ]
+                },
+                {
+                  size:36,childsProps:{align:'v'},
+                  row:[
+                    {html:'نام کمپین:',className:'colorA19F9D size14'},
+                    {html:campaign,className:'size14'},
+                    {flex:1},
+                    {html:'قیمت پایه:',className:'colorA19F9D size14'},
+                    {html:basePrice,className:'size14'},
+                  ]
+                }
+              ]
+            },
+            {size:12},
+            {
+              className:'box padding-12',
+              column:[
+                {size:36,align:'v',className:'color605E5C size14 bold',html:'آدرس تحویل'},
+                {
+                  className:'size14 color575756 bgF1F1F1 padding-12 round-6',html:address
+                }
+              ]
+            },
+            {size:12},
+            {
+              className:'box padding-12',
+              column:[
+                {size:36,align:'v',className:'color605E5C size14 bold',html:'شماره تلفن'},
+                {
+                  className:'size14 color575756 bgF1F1F1 padding-12 round-6',html:phone
+                }
+              ]
+            },
+            {size:12},
+            {
+              className:'box padding-12',
+              column:[
+                {size:36,align:'v',className:'color605E5C size14 bold',html:'نحوه ارسال'},
+                {
+                  html:(
+                    <AIOButton
+                      type='radio'
+                      value={shippingMethod}
+                      options={[
+                        {value:'0',text:'ماشین توزیع شرکت بروکس (پیشنهادی)'},
+                        {value:'1',text:'ماشین باربری'},
+                      ]}
+                      onChange={(shippingMethod)=>this.setState({shippingMethod})}
+                      optionStyle={{width:'100%'}}
+
+                    />
+                  )
+                }
+              ]
+            },
+            {size:12},
+            {
+              className:'box padding-12',
+              column:[
+                {size:36,align:'v',className:'color605E5C size14 bold',html:'یادداشت'},
+                {
+                  className:'size14 color575756 bgF1F1F1 padding-12 round-6',html:''
+                }
+              ]
+            },
+            {size:12},
+            {
+              className:'box padding-12',
+              column:[
+                {size:36,align:'v',className:'color605E5C size14 bold',html:'محصولات'},
+                {
+                  column:items.map((o)=>{
+                    return this.context.layout('productCard2',o)
+                  })
+                }
+              ]
+            },
+            {size:12},
+            {
+              className:'box padding-12',
+              column:[
+                {size:36,align:'v',className:'color605E5C size14 bold',html:'نحوه پرداخت'},
+                {
+                  html:(
+                    <AIOButton
+                      type='radio'
+                      value={paymentMethod}
+                      options={[
+                        {value:'0',text:'آنلاین'},
+                        {value:'1',text:'واریز (کارت به کارت)'},
+                      ]}
+                      onChange={(paymentMethod)=>this.setState({paymentMethod})}
+                      optionStyle={{width:'100%'}}
+
+                    />
+                  )
+                }
+              ]
+            },
+            {size:12},
+            {
+              className:'box padding-12',
+              column:[
+                {
+                  size:36,childsProps:{align:'v'},
+                  row:[
+                    {html:'قیمت کالاها:',className:'color605E5C size14'},
+                    {flex:1},
+                    {html:61000 + ' ریال',className:'color605E5C size14'}
+                  ]
+                },
+                {
+                  size:36,childsProps:{align:'v'},
+                  row:[
+                    {html:'تخفیف:',className:'colorFDB913 size14'},
+                    {flex:1},
+                    {html:7000 + ' ریال',className:'colorFDB913 size14'}
+                  ]
+                },
+                {
+                  size:36,childsProps:{align:'v'},
+                  row:[
+                    {html:'تخفیف پرداخت آنلاین:',className:'color00B5A5 size14'},
+                    {flex:1},
+                    {html:2000 + ' ریال',className:'color00B5A5 size14'}
+                  ]
+                },
+                {
+                  size:36,childsProps:{align:'v'},
+                  row:[
+                    {html:'مبلغ قابل پرداخت:',className:'color323130 bold size16'},
+                    {flex:1},
+                    {html:5344500 + ' ریال',className:'color323130 bold size16'}
+                  ]
+                },
+              ]
+            },
+          ]
+        }}
+      />
+    )
   }
 }

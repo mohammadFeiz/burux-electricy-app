@@ -396,26 +396,19 @@ export default class Buy extends Component {
     return {
       flex: 1,className:'box gap-no-color padding-12',scroll:'v',
       gap: 24,childsProps:{flex:1},
-      column: [
-        {
+      column:categories.map((o)=>{
+        return {
+          attrs:{
+            onClick:()=>{
+              this.changeView({type:'category',items:o.items,name:o.name})
+            }
+          },
           column:[
-            {flex:1,html:<img src={catLamp} alt='' width='100%'/>},
-            {size:36,align:'vh',html:'لامپ و چراغ',className:'color323130 size16 bold'}
-          ]
-        },
-        {
-          column:[
-            {flex:1,html:<img src={catCable} alt='' width='100%'/>},
-            {size:36,align:'vh',html:'سیم  کابل',className:'color323130 size16 bold'}
-          ]
-        },
-        {
-          column:[
-            {flex:1,html:<img src={catTools} alt='' width='100%'/>},
-            {size:36,align:'vh',html:'ابزار وسایر',className:'color323130 size16 bold'}
-          ]
+            {size:200,html:<img src={catLamp} alt='' width='100%'/>},
+            {size:36,align:'vh',html:o.name,className:'color323130 size16 bold'}
+          ] 
         }
-      ],
+      })
     };
   }
   cartButtonLayout() {

@@ -44,7 +44,6 @@ export default async function services(type, parameter, loading = true) {
       });
     },
     async kalahaye_garanti_shode() {
-      return []
       let res = await Axios.post(
         "https://retailerapp.bbeta.ir/api/v1/Guarantee/GetAllGuarantees",
         { CardCode: "C50000" }
@@ -336,7 +335,7 @@ export default async function services(type, parameter, loading = true) {
       });
     },
     async getCategories() {
-      return []
+      let { allProducts } = parameter;
       let res = await Axios.get(
         `https://retailerapp.bbeta.ir/api/v1/Spree/GetAllCategories`
       );
@@ -357,20 +356,14 @@ export default async function services(type, parameter, loading = true) {
           }
         );
         let items = res.data.data.data;
-        let included = res.data.data.included;
-        o.items = items.map((item) => {
-          let imgId = item.relationships.images.data[0].id;
-          let src = included.filter((m) => m.id === imgId)[0].attributes
-            .original_url;
-          return {
-            name: item.attributes.name,
-            price: item.attributes.price,
-            discountPercent: 0,
-            discountPrice: 0,
-            src: `http://spree.burux.com${src}`,
-          };
+        o.items = items.filter((item) => {
+          return allProducts[item.id] !== undefined;
         });
+        o.items=o.items.map(o=>{
+          return allProducts[o.id];
+        })
       }
+      console.log(categories);
       return categories;
     },
     async families(){

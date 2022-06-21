@@ -278,7 +278,7 @@ export default async function services(type, parameter, loading = true) {
       if(count !== undefined){products = products.slice(0,Math.min(count,products.length))}
       return products.map((o) =>allProducts[o.toString()])
     },
-    async bestCellings({allProducts,count}){
+    async bestSellings({allProducts,count}){
       let products = Object.keys(allProducts);
       if(count !== undefined){products = products.slice(0,Math.min(count,products.length))}
       return products.map((o) =>allProducts[o.toString()])
@@ -334,37 +334,42 @@ export default async function services(type, parameter, loading = true) {
         };
       });
     },
+    getFromCache(key,minutes = 0){
+      let storage = localStorage.getItem(key);
+      if(storage === undefined || storage === null){return false}
+      let {time,data} = JSON.parse(storage);
+      if((new Date().getTime() / 60000) - (time / 60000) > minutes){return false}
+      return data;
+    },
+    setToCache(key,data){
+      let time = new Date().getTime();
+      localStorage.setItem(key,JSON.stringify({time,data}))
+    },
     async getCategories() {
-      let { allProducts } = parameter;
       let res = await Axios.get(
         `https://retailerapp.bbeta.ir/api/v1/Spree/GetAllCategories`
       );
       let included = res.data.data.included;
       let categories = included.map((o) => {
-        return {
-          name: o.attributes.name,
-          id: o.id,
-        };
+        return {name: o.attributes.name,id: o.id};
       });
       for (let i = 0; i < categories.length; i++) {
-        let o = categories[i];
-        let res = await Axios.post(
-          `https://retailerapp.bbeta.ir/api/v1/Spree/Products`,
-          {
-            Include: "images",
-            Taxons: o.id.toString(),
-          }
-        );
-        let items = res.data.data.data;
-        o.items = items.filter((item) => {
-          return allProducts[item.id] !== undefined;
-        });
-        o.items=o.items.map(o=>{
-          return allProducts[o.id];
-        })
+        categories[i].items = await $$.getCategoryItems(categories[i]);
       }
-      console.log(categories);
       return categories;
+    },
+    async getCategoryItems(category = parameter.category){
+      let { allProducts } = parameter;
+      let res = await Axios.post(`https://retailerapp.bbeta.ir/api/v1/Spree/Products`,{Include: "images",Taxons: category.id.toString()});
+      let items = res.data.data.data;
+      let result = [];
+      for(let i = 0; i < items.length; i++){
+        let item = items[i];
+        let product = allProducts[item.id]
+        if(!product){continue}
+        result.push(product)
+      }
+      return result;
     },
     async families(){
       return [
@@ -519,8 +524,19 @@ export default async function services(type, parameter, loading = true) {
       return res;
     }
   };
-  if (loading) {
-    $(".loading").css("display", "flex");
+  if (loading) {$(".loading").css("display", "flex");}
+  let storageDictionary = {//minutes
+    'getCategories':20,
+  }
+  if(storageDictionary[type]){
+    let cache = $$.getFromCache('storage-' + type,storageDictionary[type]);
+    if(cache !== false){return cache}
+    else{
+      let result = await $$[type](parameter);
+      $(".loading").css("display", "none");
+      $$.setToCache('storage-' + type,result);
+      return result;        
+    }
   }
   let result = await $$[type](parameter);
   $(".loading").css("display", "none");

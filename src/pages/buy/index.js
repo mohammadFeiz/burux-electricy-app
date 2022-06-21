@@ -140,13 +140,17 @@ export default class Buy extends Component {
     let campaigns = await services("getCampaigns");
     this.setState({ campaigns});
   }
+  async getCampaignItems(campaign){
+    let {allProducts} = this.context;
+    return await services("activeCampaignItems",{campaign,allProducts})
+  }
   async getPreOrders() {
     let {allProducts} = this.context;
     let preOrders = await services("preOrders",{allProducts});
     this.setState({ preOrders });
   }
   async getCategories() {
-    let {allProducts} = this.context;
+    let {allProducts} = this.context;  
     let categories = await services("getCategories",{allProducts});
     this.setState({ categories });
   }
@@ -155,22 +159,22 @@ export default class Buy extends Component {
     let families = await services('families',{allProducts});
     this.setState({ families });
   }
-  async getRecommendeds(count) {
+  async get_recommendeds(count) {
     let {allProducts} = this.context;
     let recommendeds = await services('recommendeds',{allProducts,count});
     if(count){this.setState({ recommendeds });}
     else {return recommendeds}
   }
-  async getLastOrders(count) {
+  async get_lastOrders(count) {
     let {allProducts} = this.context;
     let lastOrders = await services("lastOrders",{allProducts,count});
     this.setState({ lastOrders });
     if(count){this.setState({ lastOrders });}
     else {return lastOrders}
   }
-  async getBestSellings(count) {
+  async get_bestSellings(count) {
     let {allProducts} = this.context;
-    let bestSellings = await services('bestCellings',{allProducts,count});
+    let bestSellings = await services('bestSellings',{allProducts,count});
     if(count){this.setState({ bestSellings });}
     else {return bestSellings}
   }
@@ -253,11 +257,11 @@ export default class Buy extends Component {
   //dont set async for parallel data fetching
   componentDidMount() {
     this.getCampaignsData();
-    this.getLastOrders(10);
+    this.get_lastOrders(10);
     this.getFamilies();
     this.getPreOrders();
-    this.getRecommendeds(10);
-    this.getBestSellings(10);
+    this.get_recommendeds(10);
+    this.get_bestSellings(10);
     this.getCategories();
     this.context.SetState({buy_view:undefined})
   }
@@ -347,47 +351,44 @@ export default class Buy extends Component {
       ],
     };
   }
+  categorySlidersLayout(){
+    let sliders = [
+      ['bestSellings','پر فروش ترین محصولات'],
+      ['lastOrders','آخرین سفارشات شما'],
+      ['recommendeds','پیشنهاد سفارش']
+    ]
+    return {
+      gap:12,
+      column:sliders.map(([key,name])=>{
+        return {
+          html:()=>(
+            <CategorySlider 
+              title={name} items={this.state[key]} 
+              showAll={async ()=>this.changeView({type:'category',items:await this['get_' + key](),name})}
+              onClick={(product)=>this.changeView({type:'product',product})}
+            />
+          )
+        }
+      })
+    }
+  }
   tab1Layout() {
-    let {bestSellings,lastOrders,recommendeds,campaigns} = this.state;
-    let {allProducts} = this.context;
+    let {campaigns} = this.state;
+    
     return {
       flex: 1,scroll: "v",className:'buy-tab-1',gap: 12,
       column: [
         {
-          html:(
-            <ContentSlider 
-              style={{borderRadius:16}} 
-              items={
-                campaigns.map((o)=>{
-                  let {color,background,name,src} = o;
-                  return {
-                    title:name,color,background,icon:<img src={src} alt='' height='100%'/>,
-                    button:{text:'خرید',onClick:async ()=>{
-                      this.changeView({type:'campaign',items:await services("activeCampaignItems",{campaign:o,allProducts}),name:o.name,campaign:o})
-                    }}
-                  }
-                })
-              }
+          html:()=>(
+            <CampaignSlider 
+              campaigns={campaigns} 
+              onClick={async (campaign)=>this.changeView({type:'campaign',items:await this.getCampaignItems(campaign),name:campaign.name,campaign})}
             />
           )
         },
         this.preOrdersLayout(),
-        {html:(<CategorySlider 
-            title='پر فروش ترین محصولات' items={bestSellings} 
-            showAll={async ()=>this.changeView({type:'category',items:await this.getBestSellings(),name:'پر فروش ترین محصولات'})}
-            onClick={(product)=>this.changeView({type:'product',product})}
-        />)},
         this.familiesLayout(),
-        {html:(<CategorySlider 
-          title='آخرین سفارشات شما' items={lastOrders} 
-          showAll={async ()=>this.changeView({type:'category',items:await this.getLastOrders(),name:'آخرین سفارشات شما'})}
-          onClick={(product)=>this.changeView({type:'product',product})}
-        />)},
-        {html:(<CategorySlider 
-          title='پیشنهاد سفارش' items={recommendeds} 
-          showAll={async ()=>this.changeView({type:'category',items:await this.getRecommendeds(),name:'پیشنهاد سفارش'})}
-          onClick={(product)=>this.changeView({type:'product',product})}
-      />)},
+        this.categorySlidersLayout(),
       ],
     };
   }
@@ -513,6 +514,25 @@ export default class Buy extends Component {
         />
       </>
     );
+  }
+}
+class CampaignSlider extends Component{
+  render(){
+    let {campaigns,onClick} = this.props;
+    return (
+      <ContentSlider 
+        style={{borderRadius:16}} 
+        items={
+          campaigns.map((o)=>{
+            let {color,background,name,src} = o;
+            return {
+              title:name,color,background,icon:<img src={src} alt='' height='100%'/>,
+              button:{text:'خرید',onClick:()=>onClick(o)}
+            }
+          })
+        }
+      />
+    )
   }
 }
 class Product extends Component {
@@ -917,7 +937,7 @@ class CategoryView extends Component{
     return (
       <RVD
         layout={{
-          flex: 1,style:{overflow:'hidden'},
+          flex: 1,scroll: "v",
           column: [
             {show:type === 'category',size: 36,html: name,align: "vh",className: "color605E5C size14 bold"},
             {
@@ -936,8 +956,6 @@ class CategoryView extends Component{
               size:36,align:'v',show:type === 'campaign',html:'کالاهای جشنواره',className:'size16 color323130 bold padding-0-12'
             },
             {
-              flex: 1,
-              scroll: "v",
               gap: 12,
               column: items.map((o) => {
                 let {searchValue} = this.state;

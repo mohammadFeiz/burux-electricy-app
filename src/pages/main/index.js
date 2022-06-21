@@ -33,6 +33,8 @@ export default class Main extends Component {
       activeBottomMenu: "a",
       popup: {},
       searchValue: "",
+      peygiriyeSefaresheKharid_tab:undefined,
+      buy_view:undefined
     };
   }
   async componentDidMount() {
@@ -73,12 +75,12 @@ export default class Main extends Component {
     };
   }
   getContent() {
-    let { activeBottomMenu } = this.state;
+    let { activeBottomMenu,buy_view } = this.state;
     if (activeBottomMenu === "a") {
       return <Home />;
     }
     if (activeBottomMenu === "b") {
-      return <Buy />;
+      return <Buy view={buy_view}/>;
     }
     if (activeBottomMenu === "d") {
       return <MyBurux />;
@@ -113,7 +115,7 @@ export default class Main extends Component {
       getHeaderLayout: this.getHeaderLayout.bind(this),
       layout:(type,parameters)=>layout(type,()=>this.state,parameters)
     };
-    let { popup, guaranteeItems, sidemenuOpen, theme } = this.state;
+    let { popup, guaranteeItems, sidemenuOpen, theme,peygiriyeSefaresheKharid_tab } = this.state;
     return (
       <appContext.Provider value={context}>
         <RVD
@@ -185,6 +187,7 @@ export default class Main extends Component {
         {popup.mode === "peygiriye-sefareshe-kharid" && (
           <PeygiriyeSefaresheKharid
             onClose={() => this.setState({ popup: {} })}
+            tab={peygiriyeSefaresheKharid_tab}
           />
         )}
         {popup.mode === "joziate-sefareshe-kharid" && (
@@ -409,21 +412,22 @@ class GuaranteePopupWithSubmit extends Component {
                 flex: 1,
                 html: (
                   <Table
-                    padding={6}
                     paging={false}
                     columns={[
                       {
                         title: "",
                         width: 36,
+                        cellAttrs:(row)=>{
+                          return {
+                            onClick:()=>{
+                              let {items} = this.state;
+                              this.setState({items:items.filter((o)=>row.Code !== o.Code)})
+                            }
+                          }
+                        },
                         template: (row) => {
-                          return (
-                            <button
-                              style={{ border: "none", background: "none" }}
-                              className="color00B5A5"
-                            >
-                              {getSvg(40, { width: 12, height: 12 })}
-                            </button>
-                          );
+                          return 'X'
+                            
                         },
                       },
                       { title: "عنوان", getValue: (row) => row.Name },
@@ -446,7 +450,6 @@ class GuaranteePopupWithSubmit extends Component {
                       {
                         type: "select",
                         text: "افزودن کالا",
-                        search: true,
                         caret: false,
                         style: {
                           flex: 125,
@@ -456,10 +459,10 @@ class GuaranteePopupWithSubmit extends Component {
                           color: "dodgerblue",
                           border: "1px solid dodgerblue",
                         },
-                        popupStyle: { maxHeight: 400 },
-                        options: guaranteeExistItems.map((o, i) => {
-                          return { text: o.Name, value: o.Code };
-                        }),
+                        popupAttrs: { style:{maxHeight: 400 ,bottom:0,top:'unset',position:'fixed',left:0,width:'100%'}},
+                        optionText:'option.Name',
+                        optionValue:'option.Code',
+                        options: guaranteeExistItems,
                         onChange: (value, obj) => {
                           let { items } = this.state;
                           items.push({
@@ -498,12 +501,14 @@ class PeygiriyeSefaresheKharid extends Component {
   static contextType = appContext;
   constructor(props) {
     super(props);
-    this.state = {visitorWait: [],factored: [],inProcess: [],delivered: [],rejected: [],canceled: [],tab: "visitorWait"};
+    let {tab = "visitorWait"} = this.props;
+    this.state = {visitorWait: [],factored: [],inProcess: [],delivered: [],rejected: [],canceled: [],tab};
   }
   async componentDidMount() {
     let { visitorWait, factored, inProcess, delivered, rejected, canceled } =
       await services("peygiriye_sefareshe_kharid");
     this.setState({visitorWait,factored,inProcess,delivered,rejected,canceled});
+    this.context.SetState({peygiriyeSefaresheKharid_tab:undefined})
   }
   getTabsLayout() {
     let {visitorWait,factored,inProcess,delivered,rejected,canceled,tab,} = this.state;

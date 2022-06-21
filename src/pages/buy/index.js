@@ -17,9 +17,10 @@ export default class Buy extends Component {
   static contextType = appContext;
   constructor(props) {
     super(props);
+    let {view = {type:"main"}} = this.props;
     this.state = {
       searchValue: "",
-      view: {type:"main"}, //main,category,product
+      view, //main,category,product
       campaigns: [],
       tabs: [
         { title: "نمایشگاه", id: "1", flex: 1 },
@@ -122,6 +123,7 @@ export default class Buy extends Component {
   }
   changeView(o){
     if(o === 'back'){
+      if(!this.viewStack.pop){return}
       this.viewStack.pop();
       let beforeView = {...this.viewStack[this.viewStack.length - 1]};
       this.setState({view:{...beforeView}});
@@ -257,6 +259,7 @@ export default class Buy extends Component {
     this.getRecommendeds(10);
     this.getBestSellings(10);
     this.getCategories();
+    this.context.SetState({buy_view:undefined})
   }
   preOrdersLayout() {
     let { preOrders } = this.state;
@@ -275,6 +278,12 @@ export default class Buy extends Component {
           size: 120,
           row: [
             {
+              attrs:{
+                onClick:()=>{
+                  let {SetState} = this.context;
+                  SetState({activeBottomMenu:'a',popup:{mode:'peygiriye-sefareshe-kharid'},peygiriyeSefaresheKharid_tab:'visitorWait'})
+                }
+              },
               style: { background: "#fafafa", borderRadius: 12 },
               flex: 1,
               column: [
@@ -283,11 +292,18 @@ export default class Buy extends Component {
                   align: "vh",
                   size: 48,
                   className: "size14 color605E5C bold",
+                  
                 },
                 { html: preOrders.waitOfVisitor, align: "vh", flex: 1 },
               ],
             },
             {
+              attrs:{
+                onClick:()=>{
+                  let {SetState} = this.context;
+                  SetState({activeBottomMenu:'a',popup:{mode:'peygiriye-sefareshe-kharid'},peygiriyeSefaresheKharid_tab:'factored'})
+                }
+              },
               style: { background: "#fafafa", borderRadius: 12 },
               flex: 1,
               column: [
@@ -378,7 +394,7 @@ export default class Buy extends Component {
   tab2Layout() {
     let { categories } = this.state;
     return {
-      flex: 1,className:'box gap-no-color padding-12',
+      flex: 1,className:'box gap-no-color padding-12',scroll:'v',
       gap: 24,childsProps:{flex:1},
       column: [
         {
@@ -435,7 +451,7 @@ export default class Buy extends Component {
       childsProps: { align: "vh" },
       row: [
         {size: 60,html: getSvg(22),attrs: { onClick: () => SetState({ sidemenuOpen: true }) },show: view.type === "main"},
-        {size: 60,html: getSvg("chevronLeft", { flip: true }),attrs: { onClick: () => this.changeView('back')},show: view.type !== "main"},
+        {size: 60,html: getSvg("chevronLeft", { flip: true }),attrs: { onClick: () => view.onBack?view.onBack():this.changeView('back')},show: view.type !== "main"},
         {html: {main: "خرید کالا",category: "خرید کالا",campaign: "خرید کالا",product: "خرید کالا",cart: "سبد خرید"}[view.type],className: "size16 color605E5C"},
         { flex: 1 },
         this.cartButtonLayout(),
@@ -618,7 +634,7 @@ class Product extends Component {
   }
   priceLayout(count) {
     let { selectedVariant } = this.state;
-    if(!selectedVariant || !selectedVariant.inStock){
+    if(!selectedVariant || !selectedVariant.inStock || selectedVariant.inStock === null){
       return { column:[{flex:1},{html:"ناموجود",className: "colorD83B01 bold size14" },{flex:1}]};
     }
     return {
@@ -721,7 +737,9 @@ class Product extends Component {
   }
   addToCartLayout(count) {
     let { selectedVariant } = this.state;
-    if(!selectedVariant){return {html:''}}
+    if(!selectedVariant || !selectedVariant.inStock || selectedVariant.inStock === null){
+      return {html:''}
+    }
     if (!count) {
       return {
         html: (
@@ -740,7 +758,8 @@ class Product extends Component {
       row: [
         {html: (<div onTouchStart={(e)=>this.touchStart(selectedVariant.id,1,e)} className='product-count-button'>+</div>)},
         { size: 60, html: count },
-        {html: (<div onTouchStart={(e) =>this.touchStart(selectedVariant.id,-1,e)} className='product-count-button'>-</div>)},
+        {html: ()=>(<div onTouchStart={(e) =>this.touchStart(selectedVariant.id,-1,e)} className='product-count-button'>-</div>),show:count > 1},
+        {html: ()=>(<div onClick={(e) =>this.changeCart(selectedVariant.id, this.getCountByVariant() - 1)} className='product-count-button'>-</div>),show:count === 1},
       ],
     };
   }

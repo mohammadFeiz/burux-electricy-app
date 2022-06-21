@@ -114,7 +114,18 @@ export default class Home extends Component {
                                     column: [
                                         {size:12},
                                         {
-                                            align:'h',row: [
+                                            align:'h',
+                                            attrs:{
+                                                onClick:()=>{
+                                                    this.context.SetState({
+                                                        activeBottomMenu:'b',
+                                                        buy_view:{type:'cart',onBack:()=>{
+                                                            this.context.SetState({activeBottomMenu:'a'})
+                                                        }}
+                                                    })
+                                                }
+                                            },
+                                            row: [
                                                 { size: 36, align: 'vh', html: getSvg(28) },
                                                 { html: 'سبد خرید', align: 'vh', className: 'color605E5C bold size14' },
                                             ]
@@ -138,7 +149,7 @@ export default class Home extends Component {
                                             ]
                                         },
                                         { size: 12 },
-                                        { html: wallet + ' ریال', className: 'color605E5C bold size14',align:'h' },
+                                        { html: functions.splitPrice(wallet) + ' ریال', className: 'color605E5C bold size14',align:'h' },
                                         {size:12}
                                     ]
                                 }

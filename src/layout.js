@@ -26,7 +26,7 @@ export default function layout(type,getState, parameters = {}) {
         tabs() {
             let { tabs, activeTabId, onClick} = parameters;
             return {
-                gap: 12, className: 'tabs', row: tabs.map((o) => {
+                gap: 12,scroll:'v', className: 'tabs', row: tabs.map((o) => {
                     let badge = typeof o.badge === 'function'?o.badge():o.badge;
                     return {
                         align: 'vh', size: o.size, flex: o.flex, className: 'tab' + (o.id === activeTabId ? ' active' : undefined),

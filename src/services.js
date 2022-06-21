@@ -44,6 +44,7 @@ export default async function services(type, parameter, loading = true) {
       });
     },
     async kalahaye_garanti_shode() {
+      return []
       let res = await Axios.post(
         "https://retailerapp.bbeta.ir/api/v1/Guarantee/GetAllGuarantees",
         { CardCode: "C50000" }

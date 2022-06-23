@@ -1,6 +1,8 @@
 import getSvg from "./utils/getSvg";
 import functions from "./functions";
 import AIOButton from "./coponents/aio-button/aio-button";
+import ProductCount from "./coponents/product-count/index";
+import { Component } from "react";
 export default function layout(type,getState, parameters = {}) {
     let $$ = {
         search() {
@@ -57,8 +59,9 @@ export default function layout(type,getState, parameters = {}) {
         getProductCardParameters(){
             let {product,style,onClick} = parameters;
             if(product){
-                let {name,inStock,defaultVariant = {},campaign} = product;
+                let {name,inStock = 0,defaultVariant = {},campaign} = product;
                 let {discountPrice,discountPercent,price} = defaultVariant;
+                if(inStock === null){inStock = 0}
                 return {src:$$.getProductSrc(product),discountPrice,discountPercent,price,name,inStock,style,onClick,campaign}
             }
             return parameters;
@@ -73,6 +76,7 @@ export default function layout(type,getState, parameters = {}) {
             }
             return false
         },
+        
         productCard(){
             let {name,style = {},inStock,onClick = ()=>{},src,discountPrice,discountPercent,price} = $$.getProductCardParameters();
             return {
@@ -119,7 +123,10 @@ export default function layout(type,getState, parameters = {}) {
         },
         
         productCard2(){
-            let {name,style = {},inStock,onClick = ()=>{},src,discountPrice,discountPercent,price,isFirst,isLast,count,changeCount,details = [],isInBasket = false,campaign} = $$.getProductCardParameters();
+            let {
+                name,style = {},inStock,onClick = ()=>{},src,discountPrice,discountPercent,price,
+                isFirst,isLast,count,changeCount,details = [],isInBasket = false,campaign
+            } = $$.getProductCardParameters();
             return {
                 className:'box gap-no-color',
                 attrs:{onClick:()=>onClick()},
@@ -136,14 +143,7 @@ export default function layout(type,getState, parameters = {}) {
                         size:96,
                         column:[
                             {flex:1,html:<img src={src} width={'100%'} alt=''/>},
-                            {
-                                size:24,childsProps: { align: "vh" },
-                                row: [
-                                    {html:()=> (<div onClick={()=>changeCount(count + 1)} className='product-count-button'>+</div>),show:changeCount !== undefined},
-                                    { flex:1, html: count,show:count !== undefined,align:'vh' },
-                                    {html: ()=>(<div onClick={() =>changeCount(count - 1)} className='product-count-button'>-</div>),show:changeCount !== undefined},
-                                ]
-                            }
+                            {show:count !== undefined,size:24,html:()=><ProductCount value={count} onChange={changeCount} max={inStock}/>}
                         ]
                     },
                     {
@@ -200,3 +200,4 @@ export default function layout(type,getState, parameters = {}) {
     if(!(typeof parameters === 'object'?parameters.show !== false:true)){return {html:''}}
     return $$[type]()
 }
+

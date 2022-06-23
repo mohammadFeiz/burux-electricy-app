@@ -5,7 +5,6 @@ import getSvg from './../../utils/getSvg';
 import appContext from '../../app-context';
 import functions from '../../functions';
 import './index.css';
-import services from '../../services';
 export default class MyBurux extends Component{
     static contextType = appContext;
     constructor(props){
@@ -23,7 +22,7 @@ export default class MyBurux extends Component{
                 {text:'جایزه ها',icon:15,onClick:()=>{}},
                 {text:'حساب ها',icon:14,onClick:()=>{}},
                 {text:'جزییات درخواست های گارانتی',icon:14,onClick:async ()=>{
-                    let {SetState} = this.context;
+                    let {SetState,services} = this.context;
                     let guaranteeItems = await services('kalahaye_garanti_shode');
                     SetState({guaranteeItems}) 
                     this.setState({popup:{mode:'joziate-darkhasthaye-garanti'}})

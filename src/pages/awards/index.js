@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import getSvg from './../../utils/getSvg';
 import ChanceMachin from './../../coponents/chance-machin/index';
 import { Icon } from '@mdi/react';
+import appContext from '../../app-context';
 import RVD from 'react-virtual-dom';
 import AIOButton from 'aio-button';
 import { mdiClose, mdiChevronRight, mdiChevronLeft } from '@mdi/js';
 import './index.css';
-import services from '../../services';
 export default class Awards extends Component {
+  static contextType = appContext
   constructor(props) {
     super(props);
     this.iconDictionary = {
@@ -34,10 +35,12 @@ export default class Awards extends Component {
 
   }
   async getUserAwards(){
-    return await services('get_user_awards');
+    let {services} = this.context;
+    return await services({type:'get_user_awards'});
   }
   async componentDidMount(){
-    let awards = await services('get_all_awards');
+    let {services} = this.context;
+    let awards = await services({type:'get_all_awards'});
     let userAwards = await this.getUserAwards();
     this.mounted = true;
     this.setState({userAwards,awards:awards.map((o)=>{
@@ -45,9 +48,10 @@ export default class Awards extends Component {
     })})
   }
   async getChanceResult(result,index){
+    let {services} = this.context;
     this.setState({chanceResult:result?'winner':'looser',chanceIndex:index});
     let {awards} = this.state;
-    let res = await services('save_catched_chance',{award:awards[index],result});
+    let res = await services({type:'save_catched_chance',parameter:{award:awards[index],result}});
     if(res){
       let userAwards = await this.getUserAwards();
       this.setState({userAwards})

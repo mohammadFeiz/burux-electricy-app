@@ -9,13 +9,14 @@ import Table from "./../../coponents/aio-table/aio-table";
 import SideMenu from "../../coponents/sidemenu";
 import Loading from "../../coponents/loading";
 import LampSrc from "./../../images/lamp.png";
-import services from "./../../services";
+import Services from "./../../services";
 import layout from "../../layout";
 import "./index.css";
 export default class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      services:Services(()=>this.state),
       theme: false,
       testedChance: true,
       sidemenuOpen: false,
@@ -34,14 +35,16 @@ export default class Main extends Component {
       popup: {},
       searchValue: "",
       peygiriyeSefaresheKharid_tab:undefined,
-      buy_view:undefined
+      buy_view:undefined//temporary state
     };
   }
   async componentDidMount() {
-    let guaranteeItems = await services("kalahaye_garanti_shode");
-    let guaranteeExistItems = await services("kalahaye_mojoode_garanti");
-    let testedChance = await services("get_tested_chance");
-    let allProducts = await services("getAllProducts");    this.setState({
+    let {services} = this.state;
+    let guaranteeItems = await services({type:"kalahaye_garanti_shode"});
+    let guaranteeExistItems = await services({type:"kalahaye_mojoode_garanti"});
+    let testedChance = await services({type:"get_tested_chance"});
+    let allProducts = await services({type:"getAllProducts",cache:1000});    
+    this.setState({
       guaranteeItems,
       guaranteeExistItems,
       testedChance,
@@ -115,7 +118,7 @@ export default class Main extends Component {
       getHeaderLayout: this.getHeaderLayout.bind(this),
       layout:(type,parameters)=>layout(type,()=>this.state,parameters)
     };
-    let { popup, guaranteeItems, sidemenuOpen, theme,peygiriyeSefaresheKharid_tab } = this.state;
+    let { popup, guaranteeItems, sidemenuOpen, theme,peygiriyeSefaresheKharid_tab,services } = this.state;
     return (
       <appContext.Provider value={context}>
         <RVD
@@ -131,7 +134,7 @@ export default class Main extends Component {
           <GuaranteePopup
             onClick={async (type, typeNumber) => {
               if (typeNumber === 1) {
-                let res = await services("sabte_kalahaye_garanti");
+                let res = await services({type:"sabte_kalahaye_garanti"});
                 if (res) {
                   this.setState({ popup: { mode: type } });
                 } else {
@@ -167,9 +170,9 @@ export default class Main extends Component {
           <GuaranteePopupWithSubmit
             items={guaranteeItems}
             onSubmit={async (Items) => {
-              let res = await services("sabte_kalahaye_garanti", Items);
+              let res = await services({type:"sabte_kalahaye_garanti", parameter:Items});
               if (res) {
-                let guaranteeItems = await services("kalahaye_garanti_shode");
+                let guaranteeItems = await services({type:"kalahaye_garanti_shode"});
                 this.setState({
                   guaranteeItems,
                   popup: { mode: "guarantee-popup-with-submit-success" },
@@ -186,8 +189,12 @@ export default class Main extends Component {
         )}
         {popup.mode === "peygiriye-sefareshe-kharid" && (
           <PeygiriyeSefaresheKharid
-            onClose={() => this.setState({ popup: {} })}
+            onClose={() => {
+              if(popup.onBack){popup.onBack()}
+              else {this.setState({ popup: {} })}
+            }}
             tab={peygiriyeSefaresheKharid_tab}
+            
           />
         )}
         {popup.mode === "joziate-sefareshe-kharid" && (
@@ -505,12 +512,14 @@ class PeygiriyeSefaresheKharid extends Component {
     this.state = {visitorWait: [],factored: [],inProcess: [],delivered: [],rejected: [],canceled: [],tab};
   }
   async componentDidMount() {
+    let {services} = this.context;
     let { visitorWait, factored, inProcess, delivered, rejected, canceled } =
-      await services("peygiriye_sefareshe_kharid");
+      await services({type:"peygiriye_sefareshe_kharid"});
     this.setState({visitorWait,factored,inProcess,delivered,rejected,canceled});
     this.context.SetState({peygiriyeSefaresheKharid_tab:undefined})
   }
   getTabsLayout() {
+    let {services} = this.context;
     let {visitorWait,factored,inProcess,delivered,rejected,canceled,tab,} = this.state;
     let parameters = {
       tabs: [
@@ -523,7 +532,7 @@ class PeygiriyeSefaresheKharid extends Component {
       ],
       activeTabId: tab,
       onClick: async (obj) => {
-        let {visitorWait,factored,inProcess,delivered,rejected,canceled} = await services("peygiriye_sefareshe_kharid");
+        let {visitorWait,factored,inProcess,delivered,rejected,canceled} = await services({type:"peygiriye_sefareshe_kharid"});
         this.setState({tab: obj.id,visitorWait,factored,inProcess,delivered,rejected,canceled});
       },
     };
@@ -657,8 +666,9 @@ class JoziateSefaresheKharid extends Component {
     };
   }
   async componentDidMount() {
+    let {services} = this.context;
     let { order } = this.props;
-    let res = await services("joziatepeygiriyesefareshekharid", order.number);
+    let res = await services({type:"joziatepeygiriyesefareshekharid", parameter:order.number});
     this.setState(res);
   }
   render() {
@@ -737,10 +747,11 @@ class Search extends Component {
     };
   }
   async changeSearch(searchValue) {
+    let {services} = this.context;
     clearTimeout(this.timeout);
     this.setState({ searchValue });
     this.timeout = setTimeout(async () => {
-      let res = await services("search", searchValue);
+      let res = await services({type:"search", parameter:searchValue});
       this.setState({ result: res });
     }, 2000);
   }

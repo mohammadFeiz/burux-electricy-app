@@ -54,7 +54,6 @@ export default class Home extends Component {
                     subtitle: 'طراحی راحت تر وجدید با کلی قابلیت جدید!'
                 }
             ],
-            basket: ['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a'],
             wallet: 2540000,
             myNearItems: [
                 { price: 600000, distance: 1.2 },
@@ -65,8 +64,8 @@ export default class Home extends Component {
         }
     }
     getContent() {
-        let { gems, searchValue, sliderItems, basket, myNearItems, wallet } = this.state;
-        let {SetState,testedChance} = this.context;
+        let { gems, searchValue, sliderItems, myNearItems, wallet } = this.state;
+        let {SetState,testedChance,cart} = this.context;
         return {
             flex: 1,
             className:'home-page main-bg',style:{width:'100%'},
@@ -131,7 +130,7 @@ export default class Home extends Component {
                                             ]
                                         },
                                         { size: 12 },
-                                        { html: basket.length, align: 'vh',className: 'color605E5C bold size14' },
+                                        { html: Object.keys(cart).length, align: 'vh',className: 'color605E5C bold size14' },
                                         {size:12}
                                         
                                     ]

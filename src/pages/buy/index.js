@@ -274,7 +274,7 @@ export default class Buy extends Component {
     }
   }
   header_sidemenuButton(){
-    let {view} = this.state,{SetState} = this.context;
+    let {view} = this.state,{SetState,theme} = this.context;
     return {size: 60,html: getSvg(22),attrs: { onClick: () => SetState({ sidemenuOpen: true }) },show: view.type === "main"}
   }
   header_backButton(){
@@ -371,10 +371,11 @@ export default class Buy extends Component {
           })
         }
       },
-      style: { background: "#fafafa", borderRadius: 12 },flex: 1,
+      style: {borderRadius: 12 },flex: 1,
+      className:'bgFAFAFA theme-1-light-bg',
       column: [
         {html: "در انتظار تایید ویزیتور",align: "vh",size: 48,className: "size14 color605E5C bold"},
-        { html: preOrders.waitOfVisitor, align: "vh", flex: 1 },
+        { html: <div className='number-view'>{preOrders.waitOfVisitor}</div>, align: "vh", flex: 1,className:'theme-1-colorFFF' },
       ],
     }
   }
@@ -390,10 +391,11 @@ export default class Buy extends Component {
           })
         }
       },
-      style: { background: "#fafafa", borderRadius: 12 },flex: 1,
+      style: {borderRadius: 12 },flex: 1,
+      className:'bgFAFAFA theme-1-light-bg',
       column: [
         {html: "در انتظار پرداخت",align: "vh",size: 48,className: "size14 color605E5C bold"},
-        { html: preOrders.waitOfPey, align: "vh", flex: 1 },
+        { html: <div className='number-view'>{preOrders.waitOfPey}</div>, align: "vh", flex: 1,className:'theme-1-colorFFF' },
       ],
     }
   }
@@ -406,7 +408,7 @@ export default class Buy extends Component {
         {
           gap: 16,scroll:'h',
           row: families.map((o) => {
-            let config = {...o,src: src1,onClick: async () => this.changeView({type:"category",name:o.name,items:this.getActiveFamilyItems(o.id)})};
+            let config = {...o,src: undefined,onClick: async () => this.changeView({type:"category",name:o.name,items:this.getActiveFamilyItems(o.id)})};
             return layout("productCard", config);
           }),
         },
@@ -888,7 +890,7 @@ class Cart extends Component{
           column: [
             this.context.layout("tabs", {show:cartItems.length !== 0,tabs,activeTabId,onClick: (obj) => this.setState({ activeTabId: obj.id })}),
             {
-              show:filteredCartItems.length !== 0,flex: 1,
+              show:filteredCartItems.length !== 0,flex: 1,scroll:'v',
               column: filteredCartItems.map((o) => this.context.layout("productCard2", {...o})),
             },
             {show:cartItems.length === 0,flex:1,align:'vh',html:'سبد خرید شما خالی است'},
@@ -928,11 +930,12 @@ class CategorySlider extends Component{
               size:36,
               row:[
                 {html:title,className: "size14 color323130 bold",align: "v"},
-                {size:6},
+                {flex:1},
                 {
                   show:showAll !== undefined,html: "مشاهده همه",className: "size12 color0094D4 bold",align: "v",
                   attrs:{onClick:()=>showAll()}
                 },
+                
               ]
             },
             {
@@ -1061,28 +1064,28 @@ class Shipping extends Component{
                 }
               ]
             },
-            {size:12},
-            {
-              className:'box padding-12',
-              column:[
-                {size:36,align:'v',className:'color605E5C size14 bold',html:'نحوه ارسال'},
-                {
-                  html:(
-                    <AIOButton
-                      type='radio'
-                      value={shippingMethod}
-                      options={[
-                        {value:'0',text:'ماشین توزیع شرکت بروکس (پیشنهادی)'},
-                        {value:'1',text:'ماشین باربری'},
-                      ]}
-                      onChange={(shippingMethod)=>this.setState({shippingMethod})}
-                      optionStyle={{width:'100%'}}
+            //{size:12},
+            // {
+            //   className:'box padding-12',
+            //   column:[
+            //     {size:36,align:'v',className:'color605E5C size14 bold',html:'نحوه ارسال'},
+            //     {
+            //       html:(
+            //         <AIOButton
+            //           type='radio'
+            //           value={shippingMethod}
+            //           options={[
+            //             {value:'0',text:'ماشین توزیع شرکت بروکس (پیشنهادی)'},
+            //             {value:'1',text:'ماشین باربری'},
+            //           ]}
+            //           onChange={(shippingMethod)=>this.setState({shippingMethod})}
+            //           optionStyle={{width:'100%'}}
 
-                    />
-                  )
-                }
-              ]
-            },
+            //         />
+            //       )
+            //     }
+            //   ]
+            // },
             {size:12},
             {
               className:'box padding-12',
@@ -1105,28 +1108,28 @@ class Shipping extends Component{
                 }
               ]
             },
-            {size:12},
-            {
-              className:'box padding-12',
-              column:[
-                {size:36,align:'v',className:'color605E5C size14 bold',html:'نحوه پرداخت'},
-                {
-                  html:(
-                    <AIOButton
-                      type='radio'
-                      value={paymentMethod}
-                      options={[
-                        {value:'0',text:'آنلاین'},
-                        {value:'1',text:'واریز (کارت به کارت)'},
-                      ]}
-                      onChange={(paymentMethod)=>this.setState({paymentMethod})}
-                      optionStyle={{width:'100%'}}
+            // {size:12},
+            // {
+            //   className:'box padding-12',
+            //   column:[
+            //     {size:36,align:'v',className:'color605E5C size14 bold',html:'نحوه پرداخت'},
+            //     {
+            //       html:(
+            //         <AIOButton
+            //           type='radio'
+            //           value={paymentMethod}
+            //           options={[
+            //             {value:'0',text:'آنلاین'},
+            //             {value:'1',text:'واریز (کارت به کارت)'},
+            //           ]}
+            //           onChange={(paymentMethod)=>this.setState({paymentMethod})}
+            //           optionStyle={{width:'100%'}}
 
-                    />
-                  )
-                }
-              ]
-            },
+            //         />
+            //       )
+            //     }
+            //   ]
+            // },
             {size:12},
             {
               className:'box padding-12',

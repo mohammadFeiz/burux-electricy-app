@@ -39,19 +39,16 @@ body{
 	direction: rtl;
 
 }
+
 .main-bg{
 	background:#f8f8f8;
 }
-.theme-1 .main-bg{
-	background:#3f4456;
-}
+
 .header{
 	background:#fff;
 	box-shadow:3px 3px 5px 0 rgba(80,80,80,.1);
 }
-.bgF1F1F1{
-	background:#F1F1F1;
-}
+
 .round-6{
 	border-radius:6px;
 }
@@ -71,19 +68,14 @@ body{
     background:#fff;
     border-top:1px solid #e1e1e1;
 }
-.theme-1 .bottom-menu{
-	background:#333847;
-	border-top:1px solid var(--theme-1-border-color);
-}
+
 .box{
     margin:0 6px;
     border-radius:14px;
     background:#fff;
     box-shadow:3px 3px 5px 0 rgba(80,80,80,.1);
 }
-.theme-1 .box{
-	background:#333847;
-}
+
 button{
 	font-family:inherit;
 	outline:none;
@@ -94,8 +86,15 @@ button{
 .box.gap-no-color .r-layout-gap{
 	background:none;
 }
-.theme-1 .box .r-layout-gap{
-	background: var(--theme-1-border-color);
+
+.bgF1F1F1{
+	background:#F1F1F1;
+}
+.bgFDB913{
+	background:#FDB913;
+}
+.bgFAFAFA{
+	background:#fafafa;
 }
 .colorD83B01{
 	color:#D83B01;
@@ -116,9 +115,7 @@ button{
 .color575756{
 	color:#575756;
 }
-.theme-1 .colorA19F9D{
-	color:rgba(221,221,221,0.5);
-}
+
 .color323130{
 	color:#323130;
 }
@@ -143,6 +140,13 @@ button{
 .colorFDB913{
 	color:#FDB913;
 }
+.colorFFF{
+	color:#fff;
+}
+.borderDDD{
+	border:1px solid #ddd;
+}
+
 .size10{
 	font-size:10px;
 }
@@ -324,4 +328,92 @@ button{
 	width:calc(100% - 24px);
 	height:fit-content;
 	border-radius: 12px 12px 0 0;
+}
+.number-view{
+	min-width:40px;
+	height:46px;
+	padding:0 6px;
+	border:2px solid #00B5A5;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color:#00B5A5;
+	border-radius:8px;
+}
+
+
+.theme-1 .theme-1-light-bg{
+	background: #3f4456;
+}
+.theme-1 .theme-1-dark-bg{
+	background: #333847 !important;
+}
+.theme-1 .main-bg{
+	background:#3f4456;
+}
+.theme-1 .header{
+	background:#333847;
+}
+.theme-1 .bottom-menu{
+	background:#333847;
+	border-top:1px solid var(--theme-1-border-color);
+}
+.theme-1 .box{
+	background:#333847;
+}
+.theme-1 .theme-1-colorFFF{
+	color:#fff;
+}
+.theme-1 .sidemenu-icon path{
+	fill:#fff !important;
+}
+.theme-1 .box:not(.gap-no-color) .r-layout-gap{
+	background:#3f4456;
+}
+.theme-1 .theme-1-bg3F4456{
+	background:#3f4456;
+}
+.theme-1 .theme-1-border3F4456{
+	border:1px solid #3f4456;
+}
+.theme-1 .theme-1-colorEEE{
+	color:#eee;
+}
+.theme-1 .theme-1-colorDDD{
+	color:#ddd;
+}
+.theme-1 .tab-badge{
+	background:#333847;
+}
+.aio-button-icon{
+	right: unset !important;
+    left: 8px !important;
+}
+.theme-1 .button-1{
+	color:#0094D4;
+	border:2px solid #0094D4;
+	border-radius:4px;
+	background: #333847;
+	height:42px;
+	width:100%;
+	font-size:14px;
+	font-family: inherit;
+}
+.theme-1 .aio-table{
+	background:#333847;
+	color:#fff;
+	border:1px solid #3f4456;
+}
+.theme-1 .aio-table .aio-table-cell{
+	background:#3f4456 !important;
+}
+.theme-1 .aio-table .aio-table-title{
+	background:#3f4456 !important;
+	border-color:#333847 !important;
+}
+.theme-1 .tab-title{
+	color:#fff;
+}
+.theme-1 .tab.active .tab-title{
+	color:dodgerblue;
 }

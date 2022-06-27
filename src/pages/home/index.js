@@ -32,7 +32,7 @@ export default class Home extends Component {
                     background: "#FDB913",color: "#173796"
                 }
             ],
-            wallet: 2540000,
+            wallet: 0,
             myNearItems: [
                 { price: 600000, distance: 1.2 },
                 { price: 100000, distance: 24.0 },
@@ -43,7 +43,7 @@ export default class Home extends Component {
     }
     getContent() {
         let { gems, searchValue, sliderItems, myNearItems, wallet } = this.state;
-        let {SetState,testedChance,cart} = this.context;
+        let {SetState,testedChance,cart,theme} = this.context;
         return {
             flex: 1,
             className:'home-page main-bg',style:{width:'100%'},
@@ -54,6 +54,8 @@ export default class Home extends Component {
                         { size: 60, html: getSvg(22), align: 'vh',attrs:{onClick:()=>SetState({sidemenuOpen:true})} },
                         { html: getSvg(23), align: 'vh' },
                         { flex: 1 },
+                        { html: getSvg('darkmode'), align: 'vh',attrs:{onClick:()=>SetState({theme:theme === 'theme-1'?false:'theme-1'})} },
+                        { size: 16 },
                         { html: gems,className: 'size14 color006F9E', align: 'vh' },
                         { html: getSvg(24), align: 'vh' },
                         { size: 16 },
@@ -185,6 +187,11 @@ export default class Home extends Component {
 
             ]
         }
+    }
+    async componentDidMount(){
+        let {services} = this.context;
+        let wallet = await services({type:'wallet'})
+        this.setState({wallet})
     }
     render() {
         let {showAwards} = this.state;

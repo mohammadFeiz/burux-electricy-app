@@ -152,11 +152,11 @@ class JoziateDarkhasthayeGaranti extends Component{
         }
     }
     render(){
-        let {getHeaderLayout,guaranteeItems} = this.context;
+        let {getHeaderLayout,guaranteeItems,theme} = this.context;
         let {searchValue} = this.state;
         let {onClose} = this.props;
         return (
-            <div className='popup-container'>
+            <div className={'popup-container' + (theme?' ' + theme:'')}>
                 <RVD
                     layout={{
                         className:'popup main-bg',
@@ -164,7 +164,7 @@ class JoziateDarkhasthayeGaranti extends Component{
                             getHeaderLayout('جزيیات کالا های گارانتی',()=>onClose()),
                             {size:12},
                             {
-                                html:<input type='text' placeholder='شماره درخواست گارانتی را جستجو کنید' value={searchValue} onChange={(e)=>{
+                                html:<input className='theme-1-dark-bg theme-1-colorFFF' type='text' placeholder='شماره درخواست گارانتی را جستجو کنید' value={searchValue} onChange={(e)=>{
                                     this.setState({searchValue:e.target.value})
                                 }}
                                 style={{

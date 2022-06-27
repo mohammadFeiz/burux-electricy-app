@@ -2,7 +2,7 @@ import getSvg from "./utils/getSvg";
 import functions from "./functions";
 import AIOButton from "./coponents/aio-button/aio-button";
 import ProductCount from "./coponents/product-count/index";
-import { Component } from "react";
+import NoSrc from './images/no-src.png';
 export default function layout(type,getState, parameters = {}) {
     let $$ = {
         search() {
@@ -78,9 +78,10 @@ export default function layout(type,getState, parameters = {}) {
         },
         
         productCard(){
-            let {name,style = {},inStock,onClick = ()=>{},src,discountPrice,discountPercent,price} = $$.getProductCardParameters();
+            let {name,style = {},inStock,onClick = ()=>{},src = NoSrc,discountPrice,discountPercent,price} = $$.getProductCardParameters();
             return {
-                size:168,style:{background:'#fff',borderRadius:12,fontSize:14,border:'1px solid #ddd',...style},
+                size:168,style:{borderRadius:12,fontSize:14,...style},
+                className:'bgFFF borderDDD theme-1-bg3F4456 theme-1-border3F4456',
                 attrs:{onClick:()=>onClick()},
                 column:[
                     {html:<img src={src} alt='' height='100%'/>,align:'vh',size:136},
@@ -92,7 +93,7 @@ export default function layout(type,getState, parameters = {}) {
                             {flex:1},
                             {html:functions.splitPrice(discountPrice),className:'colorA19F9D'},
                             {size:6},
-                            {html:'%' + discountPercent,style:{background:'#FDB913',color:'#fff',borderRadius:8,padding:'0 3px'}},
+                            {html:'%' + discountPercent,style:{borderRadius:8,padding:'0 3px'},className:'bgFDB913 colorFFF'},
                             {size:12}
                             
                         ]
@@ -142,7 +143,7 @@ export default function layout(type,getState, parameters = {}) {
                     {
                         size:96,
                         column:[
-                            {flex:1,html:<img src={src} width={'100%'} alt=''/>},
+                            {flex:1,html:<img src={src || NoSrc} width={'100%'} alt=''/>},
                             {show:count !== undefined,size:24,html:()=><ProductCount value={count} onChange={changeCount} max={inStock}/>}
                         ]
                     },
@@ -150,7 +151,7 @@ export default function layout(type,getState, parameters = {}) {
                         flex:1,gap:6,
                         column:[
                             {show:campaign !== undefined,html:()=>campaign.name,className:'size10',style:{color:'rgb(253, 185, 19)'}},
-                            {html:name,className:'size14 color575756 bold'},
+                            {html:name,className:'size14 color575756 bold theme-1-colorDDD'},
                             {
                                 childsAttrs:{align:'v'},gap:4,show:!!discountPercent && inStock !== 0,
                                 row:[
@@ -187,7 +188,7 @@ export default function layout(type,getState, parameters = {}) {
                                 childsAttrs:{align:'v'},show:!!price && inStock !== 0,
                                 row:[
                                     {flex:1,html:$$.isInBasket()?'موجود در سبد خرید شما':'',className:'colorD83B01 bold size10'},
-                                    {html:functions.splitPrice(price) + ' ریال',className:'size12 color404040 bold'}
+                                    {html:functions.splitPrice(price) + ' ریال',className:'size12 color404040 bold theme-1-colorEEE'}
                                 ],
                                 
                             }

@@ -22,12 +22,13 @@ export default class Main extends Component {
       theme: false,
       testedChance: true,
       sidemenuOpen: false,
+      userInfo:{},
       allProducts:[],
       cart: {},//{variantId:{count,product,variant}}
       
       bottomMenuItems: [
         { text: "خانه", icon: 19, id: "a" },
-        { text: "خرید", icon: 15, id: "b" },
+        { text: "خرید", icon: 'buy', id: "b" },
         { text: "بازارگاه", icon: 20, id: "c" },
         { text: "بروکس من", icon: 21, id: "d" },
       ],
@@ -45,9 +46,11 @@ export default class Main extends Component {
     let guaranteeItems = await services({type:"kalahaye_garanti_shode"});
     let guaranteeExistItems = await services({type:"kalahaye_mojoode_garanti"});
     let testedChance = await services({type:"get_tested_chance"});
+    let userInfo = await services({type:"userInfo",cache:1000});
     let allProducts = await services({type:"getAllProducts",cache:1000});    
     this.setState({
       guaranteeItems,
+      userInfo,
       guaranteeExistItems,
       testedChance,
       allProducts,
@@ -159,12 +162,14 @@ export default class Main extends Component {
         {popup.mode === "guarantee-popup-with-submit-success" && (
           <GuaranteePopupSuccess
             submit={true}
+            today={this.dateCalculator.getToday('jalali','hour')}
             onClose={() => this.setState({ popup: {} })}
           />
         )}
         {popup.mode === "guarantee-popup-with-submit-unsuccess" && (
           <GuaranteePopupSuccess
             submit={false}
+            today={this.dateCalculator.getToday('jalali','hour')}
             success={false}
             onClose={() => this.setState({ popup: {} })}
           />
@@ -222,13 +227,15 @@ export default class Main extends Component {
 }
 
 class GuaranteePopup extends Component {
+  static contextType = appContext;
   render() {
     let { onClick } = this.props;
+    let {theme} = this.context;
     return (
-      <div className="popup-container">
+      <div className={"popup-container" + (theme?' ' + theme:'')}>
         <RVD
           layout={{
-            className: "guarantee-popup",
+            className: "guarantee-popup theme-1-dark-bg",
             column: [
               {
                 size: 36,
@@ -245,12 +252,12 @@ class GuaranteePopup extends Component {
               {
                 size: 60,
                 html: "درخواست جمع آوری کالاهای گارانتی",
-                className: "size16 bold color323130",
+                className: "size16 bold color323130 theme-1-colorFFF",
                 align: "vh",
               },
               {
-                html: "با وارد کردن جزئیات کالاهای گارانتی، درخواست شما در اولین فرصت توسط ویزیتور بررسی میگردد.در غیر این صورت درخواست شما در ویزیت بعدی بررسی میگردد",
-                className: "size14 color605E5C",
+                html: "با وارد کردن جزئیات کالاهای گارانتی، درخواست شما در اولین فرصت طی 72 ساعت آینده توسط ویزیتور بررسی میگردد.در غیر این صورت درخواست شما در ویزیت بعدی بررسی میگردد",
+                className: "size14 color605E5C theme-1-colorDDD",
               },
               { size: 24 },
               {
@@ -284,8 +291,10 @@ class GuaranteePopup extends Component {
   }
 }
 class GuaranteePopupSuccess extends Component {
+  static contextType = appContext;
   render() {
     let { submit, onClose, success,today } = this.props;
+    let {theme} = this.context;
     let text;
     if (success === false) {
       text = "خطا";
@@ -296,10 +305,10 @@ class GuaranteePopupSuccess extends Component {
       text = "درخواست گارانتی شما با موفقیت اعلام شد";
     }
     return (
-      <div className="popup-container">
+      <div className={"popup-container" + (theme?' ' + theme:'')}>
         <RVD
           layout={{
-            className: "guarantee-popup-success",
+            className: "guarantee-popup-success theme-1-dark-bg",
             column: [
               {
                 size: 36,
@@ -320,14 +329,14 @@ class GuaranteePopupSuccess extends Component {
               { size: 24 },
               {
                 html: "درخواست گارانتی شما در تا 72 ساعت آینده بررسی خواهد شد",
-                className: "size14 color605E5C",
+                className: "size14 color605E5C theme-1-colorDDD",
                 align: "h",
               },
               { flex: 1 },
               {
                 size: 60,
                 html: `ثبت درخواست در ${`${today[3]}:${0} ${today[0]}/${today[1]}/${today[2]}`}`,
-                className: "size16 bold color605E5C",
+                className: "size16 bold color605E5C theme-1-colorDDD",
                 align: "vh",
               },
               {
@@ -355,9 +364,9 @@ class GuaranteePopupWithSubmit extends Component {
   render() {
     let { items } = this.state;
     let { onClose, onSubmit } = this.props;
-    let { getHeaderLayout, guaranteeExistItems } = this.context;
+    let { getHeaderLayout, guaranteeExistItems,theme } = this.context;
     return (
-      <div className="popup-container">
+      <div className={"popup-container" + (theme?' ' + theme:'')}>
         <RVD
           layout={{
             className: "popup main-bg",
@@ -528,11 +537,11 @@ class PeygiriyeSefaresheKharid extends Component {
   render() {
     let { onClose } = this.props;
     let { tab } = this.state;
-    let { getHeaderLayout, SetState } = this.context;
+    let { getHeaderLayout, SetState,theme } = this.context;
     let orders = this.state[tab];
     console.log(orders);
     return (
-      <div className="popup-container">
+      <div className={"popup-container" + (theme?' ' + theme:'')}>
         <RVD
           layout={{
             className: "popup main-bg",
@@ -622,7 +631,7 @@ class JoziateSefaresheKharid extends Component {
       align: "v",
       row: [
         { size: 110, html: key + " : ", className: "size12 colorA19F9D" },
-        { flex: 1, html: value, className: "size12" },
+        { flex: 1, html: value, className: "size12 theme-1-colorFFF" },
       ],
     };
   }
@@ -659,14 +668,14 @@ class JoziateSefaresheKharid extends Component {
     this.setState(res);
   }
   render() {
-    let { getHeaderLayout } = this.context;
+    let { getHeaderLayout,theme } = this.context;
     let {
       number,date,customerName,customerCode,customerGroup,campain,basePrice,visitorName,address,mobile,
       phone,total,paymentMethod,items,
     } = this.state;
     let { onClose, order } = this.props;
     return (
-      <div className="popup-container">
+      <div className={"popup-container" + (theme?' ' + theme:'')}>
         <RVD
           layout={{
             className: "popup main-bg",

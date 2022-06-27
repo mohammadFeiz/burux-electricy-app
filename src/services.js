@@ -1,7 +1,6 @@
 import Axios from "axios";
 import dateCalculator from "./utils/date-calculator";
 import $ from "jquery";
-import src1 from './utils/brx66.png';
 import bulb10w from './images/10w-bulb.png';
 export default function services(getState) {
   let fn = function(){
@@ -93,12 +92,24 @@ export default function services(getState) {
               discountPercent: 0,
               unit: "",
               price: o.MinPrice,
-              src:src1
+              src:undefined
             };
           }),
         };
   
         return result;
+      },
+      async wallet({baseUrl}){
+        let res = await Axios.post(`${baseUrl}/BOne/CheckBallance`,{"Requests":[{"CardCode":"c50000"}]});
+        try{res = res.data.data.results[0].ballance}
+        catch{res = 0}
+        return res
+      },
+      async userInfo({baseUrl}){
+        let res = await Axios.post(`${baseUrl}/BOne/GetCustomer`,{"DocCode":"c50000"});
+        try{res = res.data.data.customer}
+        catch{res = {}}
+        return res
       },
       async getCampaigns({baseUrl}) {
         let res = await Axios.get(`${baseUrl}/Spree/GetAllCampaigns`);
@@ -190,9 +201,9 @@ export default function services(getState) {
       },
       async families(){
         return [
-          { src: src1, name: "جنرال", id: "1" },
-          { src: src1, name: "جاینت", id: "2" },
-          { src: src1, name: "پنلی توکار", id: "3" },
+          { src: undefined, name: "جنرال", id: "1" },
+          { src: undefined, name: "جاینت", id: "2" },
+          { src: undefined, name: "پنلی توکار", id: "3" },
         ]
       },
       getMappedAllProducts({spreeResult,b1Result}){
@@ -326,7 +337,8 @@ export default function services(getState) {
         let res = await Axios.post(`${baseUrl}/Spree/AllProducts`,
           {
             CardCode: "c50000",
-            Taxons: "10181,10178,10182",
+            //Taxons: "10181,10178,10182",
+            Taxons: "10016,10302",
             Include: "variants,option_types,product_properties,taxons,images,default_variant",
             IsItemPriceNeeded: true,
           }

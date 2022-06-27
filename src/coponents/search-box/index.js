@@ -28,7 +28,8 @@ export default class SearchBox extends Component{
                         {
                             flex: 1, html: (
                                 <input
-                                    type='text' value={value}
+                                    type='text' value={value} 
+                                    className='theme-1-colorFFF'
                                     placeholder='کالای مد نظر خود را جستجو کنید'
                                     onChange={(e)=>this.change(e)}
                                     onClick={(e) => onClick()}

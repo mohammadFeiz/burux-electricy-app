@@ -12,10 +12,10 @@ export default class SideMenu extends Component {
             items: [
                 { text: 'درخواست گارانتی', icon: 32, onClick: () => this.context.SetState({ popup: {mode:'guarantee-popup'} }) },
                 { text: 'جایزه ها', icon: 15 },
-                { text: 'کیف پول', icon: 33 },
+                //{ text: 'کیف پول', icon: 33 },
                 { text: 'باشگاه مشتریان', icon: 21 },
-                { text: 'پیگیری سفارش خرید', icon: 13 },
-                { text: 'تاریخچه سفارشات', icon: 34 },
+                { text: 'پیگیری سفارش خرید', icon: 13,onClick:()=>this.context.SetState({popup:{mode:'peygiriye-sefareshe-kharid'}})},
+                //{ text: 'تاریخچه سفارشات', icon: 34 },
                 { text: 'بازارگاه', icon: 35 },
                 { text: 'چت با ویزیتور', icon: 36 },
                 { text: 'تماس با ویزیتور', icon: 37 },

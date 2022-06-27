@@ -1,5 +1,5 @@
 import React,{Component} from "react";
-import Table from 'aio-table';
+import Table from './index';
 export default class AIOTable extends Component{
     translate(text){
       let dict = {

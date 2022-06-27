@@ -11,10 +11,12 @@ import Loading from "../../coponents/loading";
 import LampSrc from "./../../images/lamp.png";
 import Services from "./../../services";
 import layout from "../../layout";
+import dateCalculator from "../../utils/date-calculator";
 import "./index.css";
 export default class Main extends Component {
   constructor(props) {
     super(props);
+    this.dateCalculator = dateCalculator();
     this.state = {
       services:Services(()=>this.state),
       theme: false,
@@ -150,6 +152,7 @@ export default class Main extends Component {
           <GuaranteePopupSuccess
             submit={false}
             success={false}
+            today={this.dateCalculator.getToday('jalali','hour')}
             onClose={() => this.setState({ popup: {} })}
           />
         )}
@@ -282,7 +285,7 @@ class GuaranteePopup extends Component {
 }
 class GuaranteePopupSuccess extends Component {
   render() {
-    let { submit, onClose, success } = this.props;
+    let { submit, onClose, success,today } = this.props;
     let text;
     if (success === false) {
       text = "خطا";
@@ -316,14 +319,14 @@ class GuaranteePopupSuccess extends Component {
               { html: text, className: "color107C10 size20 bold", align: "h" },
               { size: 24 },
               {
-                html: "درخواست گارانتی شما در ویزیت بعدی بررسی خواهد شد",
+                html: "درخواست گارانتی شما در تا 72 ساعت آینده بررسی خواهد شد",
                 className: "size14 color605E5C",
                 align: "h",
               },
               { flex: 1 },
               {
                 size: 60,
-                html: "ثبت درخواست در    1401/1/8  16:32",
+                html: `ثبت درخواست در ${`${today[3]}:${0} ${today[0]}/${today[1]}/${today[2]}`}`,
                 className: "size16 bold color605E5C",
                 align: "vh",
               },
@@ -458,14 +461,7 @@ class GuaranteePopupWithSubmit extends Component {
                         type: "select",
                         text: "افزودن کالا",
                         caret: false,
-                        style: {
-                          flex: 125,
-                          fontWeight: "bold",
-                          borderRadius: 4,
-                          background: "#fff",
-                          color: "dodgerblue",
-                          border: "1px solid dodgerblue",
-                        },
+                        className:'button-1',
                         popupAttrs: { style:{maxHeight: 400 ,bottom:0,top:'unset',position:'fixed',left:0,width:'100%'}},
                         optionText:'option.Name',
                         optionValue:'option.Code',
@@ -475,27 +471,18 @@ class GuaranteePopupWithSubmit extends Component {
                           items.push({
                             Name: obj.text,
                             Code: obj.value,
-                            Qty: 0,
+                            Qty: 1,
                           });
                           this.setState({ items });
                         },
-                      },
-                      {
-                        type: "button",
-                        disabled: !items.length,
-                        style: {
-                          fontFamily: "inherit",
-                          width: "fit-content",
-                          flex: 125,
-                          borderRadius: 4,
-                        },
-                        text: "ثبت درخواست",
-                        onClick: () => onSubmit(items),
-                      },
+                      }
                     ]}
                   />
                 ),
               },
+              {
+                show:!!items.length,html:<button disabled={!items.length} className='button-2' onClick={()=>onSubmit(items)}>ثبت درخواست</button>,style:{padding:12}
+              }
             ],
           }}
         />
@@ -514,7 +501,7 @@ class PeygiriyeSefaresheKharid extends Component {
   async componentDidMount() {
     let {services} = this.context;
     let { visitorWait, factored, inProcess, delivered, rejected, canceled } =
-      await services({type:"peygiriye_sefareshe_kharid"});
+      await services({type:"peygiriye_sefareshe_kharid",cache:1});
     this.setState({visitorWait,factored,inProcess,delivered,rejected,canceled});
     this.context.SetState({peygiriyeSefaresheKharid_tab:undefined})
   }
@@ -532,7 +519,7 @@ class PeygiriyeSefaresheKharid extends Component {
       ],
       activeTabId: tab,
       onClick: async (obj) => {
-        let {visitorWait,factored,inProcess,delivered,rejected,canceled} = await services({type:"peygiriye_sefareshe_kharid"});
+        let {visitorWait,factored,inProcess,delivered,rejected,canceled} = await services({type:"peygiriye_sefareshe_kharid",cache:1});
         this.setState({tab: obj.id,visitorWait,factored,inProcess,delivered,rejected,canceled});
       },
     };

@@ -12,6 +12,7 @@ import $ from 'jquery';
 import "./index.css";
 import ProductCount from "../../coponents/product-count/index";
 import ContentSlider from "../../coponents/content-slider";
+import SearchBox from "../../coponents/search-box/index";
 
 export default class Buy extends Component {
   static contextType = appContext;
@@ -268,7 +269,7 @@ export default class Buy extends Component {
   }
   header(){
     return {
-      className: "buy-header",size: 60,childsProps: { align: "vh" },
+      className: "header",size: 60,childsProps: { align: "vh" },
       row: [this.header_sidemenuButton(),this.header_backButton(),this.header_title(),{ flex: 1 },this.header_cartButton(),{ size: 16 }]
     }
   }
@@ -298,8 +299,15 @@ export default class Buy extends Component {
     }
   }
   search(){
-    let {layout} = this.context,{view,searchValue} = this.state;
-    return layout("search", {show:view.type === 'main',value: searchValue,onChange: (searchValue) => this.setState({ searchValue })})
+    let {view} = this.state,{services} = this.context;
+    return {show:view.type === 'main' || view.type === 'search',html:()=><SearchBox onChange={async (value)=>{
+      if(!value){this.changeView({type:'main'}); return;}
+      let res = await services({type:'buy_search',parameter:{value}})
+      if(res.length){
+        this.changeView({type:'search',items:res,title:value})
+      }
+      else {this.changeView('back')}
+    }}/>}
   }
   tabs(){
     let {view,tabs,activeTabId} = this.state,{layout} = this.context;
@@ -425,7 +433,7 @@ export default class Buy extends Component {
   category(){
     let {view} = this.state,{cart} = this.context;
     return {
-      flex:1,show:view.type === "category" || view.type === 'campaign',
+      flex:1,show:view.type === "category" || view.type === 'campaign' || view.type === 'search',
       html:()=>(
         <CategoryView 
           items={view.items} name={view.name} type={view.type} cart={cart} campaign={view.campaign}
@@ -466,7 +474,6 @@ class CampaignSlider extends Component{
     let {campaigns,onClick} = this.props;
     return (
       <ContentSlider 
-        style={{borderRadius:16}} 
         items={
           campaigns.map((o)=>{
             let {color,background,name,src} = o;
@@ -958,11 +965,6 @@ class CategoryView extends Component{
             },
             {
               size:36,align:'vh',show:type === 'campaign',html:'معرفی جشنواره',className:'size12 colorA19F9D'
-            },
-            {
-              align:'vh',show:type === 'campaign',
-              html:'لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط فعلی تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد.',
-              className:'size14 color323130 padding-12'
             },
             {
               size:36,align:'v',show:type === 'campaign',html:'کالاهای جشنواره',className:'size16 color323130 bold padding-0-12'

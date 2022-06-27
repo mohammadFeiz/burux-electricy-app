@@ -256,17 +256,17 @@ export default function services(getState) {
                 const b1_item = b1Result.find(
                   (i) => i.itemCode === includeItem.attributes.sku
                 );
-  
                 const variant_price =
                   b1_item !== undefined && b1_item !== null
-                    ? b1_item.priceAfterCalculate
-                    : includeItem.attributes.price; // int
+                    ? b1_item.price
+                    : 0;
+                    // : includeItem.attributes.price; // int
   
                 const variant_discount_price =
                   b1_item !== undefined && b1_item !== null
                     ? b1_item.priceAfterVat
-                    : includeItem.attributes.price; // int
-  
+                    : 0; // int
+                    // : includeItem.attributes.price; // int
                 //const variant_discount_precent = b1_item !== undefined ? b1_item.discountPercent : 0; // int
                 const variant_in_stock = b1_item !== undefined  && b1_item !== null
                     ? b1_item.totalQty 
@@ -332,6 +332,17 @@ export default function services(getState) {
           }
         );
         return this.getMappedAllProducts(res.data.data);
+      },
+      async buy_search({parameter,getState}){
+        if(!parameter.value){return []}
+        let {allProducts} = getState();
+        let result = [];
+        for(let prop in allProducts){
+          if(allProducts[prop].name.indexOf(parameter.value) !== -1){
+            result.push(allProducts[prop])
+          }
+        }
+        return result
       }
     }
   }
@@ -405,11 +416,14 @@ function Service({services,baseUrl,getState,cacheAll}){
         $(".loading").css("display", "none");
         return a
       }
+      if(!services[type]){debugger}
       let result = await services[type](p);
       $(".loading").css("display", "none");
       setToCache('storage-' + type,result);
       return result;        
     }
+    if(!services[type]){debugger}
+      
     let result = await services[type](p);
     $(".loading").css("display", "none");
     return result;

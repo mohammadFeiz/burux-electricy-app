@@ -6,6 +6,7 @@ import appContext from '../../app-context';
 import AIOButton from './../../coponents/aio-button/aio-button';
 import functions from '../../functions';
 import ContentSlider from '../../coponents/content-slider';
+import bulb10w from './../../images/10w-bulb.png';
 import './index.css';
 import Awards from './../awards/index';
 
@@ -26,32 +27,9 @@ export default class Home extends Component {
                     subtitle: 'طراحی راحت تر وجدید با کلی قابلیت جدید!'
                 },
                 {
-                    icon: getSvg(39),
-                    background: 'linear-gradient(180deg, #0095DA 0%, #0191D6 100%)',
-                    color: '#fff',
-                    title: 'طرح نورواره 2',
-                    subtitle: 'تعویض لامپ های سوخته با نو'
-                },
-                {
-                    icon: getSvg(27),
-                    background: '#662D91',
-                    color: '#fff',
-                    title: 'باز طراحی اپ الکتریکی',
-                    subtitle: 'طراحی راحت تر وجدید با کلی قابلیت جدید!'
-                },
-                {
-                    icon: getSvg(27),
-                    background: '#662D91',
-                    color: '#fff',
-                    title: 'باز طراحی اپ الکتریکی',
-                    subtitle: 'طراحی راحت تر وجدید با کلی قابلیت جدید!'
-                },
-                {
-                    icon: getSvg(27),
-                    background: '#662D91',
-                    color: '#fff',
-                    title: 'باز طراحی اپ الکتریکی',
-                    subtitle: 'طراحی راحت تر وجدید با کلی قابلیت جدید!'
+                    icon: <img src={bulb10w} alt='' height='100%'/>,
+                    title: 'طرح فروش ویژه 10 وات',
+                    background: "#FDB913",color: "#173796"
                 }
             ],
             wallet: 2540000,
@@ -71,7 +49,7 @@ export default class Home extends Component {
             className:'home-page main-bg',style:{width:'100%'},
             column: [
                 {
-                    className: 'home-header', size: 60,
+                    className: 'header', size: 60,
                     row: [
                         { size: 60, html: getSvg(22), align: 'vh',attrs:{onClick:()=>SetState({sidemenuOpen:true})} },
                         { html: getSvg(23), align: 'vh' },
@@ -79,11 +57,14 @@ export default class Home extends Component {
                         { html: gems,className: 'size14 color006F9E', align: 'vh' },
                         { html: getSvg(24), align: 'vh' },
                         { size: 16 },
+                        { html: getSvg(25), align: 'vh' },
+                        { size: 16 },
                         { html: (
                             <AIOButton
                                 type='select'
                                 caret={false}
-                                text={getSvg(25)}
+                                style={{background:'none'}}
+                                text={<div className='home-circle'></div>}
                                 options={[
                                     {text:'خروج از حساب',value:'exit'}
                                 ]}
@@ -92,8 +73,6 @@ export default class Home extends Component {
                                 }}
                             />
                         ), align: 'vh' },
-                        { size: 16 },
-                        { html: <div className='home-circle'></div>, align: 'vh' },
                         { size: 16 }
 
                     ]

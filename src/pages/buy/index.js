@@ -367,7 +367,7 @@ export default class Buy extends Component {
           SetState({
             activeBottomMenu:'a',
             popup:{mode:'peygiriye-sefareshe-kharid',onBack:()=>SetState({activeBottomMenu:'b',popup:{}})},
-            peygiriyeSefaresheKharid_tab:'visitorWait'
+            peygiriyeSefaresheKharid_tab:'SalesApproved'
           })
         }
       },
@@ -387,7 +387,7 @@ export default class Buy extends Component {
           SetState({
             activeBottomMenu:'a',
             popup:{mode:'peygiriye-sefareshe-kharid',onBack:()=>SetState({activeBottomMenu:'b',popup:{}})},
-            peygiriyeSefaresheKharid_tab:'factored'
+            peygiriyeSefaresheKharid_tab:'Invoiced'
           })
         }
       },

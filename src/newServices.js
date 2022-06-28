@@ -81,19 +81,23 @@ export default function services(getState) {
           for(let j = 0; j < o.documents.length; j++){
             let item = o.documents[j];
             dict[o.orderState].push({
-              docType:item.docType,isDraft:item.isDraft,docEntry:item.docEntry,date:item.docTime,total:item.documentTotal
+              number:item.docEntry,date:item.docTime,total:item.documentTotal
             });
           }
         }
-        return dict
+        console.log('msf',dict)
+        debugger;
         //return {visitorWait,factored,inProcess,inShopTrack,delivered,canceled,rejected};
       },
       async joziatepeygiriyesefareshekharid({baseUrl,parameter,getState,services}) {
+        let {getAllOrders} = services;
+        //let orders = await getAllOrders({baseUrl})
+        debugger
         let {userInfo} = getState();
         let res = await Axios.post(`${baseUrl}/BOne/GetDocument`,{
-          "docentry":parameter.docEntry, 
-          "DocType":parameter.docType,
-          "isDraft":parameter.isDraft
+          "docentry":36817, 
+          "DocType":17,
+          "isDraft":true
         });
         let result = res.data.data.results;
         
@@ -156,25 +160,14 @@ export default function services(getState) {
         });
       },
       async activeCampaignItems({parameter,getState,baseUrl}) {
-        let {allProducts} = getState();
         let {campaign,count} = parameter;
+        let {allProducts} = getState();
         let res = await Axios.get(`${baseUrl}/Spree/GetTaxonByIdWithItsProducts?id=${campaign.id}`);
-        res = res.data.data.included
-        let a = res.map(({id})=>allProducts[id])
         debugger;
         let products = Object.keys(allProducts);
         if(count !== undefined){products = products.slice(0,Math.min(count,products.length))}
         return products.map((o) =>{return {...allProducts[o.toString()],campaign}})
       },
-      // async activeCampaignItems({parameter,getState,baseUrl}) {
-      //   return []
-      //   let {campaign,count} = parameter;
-      //   let {allProducts} = getState();
-      //   let res = await Axios.get(`${baseUrl}/Spree/GetTaxonByIdWithItsProducts?id=${campaign.id}`);
-      //   let products = Object.keys(allProducts);
-      //   if(count !== undefined){products = products.slice(0,Math.min(count,products.length))}
-      //   return products.map((o) =>{return {...allProducts[o.toString()],campaign}})
-      // },
       async lastOrders({parameter,getState}) {
         let {allProducts} = getState();
         let {count} = parameter;
@@ -344,7 +337,7 @@ export default function services(getState) {
                 }
                 let obj = {
                   id: variant_id,
-                  code:b1_item?b1_item.itemCode:'',
+                  code:b1_item.itemCode,
                   optionValues: option_values_result,
                   discountPrice: variant_discount_price,
                   discountPercent: Math.round((variant_price - variant_discount_price) * 100 / variant_price),

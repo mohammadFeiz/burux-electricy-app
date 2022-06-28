@@ -13,13 +13,22 @@ import Services from "./../../services";
 import layout from "../../layout";
 import dateCalculator from "../../utils/date-calculator";
 import "./index.css";
+import functions from "../../functions";
 export default class Main extends Component {
   constructor(props) {
     super(props);
+    let theme = localStorage.getItem('electricy-theme');
+    if(theme === undefined || theme === null){
+      theme = false;
+      localStorage.setItem('electricy-theme','false')
+    }
+    else {
+      theme = theme === 'false'?false:'theme-1'
+    }
     this.dateCalculator = dateCalculator();
     this.state = {
       services:Services(()=>this.state),
-      theme: false,
+      theme,
       testedChance: true,
       sidemenuOpen: false,
       userInfo:{},
@@ -115,10 +124,17 @@ export default class Main extends Component {
       ],
     };
   }
+  changeTheme(){
+    let {theme} = this.state;
+    let newTheme = theme === false?'theme-1':false;
+    localStorage.setItem('electricy-theme',newTheme === 'theme-1'?'theme-1':'false');
+    this.setState({theme:newTheme})
+  }
   render() {
     let context = {
       ...this.state,
       SetState: (obj) => this.setState(obj),
+      changeTheme:this.changeTheme.bind(this),
       logout: this.props.logout,
       getHeaderLayout: this.getHeaderLayout.bind(this),
       layout:(type,parameters)=>layout(type,()=>this.state,parameters)
@@ -504,42 +520,58 @@ class PeygiriyeSefaresheKharid extends Component {
   static contextType = appContext;
   constructor(props) {
     super(props);
-    let {tab = "visitorWait"} = this.props;
-    this.state = {visitorWait: [],factored: [],inProcess: [],delivered: [],rejected: [],canceled: [],tab};
+    let {tab = 'SalesApproved'} = this.props;
+    this.state = {tab,tabs:{}};
   }
   async componentDidMount() {
     let {services} = this.context;
-    let { visitorWait, factored, inProcess, delivered, rejected, canceled } =
-      await services({type:"peygiriye_sefareshe_kharid",cache:1});
-    this.setState({visitorWait,factored,inProcess,delivered,rejected,canceled});
+    let tabs = await services({type:"peygiriye_sefareshe_kharid",cache:1});
+    this.setState({tabs});
     this.context.SetState({peygiriyeSefaresheKharid_tab:undefined})
   }
+  translate(text){
+    return {
+      Invoiced:'فاکتور شده',
+      Registered:'در حال پردازش',
+      SalesApproved:'در انتظار تایید ویزیتور',
+      PaymentApproved:'پرداخت شده'
+    }[text] || text;
+  }
+  getTabs(){
+    let {tabs} = this.state;
+    let res = [];
+    for(let prop in tabs){
+      res.push({title:this.translate(prop),badge:tabs[prop].length,id:prop})
+    }
+    return res
+  }
+  // { title: "در حال پردازش", badge: inProcess.length, id: "inProcess" },
+  // { title: "تحویل شده", badge: delivered.length, id: "delivered" },
+  // { title: "مرجوع شده", badge: rejected.length, id: "rejected" },
+  // { title: "لغو شده", badge: canceled.length, id: "canceled" },
   getTabsLayout() {
     let {services} = this.context;
-    let {visitorWait,factored,inProcess,delivered,rejected,canceled,tab,} = this.state;
+    let {tab} = this.state;
     let parameters = {
-      tabs: [
-        {title: "در انتظار تایید ویزیتور",badge: visitorWait.length,id: "visitorWait"},
-        { title: "فاکتور شده", badge: factored.length, id: "factored" },
-        { title: "در حال پردازش", badge: inProcess.length, id: "inProcess" },
-        { title: "تحویل شده", badge: delivered.length, id: "delivered" },
-        { title: "مرجوع شده", badge: rejected.length, id: "rejected" },
-        { title: "لغو شده", badge: canceled.length, id: "canceled" },
-      ],
+      tabs:this.getTabs(),
       activeTabId: tab,
       onClick: async (obj) => {
-        let {visitorWait,factored,inProcess,delivered,rejected,canceled} = await services({type:"peygiriye_sefareshe_kharid",cache:1});
-        this.setState({tab: obj.id,visitorWait,factored,inProcess,delivered,rejected,canceled});
+        let tabs = await services({type:"peygiriye_sefareshe_kharid",cache:1});
+        this.setState({tab: obj.id,tabs});
       },
     };
     return this.context.layout("tabs", parameters);
   }
+  async getDetails(o){
+    let { SetState,services } = this.context;
+    let res = await services({type:"joziatepeygiriyesefareshekharid", parameter:o});
+    SetState({popup: {mode: "joziate-sefareshe-kharid",order: res}})
+  }
   render() {
     let { onClose } = this.props;
-    let { tab } = this.state;
+    let { tab,tabs } = this.state;
     let { getHeaderLayout, SetState,theme } = this.context;
-    let orders = this.state[tab];
-    console.log(orders);
+    let orders = tabs[tab] || [];
     return (
       <div className={"popup-container" + (theme?' ' + theme:'')}>
         <RVD
@@ -552,7 +584,7 @@ class PeygiriyeSefaresheKharid extends Component {
               {
                 flex: 1,gap: 12,
                 column: orders.map((o) => {
-                  return {html: (<OrderCard {...o} onClick={() =>SetState({popup: {mode: "joziate-sefareshe-kharid",order: o}})}/>)};
+                  return {html: (<OrderCard {...o} onClick={() =>this.getDetails(o)}/>)};
                 }),
               },
             ],
@@ -564,7 +596,7 @@ class PeygiriyeSefaresheKharid extends Component {
 }
 class OrderCard extends Component {
   render() {
-    let { items, number, date, total, onClick } = this.props;
+    let { items = [], docEntry, date, total, onClick } = this.props;
     return (
       <RVD
         layout={{
@@ -577,7 +609,7 @@ class OrderCard extends Component {
               row: [
                 { html: "پیش سفارش:", className: "colorA19F9D size12" },
                 { size: 4 },
-                { html: number, className: "color605E5C size14" },
+                { html: docEntry, className: "color605E5C size14" },
                 { flex: 1 },
                 { html: date, className: "colorA19F9D size12" },
               ],
@@ -619,13 +651,6 @@ class OrderCard extends Component {
 
 class JoziateSefaresheKharid extends Component {
   static contextType = appContext;
-  constructor(props) {
-    super(props);
-    this.state = {
-      number: "",date: "",cusotmerName: "",customerCode: "",customerGroup: "",campain: "",basePrice: "",visitorName: "",
-      address: "",mobile: "",phone: "",total: "",paymentMethod: "",items: [],
-    };
-  }
   getRow(key, value) {
     return {
       align: "v",
@@ -661,19 +686,14 @@ class JoziateSefaresheKharid extends Component {
       ],
     };
   }
-  async componentDidMount() {
-    let {services} = this.context;
-    let { order } = this.props;
-    let res = await services({type:"joziatepeygiriyesefareshekharid", parameter:order.number});
-    this.setState(res);
-  }
+  
   render() {
     let { getHeaderLayout,theme } = this.context;
+    let {order,onClose} = this.props;
     let {
-      number,date,customerName,customerCode,customerGroup,campain,basePrice,visitorName,address,mobile,
-      phone,total,paymentMethod,items,
-    } = this.state;
-    let { onClose, order } = this.props;
+      docEntry,date,customerName,customerCode,customerGroup,campain,basePrice,visitorName,address,mobile,
+      phone,total,paymentMethod,items
+    } = order;
     return (
       <div className={"popup-container" + (theme?' ' + theme:'')}>
         <RVD
@@ -690,7 +710,7 @@ class JoziateSefaresheKharid extends Component {
                     style: { padding: 12 },
                     gap: 12,
                     column: [
-                      this.getRow("پیش فاکتور", number),
+                      this.getRow("پیش فاکتور", docEntry),
                       this.getRow("تاریخ ثبت", date),
                       { size: 12 },
                       this.getRow(
@@ -710,10 +730,13 @@ class JoziateSefaresheKharid extends Component {
                       this.getRow("نحوه پرداخت", paymentMethod),
                     ],
                   },
-                  this.getStatus(order.status),
+                  //this.getStatus(order.status),
                   {
                     gap: 2,
-                    column: items.map((o, i) => this.context.layout("productCard2", {...o,isFirst: i === 0,isLast: i === order.items.length - 1}))
+                    column: items.map((o, i) => {
+                      let src = functions.getProductSrc(o);
+                      return this.context.layout("productCard2", {...o,src,isFirst: i === 0,isLast: i === items.length - 1})
+                    })
                   },
                 ],
               },

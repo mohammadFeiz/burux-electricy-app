@@ -50,7 +50,7 @@ export default class MyBurux extends Component{
     }
     getContent(){
         let {user = '',customerCode,shopName,visitorName,nationalCode,wallet,parts} = this.state;
-        let {guaranteeItems,SetState} = this.context;
+        let {guaranteeItems,SetState,userInfo} = this.context;
         return {
             scroll:'v',flex:1,className:'my-burux-page main-bg',
             column:[
@@ -68,7 +68,7 @@ export default class MyBurux extends Component{
                     size:36,
                     row:[
                         {flex:1},
-                        {className:'color323130 size20 bold',html:user,align:'vh'},
+                        {className:'color323130 size20 bold',html:userInfo.cardName,align:'vh'},
                         {size:36,html:getSvg(12),align:'vh'},
                         {flex:1}
                     ]
@@ -80,15 +80,15 @@ export default class MyBurux extends Component{
                         {
                             gap:1,
                             row:[
-                                this.getPanel({text1:'کد مشتری',text2:customerCode}),
+                                this.getPanel({text1:'کد مشتری',text2:userInfo.cardCode}),
                                 this.getPanel({text1:'نام فروشگاه',text2:shopName})
                             ]
                         },
                         {
                             gap:1,
                             row:[
-                                this.getPanel({text1:'ویزیتور',text2:visitorName}),
-                                this.getPanel({text1:'کد ملی',text2:nationalCode})
+                                this.getPanel({text1:'ویزیتور',text2:userInfo.slpname}),
+                                this.getPanel({text1:'کد ملی',text2:userInfo.idNumber})
                             ]
                         },
                         this.getPanel({text3:'مشاهده کامل اطلاعات کاربری'})

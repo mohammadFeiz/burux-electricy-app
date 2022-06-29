@@ -333,7 +333,7 @@ export default class Buy extends Component {
         return {
           attrs:{onClick:()=>this.changeView({type:'category',items:o.items,name:o.name})},
           column:[
-            {size:200,html:<img src={catLamp} alt='' width='100%'/>},
+            {size:200,html:<img src={o.src} alt='' width='100%'/>},
             {size:36,align:'vh',html:o.name,className:'color323130 size16 bold'}
           ] 
         }
@@ -1166,6 +1166,17 @@ class Shipping extends Component{
                     {html:5344500 + ' ریال',className:'color323130 bold size16'}
                   ]
                 },
+              ]
+            },
+            {size:12},
+            {
+              className:'box padding-12',
+              column:[
+                {size:36,align:'vh',className:'color605E5C size14 bold',html:<button className="button-2" onClick={()=>{
+                  let {services}=this.context;
+                  let res=services({type:"sendToVisitor"})
+                }}>ارسال برای ویزیتور</button>},
+                
               ]
             },
           ]

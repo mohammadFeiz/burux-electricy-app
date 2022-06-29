@@ -2,6 +2,7 @@ import Axios from "axios";
 import dateCalculator from "./utils/date-calculator";
 import $ from "jquery";
 import bulb10w from './images/10w-bulb.png';
+import nosrc from './images/no-src.png';
 export default function services(getState) {
   let fn = function(){
     return {
@@ -63,7 +64,7 @@ export default function services(getState) {
       //   }
       //   return {visitorWait,factored,inProcess,inShopTrack,delivered,canceled,rejected};
       // },
-      async peygiriye_sefareshe_kharid({baseUrl}) {
+      async peygiriye_sefareshe_kharid({baseUrl,fixDate}) {
         let res = await Axios.post(`${baseUrl}/BOne/GetAllOrders`,{
           "FieldName":"cardcode",  
           "FieldValue":"c50000",
@@ -81,14 +82,14 @@ export default function services(getState) {
           for(let j = 0; j < o.documents.length; j++){
             let item = o.documents[j];
             dict[o.orderState].push({
-              docType:item.docType,isDraft:item.isDraft,docEntry:item.docEntry,date:item.docTime,total:item.documentTotal
+              docType:item.docType,isDraft:item.isDraft,docEntry:item.docEntry,date:fixDate({date:item.docTime},"date").date,total:item.documentTotal
             });
           }
         }
         return dict
         //return {visitorWait,factored,inProcess,inShopTrack,delivered,canceled,rejected};
       },
-      async joziatepeygiriyesefareshekharid({baseUrl,parameter,getState,services}) {
+      async joziatepeygiriyesefareshekharid({baseUrl,fixDate,parameter,getState,services}) {
         let {userInfo} = getState();
         let res = await Axios.post(`${baseUrl}/BOne/GetDocument`,{
           "docentry":parameter.docEntry, 
@@ -109,7 +110,7 @@ export default function services(getState) {
         }
         result = {
           number: parameter,//
-          date: result.docTime,//
+          date: fixDate({date:result.docTime},"date").date,//
           customerName: result.cardName,//
           customerCode: result.cardCode,//
           customerGroup: result.cardGroupCode,//
@@ -158,22 +159,16 @@ export default function services(getState) {
       async activeCampaignItems({parameter,getState,baseUrl}) {
         let {allProducts} = getState();
         let {campaign,count} = parameter;
-        let res = await Axios.get(`${baseUrl}/Spree/GetTaxonByIdWithItsProducts?id=${campaign.id}`);
-        res = res.data.data.included
-        let a = res.map(({id})=>allProducts[id])
-        debugger;
         let products = Object.keys(allProducts);
         if(count !== undefined){products = products.slice(0,Math.min(count,products.length))}
         return products.map((o) =>{return {...allProducts[o.toString()],campaign}})
       },
       // async activeCampaignItems({parameter,getState,baseUrl}) {
-      //   return []
-      //   let {campaign,count} = parameter;
       //   let {allProducts} = getState();
-      //   let res = await Axios.get(`${baseUrl}/Spree/GetTaxonByIdWithItsProducts?id=${campaign.id}`);
+      //   let {count} = parameter;
       //   let products = Object.keys(allProducts);
       //   if(count !== undefined){products = products.slice(0,Math.min(count,products.length))}
-      //   return products.map((o) =>{return {...allProducts[o.toString()],campaign}})
+      //   return products.map((o) =>allProducts[o.toString()])
       // },
       async lastOrders({parameter,getState}) {
         let {allProducts} = getState();
@@ -223,13 +218,40 @@ export default function services(getState) {
         });
       },
       async getCategories(obj) {
+        // let {baseUrl} = obj;
+        // let res = await Axios.get(
+        //   `${baseUrl}/Spree/GetAllCategories`
+        // );
+        // let included = res.data.data.included;
+        // console.log(included);
+        // let categories = included.map((o) => {
+        //   return {name: o.attributes.name,id: o.id};
+        // });
+        // for (let i = 0; i < categories.length; i++) {
+        //   categories[i].items = await this.getCategoryItems(obj,categories[i]);
+        // }
+        // return categories;
         let {baseUrl} = obj;
         let res = await Axios.get(
           `${baseUrl}/Spree/GetAllCategories`
         );
+        let dataResult = res.data.data.data;
         let included = res.data.data.included;
-        let categories = included.map((o) => {
-          return {name: o.attributes.name,id: o.id};
+        console.log(dataResult)
+        
+        let categories = dataResult.map((o) => {
+
+          let src=nosrc;
+          const imgData = o.relationships.image.data;
+          // const imgIds = imgData.map((x) => x.id);
+          if(imgData !== undefined && imgData != null){
+            const taxonImage=included.find(x=>x.type==="taxon_image" && x.id===imgData.id)
+            if (taxonImage !== undefined && taxonImage != null) {
+              src = "http://spree.burux.com" + taxonImage.attributes.original_url;
+            }
+          }
+
+          return {name: o.id==="10178" ? "همه محصولات" : o.attributes.name,id: o.id,src:src};
         });
         for (let i = 0; i < categories.length; i++) {
           categories[i].items = await this.getCategoryItems(obj,categories[i]);
@@ -301,7 +323,7 @@ export default function services(getState) {
               const variant_id = includeItem.id; // int
               const imgData = includeItem.relationships.images.data;
               let srcs = [];
-              if (imgData.length) {
+              if (imgData.length && imgData.id!==undefined) {
                 const imgIds = imgData.id;
                 srcs = included.map((m) => {
                   return m.type === "image" && imgIds.includes(m.id)
@@ -390,11 +412,44 @@ export default function services(getState) {
             CardCode: "c50000",
             //Taxons: "10181,10178,10182",
             Taxons: "10016,10302,10178",
-            Include: "variants,option_types,product_properties,taxons,images,default_variant",
-            IsItemPriceNeeded: true,
+            // Taxons: "10180,10550,10179,10178,10302,10181",
+            // PerPage:250,
+            Include: "variants,option_types,product_properties,taxons,images,default_variant"
           }
         );
         return this.getMappedAllProducts(res.data.data);
+      },
+      async sendToVisitor({baseUrl,getState}) {
+        let {userInfo,cart = {}}=getState();
+        let variants = Object.keys(cart).map((id)=>cart[id])
+
+        debugger; 
+        let res = await Axios.post(`${baseUrl}/BOne/AddNewOrder`,{
+          "marketdoc": {
+            "docsource": 0,
+            "approvalstatus": 0,
+            "doctype": 17,
+            "cardcode": userInfo.cardCode,
+            "marketinglines": variants.map((i)=>{
+              return {itemcode:i.variant.code,itemqty:i.count}
+            }),
+            "deliveraddress": userInfo.address,
+            "marketingdetails": {
+                "invtype": 1,
+                "settletype": 1,
+                "paymenttime": 2,
+                "slpcode": userInfo.slpcode,
+                "deliverytype": 13,
+                "payduedate": 1
+            },
+            "paymentdetails": {
+                "realpayerinfo": ""
+            },
+            "comment": "",
+            "documenttotal": 0.0,
+            "relatedteam": 1
+        }
+      });
       },
       async buy_search({parameter,getState}){
         if(!parameter.value){return []}

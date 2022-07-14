@@ -14,6 +14,8 @@ import layout from "../../layout";
 import dateCalculator from "../../utils/date-calculator";
 import "./index.css";
 import functions from "../../functions";
+import SearchBox from "../../coponents/search-box";
+import Product from "../../coponents/product/product";
 export default class Main extends Component {
   constructor(props) {
     super(props);
@@ -34,7 +36,14 @@ export default class Main extends Component {
       userInfo:{},
       allProducts:[],
       cart: {},//{variantId:{count,product,variant}}
-      
+      cartZIndex:0,
+      shipping:false,//{cards:[<ProductCard/>,...],cartItems:[{count,variant,product}],total:number}
+      shippingZIndex:0,
+      searchZIndex:0,
+      productZIndex:0,
+      product:false,
+      categoryZIndex:0,
+      category:false,
       bottomMenuItems: [
         { text: "خانه", icon: 19, id: "a" },
         { text: "خرید", icon: 'buy', id: "b" },
@@ -45,10 +54,35 @@ export default class Main extends Component {
       guaranteeExistItems: [],
       activeBottomMenu: "a",
       popup: {},
-      searchValue: "",
       peygiriyeSefaresheKharid_tab:undefined,
       buy_view:undefined//temporary state
     };
+  }
+  changeCart(count,variantId){
+    let {cart,product} = this.state;
+    let newCart;
+    if(count === 0){
+        let res = {};
+        for(let prop in cart){
+          if(prop.toString() !== variantId.toString()){res[prop] = cart[prop]}
+        }
+        newCart = res;
+    }
+    else{
+      newCart = {...cart}
+      if(newCart[variantId] === undefined){
+        newCart[variantId] = {count,product,variant:product.variants.filter((o) => o.id === variantId)[0]}
+      }
+      else{newCart[variantId].count = count;}
+    }
+    this.setState({cart:newCart});
+  }
+  getCartCountByVariantId(variantId) {
+    if(!variantId){return 0}
+    let { cart } = this.state;
+    let cartItem = cart[variantId];
+    if(!cartItem){return 0}
+    return cartItem.count || 0;
   }
   async componentDidMount() {
     let {services} = this.state;
@@ -56,13 +90,13 @@ export default class Main extends Component {
     let guaranteeExistItems = await services({type:"kalahaye_mojoode_garanti"});
     let testedChance = await services({type:"get_tested_chance"});
     let userInfo = await services({type:"userInfo",cache:1000});
-    let allProducts = await services({type:"getAllProducts",cache:1000});    
+    //let allProducts = await services({type:"getAllProducts",cache:1000});    
     this.setState({
       guaranteeItems,
       userInfo,
       guaranteeExistItems,
       testedChance,
-      allProducts,
+      //allProducts,
     });
   }
   getBottomMenu() {
@@ -134,12 +168,17 @@ export default class Main extends Component {
     let context = {
       ...this.state,
       SetState: (obj) => this.setState(obj),
+      changeCart:this.changeCart.bind(this),
+      getCartCountByVariantId:this.getCartCountByVariantId.bind(this),
       changeTheme:this.changeTheme.bind(this),
       logout: this.props.logout,
       getHeaderLayout: this.getHeaderLayout.bind(this),
       layout:(type,parameters)=>layout(type,()=>this.state,parameters)
     };
-    let { popup, guaranteeItems, sidemenuOpen, theme,peygiriyeSefaresheKharid_tab,services } = this.state;
+    let { 
+      popup, guaranteeItems, sidemenuOpen, theme,peygiriyeSefaresheKharid_tab,
+      services,cartZIndex,shippingZIndex,shipping,searchZIndex,productZIndex,product 
+    } = this.state;
     return (
       <appContext.Provider value={context}>
         <RVD
@@ -229,9 +268,11 @@ export default class Main extends Component {
             }
           />
         )}
-        {popup.mode === "search" && (
-          <Search onClose={() => this.setState({ popup: {} })} />
-        )}
+
+        {searchZIndex !== 0 && <Search zIndex={searchZIndex} onClose={() => this.setState({ searchZIndex:0 })}/>}
+        {shippingZIndex !== 0 && <Shipping/>}
+        {productZIndex !== 0 && <Product/>}
+        {cartZIndex !== 0 && <Cart zIndex={cartZIndex}/>}
         <SideMenu
           onClose={() => this.setState({ sidemenuOpen: false })}
           open={sidemenuOpen}
@@ -775,7 +816,7 @@ class Search extends Component {
     }, 2000);
   }
   render() {
-    let { getHeaderLayout } = this.context;
+    let { SetState } = this.context;
     let { searchValue, searchFamilies, result } = this.state;
     let { onClose } = this.props;
     return (
@@ -784,8 +825,8 @@ class Search extends Component {
           layout={{
             className: "popup main-bg",
             column: [
-              getHeaderLayout("جستجوی کالا", () => onClose()),
-              this.context.layout("search", {value: searchValue,onChange: (searchValue) => this.changeSearch(searchValue)}),
+              {html:<PopupHeader title='جستجو در محصولات' onClose={()=>SetState({searchZIndex:0})}/>},
+              {html:<SearchBox onChange={async (searchValue)=>await this.changeSearch(searchValue)}/>},
               {size: 200,align: "vh",className: "size20 color323130 bold",show: false,html: "در میان ان کالا جستجو"},
               {size: 48,align: "v",className: "size14 color323130 bold",html: "جستجو در خانواده ها",style: { padding: "0 24px" }},
               {
@@ -799,7 +840,7 @@ class Search extends Component {
               {
                 flex: 1,
                 column: result.map((o, i) => {
-                  return this.context.layout("productCard2", {...o,isFirst: i === 0,isLast: i === result.length - 1});
+                  return <ProductCard isFirst={i === 0} isLast={i === result.length - 1} product={o} type='horizontal'/>;
                 }),
               },
             ],

@@ -528,9 +528,7 @@ export default function services(getState) {
 
       const spreeData=res.data.data;
       const b1Data=b1Res.data.data;
-      this.getMappedAllProducts({spreeResult:spreeData,b1Result:b1Data});
-
-        return res;
+      return  this.getMappedAllProducts({spreeResult:spreeData,b1Result:b1Data});
       },
       async getProductsWithCalcolation({baseUrl},skusId){ 
         let res = await Axios.post(`${baseUrl}/BOne/GetItemsByItemCode`,

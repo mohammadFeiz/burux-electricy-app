@@ -12,6 +12,7 @@ export default function services(getState) {
           return fix(res.data.data.Items, {convertDateFields: ["CreateTime"]});
         } 
         else {return [];}
+        // return [];
       },
       async kalahaye_mojoode_garanti({baseUrl}) {
         let res = await Axios.get(`${baseUrl}/Guarantee/GetAllProducts`);
@@ -237,7 +238,6 @@ export default function services(getState) {
         );
         let dataResult = res.data.data.data;
         let included = res.data.data.included;
-        console.log(dataResult)
         
         let categories = dataResult.map((o) => {
 
@@ -307,11 +307,13 @@ export default function services(getState) {
                 option_types_data.length &&
                 option_types_data.map((x) => x.id).includes(includeItem.id)
               ) {
-                const option_type_values_data = meta.filters.option_types
-                  .find((x) => x.id.toString() === includeItem.id.toString())
-                  .option_values.map((v) => {
+                  const option_types_meta_first_item = meta.filters.option_types
+                  .find((x) => x.id.toString() === includeItem.id.toString());
+                const option_type_values_data = option_types_meta_first_item != undefined
+                  ? option_types_meta_first_item.option_values.map((v) => {
                     return { name: v.presentation, id: v.id };
-                  });
+                  })
+                  :[];
   
                 option_types_included_values.push({
                   id: includeItem.id,
@@ -407,17 +409,20 @@ export default function services(getState) {
         return finalResult;
       },
       async getAllProducts({baseUrl}) {
-        let res = await Axios.post(`${baseUrl}/Spree/AllProducts`,
-          {
-            CardCode: "c50000",
-            //Taxons: "10181,10178,10182",
-            Taxons: "10016,10302,10178",
-            // Taxons: "10180,10550,10179,10178,10302,10181",
-            // PerPage:250,
-            Include: "variants,option_types,product_properties,taxons,images,default_variant"
-          }
-        );
-        return this.getMappedAllProducts(res.data.data);
+        // let res = await Axios.post(`${baseUrl}/Spree/AllProducts`,
+        //   {
+        //     CardCode: "c50000",
+        //     //Taxons: "10181,10178,10182",
+        //     Taxons: "10181",
+        //     // Taxons: "10180,10550,10179,10178,10302,10181",
+        //     // PerPage:250,
+        //     Include: "variants,option_types,product_properties,taxons,images,default_variant"
+        //   }
+        // );
+
+        // return this.getMappedAllProducts(res.data.data);
+
+        return this.getTaxonProducts({baseUrl});
       },
       async sendToVisitor({baseUrl,getState}) {
         let {userInfo,cart = {}}=getState();
@@ -461,6 +466,82 @@ export default function services(getState) {
           }
         }
         return result
+      },
+
+      // New Services
+      async getTaxonsById(obj){
+        const ids="10180,10550,10179,10178,10302";
+        let {baseUrl} = obj;
+        let res = await Axios.get(`${baseUrl}/Spree/GetTaxonsById?ids=${ids}`);
+        let dataResult = res.data.data.data;
+        let included = res.data.data.included;
+        
+        let categories = dataResult.map((o) => {
+
+          let src=nosrc;
+          const imgData = o.relationships.image.data;
+          // const imgIds = imgData.map((x) => x.id);
+          if(imgData !== undefined && imgData != null){
+            const taxonImage=included.find(x=>x.type==="taxon_image" && x.id===imgData.id)
+            if (taxonImage !== undefined && taxonImage != null) {
+              src = "http://spree.burux.com" + taxonImage.attributes.original_url;
+            }
+          }
+
+          return {name: o.id==="10178" ? "همه محصولات" : o.attributes.name,id: o.id,src:src};
+        });
+
+        return categories;
+      },
+      async refreshB1Rules({baseUrl}){
+        await Axios.get(`${baseUrl}/BOne/RefreshRules`);
+      },
+      async refreshB1CentralInvetoryProducts({baseUrl}){
+        await Axios.get(`${baseUrl}/BOne/RefreshCentralInvetoryProducts`);
+      },
+      async getTaxonProducts({baseUrl}){ 
+        let res = await Axios.post(`${baseUrl}/Spree/Products`,
+        {
+          CardCode: "c50000",
+          Taxons: "10179",
+          Include: "variants,option_types,product_properties,taxons,images,default_variant"
+        }
+      );
+      const included = res.data.data.included;
+      let skusId =[];
+
+      for(let includeItem of included){
+        
+        if(includeItem.type === "variant" 
+        && includeItem.attributes != undefined 
+        && includeItem.attributes.sku != undefined
+          && includeItem.attributes.sku.length){
+          skusId.push(includeItem.attributes.sku);
+        }
+      }
+
+      let b1Res = await Axios.post(`${baseUrl}/BOne/GetItemsByItemCode`,
+      {
+        "CardCode": "c50000",
+        "ItemCode":skusId // should be an array
+      });
+
+      const spreeData=res.data.data;
+      const b1Data=b1Res.data.data;
+      return  this.getMappedAllProducts({spreeResult:spreeData,b1Result:b1Data});
+      },
+      async getProductsWithCalcolation({baseUrl},skusId){ 
+        let res = await Axios.post(`${baseUrl}/BOne/GetItemsByItemCode`,
+        {
+          "CardCode": "c50000",
+          "ItemCode":skusId // should be an array
+        }
+      );
+      
+      const included = res.data.data.included;
+      
+        console.log(res.data)
+        return res;
       }
     }
   }

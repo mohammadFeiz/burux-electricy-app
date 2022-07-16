@@ -1,19 +1,22 @@
-import React, { Component } from 'react';
+import React, { Component,Fragment } from 'react';
 import AIOButton from './../aio-button/aio-button';
 import ProductCount from '../product-count';
 import PopupHeader from './../popup-header/popup-header';
 import RVD from 'react-virtual-dom';
+import appContext from './../../app-context';
+import getSvg from '../../utils/getSvg';
 export default class Product extends Component {
     static contextType = appContext;
-    constructor(props) {
-        super(props);
+    componentDidMount(){
+        this.mounted = true;
         this.getVariants()
         let { product } = this.context;
-        let firstVariant = product.inStock ? product.variants.filter((o) => o.inStock === null ? false : !!o.inStock)[0] : undefined;
-        this.state = {
+        let firstVariant = product.inStock ? (product.variants.filter((o) => o.inStock === null ? false : !!o.inStock)[0]) : undefined;
+        debugger;
+        this.setState({
             optionValues: firstVariant ? { ...firstVariant.optionValues } : undefined, showDetails: true,
             selectedVariant: firstVariant, srcIndex: 0
-        };
+        });
     }
     getVariants() {
         let { product } = this.context;
@@ -82,7 +85,7 @@ export default class Product extends Component {
     }
     header_layout(){
         let {SetState} = this.context;
-        return {html:<PopupHeader onClose={()=>SetState({product:false,productZIndex:0})} title='خرید کالا'/>}
+        return {html:<PopupHeader onClose={()=>SetState({product:false,productZIndex:0})} title='خرید کالا'/>,style:{overflow:'visible'}}
     }
     body_layout() {
         let { product } = this.context;
@@ -261,6 +264,7 @@ export default class Product extends Component {
         };
     }
     render() {
+        if(!this.mounted){return null}
         let {productZIndex:zIndex} = this.context;
         return (
             <RVD

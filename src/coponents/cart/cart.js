@@ -3,6 +3,7 @@ import appContext from '../../app-context';
 import RVD from 'react-virtual-dom';
 import Tabs from '../tabs/tabs';
 import ProductCard from '../product-card/product-card';
+import PopupHeader from '../popup-header/popup-header';
 //props : cart,changeCount
 export default class Cart extends Component{
     static contextType = appContext;

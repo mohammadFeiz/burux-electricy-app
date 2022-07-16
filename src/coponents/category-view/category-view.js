@@ -4,6 +4,7 @@ import ContentSlider from '../content-slider';
 import PopupHeader from '../popup-header/popup-header';
 import ProductCard from '../product-card/product-card';
 import SearchBox from '../search-box';
+import appContext from '../../app-context';
 export default class CategoryView extends Component {
     static contextType = appContext;
     constructor(props) {
@@ -11,13 +12,13 @@ export default class CategoryView extends Component {
         this.state = { searchValue: '' }
     }
     render() {
-        let {categoryZIndex,SetState,category} = this.context;
+        let {categoryZIndex:zIndex,SetState,category} = this.context;
         let { name, type, products, campaign} = category;
         let {searchValue} = this.state;
         return (
             <RVD
                 layout={{
-                    flex: 1, scroll: "v",
+                    scroll: "v",className:'fixed bgFFF',style:{zIndex},
                     column: [
                         {html:<PopupHeader title={type === 'campaign'?campaign.name:name} onClose={()=>SetState({categoryZIndex:0,category:false})}/>},
                         {html:<SearchBox value={searchValue} onChange={(searchValue)=>this.setState({searchValue})}/>},
@@ -34,7 +35,8 @@ export default class CategoryView extends Component {
                             column: products.map((product, i) => {
                                 let { searchValue } = this.state;
                                 if (searchValue && product.name.indexOf(searchValue) === -1) { return false; }
-                                return <ProductCard parentZIndex={categoryZIndex} product={product} isFirst={i === 0} isLast={i === items.length - 1} type='horizontal' />
+                                debugger;
+                                return <ProductCard parentZIndex={zIndex} product={product} isFirst={i === 0} isLast={i === products.length - 1} type='horizontal' />
                             })
                         },
                     ],

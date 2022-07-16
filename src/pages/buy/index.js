@@ -51,12 +51,10 @@ export default class Buy extends Component {
   }
   async getCampaignsData() {
     let {services} = this.context;
-    let campaigns = await services({type:"getCampaigns"});
+    let campaigns = await services({type:"getCampaigns",cache:120});
     this.setState({ campaigns});
-  }
-  async getCampaignItems(campaign){
-    let {services} = this.context;
-    return await services({type:"activeCampaignItems",parameter:{campaign}})
+    let campaignsProducts = await services({type:"campaignsProducts",parameter:{campaigns},cache:120});
+    this.setState({campaignsProducts})
   }
   async getPreOrders() {
     let {services} = this.context;
@@ -73,24 +71,20 @@ export default class Buy extends Component {
     let families = await services({type:'families'});
     this.setState({ families });
   }
-  async get_recommendeds(count) {
+  async get_recommendeds() {
     let {services} = this.context;
-    let recommendeds = await services({type:'recommendeds',parameter:{count}});
-    if(count){this.setState({ recommendeds });}
-    else {return recommendeds}
+    let recommendeds = await services({type:'recommendeds',cache:660});
+    this.setState({ recommendeds });
   }
-  async get_lastOrders(count) {
+  async get_lastOrders() {
     let {services} = this.context;
-    let lastOrders = await services({type:"lastOrders",parameter:{count}});
+    let lastOrders = await services({type:"lastOrders",cache:660});
     this.setState({ lastOrders });
-    if(count){this.setState({ lastOrders });}
-    else {return lastOrders}
   }
-  async get_bestSellings(count) {
+  async get_bestSellings() {
     let {services} = this.context;
-    let bestSellings = await services({type:'bestSellings',parameter:{count}});
-    if(count){this.setState({ bestSellings });}
-    else {return bestSellings}
+    let bestSellings = await services({type:'bestSellings',cache:660});
+    this.setState({ bestSellings });
   }
   getActiveFamilyItems() {
     return [
@@ -213,7 +207,7 @@ export default class Buy extends Component {
   }
   campaign(){
     let {SetState} = this.context;
-    let {campaigns} = this.state;
+    let {campaigns,campaignsProducts} = this.state;
     return {
       html:()=>(
         <ContentSlider 
@@ -224,7 +218,11 @@ export default class Buy extends Component {
                 title:name,color,background,icon:<img src={src} alt='' height='100%'/>,
                 button:{
                   text:'خرید',
-                  onClick:async (campaign)=>SetState({categoryZIndex:10,category:{type:'campaign',products:await this.getCampaignItems(campaign),name:campaign.name,campaign}})}
+                  onClick:async ()=>{
+                    if(!campaignsProducts || !campaignsProducts[campaign.id] || !campaignsProducts[campaign.id].length){return}
+                    let products = campaignsProducts[campaign.id];
+                    SetState({categoryZIndex:10,category:{type:'campaign',products,name:campaign.name,campaign}})
+                  }}
               }
             })
           }
@@ -241,7 +239,7 @@ export default class Buy extends Component {
       ],
     }
   }
-  pish_sefaresh_layout(){
+  pish_sefaresh_layout(type){
     let {SetState} = this.context,{preOrders} = this.state;
     let title,number,peygiriyeSefaresheKharid_tab;
     if(type === 'visitorWait'){
@@ -292,11 +290,15 @@ export default class Buy extends Component {
     return {
       gap:12,
       column:sliders.map(([key,name])=>{
+        let products = this.state[key] || [];
+        if(!products.length){return false}
         return {
           html:()=>(
             <CategorySlider 
               title={name} products={this.state[key]} 
-              showAll={async ()=>this.changeView({type:'category',items:await this['get_' + key](),name})}
+              showAll={()=>{
+                SetState({categoryZIndex:10,category:{type:'category',products,name}})
+              }}
               onClick={(product)=>SetState({product,productZIndex:10})}
             />
           )

@@ -15,7 +15,12 @@ import dateCalculator from "../../utils/date-calculator";
 import "./index.css";
 import functions from "../../functions";
 import SearchBox from "../../coponents/search-box";
+import Shipping from './../../coponents/shipping/shipping';
+import Cart from "../../coponents/cart/cart";
 import Product from "../../coponents/product/product";
+import PopupHeader from "../../coponents/popup-header/popup-header";
+import ProductCard from "../../coponents/product-card/product-card";
+import CategoryView from "../../coponents/category-view/category-view";
 export default class Main extends Component {
   constructor(props) {
     super(props);
@@ -90,13 +95,11 @@ export default class Main extends Component {
     let guaranteeExistItems = await services({type:"kalahaye_mojoode_garanti"});
     let testedChance = await services({type:"get_tested_chance"});
     let userInfo = await services({type:"userInfo",cache:1000});
-    //let allProducts = await services({type:"getAllProducts",cache:1000});    
     this.setState({
       guaranteeItems,
       userInfo,
       guaranteeExistItems,
       testedChance,
-      //allProducts,
     });
   }
   getBottomMenu() {
@@ -177,7 +180,7 @@ export default class Main extends Component {
     };
     let { 
       popup, guaranteeItems, sidemenuOpen, theme,peygiriyeSefaresheKharid_tab,
-      services,cartZIndex,shippingZIndex,shipping,searchZIndex,productZIndex,product 
+      services,cartZIndex,shippingZIndex,searchZIndex,productZIndex,categoryZIndex
     } = this.state;
     return (
       <appContext.Provider value={context}>
@@ -272,7 +275,8 @@ export default class Main extends Component {
         {searchZIndex !== 0 && <Search zIndex={searchZIndex} onClose={() => this.setState({ searchZIndex:0 })}/>}
         {shippingZIndex !== 0 && <Shipping/>}
         {productZIndex !== 0 && <Product/>}
-        {cartZIndex !== 0 && <Cart zIndex={cartZIndex}/>}
+        {cartZIndex !== 0 && <Cart/>}
+        {categoryZIndex !== 0 && <CategoryView/>}
         <SideMenu
           onClose={() => this.setState({ sidemenuOpen: false })}
           open={sidemenuOpen}

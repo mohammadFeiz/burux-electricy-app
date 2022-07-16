@@ -58,7 +58,7 @@ export default class ProductCard extends Component{
         let {discountPercent,discountPrice,inStock} = product;
         if(!discountPrice || !discountPercent || !inStock){return false}
         return {
-            childsAttrs:{align:'v'},gap:4,
+            childsAttrs:{align:'v'},gap:4,className:'padding-0-12',
             row:[
                 {flex:1},
                 {html:this.splitPrice(discountPrice),className:'size14 colorA19F9D'},
@@ -78,80 +78,22 @@ export default class ProductCard extends Component{
     notExist_layout(){
         let {product} = this.props;
         let {inStock} = product;
-        if(!inStock){return false}
+        if(inStock){return false}
         return {row:[{flex:1},{html:'نا موجود',className:'colorD83B01 bold size12'},{size:12}]}
     }
     isInCart_layout(){
-        return {flex:1,align:'v',html:this.isInCart()?'موجود در سبد خرید شما':'',className:'colorD83B01 bold size10'}
+        if(!this.isInCart()){return false}
+        return {size:24,align:'v',html:'موجود در سبد خرید شما',className:'colorD83B01 bold size10 padding-0-12'}
     }
     price_layout(){
         let {product} = this.props;
         let {price,inStock} = product;
-        if(!price || !inStock){return false}
-        return {html:this.splitPrice(price) + ' ریال',className:'size12 color404040 bold theme-1-colorEEE'}
+        if(!inStock){return false}
+        return {row:[{flex:1},{html:this.splitPrice(price) + ' ریال',className:'size12 color404040 bold theme-1-colorEEE padding-0-12'}]}
     }
     horizontal_layout(){
-        let {onClick = ()=>{},isLast,isFirst} = this.props;
-        return (
-            <RVD
-                layout={{
-                    className:'box gap-no-color',
-                    attrs:{onClick:()=>onClick()},
-                    style:{
-                        padding:6,
-                        borderBottomLeftRadius:!isLast?0:undefined,
-                        borderBottomRightRadius:!isLast?0:undefined,
-                        borderTopLeftRadius:!isFirst?0:undefined,
-                        borderTopRightRadius:!isFirst?0:undefined
-                    },
-                    gap:12,
-                    row:[
-                        {
-                            size:96,
-                            column:[this.image_layout(),this.count_layout()]
-                        },
-                        {
-                            flex:1,gap:6,
-                            column:[
-                                this.title_layout(),
-                                this.name_layout(),
-                                this.discount_layout(),
-                                this.details_layout(),
-                                {flex:1},
-                                this.notExist_layout(),
-                                {row:[this.isInCart_layout(),this.price_layout()]}
-                            ]
-                        }
-                    ]
-                }}
-            />
-        )
-    }
-    vertical_layout(){
-        let {onClick = ()=>{},style} = this.props;
-        return (
-            <RVD
-                layout={{
-                    style:{height:168,borderRadius:12,fontSize:14,...style},
-                    className:'bgFFF borderDDD theme-1-bg3F4456 theme-1-border3F4456',
-                    attrs:{onClick:()=>onClick()},
-                    column:[
-                        {size:136,column:[this.image_layout(),this.count_layout()]},
-                        this.name_layout(),
-                        {flex:1},
-                        this.discount_layout(),
-                        {row:[this.isInCart_layout(),this.price_layout()]},
-                        this.notExist_layout(),
-                        {size:12}
-                    ]
-                }}
-            />
-        )
-    }
-    render(){
         let {SetState} = this.context;
-        let {isLast,isFirst,type,product,parentZIndex = 1} = this.props;
-        if(type === 'horizontal'){this.horizontal_layout()}
+        let {isLast,isFirst,product,parentZIndex = 1} = this.props;
         return (
             <RVD
                 layout={{
@@ -186,5 +128,33 @@ export default class ProductCard extends Component{
                 }}
             />
         )
+    }
+    vertical_layout(){
+        let {SetState} = this.context;
+        let {style,parentZIndex = 1,product} = this.props;
+        let {srcs = [],name} = product;
+        return (
+            <RVD
+                layout={{
+                    style:{height:256,width:140,borderRadius:12,fontSize:14,...style},
+                    className:'bgFFF borderDDD theme-1-bg3F4456 theme-1-border3F4456',
+                    attrs:{onClick:()=>SetState({productZIndex:parentZIndex * 10,product})},
+                    column:[
+                        {size:128,align:'vh',html:<img src={srcs[0] || NoSrc} width={'100%'} style={{width:'100%',height:'100%'}} alt=''/>,style:{padding:6,paddingBottom:0}},
+                        {html:name,className:'size12 padding-6-12 color575756 bold theme-1-colorDDD',style:{whiteSpace:'normal'}},
+                        {flex:1},
+                        this.isInCart_layout(),
+                        this.discount_layout(),
+                        this.price_layout(),
+                        this.notExist_layout(),
+                        {size:12}
+                    ]
+                }}
+            />
+        )
+    }
+    render(){
+        let {type} = this.props;
+        return this[type +'_layout']()
     }
 }

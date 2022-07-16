@@ -8,7 +8,7 @@ export default function services(getState) {
     return {
       async kalahaye_garanti_shode({fix,baseUrl}) {
         let res = await Axios.post(`${baseUrl}/Guarantee/GetAllGuarantees`,{ CardCode: "C50000" });
-        if (res.data && res.data.isSuccess) {
+        if (res.data && res.data.isSuccess && res.data.data) {
           return fix(res.data.data.Items, {convertDateFields: ["CreateTime"]});
         } 
         else {return [];}
@@ -157,46 +157,37 @@ export default function services(getState) {
           return {name: o.attributes.name,id: o.id,background: "#FDB913",color: "#173796",src:bulb10w};
         });
       },
-      async activeCampaignItems({parameter,getState,baseUrl}) {
-        let {allProducts} = getState();
-        let {campaign,count} = parameter;
-        let products = Object.keys(allProducts);
-        if(count !== undefined){products = products.slice(0,Math.min(count,products.length))}
-        return products.map((o) =>{return {...allProducts[o.toString()],campaign}})
+      async campaignsProducts({baseUrl,parameter}){
+        let {campaigns} = parameter;
+        let result = {};
+        for(let i = 0; i < campaigns.length; i++){
+          let campaign = campaigns[i];
+          let res = await this.getTaxonProducts({baseUrl,parameter:{Taxons:campaign.id}})
+          res = res.map((o)=>{return {...o,campaign}})
+          result[campaign.id] = res; 
+        }
+        return result;
       },
-      // async activeCampaignItems({parameter,getState,baseUrl}) {
-      //   let {allProducts} = getState();
-      //   let {count} = parameter;
-      //   let products = Object.keys(allProducts);
-      //   if(count !== undefined){products = products.slice(0,Math.min(count,products.length))}
-      //   return products.map((o) =>allProducts[o.toString()])
-      // },
-      async lastOrders({parameter,getState}) {
-        let {allProducts} = getState();
-        let {count} = parameter;
-        let products = Object.keys(allProducts);
-        if(count !== undefined){products = products.slice(0,Math.min(count,products.length))}
-        return products.map((o) =>allProducts[o.toString()])
+      async lastOrders({baseUrl}) {
+        return await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10180'}})
+         
       },
-      async recommendeds({parameter,getState}) {
-        let {allProducts} = getState();
-        let {count} = parameter;
-        let products = Object.keys(allProducts);
-        if(count !== undefined){products = products.slice(0,Math.min(count,products.length))}
-        return products.map((o) =>allProducts[o.toString()])
+      async recommendeds({baseUrl}) {
+        return await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10180'}})
+        
       },
-      async bestSellings({parameter,getState}){
-        let {allProducts} = getState();
-        let {count} = parameter;
-        let products = Object.keys(allProducts);
-        if(count !== undefined){products = products.slice(0,Math.min(count,products.length))}
-        return products.map((o) =>allProducts[o.toString()])
+      async bestSellings({baseUrl}){
+        return await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10180'}})
+        
       },
       async preOrders({baseUrl}) {
+        let preOrders = {waitOfVisitor: 10,waitOfPey: 2};
         let res = await Axios.post(`${baseUrl}/Visit/PreOrderStat`,{CardCode: "c50000"});
+        if(!res || !res.data || !res.data.data){
+          console.error('API Error!!!!!')
+          return preOrders;
+        }
         let result = res.data.data;
-        let preOrders = {waitOfVisitor: 10,waitOfPey: 2,
-        };
         for (let i = 0; i < result.length; i++) {
           if (result[i].Status === 1) {preOrders.waitOfVisitor = result[i].Count;}
           if (result[i].Status === 2) {preOrders.waitOfPey = result[i].Count;}
@@ -278,151 +269,136 @@ export default function services(getState) {
           { src: undefined, name: "پنلی توکار", id: "3" },
         ]
       },
-      getMappedAllProducts({spreeResult,b1Result}){
-        let result = spreeResult.data,included = spreeResult.included,meta = spreeResult.meta;
-        var finalResult = {};
-        for (let spreeItem of result) {
-          let defaultVariantId;
-          try{defaultVariantId = spreeItem.relationships.default_variant.data.id;}
-          catch{debugger;}
-          
-          let spreeItemTotalVariantsCount = 0;
-          let defaultVariant;
-          let product_properties_included_values = [],option_types_included_values = [],variants_included_values = [],mainSrcs = [];
-          for (let includeItem of included) {
-            if (includeItem.type === "product_property") {
-              const product_properties_data = spreeItem.relationships.product_properties.data;
-              if (
-                product_properties_data.length &&
-                product_properties_data.map((x) => x.id).includes(includeItem.id)
-              ) {
-                product_properties_included_values.push([
-                  includeItem.attributes.name,
-                  includeItem.attributes.value,
-                ]);
-              }
-            } else if (includeItem.type === "option_type") {
-              const option_types_data = spreeItem.relationships.option_types.data;
-              if (
-                option_types_data.length &&
-                option_types_data.map((x) => x.id).includes(includeItem.id)
-              ) {
-                  const option_types_meta_first_item = meta.filters.option_types
-                  .find((x) => x.id.toString() === includeItem.id.toString());
-                const option_type_values_data = option_types_meta_first_item != undefined
-                  ? option_types_meta_first_item.option_values.map((v) => {
-                    return { name: v.presentation, id: v.id };
-                  })
-                  :[];
-  
-                option_types_included_values.push({
-                  id: includeItem.id,
-                  name: includeItem.attributes.name,
-                  items: option_type_values_data,
-                });
-              }
-            } else if (includeItem.type === "variant") {
-              const variant_id = includeItem.id; // int
-              const imgData = includeItem.relationships.images.data;
-              let srcs = [];
-              if (imgData.length && imgData.id!==undefined) {
-                const imgIds = imgData.id;
-                srcs = included.map((m) => {
-                  return m.type === "image" && imgIds.includes(m.id)
-                    ? m.attributes.original_url
-                    : null;
-                });
-              }
-              const variants_ids_data = spreeItem.relationships.variants.data;
-              if (
-                variants_ids_data.length &&
-                variants_ids_data.map((x) => x.id).includes(includeItem.id)
-              ) {
-                const b1_item = b1Result.find(
-                  (i) => i.itemCode === includeItem.attributes.sku
-                );
-                const variant_price =
-                  b1_item !== undefined && b1_item !== null
-                    ? b1_item.price
-                    : 0;
-                    // : includeItem.attributes.price; // int
-  
-                const variant_discount_price =
-                  b1_item !== undefined && b1_item !== null
-                    ? b1_item.priceAfterVat
-                    : 0; // int
-                    // : includeItem.attributes.price; // int
-                //const variant_discount_precent = b1_item !== undefined ? b1_item.discountPercent : 0; // int
-                const variant_in_stock = b1_item !== undefined  && b1_item !== null
-                    ? b1_item.totalQty 
-                    : 0;
-                spreeItemTotalVariantsCount += variant_in_stock;
-  
-                const variant_option_values = includeItem.relationships.option_values.data; // array -> {id, type}
-                let option_values_result = {};
-                for (const op_val of variant_option_values) {
-                  // array -> { id: p.id, name: p.attributes.name, items: [{ name: v.presentation, id: v.id }] }
-                  const selected_option_type = option_types_included_values.find((x) =>x.items.map((i) => i.id.toString()).includes(op_val.id.toString()));
-                  if (selected_option_type === undefined || selected_option_type === null) continue;
-                  option_values_result[selected_option_type.id.toString()] = selected_option_type.items.find((ov) => ov.id.toString() === op_val.id.toString()).id;
-                }
-                let obj = {
-                  id: variant_id,
-                  code:b1_item?b1_item.itemCode:'',
-                  optionValues: option_values_result,
-                  discountPrice: variant_discount_price,
-                  discountPercent: Math.round((variant_price - variant_discount_price) * 100 / variant_price),
-                  price: variant_price,
-                  inStock: variant_in_stock,
-                  srcs: srcs,
-                  
-                }
-                if(defaultVariantId === variant_id){
-                  obj.isDefault = true;
-                  defaultVariant = obj;
-                }
-                variants_included_values.push(obj);
-              }
-            } 
-            else if (includeItem.type === "image") {
-              const imgData = spreeItem.relationships.images.data;
-              const imgIds = imgData.map((x) => x.id);
-              if (imgData.length && imgIds.includes(includeItem.id)) {
-                mainSrcs.push("http://spree.burux.com" + includeItem.attributes.original_url);
+      // getOptionTypeIdByOptionValueId(optionTypes,optionValueId){
+      //   for(let i = 0; i < optionTypes.length; i++){
+      //     let optionType = optionTypes[i];
+      //     let {items} = optionType;
+      //     for(let j = 0; j < items.length; j++){
+      //       if(optionValueId.toString() === items[j].id.toString()){return {optionTypeId:optionType.id.toString(),optionTypeItemId:items[j].id.toString()}}
+      //     }
+      //   }
+      //   return false
+      // },
+      getVariantOptionValues(optionValues,optionTypes){
+        let result = {};
+        for (let optionValue of optionValues) {
+          let id = optionValue.id.toString();
+          for(let i = 0; i < optionTypes.length; i++){
+            let optionTypeId = optionTypes[i].id.toString()
+            let items = optionTypes[i].items;
+            for(let j = 0; j < items.length; j++){
+              let itemId = items[j].id.toString();
+              if(id === itemId){
+                result[optionTypeId] = items[j].id.toString();
               }
             }
           }
-  
-          finalResult[spreeItem.id] = {
-            inStock:spreeItemTotalVariantsCount,
-            name: spreeItem.attributes.name,
-            defaultVariant,
-            code: `code_${spreeItem.id}`,
-            id: spreeItem.id,
-            details: product_properties_included_values,
-            optionTypes: option_types_included_values,
-            variants: variants_included_values,
-            srcs: mainSrcs,
-          };
         }
-        console.log(finalResult)
-        return finalResult;
+        return result
       },
-      async getAllProducts({baseUrl}) {
-        // let res = await Axios.post(`${baseUrl}/Spree/AllProducts`,
-        //   {
-        //     CardCode: "c50000",
-        //     //Taxons: "10181,10178,10182",
-        //     Taxons: "10181",
-        //     // Taxons: "10180,10550,10179,10178,10302,10181",
-        //     // PerPage:250,
-        //     Include: "variants,option_types,product_properties,taxons,images,default_variant"
-        //   }
-        // );
-
-        // return this.getMappedAllProducts(res.data.data);
-
-        return this.getTaxonProducts({baseUrl});
+      getProductVariant(include_variant,include_srcs,b1Result,optionTypes,defaultVariantId){
+        let {id,attributes,relationships} = include_variant;
+        let srcs = relationships.images.data.map(({id})=>include_srcs[id.toString()].attributes.original_url)
+        const b1_item = b1Result.find((i) => i.itemCode === attributes.sku);
+        let price,discountPrice,inStock;
+        try { price = b1_item.price } catch { price = 0 }
+        try { discountPrice = b1_item.priceAfterVat } catch { discountPrice = 0 }
+        try { inStock = b1_item.totalQty } catch { inStock = 0 }
+        let optionValues = this.getVariantOptionValues(relationships.option_values.data,optionTypes)
+        let discountPercent = price && discountPrice?Math.round((price - discountPrice) * 100 / price):0;
+        return {
+          id,optionValues,discountPrice,price,inStock,srcs,
+          code:b1_item?b1_item.itemCode:'',
+          discountPercent,
+          isDefault:defaultVariantId === id
+        }
+      },
+      sortIncluded(spreeResult){
+        let sorted = {include_optionTypes:{},include_details:{},include_srcs:{},meta_optionTypes:{},include_variants:{}}
+        for(let i = 0; i < spreeResult.included.length; i++){
+          let include = spreeResult.included[i];
+          let {type,id} = include;
+          id = id.toString();
+          if(type === 'option_type'){sorted.include_optionTypes[id] = include}
+          else if(type === 'product_property'){sorted.include_details[id] = include}
+          else if(type === 'image'){sorted.include_srcs[id] = include}
+          else if(type === 'variant'){sorted.include_variants[id] = include}
+        }
+        for(let i = 0; i < spreeResult.meta.filters.option_types.length; i++){
+          let optionType = spreeResult.meta.filters.option_types[i];
+          sorted.meta_optionTypes[optionType.id.toString()] = optionType;
+        }
+        return sorted
+      },
+      getMappedAllProducts({spreeResult,b1Result}){
+        let products = spreeResult.data;
+        let {include_optionTypes,include_variants,include_details,include_srcs,meta_optionTypes} = this.sortIncluded(spreeResult);
+        var finalResult = [];
+        for (let product of products) {
+          let {relationships} = product;
+          let optionTypes = [];
+          for (let i = 0; i < relationships.option_types.data.length; i++){
+            let {id} = relationships.option_types.data[i];
+            id = id.toString();
+            if(!meta_optionTypes[id]){
+              console.error(`product.relationships.option_types.data[${i}] not has matched id in meta.filters.option_values (id = ${id})`)
+              console.log('spree item is',product)
+              console.log('meta_optionTypes is',meta_optionTypes)
+              continue;
+            }
+            let {option_values} = meta_optionTypes[id];
+            let {attributes} = include_optionTypes[id];
+            optionTypes.push({id,name:attributes.name,items:option_values.map((o)=>{return {name: o.presentation, id: o.id}})})
+          }
+          let details = [];
+          for(let i = 0; i < relationships.product_properties.data.length; i++){
+            let detail = relationships.product_properties.data[i];
+            let {id} = detail;
+            id = id.toString();
+            let {attributes} = include_details[id];
+            let {name,value} = attributes;
+            details.push([name,value])
+          }
+          let srcs = [];
+          for(let i = 0; i < relationships.images.data.length; i++){
+            let {id} = relationships.images.data[i];
+            id = id.toString();
+            let {attributes} = include_srcs[id];
+            let {original_url} = attributes;
+            srcs.push("http://spree.burux.com" + original_url)
+          }
+          let variants = [];
+          let defaultVariant;
+          let inStock = 0;
+          let defaultVariantId = product.relationships.default_variant.data.id
+          if(!relationships.variants.data || !relationships.variants.data.length){
+            console.error(`product width id = ${product.id} has not any varinat`)
+            console.log('spree item is',product)
+          }
+          for(let i = 0; i < relationships.variants.data.length; i++){
+            let {id} = relationships.variants.data[i];
+            id = id.toString();
+            let variant = this.getProductVariant(include_variants[id],include_srcs,b1Result,optionTypes,defaultVariantId)
+            if(variant.isDefault){defaultVariant = variant}
+            inStock += variant.inStock;
+            variants.push(variant)
+          }
+          let price = 0,discountPrice = 0,discountPercent = 0;
+          if(defaultVariant){
+            price = defaultVariant.price;
+            discountPrice = defaultVariant.discountPrice;
+            discountPercent = defaultVariant.discountPercent;
+          }
+          else{
+            console.error(`product width id = ${product.id} has not default variant`)
+            console.log('spree item is',product)
+          }
+          finalResult.push({
+            inStock,details,optionTypes,variants,srcs,name: product.attributes.name,defaultVariant,
+            price,discountPrice,discountPercent,id: product.id
+          })
+        }
+        return finalResult;
       },
       async sendToVisitor({baseUrl,getState}) {
         let {userInfo,cart = {}}=getState();
@@ -499,15 +475,18 @@ export default function services(getState) {
       async refreshB1CentralInvetoryProducts({baseUrl}){
         await Axios.get(`${baseUrl}/BOne/RefreshCentralInvetoryProducts`);
       },
-      async getTaxonProducts({baseUrl}){ 
+      async getTaxonProducts({baseUrl,parameter = {}}){ 
         let res = await Axios.post(`${baseUrl}/Spree/Products`,
         {
           CardCode: "c50000",
-          Taxons: "10179",
+          //Taxons: "10179",
+          Taxons:parameter.Taxons,
           Include: "variants,option_types,product_properties,taxons,images,default_variant"
         }
       );
+      console.log('ahmadi',res.data.data)
       const included = res.data.data.included;
+      
       let skusId =[];
 
       for(let includeItem of included){

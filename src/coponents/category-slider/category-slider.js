@@ -1,6 +1,7 @@
 import React,{Component} from 'react';
 import RVD from 'react-virtual-dom';
 import ProductCard from '../product-card/product-card';
+import appContext from '../../app-context';
 //props
 //1 - products [product,product,...]
 //2 - title(text) required
@@ -10,7 +11,7 @@ export default class CategorySlider extends Component{
     static contextType = appContext;
     render(){
       let {products = [],title,showAll,onClick = ()=>{}} = this.props;
-      if(items.length === 0){return null}
+      if(products.length === 0){return null}
       return (
         <RVD
           layout={{
@@ -27,13 +28,14 @@ export default class CategorySlider extends Component{
               {
                 gap: 16,scroll:'h',
                 row: products.map((product,i) =>{
-                    return (
+                    return {
+                      html:(
                         <ProductCard 
                             type='vertical' product={product} 
                             isFirst={i === 0} isLast={i === products.length - 1} 
-                            onClick={()=>onClick(product)}
                         />
-                    )
+                      )
+                    }
                 }),
               },
             ],

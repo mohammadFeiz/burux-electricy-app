@@ -8,7 +8,7 @@ export default class Tabs extends Component{
     tab_layout({size,flex,id,title,badge = 0}){
         let {activeTabId,onChange} = this.props;
         if(typeof badge === 'function'){badge = badge()}
-        let active = o.id === activeTabId;
+        let active = id === activeTabId;
         return {
             align: 'vh', size, flex, className: 'size12',
             attrs: { onClick: () => onChange(id) },

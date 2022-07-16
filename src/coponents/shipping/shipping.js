@@ -1,5 +1,6 @@
 import React,{Component} from 'react';
 import RVD from 'react-virtual-dom';
+import appContext from '../../app-context';
 export default class Shipping extends Component{
     static contextType = appContext;
     constructor(props){

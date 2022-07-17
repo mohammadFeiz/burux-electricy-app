@@ -1,11 +1,11 @@
 import React, { Component, createRef } from 'react';
 import RVD from 'react-virtual-dom';
 import getSvg from './../../utils/getSvg';
-import SliderDots from '../../coponents/slider-dots';
+import SliderDots from '../../components/slider-dots';
 import appContext from '../../app-context';
-import AIOButton from './../../coponents/aio-button/aio-button';
+import AIOButton from './../../components/aio-button/aio-button';
 import functions from '../../functions';
-import ContentSlider from '../../coponents/content-slider';
+import ContentSlider from '../../components/content-slider';
 import bulb10w from './../../images/10w-bulb.png';
 import './index.css';
 import Awards from './../awards/index';

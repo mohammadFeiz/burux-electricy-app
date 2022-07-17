@@ -3,7 +3,7 @@ import RVD from 'react-virtual-dom';
 
 export default class Tabs extends Component{
     badgeStyle(){
-        return {background:'dodgerblue',padding:'0 3px',overflow:'hidden',color:'#fff',borderRadius:12,minWidth:18,height:18,margin:'0 3px'}
+        return {background:'dodgerblue',padding:'0 3px',overflow:'hidden',color:'#fff',borderRadius:12,minWidth:12,height:18,margin:'0 3px',textAlign:'center'}
     }
     tab_layout({size,flex,id,title,badge = 0}){
         let {activeTabId,onChange} = this.props;
@@ -15,7 +15,7 @@ export default class Tabs extends Component{
             style:active?{borderBottom:'2px solid',color:'dodgerblue'}:{},
             row: [
                 { html: title, className: 'tab-title', align: 'v' },
-                { show: badge !== 0, html: badge, style: this.badgeStyle(), align: 'vh' }
+                { show: badge !== 0, html: <div style={this.badgeStyle()}>{badge}</div>, align: 'vh' }
             ]
         }
     }

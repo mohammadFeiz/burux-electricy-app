@@ -1,9 +1,9 @@
 import React,{Component} from 'react';
-import appContext from '../../app-context';
+import appContext from './../../app-context';
 import RVD from 'react-virtual-dom';
-import Tabs from '../tabs/tabs';
-import ProductCard from '../product-card/product-card';
-import PopupHeader from '../popup-header/popup-header';
+import Tabs from './../../components/tabs/tabs';
+import ProductCard from './../../components/product-card/product-card';
+import Header from './../../components/header/header';
 //props : cart,changeCount
 export default class Cart extends Component{
     static contextType = appContext;
@@ -24,7 +24,7 @@ export default class Cart extends Component{
       return res
     }
     getDetails(){
-      let { cart,changeCart } = this.context,tabsDictionary = {};
+      let { cart,changeCart,cartZIndex } = this.context,tabsDictionary = {};
       let variantIds = Object.keys(cart);
       for(let i = 0; i < variantIds.length; i++){
         let variantId = variantIds[i];
@@ -38,15 +38,16 @@ export default class Cart extends Component{
         let details = [];
         for (let j = 0; j < optionTypes.length; j++) {
           let optionType = optionTypes[j];
-          details.push([optionType.name, optionValues[optionType.id]]);
+          details.push([optionType.name, optionType.items[optionValues[optionType.id]]]);
         }
         let props = {
           product,details,count,type:'horizontal',
           title:product.campaign?product.campaign.name:undefined,//2
           isFirst:i === 0,isLast: i === variantIds.length - 1,
+          parentZIndex:cartZIndex,
           changeCount:(count) => changeCart(count,variantId)
         }
-        tabsDictionary[tabId].cards.push(<ProductCard {...props} />)
+        tabsDictionary[tabId].cards.push(<ProductCard {...props} showIsInCart={false}/>)
         tabsDictionary[tabId].cartItems.push(cart[variantId])
         tabsDictionary[tabId].badge++;
         tabsDictionary[tabId].total += price * count;
@@ -70,8 +71,8 @@ export default class Cart extends Component{
       }
     }
     header_layout(){
-        let {SetState} = this.context;
-        <PopupHeader onClose={()=>SetState({cartZIndex:0})} title='سبد خرید'/>
+        let {SetState,cartZIndex} = this.context;
+        return {html:<Header zIndex={cartZIndex} onClose={()=>SetState({cartZIndex:0})} title='سبد خرید'/>}
     }
     tabs_layout(){
       if(!this.tabs.length){return false}
@@ -103,9 +104,15 @@ export default class Cart extends Component{
       }
     }
     render(){
-        let {zIndex} = this.props;
+        let {cartZIndex:zIndex} = this.context;
+        this.getDetails();
         return (
-            <RVD layout={{style:{zIndex},flex: 1,column: [this.header_layout(),this.tabs_layout(),this.products_layout(),this.payment_layout()]}}/>
+            <RVD 
+              layout={{
+                style:{zIndex},flex: 1,className:'main-bg fixed',
+                column: [this.header_layout(),this.tabs_layout(),this.products_layout(),this.payment_layout()]
+              }}
+            />
         )
     }
   }

@@ -1,10 +1,10 @@
 import React, { Component,Fragment } from 'react';
-import AIOButton from './../aio-button/aio-button';
-import ProductCount from '../product-count';
-import PopupHeader from './../popup-header/popup-header';
+import AIOButton from './../../components/aio-button/aio-button';
+import ProductCount from './../../components/product-count/index';
+import Header from './../../components/header/header';
 import RVD from 'react-virtual-dom';
 import appContext from './../../app-context';
-import getSvg from '../../utils/getSvg';
+import getSvg from './../../utils/getSvg';
 export default class Product extends Component {
     static contextType = appContext;
     componentDidMount(){
@@ -12,7 +12,6 @@ export default class Product extends Component {
         this.getVariants()
         let { product } = this.context;
         let firstVariant = product.inStock ? (product.variants.filter((o) => o.inStock === null ? false : !!o.inStock)[0]) : undefined;
-        debugger;
         this.setState({
             optionValues: firstVariant ? { ...firstVariant.optionValues } : undefined, showDetails: true,
             selectedVariant: firstVariant, srcIndex: 0
@@ -26,9 +25,10 @@ export default class Product extends Component {
         for (let i = 0; i < optionTypes.length; i++) {
             let o = optionTypes[i];
             optionTypesDict[o.id] = o.name;
-            for (let j = 0; j < o.items.length; j++) {
-                let m = o.items[j];
-                optionValuesDict[m.id] = m.name;
+            for (let prop in o.items) {
+                let id = prop.toString();
+                let name = o.items[id];
+                optionValuesDict[id] = name;
             }
         }
         let res = [];
@@ -84,12 +84,21 @@ export default class Product extends Component {
         changeCart(count, variantId);
     }
     header_layout(){
-        let {SetState} = this.context;
-        return {html:<PopupHeader onClose={()=>SetState({product:false,productZIndex:0})} title='خرید کالا'/>,style:{overflow:'visible'}}
+        let {SetState,productZIndex} = this.context;
+        return {
+            html:(
+                <Header 
+                    zIndex={productZIndex} 
+                    onClose={()=>SetState({product:false,productZIndex:0})} 
+                    title='خرید کالا'
+                    buttons={{cart:true}}
+                />
+            ),
+            style:{overflow:'visible'}}
     }
     body_layout() {
         let { product } = this.context;
-        let { name, code, optionTypes, campaignsPrices, details, srcs } = product;
+        let { name, code, optionTypes, details, srcs } = product;
         let { srcIndex } = this.state;
         return {
             flex: 1,
@@ -159,7 +168,7 @@ export default class Product extends Component {
             className: "box gap-no-color",
             column: [
                 {
-                    column: optionTypes.map(({ name, id, items = [] }, i) => {
+                    column: optionTypes.map(({ name, id, items = {} }, i) => {
                         return {
                             column: [
                                 { size: 12 },
@@ -167,11 +176,12 @@ export default class Product extends Component {
                                 { size: 6 },
                                 {
                                     className: "padding-0-12", scroll: 'h', gap: 12,
-                                    row: items.map((item) => {
-                                        let active = optionValues[id] === item.id, style;
+                                    row: Object.keys(items).map((o) => {
+                                        let itemId = o.toString();
+                                        let active = optionValues[id].toString() === itemId, style;
                                         let className = 'size14 padding-3-12 product-option-value';
                                         if (active) { className += ' active'; }
-                                        return { html: item.name, align: "vh", className, style, attrs: { onClick: () => this.changeOptionType({ [id]: item.id }), } };
+                                        return { html: items[itemId], align: "vh", className, style, attrs: { onClick: () => this.changeOptionType({ [id]: itemId }), } };
                                     }),
                                 },
                             ],

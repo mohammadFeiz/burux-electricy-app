@@ -270,6 +270,16 @@ button{
 .padding-0-24{
 	padding:0 24px;
 }
+.padding-24{
+	padding:24px;
+	box-sizing: border-box;
+}
+.margin-24{
+	margin:24px;
+}
+.round-24{
+	border-radius:24px;
+}
 .check-button{
 	height:40px;
 	border:1px solid #605E5C;

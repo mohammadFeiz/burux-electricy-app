@@ -17,7 +17,7 @@ export default class MyBurux extends Component{
             parts:[
                 {text:'پیگیری سفارش خرید',icon:13,onClick:()=>{
                     let {SetState} = this.context;
-                    SetState({popup:{mode:'peygiriye-sefareshe-kharid'}})
+                    SetState({peygiriyeSefaresheKharidZIndex:0})
                 }},
                 {text:'جایزه ها',icon:15,onClick:()=>{}},
                 {text:'حساب ها',icon:14,onClick:()=>{}},
@@ -105,7 +105,7 @@ export default class MyBurux extends Component{
                         this.getPanel({
                             text1:'کالا های گارانتی شده',text2:guaranteeItems.length + ' عدد',text3:'درخواست گارانتی جدید',
                             className:'box',
-                            onClick:()=>SetState({popup:{mode:'guarantee-popup'}})
+                            onClick:()=>SetState({guaranteePopupZIndex:10})
                         })
                     ]
                 },

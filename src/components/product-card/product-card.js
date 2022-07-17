@@ -82,8 +82,9 @@ export default class ProductCard extends Component{
         return {row:[{flex:1},{html:'نا موجود',className:'colorD83B01 bold size12'},{size:12}]}
     }
     isInCart_layout(){
-        if(!this.isInCart()){return false}
-        return {size:24,align:'v',html:'موجود در سبد خرید شما',className:'colorD83B01 bold size10 padding-0-12'}
+        let {showIsInCart = true} = this.props;
+        if(!this.isInCart() || !showIsInCart){return {flex:1}}
+        return {flex:1,align:'v',html:'موجود در سبد خرید شما',className:'colorD83B01 bold size10 padding-0-12'}
     }
     price_layout(){
         let {product} = this.props;
@@ -93,14 +94,14 @@ export default class ProductCard extends Component{
     }
     horizontal_layout(){
         let {SetState} = this.context;
-        let {isLast,isFirst,product,parentZIndex = 1} = this.props;
+        let {isLast,isFirst,product,zIndex = 1} = this.props;
         return (
             <RVD
                 layout={{
                     className:'box gap-no-color',
-                    attrs:{onClick:()=>SetState({productZIndex:parentZIndex * 10,product})},
+                    attrs:{onClick:()=>SetState({productZIndex:zIndex * 10,product})},
                     style:{
-                        padding:6,
+                        padding:6,height:120,
                         borderBottomLeftRadius:!isLast?0:undefined,
                         borderBottomRightRadius:!isLast?0:undefined,
                         borderTopLeftRadius:!isFirst?0:undefined,
@@ -131,14 +132,14 @@ export default class ProductCard extends Component{
     }
     vertical_layout(){
         let {SetState} = this.context;
-        let {style,parentZIndex = 1,product} = this.props;
+        let {style,zIndex = 1,product} = this.props;
         let {srcs = [],name} = product;
         return (
             <RVD
                 layout={{
                     style:{height:256,width:140,borderRadius:12,fontSize:14,...style},
                     className:'bgFFF borderDDD theme-1-bg3F4456 theme-1-border3F4456',
-                    attrs:{onClick:()=>SetState({productZIndex:parentZIndex * 10,product})},
+                    attrs:{onClick:()=>SetState({productZIndex:zIndex * 10,product})},
                     column:[
                         {size:128,align:'vh',html:<img src={srcs[0] || NoSrc} width={'100%'} style={{width:'100%',height:'100%'}} alt=''/>,style:{padding:6,paddingBottom:0}},
                         {html:name,className:'size12 padding-6-12 color575756 bold theme-1-colorDDD',style:{whiteSpace:'normal'}},
@@ -155,6 +156,7 @@ export default class ProductCard extends Component{
     }
     render(){
         let {type} = this.props;
+        console.log(type)
         return this[type +'_layout']()
     }
 }

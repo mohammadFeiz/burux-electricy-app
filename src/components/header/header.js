@@ -6,7 +6,7 @@ import AIOButton from "../aio-button/aio-button";
 //props
 //1 - title ''
 //2 - buttons {cart:boolean}
-export default class PageHeader extends Component{
+export default class Header extends Component{
     static contextType = appContext;
     getCartBadge(){
         let {cart} = this.context;
@@ -15,20 +15,22 @@ export default class PageHeader extends Component{
     }
     render(){
         let {SetState} = this.context;
-        let {title,buttons = {}} = this.props;
+        let {title,buttons = {},onClose,zIndex = 1} = this.props;
         return (
             <RVD
                 layout={{
-                    style:{height:60},
+                    style:{height:60,overflow:'visible'},
+                    className:'box-shadow bgFFF',
                     row:[
-                        {size: 60,html: getSvg(22),attrs: { onClick: () => SetState({ sidemenuOpen: true }) },align:'vh'},
+                        {show:buttons.sidemenu === true,size: 60,html: getSvg(22),attrs: { onClick: () => SetState({ sidemenuOpen: true }) },align:'vh'},
+                        {show:!!onClose,size:60,html:getSvg("chevronLeft", { flip: true }),align:'vh',attrs:{onClick:()=>onClose()}},
                         {flex:1,html: title,className: "size16 color605E5C",align:'v'},
                         {
                             size:60,show:buttons.cart === true,align:'vh',
                             html: ()=>(
                               <AIOButton
                                 type="button" style={{ background: "none" }} text={getSvg(45)} badge={this.getCartBadge()}
-                                badgeAttrs={{ className: "badge-1" }} onClick={() => SetState({cartZIndex:10})}
+                                badgeAttrs={{ className: "badge-1" }} onClick={() => SetState({cartZIndex:zIndex * 10})}
                               />
                             ),
                           }

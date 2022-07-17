@@ -46,6 +46,7 @@ export default class ProductCount extends Component{
             <RVD
                 layout={{
                     childsProps: { align: "vh" },
+                    attrs:{onClick:(e)=>e.stopPropagation()},
                     row: [
                         {html: (<div onTouchStart={(e)=>this.touchStart(1)} className='product-count-button'>+</div>),show:onChange!== undefined},
                         { flex: 1, html: value },

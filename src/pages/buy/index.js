@@ -1,15 +1,14 @@
 import React, { Component, Fragment } from "react";
 import RVD from "react-virtual-dom";
 import appContext from "../../app-context";
-import Cart from "../../coponents/cart/cart";
-import Product from "../../coponents/product/product";
 import src1 from "./../../utils/brx66.png";
-import Tabs from "../../coponents/tabs/tabs";
+import Tabs from "../../components/tabs/tabs";
+import ContentSlider from "../../components/content-slider";
+import CategorySlider from "../../components/category-slider/category-slider";
+import SearchBox from "../../components/search-box/index";
+import Header from "../../components/header/header";
+import FamilyCard from './../../components/family-card/family-card';
 import "./index.css";
-import ContentSlider from "../../coponents/content-slider";
-import CategorySlider from "../../coponents/category-slider/category-slider";
-import SearchBox from "../../coponents/search-box/index";
-import PageHeader from "../../coponents/page-header/page-header";
 
 export default class Buy extends Component {
   static contextType = appContext;
@@ -86,82 +85,6 @@ export default class Buy extends Component {
     let bestSellings = await services({type:'bestSellings',cache:660});
     this.setState({ bestSellings });
   }
-  getActiveFamilyItems() {
-    return [
-      {
-        src: src1,
-        name: "لامپ حبابی 10 وات بروکس",
-        discountPrice: 60000,
-        discountPercent: 30,
-        price: 50000,
-        stockType: false,
-      },
-      {
-        src: src1,
-        name: "لامپ حبابی 10 وات بروکس",
-        discountPrice: 60000,
-        discountPercent: 30,
-        price: 50000,
-        stockType: "نورواره 2",
-      },
-      {
-        src: src1,
-        name: "لامپ حبابی 10 وات بروکس",
-        discountPrice: 60000,
-        discountPercent: 30,
-        price: 50000,
-      },
-      {
-        src: src1,
-        name: "لامپ حبابی 10 وات بروکس",
-        discountPrice: 60000,
-        discountPercent: 30,
-        price: 50000,
-      },
-      {
-        src: src1,
-        name: "لامپ حبابی 10 وات بروکس",
-        discountPrice: 60000,
-        discountPercent: 30,
-        price: 50000,
-      },
-      {
-        src: src1,
-        name: "لامپ حبابی 10 وات بروکس",
-        discountPrice: 60000,
-        discountPercent: 30,
-        price: 50000,
-      },
-      {
-        src: src1,
-        name: "لامپ حبابی 10 وات بروکس",
-        discountPrice: 60000,
-        discountPercent: 30,
-        price: 50000,
-      },
-      {
-        src: src1,
-        name: "لامپ حبابی 10 وات بروکس",
-        discountPrice: 60000,
-        discountPercent: 30,
-        price: 50000,
-      },
-      {
-        src: src1,
-        name: "لامپ حبابی 10 وات بروکس",
-        discountPrice: 60000,
-        discountPercent: 30,
-        price: 50000,
-      },
-      {
-        src: src1,
-        name: "لامپ حبابی 10 وات بروکس",
-        discountPrice: 60000,
-        discountPercent: 30,
-        price: 50000,
-      },
-    ];
-  }
   //dont set async for parallel data fetching
   componentDidMount() {
     this.getCampaignsData();
@@ -198,7 +121,7 @@ export default class Buy extends Component {
         return {
           attrs:{onClick:()=>SetState({categoryZIndex:10,category:{type:'category',products:o.products,name:o.name}})},
           column:[
-            {size:200,html:<img src={o.src} alt='' width='100%'/>},
+            {size:200,html:<img src={o.src} alt='' height='100%'/>,align:'vh'},
             {size:36,align:'vh',html:o.name,className:'color323130 size16 bold'}
           ] 
         }
@@ -277,8 +200,7 @@ export default class Buy extends Component {
         {
           gap: 16,scroll:'h',
           row: families.map((o) => {
-            let config = {...o,src: undefined,onClick: async () => this.changeView({type:"category",name:o.name,items:this.getActiveFamilyItems(o.id)})};
-            return layout("productCard", config);
+            return {html:<FamilyCard title={o.name} src={o.src} id={o.id}/>}
           }),
         },
       ],
@@ -312,7 +234,7 @@ export default class Buy extends Component {
       <RVD layout={{
         flex: 1,className: "buy-page main-bg",style: { width: "100%" },
         column: [
-          {html:<PageHeader title='خرید کالا' buttons={{cart:true}}/>},
+          {html:<Header zIndex={1} title='خرید کالا' buttons={{cart:true,sidemenu:true}}/>},
           {html:<SearchBox onClick={()=>SetState({searchZIndex:10})}/>},
           this.tabs()
         ]

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import getSvg from './../../utils/getSvg';
-import ChanceMachin from './../../coponents/chance-machin/index';
+import ChanceMachin from './../../components/chance-machin/index';
 import { Icon } from '@mdi/react';
 import appContext from '../../app-context';
 import RVD from 'react-virtual-dom';

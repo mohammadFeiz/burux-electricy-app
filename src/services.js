@@ -16,7 +16,13 @@ export default function services(getState) {
       },
       async kalahaye_mojoode_garanti({baseUrl}) {
         let res = await Axios.get(`${baseUrl}/Guarantee/GetAllProducts`);
-        return res.data && res.data.isSuccess?res.data.data:[];
+        if(!res || !res.data || !res.data.isSuccess || !res.data.data){
+          console.error('Guarantee/GetAllProducts data error')
+        }
+        else if(!res.data.data.length){
+          console.error('Guarantee/GetAllProducts list is empty')
+        }
+        return res.data && res.data.isSuccess && res.data.data?res.data.data:[];
       },
       async sabte_kalahaye_garanti({baseUrl,parameter}) {
         let res = await Axios.post(`${baseUrl}/Guarantee`,{ CardCode: "C50000", Items:parameter });
@@ -184,7 +190,7 @@ export default function services(getState) {
         let preOrders = {waitOfVisitor: 10,waitOfPey: 2};
         let res = await Axios.post(`${baseUrl}/Visit/PreOrderStat`,{CardCode: "c50000"});
         if(!res || !res.data || !res.data.data){
-          console.error('API Error!!!!!')
+          console.error('services.preOrders Error!!!')
           return preOrders;
         }
         let result = res.data.data;
@@ -210,26 +216,10 @@ export default function services(getState) {
         });
       },
       async getCategories(obj) {
-        // let {baseUrl} = obj;
-        // let res = await Axios.get(
-        //   `${baseUrl}/Spree/GetAllCategories`
-        // );
-        // let included = res.data.data.included;
-        // console.log(included);
-        // let categories = included.map((o) => {
-        //   return {name: o.attributes.name,id: o.id};
-        // });
-        // for (let i = 0; i < categories.length; i++) {
-        //   categories[i].items = await this.getCategoryItems(obj,categories[i]);
-        // }
-        // return categories;
         let {baseUrl} = obj;
-        let res = await Axios.get(
-          `${baseUrl}/Spree/GetAllCategories`
-        );
+        let res = await Axios.get(`${baseUrl}/Spree/GetAllCategories`);
         let dataResult = res.data.data.data;
         let included = res.data.data.included;
-        
         let categories = dataResult.map((o) => {
 
           let src=nosrc;
@@ -245,22 +235,12 @@ export default function services(getState) {
           return {name: o.id==="10178" ? "همه محصولات" : o.attributes.name,id: o.id,src:src};
         });
         for (let i = 0; i < categories.length; i++) {
-          categories[i].items = await this.getCategoryItems(obj,categories[i]);
+          categories[i].products = await this.getCategoryItems(obj,categories[i]);
         }
         return categories;
       },
-      async getCategoryItems({parameter,getState,baseUrl},category = parameter.category){ 
-        let { allProducts } = getState();
-        let res = await Axios.post(`${baseUrl}/Spree/Products`,{Include: "images",Taxons: category.id.toString()});
-        let items = res.data.data.data;
-        let result = [];
-        for(let i = 0; i < items.length; i++){
-          let item = items[i];
-          let product = allProducts[item.id]
-          if(!product){continue}
-          result.push(product)
-        }
-        return result;
+      async getCategoryItems({parameter,baseUrl},category = parameter.category){ 
+        return await this.getTaxonProducts({baseUrl,parameter:{Taxons:category.id.toString()}})
       },
       async families(){
         return [
@@ -269,16 +249,10 @@ export default function services(getState) {
           { src: undefined, name: "پنلی توکار", id: "3" },
         ]
       },
-      // getOptionTypeIdByOptionValueId(optionTypes,optionValueId){
-      //   for(let i = 0; i < optionTypes.length; i++){
-      //     let optionType = optionTypes[i];
-      //     let {items} = optionType;
-      //     for(let j = 0; j < items.length; j++){
-      //       if(optionValueId.toString() === items[j].id.toString()){return {optionTypeId:optionType.id.toString(),optionTypeItemId:items[j].id.toString()}}
-      //     }
-      //   }
-      //   return false
-      // },
+      async familyProducts({baseUrl,parameter}){
+        let {id} = parameter;
+        return await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10180'}})
+      },
       getVariantOptionValues(optionValues,optionTypes){
         let result = {};
         for (let optionValue of optionValues) {
@@ -286,10 +260,10 @@ export default function services(getState) {
           for(let i = 0; i < optionTypes.length; i++){
             let optionTypeId = optionTypes[i].id.toString()
             let items = optionTypes[i].items;
-            for(let j = 0; j < items.length; j++){
-              let itemId = items[j].id.toString();
+            for(let prop in items){
+              let itemId = prop.toString();
               if(id === itemId){
-                result[optionTypeId] = items[j].id.toString();
+                result[optionTypeId] = itemId;
               }
             }
           }
@@ -341,14 +315,19 @@ export default function services(getState) {
             let {id} = relationships.option_types.data[i];
             id = id.toString();
             if(!meta_optionTypes[id]){
-              console.error(`product.relationships.option_types.data[${i}] not has matched id in meta.filters.option_values (id = ${id})`)
-              console.log('spree item is',product)
-              console.log('meta_optionTypes is',meta_optionTypes)
+              console.error(`in product by id = ${product.id} in relationships.option_types.data[${i}] id is ${id}. but we cannot find this id in meta.filters.option_values`)
+              console.log('product is',product)
+              console.log('meta.filters.option_values is',meta_optionTypes)
               continue;
             }
             let {option_values} = meta_optionTypes[id];
             let {attributes} = include_optionTypes[id];
-            optionTypes.push({id,name:attributes.name,items:option_values.map((o)=>{return {name: o.presentation, id: o.id}})})
+            let items = {}
+            for(let j = 0; j < option_values.length; j++){
+              let o = option_values[j];
+              items[o.id.toString()] = o.presentation;
+            }
+            optionTypes.push({id,name:attributes.name,items})
           }
           let details = [];
           for(let i = 0; i < relationships.product_properties.data.length; i++){
@@ -585,11 +564,11 @@ function Service({services,baseUrl,getState,cacheAll}){
     let time = new Date().getTime();
     localStorage.setItem(key,JSON.stringify({time,data}))
   }
-  return async ({type,parameter,loading = true,cache})=>{
+  return async ({type,parameter,loading = true,cache,cacheName})=>{
     let p = {fix,fixDate,parameter,dateCalculator:d,getState,baseUrl,services}
     if (loading) {$(".loading").css("display", "flex");}
     if(cache){
-      let a = getFromCache('storage-' + type,cache);
+      let a = getFromCache(cacheName?'storage-' + cacheName:'storage-' + type,cache);
       if(a !== false){
         $(".loading").css("display", "none");
         return a
@@ -597,7 +576,7 @@ function Service({services,baseUrl,getState,cacheAll}){
       if(!services[type]){debugger}
       let result = await services[type](p);
       $(".loading").css("display", "none");
-      setToCache('storage-' + type,result);
+      setToCache(cacheName?'storage-' + cacheName:'storage-' + type,result);
       return result;        
     }
     if(!services[type]){debugger}

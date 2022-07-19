@@ -14,7 +14,7 @@ export default class SideMenu extends Component {
                 { text: 'جایزه ها', icon: 15 },
                 //{ text: 'کیف پول', icon: 33 },
                 { text: 'باشگاه مشتریان', icon: 21 },
-                { text: 'پیگیری سفارش خرید', icon: 13,onClick:()=>this.context.SetState({peygiriyeSefaresheKharidZIndex:10})},
+                { text: 'پیگیری سفارش خرید', icon: 13,onClick:()=>this.context.SetState({ordersHistoryZIndex:10})},
                 //{ text: 'تاریخچه سفارشات', icon: 34 },
                 { text: 'بازارگاه', icon: 35 },
                 { text: 'چت با ویزیتور', icon: 36 },

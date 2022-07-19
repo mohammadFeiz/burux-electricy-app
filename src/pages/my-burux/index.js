@@ -17,7 +17,7 @@ export default class MyBurux extends Component{
             parts:[
                 {text:'پیگیری سفارش خرید',icon:13,onClick:()=>{
                     let {SetState} = this.context;
-                    SetState({peygiriyeSefaresheKharidZIndex:0})
+                    SetState({ordersHistoryZIndex:10})
                 }},
                 {text:'جایزه ها',icon:15,onClick:()=>{}},
                 {text:'حساب ها',icon:14,onClick:()=>{}},
@@ -47,6 +47,14 @@ export default class MyBurux extends Component{
         }
         column.push({size:space})
         return {flex:1,className,attrs:{onClick},column}
+    }
+    parts_layout(){
+        let {theme} = this.context;
+        let {parts} = this.state;
+        return {
+            className:theme === false?'box':'',gap:theme === false?1:6,
+            column:parts.map(({text,icon,color,onClick})=>{return {html:<Part {...{text,icon,color,onClick}}/>}})
+        }
     }
     getContent(){
         let {user = '',customerCode,shopName,visitorName,nationalCode,wallet,parts} = this.state;
@@ -110,20 +118,7 @@ export default class MyBurux extends Component{
                     ]
                 },
                 {size:16},
-                {
-                    className:'box',gap:1,
-                    column:parts.map(({text,icon,color,onClick})=>{
-                        return {
-                            attrs:{onClick:()=>onClick()},
-                            size:60,
-                            row:[
-                                {size:60,html:getSvg(icon),align:'vh'},
-                                {flex:1,html:text,align:'v',className:'color605E5C size14 bold',style:{color}},
-                                {size:40,html:getSvg('chevronLeft'),align:'vh',style:{color}}
-                            ]
-                        }
-                    })
-                },
+                this.parts_layout(),
                 {
                     size:96,html:getSvg(18),align:'vh'
                 }
@@ -140,6 +135,37 @@ export default class MyBurux extends Component{
                     <JoziateDarkhasthayeGaranti onClose={()=>this.setState({popup:{}})}/>
                 }
             </>
+        )
+    }
+}
+class Part extends Component{
+    static contextType = appContext;
+    getStyle(){
+        let {theme} = this.context;
+        let style = {height:60}
+        if(theme === 'theme-1'){
+            style.borderRadius = 48;
+            style.height = 48;
+            style.margin = '0 6px';
+        }
+        return style;
+    }
+    render(){
+        let {theme} = this.context;
+        let {text,icon,color,onClick} = this.props;
+        return (
+            <RVD
+                layout={{
+                    attrs:{onClick:()=>onClick()},
+                    style:this.getStyle(),
+                    className:theme === 'theme-1'?'theme-1-light-bg':'',
+                    row:[
+                        {size:60,html:getSvg(icon),align:'vh'},
+                        {flex:1,html:text,align:'v',className:'color605E5C size14 bold',style:{color}},
+                        {size:40,html:getSvg('chevronLeft'),align:'vh',style:{color}}
+                    ]
+                }}
+            />
         )
     }
 }

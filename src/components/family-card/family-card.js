@@ -19,7 +19,7 @@ export default class FamilyCard extends Component{
             <RVD
                 layout={{
                     style:{height:180,width:140,borderRadius:12,fontSize:14,...style},
-                    className:'bgFFF bold borderDDD theme-1-bg3F4456 theme-1-border3F4456',
+                    className:'bgFFF bold borderDDD theme-1-dark-bg theme-1-border3F4456',
                     attrs:{onClick:async ()=>{
                         SetState({
                             categoryZIndex:zIndex * 10,

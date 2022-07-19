@@ -96,6 +96,72 @@ export default function services(getState) {
         return dict
         //return {visitorWait,factored,inProcess,inShopTrack,delivered,canceled,rejected};
       },
+      async ordersHistory({baseUrl,fixDate}) {
+        let tabs = [
+          {name:'تب اول',id:'1'},
+          {name:'تب دوم',id:'2'},
+          {name:'تب سوم',id:'3'}
+        ]
+        let orders = [
+          {code:'12343',date:'1401/2/2',total:1234567,tabId:'1'},
+          {code:'12343',date:'1401/2/2',total:1234567,tabId:'1'},
+          {code:'12343',date:'1401/2/2',total:1234567,tabId:'1'},
+          {code:'12343',date:'1401/2/2',total:1234567,tabId:'2'},
+          {code:'12343',date:'1401/2/2',total:1234567,tabId:'2'},
+          {code:'12343',date:'1401/2/2',total:1234567,tabId:'3'},
+          {code:'12343',date:'1401/2/2',total:1234567,tabId:'3'},
+          {code:'12343',date:'1401/2/2',total:1234567,tabId:'3'},
+          {code:'12343',date:'1401/2/2',total:1234567,tabId:'3'},
+          {code:'12343',date:'1401/2/2',total:1234567,tabId:'3'},
+        ]
+        return {tabs,orders}
+      },
+      async orderProducts({baseUrl,parameter}){
+        let {order} = parameter;
+        let products = [
+          {
+            name:'لامپ LED جنرال 10 وات بروکس',discountPrice:123456,dicountPercent:16,price:123456,count:10,src:bulb10w,
+            details:[['رنگ نور','آفتابی'],['واحد','شعله']]
+          },
+          {
+            name:'لامپ LED جنرال 10 وات بروکس',discountPrice:123456,dicountPercent:16,price:123456,count:10,src:bulb10w,
+            details:[['رنگ نور','آفتابی'],['واحد','شعله']]
+          },
+          {
+            name:'لامپ LED جنرال 10 وات بروکس',discountPrice:123456,dicountPercent:16,price:123456,count:10,src:bulb10w,
+            details:[['رنگ نور','آفتابی'],['واحد','شعله']]
+          },
+          {
+            name:'لامپ LED جنرال 10 وات بروکس',discountPrice:123456,dicountPercent:16,price:123456,count:10,src:bulb10w,
+            details:[['رنگ نور','آفتابی'],['واحد','شعله']]
+          },
+          {
+            name:'لامپ LED جنرال 10 وات بروکس',discountPrice:123456,dicountPercent:16,price:123456,count:10,src:bulb10w,
+            details:[['رنگ نور','آفتابی'],['واحد','شعله']]
+          },
+          {
+            name:'لامپ LED جنرال 10 وات بروکس',discountPrice:123456,dicountPercent:16,price:123456,count:10,src:bulb10w,
+            details:[['رنگ نور','آفتابی'],['واحد','شعله']]
+          },
+          {
+            name:'لامپ LED جنرال 10 وات بروکس',discountPrice:123456,dicountPercent:16,price:123456,count:10,src:bulb10w,
+            details:[['رنگ نور','آفتابی'],['واحد','شعله']]
+          }
+        ];
+        return {
+          products,
+          paymentMethod:'آنلاین',
+          visitorName:'علی احمدی',
+          customerName:'دانیال عنایتی',
+          customerCode:'53465',
+          customerGroup:'گروه یک',
+          basePrice:'1232534',
+          campaignName:'کمپین یک',
+          address:'تهران - شیخ بهایی',
+          phone:'021-88050006',
+          mobile:'09123534314',
+        }
+      }, 
       async joziatepeygiriyesefareshekharid({baseUrl,fixDate,parameter,getState,services}) {
         let {userInfo} = getState();
         let res = await Axios.post(`${baseUrl}/BOne/GetDocument`,{

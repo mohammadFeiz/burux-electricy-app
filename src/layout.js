@@ -81,7 +81,7 @@ export default function layout(type,getState, parameters = {}) {
             let {name,style = {},inStock,onClick = ()=>{},src = NoSrc,discountPrice,discountPercent,price} = $$.getProductCardParameters();
             return {
                 size:168,style:{borderRadius:12,fontSize:14,...style},
-                className:'bgFFF borderDDD theme-1-bg3F4456 theme-1-border3F4456',
+                className:'bgFFF borderDDD theme-1-dark-bg theme-1-border3F4456',
                 attrs:{onClick:()=>onClick()},
                 column:[
                     {html:<img src={src} alt='' height='100%'/>,align:'vh',size:136},

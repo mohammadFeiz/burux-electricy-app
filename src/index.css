@@ -338,23 +338,23 @@ button{
 
 
 .theme-1 .theme-1-light-bg{
-	background: #3f4456;
+	background: #313131;
 }
 .theme-1 .theme-1-dark-bg{
-	background: #333847 !important;
+	background: #242424 !important;
 }
 .theme-1 .main-bg{
-	background:#3f4456;
+	background:#242424;
 }
 .theme-1 .header{
-	background:#333847;
+	background:#313131;
 }
 .theme-1 .bottom-menu{
-	background:#333847;
+	background:#313131;
 	border-top:1px solid var(--theme-1-border-color);
 }
 .theme-1 .box{
-	background:#333847;
+	background:#313131;
 }
 .theme-1 .theme-1-colorFFF{
 	color:#fff;

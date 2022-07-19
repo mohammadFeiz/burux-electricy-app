@@ -19,7 +19,8 @@ import CategoryView from "./../../popups/category-view/category-view";
 import GuaranteePopup from "../../popups/guarantee-popup/guarantee-popup";
 import GuaranteePopupSubmit from "../../popups/guarantee-popup-submit/guarantee-popup-sumbmit";
 import GuaranteePopupSuccess from "../../popups/guarantee-popup-success/guarantee-popup-success";
-import PeygiriyeSefaresheKharid from "../../popups/peygiriye-sefareshe-kharid/peygiriye-sefareshe-kharid";
+import OrdersHistory from "../../popups/orders-history/orders-history";
+import OrderPopup from "../../popups/order-popup/order-popup";
 import "./index.css";
 export default class Main extends Component {
   constructor(props) {
@@ -53,7 +54,9 @@ export default class Main extends Component {
       guaranteePopupSuccessZIndex:0,
       guaranteePopupSuccessText:'',
       guaranteePopupSubmitZIndex:0,
-      peygiriyeSefaresheKharidZIndex:0,
+      ordersHistoryZIndex:0,
+      orderZIndex:0,
+      order:false,
       bottomMenuItems: [
         { text: "خانه", icon: 19, id: "a" },
         { text: "خرید", icon: 'buy', id: "b" },
@@ -94,16 +97,22 @@ export default class Main extends Component {
     if(!cartItem){return 0}
     return cartItem.count || 0;
   }
+  async getGuaranteeItems(){
+    let {services} = this.state;
+    let guaranteeItems = await services({type:"kalahaye_garanti_shode",loading:false});
+    let guaranteeExistItems = await services({type:"kalahaye_mojoode_garanti",loading:false});
+    this.setState({
+      guaranteeItems,
+      guaranteeExistItems
+    });
+  }
   async componentDidMount() {
     let {services} = this.state;
-    let guaranteeItems = await services({type:"kalahaye_garanti_shode"});
-    let guaranteeExistItems = await services({type:"kalahaye_mojoode_garanti"});
+    this.getGuaranteeItems()
     let testedChance = await services({type:"get_tested_chance"});
     let userInfo = await services({type:"userInfo",cache:1000});
     this.setState({
-      guaranteeItems,
       userInfo,
-      guaranteeExistItems,
       testedChance,
     });
   }
@@ -184,9 +193,9 @@ export default class Main extends Component {
       layout:(type,parameters)=>layout(type,()=>this.state,parameters)
     };
     let { 
-      popup, sidemenuOpen, theme,peygiriyeSefaresheKharid_tab,
+      popup, sidemenuOpen, theme,orderZIndex,
       cartZIndex,shippingZIndex,searchZIndex,productZIndex,categoryZIndex,
-      guaranteePopupSuccessZIndex,guaranteePopupSubmitZIndex,guaranteePopupZIndex,peygiriyeSefaresheKharidZIndex
+      guaranteePopupSuccessZIndex,guaranteePopupSubmitZIndex,guaranteePopupZIndex,ordersHistoryZIndex
     } = this.state;
     return (
       <appContext.Provider value={context}>
@@ -199,15 +208,9 @@ export default class Main extends Component {
             ],
           }}
         />
-        {peygiriyeSefaresheKharidZIndex !== 0 && <PeygiriyeSefaresheKharid/>}
-        {popup.mode === "joziate-sefareshe-kharid" && (
-          <JoziateSefaresheKharid
-            order={popup.order}
-            onClose={() =>
-              this.setState({ popup: { mode: "peygiriye-sefareshe-kharid" } })
-            }
-          />
-        )}
+        {ordersHistoryZIndex !== 0 && <OrdersHistory/>}
+        {orderZIndex !== 0 && <OrderPopup/>}
+        {orderZIndex !== 0 && <OrderPopup/>}
         {guaranteePopupZIndex !== 0 && <GuaranteePopup/>}
         {guaranteePopupSubmitZIndex !== 0 && <GuaranteePopupSubmit/>}
         {guaranteePopupSuccessZIndex !== 0 && <GuaranteePopupSuccess/>}
@@ -222,112 +225,6 @@ export default class Main extends Component {
         />
         <Loading />
       </appContext.Provider>
-    );
-  }
-}
-
-
-
-
-
-
-
-
-class JoziateSefaresheKharid extends Component {
-  static contextType = appContext;
-  getRow(key, value) {
-    return {
-      align: "v",
-      row: [
-        { size: 110, html: key + " : ", className: "size12 colorA19F9D" },
-        { flex: 1, html: value, className: "size12 theme-1-colorFFF" },
-      ],
-    };
-  }
-  getStatus(status) {
-    let statuses = [
-      { title: "در حال پردازش", color: "#662D91", percent: 50 },
-      { title: "مرسوله در مسیر فروشگاه است", color: "#108ABE", percent: 65 },
-      { title: "تحویل شده", color: "#107C10", percent: 100 },
-      { title: "لغو شده", color: "#A4262C", percent: 100 },
-    ];
-    let obj = statuses[status];
-    if (!obj) {return null;}
-    return {
-      style: { padding: "0 24px" },className: "box",
-      column: [
-        { size: 16 },
-        {size: 24,html: obj.title,style: { color: obj.color },className: "size14 bold"},
-        {
-          html: (
-            <div style={{height: 12,display: "flex",width: "100%",borderRadius: 3,overflow: "hidden"}}>
-              <div style={{ width: obj.percent + "%", background: obj.color }}></div>
-              <div style={{ flex: 1, background: obj.color, opacity: 0.3 }}></div>
-            </div>
-          ),
-        },
-        { size: 16 },
-      ],
-    };
-  }
-  
-  render() {
-    let { getHeaderLayout,theme } = this.context;
-    let {order,onClose} = this.props;
-    let {
-      docEntry,date,customerName,customerCode,customerGroup,campain,basePrice,visitorName,address,mobile,
-      phone,total,paymentMethod,items
-    } = order;
-    return (
-      <div className={"popup-container" + (theme?' ' + theme:'')}>
-        <RVD
-          layout={{
-            className: "popup main-bg",
-            column: [
-              getHeaderLayout("جزيیات سفارش خرید", () => onClose()),
-              { size: 12 },
-              {
-                flex: 1,scroll: "v",gap: 12,
-                column: [
-                  {
-                    className: "box gap-no-color",
-                    style: { padding: 12 },
-                    gap: 12,
-                    column: [
-                      this.getRow("پیش فاکتور", docEntry),
-                      this.getRow("تاریخ ثبت", date),
-                      { size: 12 },
-                      this.getRow(
-                        "نام مشتری",
-                        customerName + " - " + customerCode
-                      ),
-                      this.getRow("گروه مشتری", customerGroup),
-                      this.getRow("نام کمپین", campain),
-                      this.getRow("قیمت پایه", basePrice),
-                      this.getRow("نام ویزیتور", visitorName),
-                      { size: 12 },
-                      this.getRow("آدرس", address),
-                      this.getRow("تلفن همراه", mobile),
-                      this.getRow("تلفن ثابت", phone),
-                      { size: 12 },
-                      this.getRow("مبلغ پرداختی کل", total),
-                      this.getRow("نحوه پرداخت", paymentMethod),
-                    ],
-                  },
-                  //this.getStatus(order.status),
-                  {
-                    gap: 2,
-                    column: items.map((o, i) => {
-                      let src = functions.getProductSrc(o);
-                      return this.context.layout("productCard2", {...o,src,isFirst: i === 0,isLast: i === items.length - 1})
-                    })
-                  },
-                ],
-              },
-            ],
-          }}
-        />
-      </div>
     );
   }
 }

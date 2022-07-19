@@ -29,7 +29,6 @@ export default class Buy extends Component {
       recommendeds: [],
       bestSellings: [],
       families: [],
-      preOrders: { waitOfVisitor: 0, waitOfPey: 0 },
       categories: [],
     };
   }
@@ -54,11 +53,6 @@ export default class Buy extends Component {
     this.setState({ campaigns});
     let campaignsProducts = await services({type:"campaignsProducts",parameter:{campaigns},cache:120});
     this.setState({campaignsProducts})
-  }
-  async getPreOrders() {
-    let {services} = this.context;
-    let preOrders = await services({type:"preOrders"});
-    this.setState({ preOrders });
   }
   async getCategories() {
     let {services} = this.context;
@@ -90,7 +84,6 @@ export default class Buy extends Component {
     this.getCampaignsData();
     this.get_lastOrders(10);
     this.getFamilies();
-    this.getPreOrders();
     this.get_recommendeds(10);
     this.get_bestSellings(10);
     this.getCategories();
@@ -109,7 +102,11 @@ export default class Buy extends Component {
   tab1(){
     return {
       flex: 1,scroll: "v",className:'buy-tab-1',gap: 12,
-      column: [this.campaign(),this.pish_sefareshat_layout(),this.families(),this.sliders()]
+      column: [
+        this.campaign(),
+        //this.families(),
+        this.sliders()
+      ]
     }
   }
   tab2(){
@@ -151,44 +148,6 @@ export default class Buy extends Component {
           }
         />
       )
-    }
-  }
-  pish_sefareshat_layout(){
-    return {
-      className: "box gap-no-color",style: { padding: 12 },
-      column: [
-        {html: "پیش سفارشات",className: "size14 color323130 bold",size: 36,align: "v"},
-        {gap: 12,size: 120,row: [this.pish_sefaresh_layout('visitorWait'),this.pish_sefaresh_layout('paymentWait')]}
-      ],
-    }
-  }
-  pish_sefaresh_layout(type){
-    let {SetState} = this.context,{preOrders} = this.state;
-    let title,number,peygiriyeSefaresheKharid_tab;
-    if(type === 'visitorWait'){
-      title = "در انتظار تایید ویزیتور";
-      number = preOrders.waitOfVisitor;
-      peygiriyeSefaresheKharid_tab = 'SalesApproved';
-    }
-    if(type === 'paymentWait'){
-      title = "در انتظار پرداخت";
-      number = preOrders.waitOfPey;
-      peygiriyeSefaresheKharid_tab = 'Invoiced';
-    }
-    return {
-      attrs:{
-        onClick:()=>{
-          SetState({
-            activeBottomMenu:'a',peygiriyeSefaresheKharid_tab,
-            popup:{mode:'peygiriye-sefareshe-kharid',onBack:()=>SetState({activeBottomMenu:'b',popup:{}})},
-          })
-        }
-      },
-      style: {borderRadius: 12 },flex: 1,className:'bgFAFAFA theme-1-light-bg',
-      column: [
-        {html: title,align: "vh",size: 48,className: "size14 color605E5C bold"},
-        { html: <div className='number-view'>{number}</div>, align: "vh", flex: 1,className:'theme-1-colorFFF' },
-      ]
     }
   }
   families(){

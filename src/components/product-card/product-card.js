@@ -138,10 +138,10 @@ export default class ProductCard extends Component{
             <RVD
                 layout={{
                     style:{height:256,width:140,borderRadius:12,fontSize:14,...style},
-                    className:'bgFFF borderDDD theme-1-bg3F4456 theme-1-border3F4456',
+                    className:'bgFFF borderDDD theme-1-dark-bg theme-1-border3F4456',
                     attrs:{onClick:()=>SetState({productZIndex:zIndex * 10,product})},
                     column:[
-                        {size:128,align:'vh',html:<img src={srcs[0] || NoSrc} width={'100%'} style={{width:'100%',height:'100%'}} alt=''/>,style:{padding:6,paddingBottom:0}},
+                        {size:128,align:'vh',html:<img src={srcs[0] || NoSrc} width={'100%'} style={{width:'100%',height:'100%',borderRadius:8}} alt=''/>,style:{padding:6,paddingBottom:0}},
                         {html:name,className:'size12 padding-6-12 color575756 bold theme-1-colorDDD',style:{whiteSpace:'normal'}},
                         {flex:1},
                         this.isInCart_layout(),

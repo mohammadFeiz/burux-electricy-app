@@ -18,6 +18,7 @@ export default class Home extends Component {
             gems: 500,
             showAwards:false,
             searchValue: '',
+            preOrders: { waitOfVisitor: 0, waitOfPey: 0 },
             sliderItems: [
                 {
                     icon: getSvg(27),
@@ -41,8 +42,79 @@ export default class Home extends Component {
             ]
         }
     }
+    async getPreOrders() {
+        let {services} = this.context;
+        let preOrders = await services({type:"preOrders"});
+        this.setState({ preOrders });
+    }
+    async getWallet(){
+        let {services} = this.context;
+        let wallet = await services({type:'wallet'})
+        this.setState({wallet})
+    }
+    box_layout(icon,title,value,color){
+        let {theme} = this.context;
+        if(theme === 'theme-1'){return this.box_layout_theme1(icon,title,value,color)}
+        return {
+            flex:1,
+            className:'box',
+            column: [
+                {size:12},
+                {
+                    align:'h',row: [
+                        { size: 36, align: 'vh', html: getSvg(icon) ,show:!!icon},
+                        { html: title, align: 'vh',className: 'color605E5C bold size14' },
+                    ]
+                },
+                { size: 12 },
+                { html: value, className: 'color605E5C bold size14',align:'h' },
+                {size:12}
+            ]
+        }
+    }
+    box_layout_theme1(icon,title,value,color){
+        return {
+            flex:1,
+            className:'box',
+            row:[
+                {size:60,html:getSvg(icon,{width:24,height:24,fill:'#fff'}),align:'vh',style:{background:color,borderRadius:'0 12px 12px 0'}},
+                {size:12},
+                {
+                    column: [
+                        {size:12},
+                        {html: title, align: 'v',className: 'color605E5C bold size12'},
+                        { size: 1 },
+                        { html: value, className: 'color605E5C bold size12',align:'v' },
+                        {size:12}
+                    ]
+                }   
+            ]
+        }
+    }
+    score_layout(){
+        let {theme} = this.context;
+        return {
+            className:'box',
+            style:{background:theme === 'theme-1'?'#e1780d':undefined},
+            row: [
+                { size: 12 },
+                {
+                    flex: 1,
+                    column: [
+                        {size:12},
+                        { align:'v',row: [{ html: '5',className: 'color0094D4 size28 bold', align: 'v' }, { size: 6 }, { html: 'الماس', align: 'v',className: 'color323130 size18 bold'}]},
+                        { html: 'به ازای اخذ هر سفارش از بازارگاه',className: 'color605E5C bold size14',align:'v' },
+                        {size:12},
+                        
+                    ]
+                },
+                { html: getSvg(6, { width: 70, height: 70 }),align:'vh' },
+                { size: 6 }
+            ]
+        }
+    }
     getContent() {
-        let { gems, searchValue, sliderItems, myNearItems, wallet } = this.state;
+        let { gems, preOrders, sliderItems, myNearItems, wallet } = this.state;
         let {SetState,testedChance,cart,changeTheme} = this.context;
         return {
             flex: 1,
@@ -88,74 +160,25 @@ export default class Home extends Component {
                         {
                             style:{overflow:'visible'},
                             row: [
-                                {
-                                    flex:1,
-                                    className:'box',
-                                    column: [
-                                        {size:12},
-                                        {
-                                            align:'h',
-                                            attrs:{
-                                                onClick:()=>{
-                                                    this.context.SetState({
-                                                        activeBottomMenu:'b',
-                                                        buy_view:{type:'cart',onBack:()=>{
-                                                            this.context.SetState({activeBottomMenu:'a'})
-                                                        }}
-                                                    })
-                                                }
-                                            },
-                                            row: [
-                                                { size: 36, align: 'vh', html: getSvg(28) },
-                                                { html: 'سبد خرید', align: 'vh', className: 'color605E5C bold size14' },
-                                            ]
-                                        },
-                                        { size: 12 },
-                                        { html: Object.keys(cart).length, align: 'vh',className: 'color605E5C bold size14' },
-                                        {size:12}
-                                        
-                                    ]
-                                },
+                                this.box_layout(28,'سبد خرید',Object.keys(cart).length,'#2d3e91'),
                                 {size:4},
-                                {
-                                    flex:1,
-                                    className:'box',
-                                    column: [
-                                        {size:12},
-                                        {
-                                            align:'h',row: [
-                                                { size: 36, align: 'vh', html: getSvg(29) },
-                                                { html: 'کیف پول', align: 'vh',className: 'color605E5C bold size14' },
-                                            ]
-                                        },
-                                        { size: 12 },
-                                        { html: functions.splitPrice(wallet) + ' ریال', className: 'color605E5C bold size14',align:'h' },
-                                        {size:12}
-                                    ]
-                                }
+                                this.box_layout(29,'کیف پول',functions.splitPrice(wallet) + ' ریال','#61912d')
+                            ]
+                        },
+                        { size: 16 },
+                        {html: "پیش سفارشات",className: "size14 color323130 bold padding-0-12",size: 36,align: "v"},
+                        {
+                            style:{overflow:'visible'},
+                            row: [
+                                this.box_layout(undefined,'در انتظار تایید ویزیتور',preOrders.waitOfVisitor,'#2d3e91'),
+                                {size:4},
+                                this.box_layout(undefined,'در انتظار پرداخت',preOrders.waitOfPey,'#61912d')
                             ]
                         },
                         { size: 16 },
                         {style:{overflow:'visible'},html: <MyNear items={myNearItems} />},
                         {size:16},
-                        {
-                            className:'box',
-                            row: [
-                                { size: 12 },
-                                {
-                                    flex: 1,
-                                    column: [
-                                        {size:12},
-                                        { align:'v',row: [{ html: '5',className: 'color0094D4 size28 bold', align: 'v' }, { size: 6 }, { html: 'الماس', align: 'v',className: 'color323130 size18 bold'}]},
-                                        { html: 'به ازای اخذ هر سفارش از بازارگاه',className: 'color605E5C bold size14',align:'v' },
-                                        {size:12},
-                                        
-                                    ]
-                                },
-                                { html: getSvg(6, { width: 70, height: 70 }),align:'vh' },
-                                { size: 6 }
-                            ]
-                        },
+                        this.score_layout(),
                         { 
                             size: 72, 
                             row: [
@@ -189,9 +212,8 @@ export default class Home extends Component {
         }
     }
     async componentDidMount(){
-        let {services} = this.context;
-        let wallet = await services({type:'wallet'})
-        this.setState({wallet})
+        this.getPreOrders();
+        this.getWallet()
     }
     render() {
         let {showAwards} = this.state;

@@ -27,7 +27,7 @@ export default class Main extends Component {
     super(props);
     setTimeout(()=>{
       this.setState({splashScreen:false})
-    },7000)
+    },8000)
     let theme = localStorage.getItem('electricy-theme');
     if(theme === undefined || theme === null){
       theme = false;
@@ -254,9 +254,11 @@ class Splash extends Component{
     super(props);
     this.state = {step:0}
     this.colors = new RColor().getBetweenColors('#2d5193','#7aa5f5',60)
+    this.colors1 = new RColor().getBetweenColors('#2347c9','#fff',40)
+    
     this.gradientInterval = setInterval(()=>{
       let {step} = this.state;
-      if(step >= 160){
+      if(step >= 170){
         clearInterval(this.gradientInterval);
         return;
       }
@@ -272,6 +274,11 @@ class Splash extends Component{
     console.log(a,b)
     let white = '#5e82d3';
     let blue = '#2347c9';
+    if(step > 130){
+      let color = this.colors1[step - 131];
+      white = color;
+      blue = color;
+    }
     return (
       <defs>
         <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -290,9 +297,11 @@ class Splash extends Component{
     let scale = 0.6 + step / 500;
     let opacity = step < 100 ? 0 :(step - 100) / 60
     let color = this.colors[step - 101]
+    let config = {fill:'currentcolor',gradient:this.getGradient(),gradientId:'grad1'}
+    if(step === 160){config = {fill:"#fff"}}
     return (
       <div className='splash-screen'>
-        {getSvg(23,{d,width:200,height:100,style:{transform:`scale(${scale})`},fill:'currentcolor',gradient:this.getGradient(),gradientId:'grad1'})}
+        {getSvg(23,{d,width:240,height:110,style:{transform:`scale(${scale})`},...config})}
         <div className='splash-text' style={{opacity,color}}>Electricy App</div>
       </div>
     )

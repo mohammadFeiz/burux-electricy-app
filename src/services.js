@@ -136,15 +136,16 @@ export default function services(getState) {
       },
       // async orderProducts({baseUrl,parameter}){
       async orderProducts({baseUrl,fixDate,parameter,getState,services}){
-        
-          let {userInfo} = getState();
-          let res = await Axios.post(`${baseUrl}/BOne/GetDocument`,{
-            "docentry":parameter.mainDocEntry, 
-            "DocType":parameter.mainDocType,
-            "isDraft":parameter.mainDocisDraft
-          });
+        let {order} = parameter;
+        debugger;
+        let {userInfo} = getState();
+        let res = await Axios.post(`${baseUrl}/BOne/GetDocument`,{
+          "docentry":parameter.mainDocEntry, 
+          "DocType":parameter.mainDocType,
+          "isDraft":parameter.mainDocisDraft
+        });
 
-          let result = res.data.data;
+        let result = res.data.data;
         console.log(result);
           
           // let total = 0,basePrice = 0,visitorName,paymentMethod;
@@ -184,7 +185,7 @@ export default function services(getState) {
           //   }),
           // };
 
-        let {order} = parameter;
+        
         let products = [
           {
             name:'لامپ LED جنرال 10 وات بروکس',discountPrice:123456,dicountPercent:16,price:123456,count:10,src:bulb10w,

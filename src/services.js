@@ -97,26 +97,93 @@ export default function services(getState) {
         //return {visitorWait,factored,inProcess,inShopTrack,delivered,canceled,rejected};
       },
       async ordersHistory({baseUrl,fixDate}) {
-        let tabs = [
-          {name:'تب اول',id:'1'},
-          {name:'تب دوم',id:'2'},
-          {name:'تب سوم',id:'3'}
-        ]
-        let orders = [
-          {code:'12343',date:'1401/2/2',total:1234567,tabId:'1'},
-          {code:'12343',date:'1401/2/2',total:1234567,tabId:'1'},
-          {code:'12343',date:'1401/2/2',total:1234567,tabId:'1'},
-          {code:'12343',date:'1401/2/2',total:1234567,tabId:'2'},
-          {code:'12343',date:'1401/2/2',total:1234567,tabId:'2'},
-          {code:'12343',date:'1401/2/2',total:1234567,tabId:'3'},
-          {code:'12343',date:'1401/2/2',total:1234567,tabId:'3'},
-          {code:'12343',date:'1401/2/2',total:1234567,tabId:'3'},
-          {code:'12343',date:'1401/2/2',total:1234567,tabId:'3'},
-          {code:'12343',date:'1401/2/2',total:1234567,tabId:'3'},
-        ]
-        return {tabs,orders}
+        let res = await Axios.post(`${baseUrl}/BOne/GetOrders`,{
+          "FieldName":"cardcode",  
+          "FieldValue":"c50000",
+          // "StartDate":"2022-06-01",
+          "StartDate":"2022-06-01",
+          "QtyInPage":10,
+          "PageNo":1
+        });
+        
+        // const results= res.data.data.results.map((x)=>x.orderState);
+        let tabsDictionary={};
+        const results=res.data.data.results;
+
+        for(let order of results){
+          tabsDictionary[order.orderState]=tabsDictionary[order.orderState] || [];
+          tabsDictionary[order.orderState].push(order);
+        }
+        
+        let tabs=[];
+        let orders=[];
+        for(let order in tabsDictionary){
+          tabs.push({id:order,name:order});
+          
+          for(let product of tabsDictionary[order])
+            orders.push(
+              {
+                code:product.mainDocEntry,
+                mainDocisDraft:order.mainDocisDraft,
+                mainDocType:order.mainDocType,
+                date:fixDate({date:product.mainDocDate},"date").date,
+                total:product.mainDocTotal,tabId:order
+              }
+            )
+        }
+
+        return {tabs,orders};
       },
-      async orderProducts({baseUrl,parameter}){
+      // async orderProducts({baseUrl,parameter}){
+      async orderProducts({baseUrl,fixDate,parameter,getState,services}){
+        
+          let {userInfo} = getState();
+          let res = await Axios.post(`${baseUrl}/BOne/GetDocument`,{
+            "docentry":parameter.mainDocEntry, 
+            "DocType":parameter.mainDocType,
+            "isDraft":parameter.mainDocisDraft
+          });
+
+          let result = res.data.data;
+        console.log(result);
+          
+          // let total = 0,basePrice = 0,visitorName,paymentMethod;
+          // let {marketingLines = [],marketingdetails = {},paymentdetails = {}} = result;
+          // visitorName = marketingdetails.slpName;
+          // paymentMethod = paymentdetails.paymentTermName || '';
+          
+          // for (let i = 0; i < marketingLines.length; i++){
+          //   let {priceAfterVat = 0,price = 0} = result.marketingLines[i];
+          //   total += priceAfterVat;
+          //   basePrice += price;
+          // }
+          // result = {
+          //   number: parameter,//
+          //   date: fixDate({date:result.docTime},"date").date,//
+          //   customerName: result.cardName,//
+          //   customerCode: result.cardCode,//
+          //   customerGroup: result.cardGroupCode,//
+          //   campain:result.marketingdetails.campaign,//
+          //   basePrice,//
+          //   visitorName,//
+          //   address: result.deliverAddress || '',//
+          //   mobile: userInfo.phone1,//
+          //   phone: userInfo.phone2,//
+          //   total,//
+          //   paymentMethod,//
+          //   items: marketingLines.map((o) => {
+          //     return {
+          //       name: o.itemName,//
+          //       count: o.itemQty,//
+          //       discountPrice: o.discount,//
+          //       discountPercent: o.discountPercent,//
+          //       unit: o.unitOfMeasure,//
+          //       price: o.priceAfterVat,//
+          //       src:undefined
+          //     };
+          //   }),
+          // };
+
         let {order} = parameter;
         let products = [
           {

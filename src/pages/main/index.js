@@ -58,6 +58,7 @@ export default class Main extends Component {
       guaranteePopupZIndex:0,
       guaranteePopupSuccessZIndex:0,
       guaranteePopupSuccessText:'',
+      guaranteePopupSuccessSubtext:'',
       guaranteePopupSubmitZIndex:0,
       ordersHistoryZIndex:0,
       orderZIndex:0,

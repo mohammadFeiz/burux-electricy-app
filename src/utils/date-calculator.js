@@ -210,13 +210,14 @@ export default function dateCalculator(){
             date[j] = Number(str);
           }   
           date.push(dateObject.getHours());
+          date.push(dateObject.getMinutes());
           if(unit === 'day'){date[3] = 0;}
           if(unit === 'month'){date[2] = 1; date[3] = 0;}
           return date;
         },
         gregorian:(unit)=>{
           var date = new Date();
-          var result = [date.getFullYear(),date.getMonth() + 1,date.getDate(),date.getHours()]
+          var result = [date.getFullYear(),date.getMonth() + 1,date.getDate(),date.getHours(),date.getMinutes()]
           if(unit === 'day'){date[3] = 0;}
           if(unit === 'month'){date[2] = 1; date[3] = 0;}
           return result;

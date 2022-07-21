@@ -20,6 +20,7 @@ export default class GuaranteePopupSubmit extends Component {
         SetState({
           guaranteeItems,
           guaranteePopupSuccessText:"درخواست گارانتی شما با موفقیت ثبت شد",
+          guaranteePopupSuccessSubtext:"درخواست گارانتی شما در ویزیت بعدی بررسی خواهد شد",
           guaranteePopupSuccessZIndex:10,
           guaranteePopupSubmitZIndex:0
         });

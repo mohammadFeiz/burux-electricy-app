@@ -39,6 +39,7 @@ export default class GuaranteePopup extends Component {
                         if(!res){alert("error"); return;}
                         SetState({
                           guaranteePopupSuccessText:"درخواست گارانتی شما با موفقیت اعلام شد",
+                          guaranteePopupSuccessSubtext:"درخواست گارانتی شما تا 72 ساعت آینده بررسی خواهد شد",
                           guaranteePopupSuccessZIndex:10,
                           guaranteePopupZIndex:0   
                         })

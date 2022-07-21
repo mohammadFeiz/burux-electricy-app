@@ -7,11 +7,11 @@ export default class GuaranteePopupSuccess extends Component {
     static contextType = appContext;
     constructor(props){
       super(props);
-      this.today = dateCalculator().getToday('jalali','hour')
+      this.today = dateCalculator().getToday('jalali','minute')
     }
     render() {
       let today = this.today;
-      let {theme,SetState,guaranteePopupSuccessZIndex:zIndex,guaranteePopupSuccessText:text} = this.context;
+      let {theme,SetState,guaranteePopupSuccessZIndex:zIndex,guaranteePopupSuccessText:text,guaranteePopupSuccessSubtext:subtext} = this.context;
       return (
         <div className={"popup-container padding-24" + (theme?' ' + theme:'')}>
           <RVD
@@ -37,14 +37,14 @@ export default class GuaranteePopupSuccess extends Component {
                 { html: text, className: "color107C10 size20 bold", align: "h" },
                 { size: 24 },
                 {
-                  html: "درخواست گارانتی شما در تا 72 ساعت آینده بررسی خواهد شد",
+                  html: subtext,
                   className: "size14 color605E5C theme-1-colorDDD",
                   align: "h",
                 },
                 { flex: 1 },
                 {
                   size: 60,
-                  html: `ثبت درخواست در ${`${today[3]}:${0} ${today[0]}/${today[1]}/${today[2]}`}`,
+                  html: `ثبت درخواست در ${`${today[3]}:${today[4]} ${today[0]}/${today[1]}/${today[2]}`}`,
                   className: "size16 bold color605E5C theme-1-colorDDD",
                   align: "vh",
                 },

@@ -115,17 +115,29 @@ export default function services(getState) {
           tabsDictionary[order.orderState].push(order);
         }
         
+       const orderStatuses= {
+          Registered :"ثبت نام اولیه صورت گرفت منتظر تماس پشتیبان خود باشید",
+          SalesApproved:"درخواست شما تایید شد",
+          PaymentApproved:"واریزی شما تایید شد",
+          WarhousePicked:"در حال جمع آوری",
+          DeliveryPacked:"کالای شما در حالی آماده سازی است",
+          Delivered:"ارسال شده",
+          Invoiced:"فاکتور شده",
+          Rejected:"فاکتور شما مورد تایید نیست",
+          NotSet:"نامشخص"
+      }
+
         let tabs=[];
         let orders=[];
         for(let order in tabsDictionary){
-          tabs.push({id:order,name:order});
+          tabs.push({id:order,name:orderStatuses[order]});
           
           for(let product of tabsDictionary[order])
             orders.push(
               {
                 code:product.mainDocEntry,
-                mainDocisDraft:order.mainDocisDraft,
-                mainDocType:order.mainDocType,
+                mainDocisDraft:product.mainDocisDraft,
+                mainDocType:product.mainDocType,
                 date:fixDate({date:product.mainDocDate},"date").date,
                 total:product.mainDocTotal,tabId:order
               }
@@ -136,13 +148,39 @@ export default function services(getState) {
       },
       // async orderProducts({baseUrl,parameter}){
       async orderProducts({baseUrl,fixDate,parameter,getState,services}){
-        let {order} = parameter;
-        debugger;
         let {userInfo} = getState();
+        let {order} = parameter;
+        console.log(order);
+
+        const docTypeDictionary={
+          Customer : 2,
+          Quotation : 23,
+          Order : 17,
+          Invoice : 13,
+          CreditMemo : 14,
+          MarketingDraft : 112,
+          PaymentDraft : 140,
+          ReturnRequest : 234000031,
+          Return : 16,
+          Delivery : 15,
+          PickList : 156,
+          IncomingPayment : 24,
+          OutgoingPayment : 46,
+          ProductionOrder : 202,
+          DownPayment : 203,
+          InventoryTransfer : 67,
+          GoodsReceipt : 59,
+          GoodsIssue : 60,
+          InventoryTransferReuqest : 1250000001,
+          PurchaseOrder : 22,
+          PurchaseQuotation : 540000006,
+          PurchaseRequest : 1470000113,
+      };
+      
         let res = await Axios.post(`${baseUrl}/BOne/GetDocument`,{
-          "docentry":parameter.mainDocEntry, 
-          "DocType":parameter.mainDocType,
-          "isDraft":parameter.mainDocisDraft
+          "DocEntry":order.mainDocEntry, 
+          "DocType":docTypeDictionary[order.mainDocType],
+          "isDraft":order.mainDocisDraft
         });
 
         let result = res.data.data;

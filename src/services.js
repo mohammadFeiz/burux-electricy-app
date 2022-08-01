@@ -102,7 +102,7 @@ export default function services(getState) {
           "FieldValue":"c50000",
           // "StartDate":"2022-06-01",
           "StartDate":"2022-06-01",
-          "QtyInPage":10,
+          "QtyInPage":1000,
           "PageNo":1
         });
         
@@ -697,7 +697,8 @@ export default function services(getState) {
   }
   return Service({
     services:fn(),
-    baseUrl:'https://localhost:44339/api/v1',
+    baseUrl:'https://retailerapp.bbeta.ir/api/v1',
+    // baseUrl:'https://localhost:44339/api/v1',
     getState,
     cacheAll:true
   })

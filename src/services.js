@@ -132,7 +132,8 @@ export default function services(getState) {
         for(let order in tabsDictionary){
           tabs.push({id:order,name:orderStatuses[order]});
           
-          for(let product of tabsDictionary[order])
+          for(let product of tabsDictionary[order]){
+            debugger;
             orders.push(
               {
                 code:product.mainDocEntry,
@@ -142,8 +143,9 @@ export default function services(getState) {
                 total:product.mainDocTotal,tabId:order
               }
             )
+          }
         }
-
+        debugger;
         return {tabs,orders};
       },
       // async orderProducts({baseUrl,parameter}){

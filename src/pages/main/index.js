@@ -27,7 +27,7 @@ export default class Main extends Component {
     super(props);
     setTimeout(()=>{
       this.setState({splashScreen:false})
-    },8000)
+    },7000)
     let theme = localStorage.getItem('electricy-theme');
     if(theme === undefined || theme === null){
       theme = false;
@@ -253,8 +253,8 @@ class Splash extends Component{
   constructor(props){
     super(props);
     this.state = {step:0}
-    this.colors = new RColor().getBetweenColors('#2d5193','#7aa5f5',60)
-    this.colors1 = new RColor().getBetweenColors('#2347c9','#fff',40)
+    this.colors = new RColor().between('#2d5193','#7aa5f5',60)
+    this.colors1 = new RColor().between('#2347c9','#fff',40)
     
     this.gradientInterval = setInterval(()=>{
       let {step} = this.state;
@@ -263,7 +263,7 @@ class Splash extends Component{
         return;
       }
       this.setState({step:step + 1})
-    },40)
+    },30)
   }
   getGradient(){
     let {step} = this.state;
@@ -307,100 +307,87 @@ class Splash extends Component{
     )
   }
 }
-function RColor(){
+function RColor(log){
   let a = {
-    number_to_hex(c) {
-      let hex = c.toString(16);
-      return hex.length == 1 ? "0" + hex : hex; 
+    number_to_hex(c) {c = c.toString(16); return c.length == 1 ? "0" + c : c;},
+    getType(c){
+      if(Array.isArray(c)){return 'array'}
+      return c.indexOf('rgb') !== -1?'rgb':'hex';
     },
-    getType(color){
-      return color.indexOf('rgb') !== -1?'rgb':'hex';
-    },
-    getBetweenColors(color1,color2,count){
-      var numbers1 = this.getRGBNumbers(color1);
-      var numbers2 = this.getRGBNumbers(color2);
-      var rDelta = (numbers2.r - numbers1.r) / (count - 1);
-      var gDelta = (numbers2.g - numbers1.g) / (count - 1);
-      var bDelta = (numbers2.b - numbers1.b) / (count - 1);
+    between(c1,c2,count){
+      var [r1,g1,b1] = this.to_array(c1);
+      var [r2,g2,b2] = this.to_array(c2);
+      var rDelta = (r2 - r1) / (count - 1);
+      var gDelta = (g2 - g1) / (count - 1);
+      var bDelta = (b2 - b1) / (count - 1);
       var colors = [];
-      
       for(var i = 0; i < count; i++){
-        let color = `rgb(${Math.round(numbers1.r + rDelta * i)},${Math.round(numbers1.g + gDelta * i)},${Math.round(numbers1.b + bDelta * i)})`;
-        //console.log(`%c ${color} ${i}`, 'background: '+color+'; color: #000');
+        let color = `rgb(${Math.round(r1 + rDelta * i)},${Math.round(g1 + gDelta * i)},${Math.round(b1 + bDelta * i)})`;
         colors.push(color)
       }
       return colors;
     },
-    reverse(color,log){
-      var type = this.getType(color);
-      var {r,g,b} = this.getRGBNumbers(color,type);
-      var Color = `rgb(${255 - r},${255 - g},${255 - b})`;
-      Color = type === 'rgb'?this.convert_to_rgb(Color):this.convert_to_hex(Color);
-      if(log){console.log(`%c ${Color}`, 'background: '+Color+'; color:'+color);}
-      return color;
+    to_dark(c,percent){
+      let [r,g,b] = this.to_array(c);
+      r = Math.round(r - (r * (percent / 100)))
+      g = Math.round(g - (g * (percent / 100)))
+      b = Math.round(b - (b * (percent / 100)))
+      return this['to_' + this.getType(c)]([r,g,b])
+    },
+    to_light(c,percent){
+      let [r,g,b] = this.to_array(c);
+      r = Math.round((255 - r) + ((255 - r) * (percent / 100)))
+      g = Math.round((255 - g) + ((255 - g) * (percent / 100)))
+      b = Math.round((255 - b) + ((255 - b) * (percent / 100)))
+      return this['to_' + this.getType(c)]([r,g,b])
     },
     log(color){
       console.log(`%c ${color}`, 'background: '+color+'; color: #000');
     },
-    getRandomColor(obj = {}){
-      var {
-        type = 'rgb',
-        r = Math.round(Math.random()*255), 
-        g = Math.round(Math.random()*255),
-        b = Math.round(Math.random()*255)
-      } = obj;   
-      var rgb = `rgb(${r},${g},${b})`;
-      var color = type === 'rgb'?rgb:this.convert_to_hex(rgb,'rgb')
-      this.log(color);
-      return color;
+    getRandom(from,to){return from + Math.round(Math.random() * (to - from))},
+    reverse(c){return this['to_' + this.getType(c)](this.to_array(c).map((o)=>255 - o))},
+    random(obj = {}){
+      let {
+        type = 'hex',
+        r = this.getRandom(0,255), 
+        g = this.getRandom(0,255),
+        b = this.getRandom(0,255)
+      } = obj;
+      if(Array.isArray(r)){r = this.getRandom(r[0],r[1])}
+      if(Array.isArray(g)){g = this.getRandom(g[0],g[1])}
+      if(Array.isArray(b)){b = this.getRandom(b[0],b[1])}
+      return this['to_' + type]([r,g,b])
     },
-    getRGBNumbers(color){
-      color = this.convert_to_rgb(color);
-      var rgb = color.slice(color.indexOf('(') + 1,color.indexOf(')'));
-      var [r,g,b] = rgb.split(',');
-      return {r:parseInt(r),g:parseInt(g),b:parseInt(b)};
-    },
-    convert_to_hex(color){
-      var type = this.getType(color);
-      return type === 'rgb'?this.rgb_to_hex(color):color}, 
-    convert_to_rgb(color){
-      var type = this.getType(color);
-      return type === 'hex'?this.hex_to_rgb(color):color
-    },
-    rgb_to_hex(color) {
-      var {r,g,b} = this.getRGBNumbers(color);   
-      return "#" + this.number_to_hex(r) + this.number_to_hex(g) + this.number_to_hex(b);
-    },
-    hex_to_rgb (hex) {
-      if (hex.charAt(0) === '#') {hex = hex.substr(1);}
-      if ((hex.length < 2) || (hex.length > 6)) {return false;}
-      var values = hex.split(''),r,g,b;
-      if (hex.length === 2) {
-          r = parseInt(values[0].toString() + values[1].toString(), 16);
-          g = r;
-          b = r;
-      } else if (hex.length === 3) {
-          r = parseInt(values[0].toString() + values[0].toString(), 16);
-          g = parseInt(values[1].toString() + values[1].toString(), 16);
-          b = parseInt(values[2].toString() + values[2].toString(), 16);
-      } else if (hex.length === 6) {
-          r = parseInt(values[0].toString() + values[1].toString(), 16);
-          g = parseInt(values[2].toString() + values[3].toString(), 16);
-          b = parseInt(values[4].toString() + values[5].toString(), 16);
-      } else {
-          return false;
+    to_array(c){
+      if(Array.isArray(c)){return c}
+      if(c.indexOf('rgb(') === 0){
+        return c.slice(c.indexOf('(') + 1,c.indexOf(')')).split(',').map((o)=>+o);
       }
-      return `rgb(${r},${g},${b})`;
+      c = c.substr(1);
+      let values = c.split(''),r,g,b;
+      if (c.length === 3) {
+          r = parseInt(values[0] + values[0], 16);
+          g = parseInt(values[1] + values[1], 16);
+          b = parseInt(values[2] + values[2], 16);
+      } 
+      else if (c.length === 6) {
+          r = parseInt(values[0] + values[1], 16);
+          g = parseInt(values[2] + values[3], 16);
+          b = parseInt(values[4] + values[5], 16);
+      } 
+      return [r,g,b];
     },
+    to_hex(c){return `#${this.to_array(c).map((o)=>this.number_to_hex(o)).toString()}`;}, 
+    to_rgb(c){return `rgb(${this.to_array(c).toString()})`;}
   };
   return {
-    convert_to_hex:a.convert_to_hex.bind(a),
-    convert_to_rgb:a.convert_to_rgb.bind(a),
-    getRGBNumbers:a.getRGBNumbers.bind(a),
+    to_hex:a.to_hex.bind(a),
+    to_rgb:a.to_rgb.bind(a),
+    to_array:a.to_array.bind(a),
     number_to_hex:a.number_to_hex.bind(a),
     reverse:a.reverse.bind(a),
     log:a.log.bind(a),
-    getRandomColor:a.getRandomColor.bind(a),
-    getBetweenColors:a.getBetweenColors.bind(a)
+    random:a.random.bind(a),
+    between:a.between.bind(a)
   };
 }

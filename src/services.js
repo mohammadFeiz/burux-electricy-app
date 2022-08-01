@@ -97,6 +97,7 @@ export default function services(getState) {
         //return {visitorWait,factored,inProcess,inShopTrack,delivered,canceled,rejected};
       },
       async ordersHistory({baseUrl,fixDate}) {
+        debugger;
         let res = await Axios.post(`${baseUrl}/BOne/GetOrders`,{
           "FieldName":"cardcode",  
           "FieldValue":"c50000",
@@ -107,45 +108,52 @@ export default function services(getState) {
         });
         
         // const results= res.data.data.results.map((x)=>x.orderState);
-        let tabsDictionary={};
+        let tabsDictionary={
+          SalesApproved:[],
+          PaymentApproved:[],
+          WarhousePicked:[],
+          DeliveryPacked:[],
+          Delivered:[],
+          Invoiced:[],
+          Rejected:[]
+        };
         const results=res.data.data.results;
 
         for(let order of results){
-          tabsDictionary[order.orderState]=tabsDictionary[order.orderState] || [];
-          tabsDictionary[order.orderState].push(order);
+          let id = order.orderState;
+          if(tabsDictionary[id]){
+            tabsDictionary[id].push(order)
+          }
         }
         
        const orderStatuses= {
-          Registered :"ثبت نام اولیه صورت گرفت منتظر تماس پشتیبان خود باشید",
-          SalesApproved:"درخواست شما تایید شد",
-          PaymentApproved:"واریزی شما تایید شد",
-          WarhousePicked:"در حال جمع آوری",
-          DeliveryPacked:"کالای شما در حالی آماده سازی است",
-          Delivered:"ارسال شده",
-          Invoiced:"فاکتور شده",
-          Rejected:"فاکتور شما مورد تایید نیست",
+          //Registered :"ثبت نام اولیه صورت گرفت منتظر تماس پشتیبان خود باشید",
+          SalesApproved:"درخواست تایید شده",//
+          PaymentApproved:"واریزی تایید شده",//
+          WarhousePicked:"تحویل از انبار",//
+          DeliveryPacked:"در حال آماده سازی",//
+          Delivered:"ارسال شده",//
+          Invoiced:"فاکتور شده",//
+          Rejected:"تایید نشده",//
           NotSet:"نامشخص"
       }
 
         let tabs=[];
         let orders=[];
-        for(let order in tabsDictionary){
-          tabs.push({id:order,name:orderStatuses[order]});
-          
-          for(let product of tabsDictionary[order]){
-            debugger;
+        for(let id in tabsDictionary){
+          tabs.push({id,name:orderStatuses[id]});
+          for(let product of tabsDictionary[id]){
             orders.push(
               {
                 code:product.mainDocEntry,
                 mainDocisDraft:product.mainDocisDraft,
                 mainDocType:product.mainDocType,
                 date:fixDate({date:product.mainDocDate},"date").date,
-                total:product.mainDocTotal,tabId:order
+                total:product.mainDocTotal,tabId:id
               }
             )
           }
         }
-        debugger;
         return {tabs,orders};
       },
       // async orderProducts({baseUrl,parameter}){
@@ -201,7 +209,6 @@ export default function services(getState) {
         });
 
         let result = res.data.data.results;
-        console.log(result);
           
           // let total = 0,basePrice = 0,visitorName,paymentMethod;
           // let {marketingLines = [],marketingdetails = {},paymentdetails = {}} = result;
@@ -577,7 +584,6 @@ export default function services(getState) {
         let {userInfo,cart = {}}=getState();
         let variants = Object.keys(cart).map((id)=>cart[id])
 
-        debugger; 
         let res = await Axios.post(`${baseUrl}/BOne/AddNewOrder`,{
           "marketdoc": {
             "docsource": 0,

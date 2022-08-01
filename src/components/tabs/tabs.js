@@ -15,7 +15,7 @@ export default class Tabs extends Component{
             style:active?{borderBottom:'2px solid',color:'dodgerblue'}:{},
             row: [
                 { html: title, className: 'tab-title', align: 'v' },
-                { show: badge !== 0, html: <div style={this.badgeStyle()}>{badge}</div>, align: 'vh' }
+                { show: badge !== undefined, html: <div style={this.badgeStyle()}>{badge}</div>, align: 'vh' }
             ]
         }
     }

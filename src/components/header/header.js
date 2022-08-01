@@ -19,7 +19,7 @@ export default class Header extends Component{
         return (
             <RVD
                 layout={{
-                    style:{height:60,overflow:'visible'},
+                    style:{height:60,overflow:'visible',marginBottom:12},
                     className:'box-shadow bgFFF theme-1-light-bg',
                     row:[
                         {show:buttons.sidemenu === true,size: 60,html: getSvg(22),attrs: { onClick: () => SetState({ sidemenuOpen: true }) },align:'vh'},

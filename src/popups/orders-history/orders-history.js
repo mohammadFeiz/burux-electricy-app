@@ -51,8 +51,13 @@ export default class OrdersHistory extends Component {
       if(activeTabId === false){return []}
       let tab = tabs.filter(({id})=>id === activeTabId)[0];
       let orders = tab.orders;
+      if(!orders.length){
+        return {
+          flex:1,html:'سفارشی موجود نیست',className:'size16 color605E5C bold',align:'vh'
+        }
+      }
       return {
-        flex: 1,gap: 12,
+        flex: 1,gap: 12,scroll:'v',
         column: orders.map((o) => {
           return {html: (<OrderCard order={o}/>)};
         })

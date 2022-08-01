@@ -271,7 +271,6 @@ class Splash extends Component{
     let c = step < range * 2?0:step - range * 2;
     let a = step < range?0:step - range;
     let b = step > 100?100:step;
-    console.log(a,b)
     let white = '#5e82d3';
     let blue = '#2347c9';
     if(step > 130){

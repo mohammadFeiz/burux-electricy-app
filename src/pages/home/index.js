@@ -11,6 +11,7 @@ import bazargahPng from './../../images/bazargah.png';
 import GarantiCard from '../../components/garanti-card/garanti-card';
 import './index.css';
 import Awards from './../awards/index';
+import Header from '../../components/header/header';
 
 export default class Home extends Component {
     static contextType = appContext;
@@ -195,35 +196,7 @@ export default class Home extends Component {
             className:'home-page main-bg',style:{width:'100%'},
             column: [
                 {
-                    className: 'header', size: 60,
-                    row: [
-                        { size: 60, html: getSvg(22), align: 'vh',attrs:{onClick:()=>SetState({sidemenuOpen:true})} },
-                        { html: getSvg(23,{d:buruxlogod}), align: 'vh' },
-                        { flex: 1 },
-                        { html: getSvg('darkmode'), align: 'vh',attrs:{onClick:()=>changeTheme()} },
-                        { size: 12 },
-                        { html: gems,className: 'size14 color006F9E', align: 'vh' },
-                        { html: getSvg(24), align: 'vh' },
-                        { size: 12 },
-                        { html: getSvg(25), align: 'vh' },
-                        { size: 12 },
-                        { html: (
-                            <AIOButton
-                                type='select'
-                                caret={false}
-                                style={{background:'none'}}
-                                text={<div className='home-circle'></div>}
-                                options={[
-                                    {text:'خروج از حساب',value:'exit'}
-                                ]}
-                                onChange={(value)=>{
-                                    if(value === 'exit'){this.context.logout()}
-                                }}
-                            />
-                        ), align: 'vh' },
-                        { size: 12 }
-
-                    ]
+                    html:<Header buttons={{sidemenu:true,profile:true,gems:true,logo:true}}/>
                 },
                 {
                     flex:1,scroll:'v',

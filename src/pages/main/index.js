@@ -23,6 +23,7 @@ import Joziate_Darkhasthaye_Garanti_Popup from "../../popups/joziate-darkhasthay
 import OrdersHistory from "../../popups/orders-history/orders-history";
 import OrderPopup from "../../popups/order-popup/order-popup";
 import "./index.css";
+import Bazargah from "../bazargah/bazargah";
 export default class Main extends Component {
   constructor(props) {
     super(props);
@@ -170,6 +171,9 @@ export default class Main extends Component {
     }
     if (activeBottomMenu === "b") {
       return <Buy view={buy_view}/>;
+    }
+    if (activeBottomMenu === "c") {
+      return <Bazargah/>;
     }
     if (activeBottomMenu === "d") {
       return <MyBurux />;

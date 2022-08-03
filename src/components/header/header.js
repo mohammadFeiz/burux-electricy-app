@@ -53,6 +53,7 @@ export default class Header extends Component{
                                 <AIOButton
                                     type='select'
                                     caret={false}
+                                    animate={true}
                                     style={{background:'none',margin:'0 6px',padding:0}}
                                     text={<div className='home-circle'></div>}
                                     options={[

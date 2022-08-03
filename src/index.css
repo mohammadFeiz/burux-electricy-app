@@ -423,7 +423,7 @@ button{
 	position:fixed;
 	width:100%;
 	height:100%;
-	background:linear-gradient(to bottom right,#7c9de7 0%,#7b98d9 20%, #0026af);
+	background:linear-gradient(to bottom right,#a1cce1 0%, #134591 100%);
 	left:0;
 	display:flex;
 	align-items: center;
@@ -431,7 +431,7 @@ button{
 	justify-content: center;
 	top:0;
 	color:#d8e4fa;
-
+	
 }
 .splash-text{
 	font-size:24px;

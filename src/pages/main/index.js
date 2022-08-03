@@ -261,7 +261,7 @@ class Splash extends Component{
     super(props);
     this.state = {step:0}
     this.colors = new RColor().between('#2d5193','#7aa5f5',60)
-    this.colors1 = new RColor().between('#2347c9','#fff',40)
+    this.colors1 = new RColor().between('#0094D4','#fff',40)
     
     this.gradientInterval = setInterval(()=>{
       let {step} = this.state;
@@ -278,8 +278,8 @@ class Splash extends Component{
     let c = step < range * 2?0:step - range * 2;
     let a = step < range?0:step - range;
     let b = step > 100?100:step;
-    let white = '#5e82d3';
-    let blue = '#2347c9';
+    let white = '#65bfe6';
+    let blue = '#0094D4';
     if(step > 130){
       let color = this.colors1[step - 131];
       white = color;

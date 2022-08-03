@@ -9,7 +9,10 @@ export default function services(getState) {
       async kalahaye_garanti_shode({fix,baseUrl}) {
         let res = await Axios.post(`${baseUrl}/Guarantee/GetAllGuarantees`,{ CardCode: "C50000" });
         if (res.data && res.data.isSuccess && res.data.data) {
-          return fix(res.data.data.Items, {convertDateFields: ["CreateTime"]});
+          let items = fix(res.data.data.Items, {convertDateFields: ["CreateTime"]});
+          return items.map((o)=>{
+            return {...o,Details:o.Details.map((d)=>{return {...d,src:bulb10w}})}
+          })
         } 
         else {return [];}
         // return [];

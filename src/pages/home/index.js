@@ -7,6 +7,8 @@ import AIOButton from './../../components/aio-button/aio-button';
 import functions from '../../functions';
 import ContentSlider from '../../components/content-slider';
 import bulb10w from './../../images/10w-bulb.png';
+import bazargahPng from './../../images/bazargah.png';
+import GarantiCard from '../../components/garanti-card/garanti-card';
 import './index.css';
 import Awards from './../awards/index';
 
@@ -91,6 +93,78 @@ export default class Home extends Component {
             ]
         }
     }
+    billboard_layout(){
+        let {sliderItems} = this.state;
+        return { html: <ContentSlider items={sliderItems} /> }
+    }
+    cartAndWallet_layout(){
+        let {wallet} = this.state,{cart} = this.context;
+        return {
+            style:{overflow:'visible'},
+            className:'padding-0-12',
+            row: [
+                this.box_layout(28,'سبد خرید',Object.keys(cart).length,'#2d3e91'),
+                {size:12},
+                this.box_layout(29,'کیف پول',functions.splitPrice(wallet) + ' ریال','#61912d')
+            ]
+        }
+    }
+    preOrders_layout(){
+        let {preOrders} = this.state;
+        return {
+            className:'padding-0-12',
+            column:[
+                {html: "پیش سفارشات",className: "size14 color323130 bold padding-0-12",size: 48,align: "v"},
+                {
+                    style:{overflow:'visible'},
+                    row: [
+                        this.box_layout('paperRocket','در انتظار تایید ویزیتور',preOrders.waitOfVisitor,'#2d3e91'),
+                        {size:12},
+                        this.box_layout(undefined,'در انتظار پرداخت',preOrders.waitOfPey,'#61912d')
+                    ]
+                },
+            ]
+        }
+    }
+    garanti_layout(){
+        let {guaranteeItems,SetState} = this.context;
+        return {
+            className:'padding-0-12',
+            column:[
+                {
+                    className:'padding-0-12 box gap-no-color',size:48,style:{borderRadius:'14px 14px 0 0'},
+                    row:[
+                        {html: "گارانتی",className: "size16 color323130 bold",align: "v"},
+                        {flex:1},
+                        {
+                            gap:6,
+                            attrs:{
+                                onClick:()=>{
+                                    SetState({guaranteePopupZIndex:10})
+                                }
+                            },
+                            row:[
+                                {align:'vh',html:getSvg('plusBox')},
+                                {html:'ثبت گارانتی جدید',className:'color0094D4 size12 bold',align:'v'}
+                            ]
+                        }
+                    ]
+                },
+                {
+                    gap:1,column:guaranteeItems.slice(0,2).map((o,i)=>{
+                        return {
+                            html:<GarantiCard {...o} type='2'/>
+                        }
+                    })
+                },
+                {size:1},
+                {
+                    attrs:{onClick:()=>SetState({joziate_darkhasthaye_garanti_popup_zIndex:10})},
+                    size:48,html:'مشاهده جزییات درخواست های گارانتی ها',className:'box color0094D4 size12 bold',align:'vh',style:{borderRadius:'0 0 14px 14px'}
+                }
+            ]
+        }
+    }
     score_layout(){
         let {theme} = this.context;
         return {
@@ -114,8 +188,8 @@ export default class Home extends Component {
         }
     }
     getContent() {
-        let { gems, preOrders, sliderItems, myNearItems, wallet } = this.state;
-        let {SetState,testedChance,cart,changeTheme} = this.context;
+        let { gems, myNearItems} = this.state;
+        let {SetState,testedChance,changeTheme,buruxlogod} = this.context;
         return {
             flex: 1,
             className:'home-page main-bg',style:{width:'100%'},
@@ -124,15 +198,15 @@ export default class Home extends Component {
                     className: 'header', size: 60,
                     row: [
                         { size: 60, html: getSvg(22), align: 'vh',attrs:{onClick:()=>SetState({sidemenuOpen:true})} },
-                        { html: getSvg(23), align: 'vh' },
+                        { html: getSvg(23,{d:buruxlogod}), align: 'vh' },
                         { flex: 1 },
                         { html: getSvg('darkmode'), align: 'vh',attrs:{onClick:()=>changeTheme()} },
-                        { size: 16 },
+                        { size: 12 },
                         { html: gems,className: 'size14 color006F9E', align: 'vh' },
                         { html: getSvg(24), align: 'vh' },
-                        { size: 16 },
+                        { size: 12 },
                         { html: getSvg(25), align: 'vh' },
-                        { size: 16 },
+                        { size: 12 },
                         { html: (
                             <AIOButton
                                 type='select'
@@ -147,64 +221,70 @@ export default class Home extends Component {
                                 }}
                             />
                         ), align: 'vh' },
-                        { size: 16 }
+                        { size: 12 }
 
                     ]
                 },
                 {
                     flex:1,scroll:'v',
                     column: [
-                        this.context.layout('search',{onClick:()=>SetState({popup:{mode:'search'}})}),
-                        { html: <ContentSlider items={sliderItems} /> },
-                        { size: 24 },
+                        this.billboard_layout(),
+                        { size: 12 },
+                        this.cartAndWallet_layout(),
+                        { size: 12 },
+                        this.preOrders_layout(),
+                        { size: 12 },
+                        // {style:{overflow:'visible'},html: <MyNear items={myNearItems} />},
+                        // {size:16},
+                        this.garanti_layout(),
+                        { size: 12 },
                         {
-                            style:{overflow:'visible'},
-                            row: [
-                                this.box_layout(28,'سبد خرید',Object.keys(cart).length,'#2d3e91'),
-                                {size:4},
-                                this.box_layout(29,'کیف پول',functions.splitPrice(wallet) + ' ریال','#61912d')
-                            ]
-                        },
-                        { size: 16 },
-                        {html: "پیش سفارشات",className: "size14 color323130 bold padding-0-12",size: 36,align: "v"},
-                        {
-                            style:{overflow:'visible'},
-                            row: [
-                                this.box_layout(undefined,'در انتظار تایید ویزیتور',preOrders.waitOfVisitor,'#2d3e91'),
-                                {size:4},
-                                this.box_layout(undefined,'در انتظار پرداخت',preOrders.waitOfPey,'#61912d')
-                            ]
-                        },
-                        { size: 16 },
-                        {style:{overflow:'visible'},html: <MyNear items={myNearItems} />},
-                        {size:16},
-                        this.score_layout(),
-                        { 
-                            size: 72, 
-                            row: [
-                                { size: 12 },
+                            size:100,
+                            style:{background:'#EDEBE9'},
+                            className:'box margin-0-12',
+                            row:[
+                                {size:80,html:getSvg('bazargahCommingSoon'),align:'vh'},
                                 {
-                                    show:testedChance === false,align:'v',column:[
-                                        {
-                                            className:'go-to-awards',
-                                            attrs:{
-                                                onClick:()=>{
-                                                    this.setState({showAwards:true})
-                                                }
-                                            },
-                                            size:36,row:[
-                                                {html:'جایزه روز',style:{fontSize:24},align:'v'},
-                                                {html:'شانست رو امتحان کن',style:{fontSize:11},align:'v'}
-                                            ]
-                                        }
+                                    flex:1,
+                                    column:[
+                                        {flex:1},
+                                        {html:'به زودی',className:'colorA19F9D size14'},
+                                        {size:6},
+                                        {html:'بازارگاه',className:'color605E5C size20 bold'},
+                                        {flex:1},
                                     ]
+                                }
+                            ]
+                        },
+                        { size: 12 },
+                        
+                        //this.score_layout(),
+                        // { 
+                        //     size: 72, 
+                        //     row: [
+                        //         { size: 12 },
+                        //         {
+                        //             show:testedChance === false,align:'v',column:[
+                        //                 {
+                        //                     className:'go-to-awards',
+                        //                     attrs:{
+                        //                         onClick:()=>{
+                        //                             this.setState({showAwards:true})
+                        //                         }
+                        //                     },
+                        //                     size:36,row:[
+                        //                         {html:'جایزه روز',style:{fontSize:24},align:'v'},
+                        //                         {html:'شانست رو امتحان کن',style:{fontSize:11},align:'v'}
+                        //                     ]
+                        //                 }
+                        //             ]
                                     
-                                },
-                                { flex: 1 }, 
-                                { html: getSvg(31), align: 'vh' }, 
-                                { size: 12 }
-                            ] 
-                        }
+                        //         },
+                        //         { flex: 1 }, 
+                        //         { html: getSvg(31), align: 'vh' }, 
+                        //         { size: 12 }
+                        //     ] 
+                        // }
                     ]
                 }
 

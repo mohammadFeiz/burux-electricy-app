@@ -158,7 +158,7 @@ export default class OrdersHistory extends Component {
       return (
         <RVD
           layout={{
-            className: "box gap-no-color",
+            className: "box gap-no-color margin-0-12",
             style: { padding: 12 },
             attrs:{onClick:()=>{
               let {order} = this.props;

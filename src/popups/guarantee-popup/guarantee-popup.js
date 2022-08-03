@@ -5,7 +5,6 @@ import appContext from "../../app-context";
 export default class GuaranteePopup extends Component {
     static contextType = appContext;
     render() {
-      let { onClick } = this.props;
       let {theme,SetState,services} = this.context;
       return (
         <div className={"popup-container" + (theme?' ' + theme:'')}>

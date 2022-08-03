@@ -5,7 +5,7 @@ export default class Tabs extends Component{
     badgeStyle(){
         return {background:'dodgerblue',padding:'0 3px',overflow:'hidden',color:'#fff',borderRadius:12,minWidth:12,height:18,margin:'0 3px',textAlign:'center'}
     }
-    tab_layout({size,flex,id,title,badge = 0}){
+    tab_layout({size,flex,id,title,badge}){
         let {activeTabId,onChange} = this.props;
         if(typeof badge === 'function'){badge = badge()}
         let active = id === activeTabId;

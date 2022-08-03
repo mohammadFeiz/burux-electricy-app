@@ -19,6 +19,7 @@ import CategoryView from "./../../popups/category-view/category-view";
 import GuaranteePopup from "../../popups/guarantee-popup/guarantee-popup";
 import GuaranteePopupSubmit from "../../popups/guarantee-popup-submit/guarantee-popup-sumbmit";
 import GuaranteePopupSuccess from "../../popups/guarantee-popup-success/guarantee-popup-success";
+import Joziate_Darkhasthaye_Garanti_Popup from "../../popups/joziate-darkhasthaye-garanti-popup/joziate_darkhasthaye_garanti_popup";
 import OrdersHistory from "../../popups/orders-history/orders-history";
 import OrderPopup from "../../popups/order-popup/order-popup";
 import "./index.css";
@@ -60,6 +61,7 @@ export default class Main extends Component {
       guaranteePopupSuccessText:'',
       guaranteePopupSuccessSubtext:'',
       guaranteePopupSubmitZIndex:0,
+      joziate_darkhasthaye_garanti_popup_zIndex:0,
       ordersHistoryZIndex:0,
       orderZIndex:0,
       order:false,
@@ -212,9 +214,10 @@ export default class Main extends Component {
       layout:(type,parameters)=>layout(type,()=>this.state,parameters)
     };
     let { 
-      popup, sidemenuOpen, theme,orderZIndex,buruxlogod,splashScreen,
+      sidemenuOpen, theme,orderZIndex,buruxlogod,splashScreen,
       cartZIndex,shippingZIndex,searchZIndex,productZIndex,categoryZIndex,
-      guaranteePopupSuccessZIndex,guaranteePopupSubmitZIndex,guaranteePopupZIndex,ordersHistoryZIndex
+      guaranteePopupSuccessZIndex,guaranteePopupSubmitZIndex,guaranteePopupZIndex,ordersHistoryZIndex,
+      joziate_darkhasthaye_garanti_popup_zIndex
     } = this.state;
     return (
       <appContext.Provider value={context}>
@@ -229,7 +232,6 @@ export default class Main extends Component {
         />
         {ordersHistoryZIndex !== 0 && <OrdersHistory/>}
         {orderZIndex !== 0 && <OrderPopup/>}
-        {orderZIndex !== 0 && <OrderPopup/>}
         {guaranteePopupZIndex !== 0 && <GuaranteePopup/>}
         {guaranteePopupSubmitZIndex !== 0 && <GuaranteePopupSubmit/>}
         {guaranteePopupSuccessZIndex !== 0 && <GuaranteePopupSuccess/>}
@@ -238,6 +240,7 @@ export default class Main extends Component {
         {productZIndex !== 0 && <Product/>}
         {cartZIndex !== 0 && <Cart/>}
         {categoryZIndex !== 0 && <CategoryView/>}
+        {joziate_darkhasthaye_garanti_popup_zIndex !== 0 && <Joziate_Darkhasthaye_Garanti_Popup/>}
         <SideMenu
           onClose={() => this.setState({ sidemenuOpen: false })}
           open={sidemenuOpen}

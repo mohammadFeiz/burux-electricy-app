@@ -3,6 +3,7 @@ import RVD from "react-virtual-dom";
 import getSvg from "./../../utils/getSvg";
 import appContext from "./../../app-context";
 import Table from "./../../components/aio-table/aio-table";
+import Header from "../../components/header/header";
 import ProductCount from "../../components/product-count";
 export default class GuaranteePopupSubmit extends Component {
     static contextType = appContext;
@@ -17,7 +18,6 @@ export default class GuaranteePopupSubmit extends Component {
       let {items} = this.state;
       let res = await services({type:"sabte_kalahaye_garanti", parameter:items});
       if (res) {
-        debugger;
         let guaranteeItems = await services({type:"kalahaye_garanti_shode"});
         SetState({
           guaranteeItems,
@@ -44,10 +44,9 @@ export default class GuaranteePopupSubmit extends Component {
             layout={{
               className: "popup main-bg",
               column: [
-                getHeaderLayout("ثبت درخواست گارانتی جدید", () => SetState({guaranteePopupSubmitZIndex:0})),
-                { size: 12 },
+                {html:<Header title='ثبت درخواست گارانتی جدید' onClose={()=>SetState({guaranteePopupSubmitZIndex:0})}/>},
                 {
-                  className: "box",
+                  className: "box margin-0-12",
                   style: { padding: 12 },
                   column: [
                     {
@@ -71,7 +70,7 @@ export default class GuaranteePopupSubmit extends Component {
                 },
                 { size: 12 },
                 {
-                  className: "box",style: { padding: 12 },
+                  className: "box margin-0-12",style: { padding: 12 },
                   column: [
                     {html: "کالاهای گارانتی",className: "size16 color605E5C"},
                     { size: 12 },
@@ -131,7 +130,6 @@ export default class GuaranteePopupSubmit extends Component {
                         {
                           type: "select",
                           text: "افزودن کالا",
-                          caret: false,
                           className:'button-1',
                           popupAttrs: { style:{maxHeight: 400 ,bottom:0,top:'unset',position:'fixed',left:0,width:'100%'}},
                           optionText:'option.Name',

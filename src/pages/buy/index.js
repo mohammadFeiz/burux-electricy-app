@@ -169,7 +169,7 @@ export default class Buy extends Component {
     let {SetState} = this.context;
     let sliders = [['bestSellings','پر فروش ترین محصولات'],['lastOrders','آخرین سفارشات شما'],['recommendeds','پیشنهاد سفارش']]
     return {
-      gap:12,
+      gap:12,className:'margin-0-12',
       column:sliders.map(([key,name])=>{
         let products = this.state[key] || [];
         if(!products.length){return false}

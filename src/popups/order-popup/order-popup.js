@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import RVD from "react-virtual-dom";
 import appContext from "../../app-context";
+import Header from './../../components/header/header';
 import functions from "../../functions";
 export default class OrderPopup extends Component {
     static contextType = appContext;
@@ -62,13 +63,14 @@ export default class OrderPopup extends Component {
             layout={{
               className: "popup main-bg",
               column: [
-                getHeaderLayout("جزيیات سفارش خرید", () => SetState({orderZIndex:0})),
-                { size: 12 },
+                {
+                  html:<Header title='جزيیات سفارش خرید' onClose={()=>SetState({orderZIndex:0})}/>
+                },
                 {
                   flex: 1,scroll: "v",gap: 12,
                   column: [
                     {
-                      className: "box gap-no-color",
+                      className: "box gap-no-color margin-0-12",
                       style: { padding: 12 },
                       gap: 12,
                       column: [
@@ -81,7 +83,7 @@ export default class OrderPopup extends Component {
                         ),
                         this.getRow("گروه مشتری", customerGroup),
                         this.getRow("نام کمپین", campaignName),
-                        this.getRow("قیمت پایه", basePrice),
+                        this.getRow("قیمت پایه", functions.splitPrice(basePrice)),
                         this.getRow("نام ویزیتور", visitorName),
                         { size: 12 },
                         this.getRow("آدرس", address),

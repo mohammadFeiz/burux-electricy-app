@@ -12,8 +12,33 @@ export default class GarantiCard extends Component{
         let color = types[StatusCode.toString()].color;
         return <div style={{padding:'2px 12px',borderRadius:24,color,background:color + '30'}} className='size12'>{StatusText}</div>
     }
+    detail_layout(index){
+        let size = 36;
+        let {Details} = this.props;
+        let {Name,Quantity} = Details[index];
+        let height = 0,top = 0;
+        if(Details.length < 2){height = 0; top = 0;}
+        else if(index === 0){height = size / 2; top = size / 2;}
+        else if(index === Details.length - 1){height = size / 2; top = 0;}
+        else {height = size; top = 0;}
+        return {
+            size,childsProps:{align:'v'},gap:12,
+            childsAttrs:{className:'size12 color605E5C'},
+            row:[
+                {
+                    html:(
+                        <div style={{positon:'relative',width:size / 3,height:size / 3,background:'#0094D4',borderRadius:'100%'}}>
+                            <div style={{width:2,height,top,position:'absolute',left:'calc(50% - 1px)',background:'#0094D4'}}></div>
+                        </div>
+                    )
+                },
+                {html:Name},
+                {html:Quantity + ' عدد'}
+            ]
+        }
+    }
     render(){
-        let {RequestID,CreateTime,_time,Details,isFirst,isLast,type = '1',StatusText} = this.props;
+        let {RequestID,CreateTime,_time,Details,isFirst,isLast,type = '1'} = this.props;
         if(type === '1'){
             return (
                 <RVD
@@ -37,33 +62,7 @@ export default class GarantiCard extends Component{
                                     {html:CreateTime,className:'size12 colorA19F9D'}
                                 ]
                             },
-                            {
-                                column:Details.map(({Name,Quantity},i)=>{
-                                    let height = 0,top = 0;
-                                    if(Details.length < 2){height = 0; top = 0;}
-                                    else if(i === 0){height = 18; top = 18;}
-                                    else if(i === Details.length - 1){height = 18; top = 0;}
-                                    else {height = 36; top = 0;}
-                                    return {
-                                        size:36,childsProps:{align:'v'},gap:12,
-                                        childsAttrs:{className:'size12 color605E5C'},
-                                        row:[
-                                            {html:<div style={{positon:'relative',width:10,height:10,background:'#0094D4',borderRadius:'100%'}}>
-                                                <div style={{
-                                                    width:2,
-                                                    height,
-                                                    top,
-                                                    position:'absolute',
-                                                    left:'calc(50% - 1px)',
-                                                    background:'#0094D4'}}></div>
-                                            </div>},
-                                            {html:Name},
-                                            {html:Quantity + ' عدد'},
-                                            
-                                        ]
-                                    }
-                                })
-                            }
+                            {column:Details.map((o,i)=>this.detail_layout(i))}
                         ]
                     }}
                 />

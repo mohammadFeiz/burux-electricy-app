@@ -388,7 +388,7 @@ export default function services(getState) {
       },
       async bestSellings({baseUrl}){
         return await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10180'}})
-        
+      
       },
       async preOrders({baseUrl}) {
         let preOrders = {waitOfVisitor: 10,waitOfPey: 2};
@@ -416,7 +416,7 @@ export default function services(getState) {
             src = included.filter((m) => m.id === imgId)[0].attributes.original_url;
           } 
           catch {src = "";}
-          return {name: o.attributes.name,price: o.attributes.price,unit: "",src: `http://spree.burux.com${src}`,discountPercent: 0,discountPrice: 0};
+          return {name: o.attributes.name,price: o.attributes.price,unit: "",src: `http://shopback.bpilot.ir${src}`,discountPercent: 0,discountPrice: 0};
         });
       },
       async getCategories(obj) {
@@ -432,7 +432,7 @@ export default function services(getState) {
           if(imgData !== undefined && imgData != null){
             const taxonImage=included.find(x=>x.type==="taxon_image" && x.id===imgData.id)
             if (taxonImage !== undefined && taxonImage != null) {
-              src = "http://spree.burux.com" + taxonImage.attributes.original_url;
+              src = "http://shopback.bpilot.ir" + taxonImage.attributes.original_url;
             }
           }
 
@@ -483,10 +483,10 @@ export default function services(getState) {
         try { discountPrice = b1_item.priceAfterVat } catch { discountPrice = 0 }
         try { inStock = b1_item.totalQty } catch { inStock = 0 }
         let optionValues = this.getVariantOptionValues(relationships.option_values.data,optionTypes)
-        let discountPercent = price && discountPrice?Math.round((price - discountPrice) * 100 / price):0;
+        let discountPercent = price && discountPrice ? Math.round((price - discountPrice) * 100 / price) : 0;
         return {
           id,optionValues,discountPrice,price,inStock,srcs,
-          code:b1_item?b1_item.itemCode:'',
+          code:b1_item ? b1_item.itemCode:'',
           discountPercent,
           isDefault:defaultVariantId === id
         }
@@ -548,7 +548,7 @@ export default function services(getState) {
             id = id.toString();
             let {attributes} = include_srcs[id];
             let {original_url} = attributes;
-            srcs.push("http://spree.burux.com" + original_url)
+            srcs.push("http://shopback.bpilot.ir" + original_url)
           }
           let variants = [];
           let defaultVariant;
@@ -642,7 +642,7 @@ export default function services(getState) {
           if(imgData !== undefined && imgData != null){
             const taxonImage=included.find(x=>x.type==="taxon_image" && x.id===imgData.id)
             if (taxonImage !== undefined && taxonImage != null) {
-              src = "http://spree.burux.com" + taxonImage.attributes.original_url;
+              src = "http://shopback.bpilot.ir" + taxonImage.attributes.original_url;
             }
           }
 
@@ -666,7 +666,7 @@ export default function services(getState) {
           Include: "variants,option_types,product_properties,taxons,images,default_variant"
         }
       );
-      console.log('ahmadi',res.data.data)
+
       const included = res.data.data.included;
       
       let skusId =[];
@@ -681,17 +681,17 @@ export default function services(getState) {
         }
       }
 
-      let b1Res = await Axios.post(`${baseUrl}/BOne/GetItemsByItemCode`,
+      let b1Res = await Axios.post(`${baseUrl}/BOne/GetB1PriceList`,
       {
         "CardCode": "c50000",
         "ItemCode":skusId // should be an array
       });
-
+      
       const spreeData=res.data.data;
       const b1Data=b1Res.data.data;
       return  this.getMappedAllProducts({spreeResult:spreeData,b1Result:b1Data});
-      },
-      async getProductsWithCalcolation({baseUrl},skusId){ 
+    },
+      async getProductsWithCalculation({baseUrl},skusId){ 
         let res = await Axios.post(`${baseUrl}/BOne/GetItemsByItemCode`,
         {
           "CardCode": "c50000",
@@ -701,8 +701,8 @@ export default function services(getState) {
       
       const included = res.data.data.included;
       
-        console.log(res.data)
-        return res;
+      console.log(res.data)
+      return res;
       }
     }
   }

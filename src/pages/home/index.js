@@ -6,12 +6,15 @@ import appContext from '../../app-context';
 import AIOButton from './../../components/aio-button/aio-button';
 import functions from '../../functions';
 import ContentSlider from '../../components/content-slider';
+import HomeSlide1 from './../../images/home-slide-1.png';
+import HomeSlide2 from './../../images/home-slide-2.png';
 import bulb10w from './../../images/10w-bulb.png';
 import bazargahPng from './../../images/bazargah.png';
 import GarantiCard from '../../components/garanti-card/garanti-card';
 import './index.css';
 import Awards from './../awards/index';
 import Header from '../../components/header/header';
+import ReactHtmlSlider from './../../components/react-html-slider/react-html-slider';
 
 export default class Home extends Component {
     static contextType = appContext;
@@ -23,18 +26,8 @@ export default class Home extends Component {
             searchValue: '',
             preOrders: { waitOfVisitor: 0, waitOfPey: 0 },
             sliderItems: [
-                {
-                    icon: getSvg(27),
-                    background: '#662D91',
-                    color: '#fff',
-                    title: 'باز طراحی اپ الکتریکی',
-                    subtitle: 'طراحی راحت تر وجدید با کلی قابلیت جدید!'
-                },
-                {
-                    icon: <img src={bulb10w} alt='' height='100%'/>,
-                    title: 'طرح فروش ویژه 10 وات',
-                    background: "#FDB913",color: "#173796"
-                }
+                <img src={HomeSlide1} width='100%'/>,
+                <img src={HomeSlide2} width='100%'/>
             ],
             wallet: 0,
             myNearItems: [
@@ -96,7 +89,7 @@ export default class Home extends Component {
     }
     billboard_layout(){
         let {sliderItems} = this.state;
-        return { html: <ContentSlider items={sliderItems} /> }
+        return { html: <ReactHtmlSlider items={sliderItems} /> }
     }
     cartAndWallet_layout(){
         let {wallet} = this.state,{cart} = this.context;

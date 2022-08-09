@@ -17,7 +17,9 @@
     "r-range-slider": "^4.1.1",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
+    "react-html-slider": "^2.1.1",
     "react-scripts": "5.0.0",
+    "react-slider-dots": "^2.0.0",
     "react-virtual-dom": "^2.2.1",
     "web-vitals": "^2.1.4"
   },

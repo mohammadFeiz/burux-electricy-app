@@ -24,7 +24,7 @@ export default class Header extends Component{
                     className:'box-shadow bgFFF theme-1-light-bg',
                     row:[
                         {show:buttons.sidemenu === true,size: 60,html: getSvg(22),attrs: { onClick: () => SetState({ sidemenuOpen: true }) },align:'vh'},
-                        {show:!!onClose,size:60,html:getSvg("chevronLeft", { flip: true }),align:'vh'},
+                        {show:!!onClose,size:60,html:getSvg("chevronLeft", { flip: true }),align:'vh',attrs:{onClick:onClose}},
                         {show:buttons.logo === true,html:getSvg(23, { d: buruxlogod }),align:'vh',attrs:{onClick:()=>onClose()}},
                         {html: title,className: "size16 color605E5C",align:'v',show:!!title},
                         {flex:1},

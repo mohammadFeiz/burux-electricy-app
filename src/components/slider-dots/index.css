@@ -1,12 +1,13 @@
 .slider-dots{
     height:24px;
-}
-.slider-dots .r-layout-gap{
-    background:none !important;
+    width:100%;
+    display:flex;
+    align-items: center;
 }
 .slider-dots-item{
     width:5px;
     height:5px;
+    margin:0 2px;
     border-radius:100%;
     background:#ddd;
 }

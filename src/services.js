@@ -363,9 +363,7 @@ export default function services(getState) {
       async getCampaigns({baseUrl}) {
         let res = await Axios.get(`${baseUrl}/Spree/GetAllCampaigns`);
         let result = res.data.data.data;
-        return result.map((o) => {
-          return {name: o.attributes.name,id: o.id,background: "#FDB913",color: "#173796",src:bulb10w};
-        });
+        return result.map((o) => {return {name: o.attributes.name,id: o.id}});
       },
       async campaignsProducts({baseUrl,parameter}){
         let {campaigns} = parameter;
@@ -377,6 +375,12 @@ export default function services(getState) {
           result[campaign.id] = res; 
         }
         return result;
+      },
+      async getCampaignProducts({baseUrl,parameter}){
+        let {campaign} = parameter;
+        let {id} = campaign;
+        let res = await this.getTaxonProducts({baseUrl,parameter:{Taxons:id}})
+        return res.map((o)=>{return {...o,campaign}})
       },
       async lastOrders({baseUrl}) {
         return await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10180'}})
@@ -478,12 +482,12 @@ export default function services(getState) {
         let {id,attributes,relationships} = include_variant;
         let srcs = relationships.images.data.map(({id})=>include_srcs[id.toString()].attributes.original_url)
         const b1_item = b1Result.find((i) => i.itemCode === attributes.sku);
-        let price,discountPrice,inStock;
-        try { price = b1_item.price } catch { price = 0 }
-        try { discountPrice = b1_item.priceAfterVat } catch { discountPrice = 0 }
-        try { inStock = b1_item.totalQty } catch { inStock = 0 }
+        let price,discountPrice,discountPercent,inStock;
+        try { price = b1_item.finalPrice } catch { price = 0 }
+        try { discountPercent = b1_item.pymntDscnt } catch { discountPrice = 0 }
+        try { inStock = b1_item.onHand.qty } catch { inStock = 0 }
+        try { discountPrice = Math.round(b1_item.price * discountPercent / 100) } catch { discountPrice = 0 }
         let optionValues = this.getVariantOptionValues(relationships.option_values.data,optionTypes)
-        let discountPercent = price && discountPrice ? Math.round((price - discountPrice) * 100 / price) : 0;
         return {
           id,optionValues,discountPrice,price,inStock,srcs,
           code:b1_item ? b1_item.itemCode:'',

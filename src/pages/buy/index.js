@@ -9,6 +9,7 @@ import SearchBox from "../../components/search-box/index";
 import Header from "../../components/header/header";
 import FamilyCard from './../../components/family-card/family-card';
 import "./index.css";
+import Billboard from "../../components/billboard/billboard";
 
 export default class Buy extends Component {
   static contextType = appContext;
@@ -18,7 +19,6 @@ export default class Buy extends Component {
     this.state = {
       searchValue: "",
       view, //main,category,product
-      campaigns: [],
       tabs: [
         { title: "نمایشگاه", id: "1", flex: 1 },
         { title: "دسته بندی کالاها", id: "2", flex: 1 },
@@ -47,13 +47,6 @@ export default class Buy extends Component {
     }
     
   }
-  async getCampaignsData() {
-    let {services} = this.context;
-    let campaigns = await services({type:"getCampaigns",cache:120});
-    this.setState({ campaigns});
-    let campaignsProducts = await services({type:"campaignsProducts",parameter:{campaigns},cache:120});
-    this.setState({campaignsProducts})
-  }
   async getCategories() {
     let {services} = this.context;
     let categories = await services({type:"getCategories",cache:500});
@@ -81,7 +74,6 @@ export default class Buy extends Component {
   }
   //dont set async for parallel data fetching
   componentDidMount() {
-    this.getCampaignsData();
     this.get_lastOrders(10);
     this.getFamilies();
     this.get_recommendeds(10);
@@ -103,7 +95,7 @@ export default class Buy extends Component {
     return {
       flex: 1,scroll: "v",className:'buy-tab-1',gap: 12,
       column: [
-        this.campaign(),
+        this.billboard_layout(),
         //this.families(),
         this.sliders()
       ]
@@ -116,7 +108,7 @@ export default class Buy extends Component {
       flex: 1,className:'box gap-no-color padding-12',scroll:'v',gap: 24,childsProps:{flex:1},
       column:categories.map((o)=>{
         return {
-          attrs:{onClick:()=>SetState({categoryZIndex:10,category:{type:'category',products:o.products,name:o.name}})},
+          attrs:{onClick:()=>SetState({categoryZIndex:10,category:{products:o.products,name:o.name}})},
           column:[
             {size:200,html:<img src={o.src} alt='' height='100%'/>,align:'vh'},
             {size:36,align:'vh',html:o.name,className:'color323130 size16 bold'}
@@ -125,30 +117,8 @@ export default class Buy extends Component {
       })
     };
   }
-  campaign(){
-    let {SetState} = this.context;
-    let {campaigns,campaignsProducts} = this.state;
-    return {
-      html:()=>(
-        <ContentSlider 
-          items={
-            campaigns.map((campaign)=>{
-              let {color,background,name,src} = campaign;
-              return {
-                title:name,color,background,icon:<img src={src} alt='' height='100%'/>,
-                button:{
-                  text:'خرید',
-                  onClick:async ()=>{
-                    if(!campaignsProducts || !campaignsProducts[campaign.id] || !campaignsProducts[campaign.id].length){return}
-                    let products = campaignsProducts[campaign.id];
-                    SetState({categoryZIndex:10,category:{type:'campaign',products,name:campaign.name,campaign}})
-                  }}
-              }
-            })
-          }
-        />
-      )
-    }
+  billboard_layout(){
+    return {html:<Billboard/>}
   }
   families(){
     let {families} = this.state,{layout} = this.context;
@@ -178,7 +148,7 @@ export default class Buy extends Component {
             <CategorySlider 
               title={name} products={this.state[key]} 
               showAll={()=>{
-                SetState({categoryZIndex:10,category:{type:'category',products,name}})
+                SetState({categoryZIndex:10,category:{products,name}})
               }}
               onClick={(product)=>SetState({product,productZIndex:10})}
             />

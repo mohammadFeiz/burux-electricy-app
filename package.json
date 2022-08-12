@@ -14,6 +14,7 @@
     "axios": "^0.26.1",
     "jquery": "^3.6.0",
     "keycloak-js": "^18.0.0",
+    "r-gauger": "^3.1.0",
     "r-range-slider": "^4.1.1",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",

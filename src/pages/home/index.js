@@ -3,18 +3,16 @@ import RVD from 'react-virtual-dom';
 import getSvg from './../../utils/getSvg';
 import SliderDots from '../../components/slider-dots';
 import appContext from '../../app-context';
-import AIOButton from './../../components/aio-button/aio-button';
 import functions from '../../functions';
-import ContentSlider from '../../components/content-slider';
-import HomeSlide1 from './../../images/home-slide-1.png';
-import HomeSlide2 from './../../images/home-slide-2.png';
-import bulb10w from './../../images/10w-bulb.png';
-import bazargahPng from './../../images/bazargah.png';
-import GarantiCard from '../../components/garanti-card/garanti-card';
+import GarantiCard from '../../components/garanti/garanti-card/garanti-card';
+import BazargahCard from './../../components/bazargah-card/bazargah-card';
+import AIOButton from './../../components/aio-button/aio-button';
 import './index.css';
 import Awards from './../awards/index';
 import Header from '../../components/header/header';
 import ReactHtmlSlider from './../../components/react-html-slider/react-html-slider';
+import SabteGarantiJadid from '../../components/garanti/sabte-garanti-jadid/sabte-garanti-jadid';
+import Billboard from '../../components/billboard/billboard';
 
 export default class Home extends Component {
     static contextType = appContext;
@@ -25,10 +23,6 @@ export default class Home extends Component {
             showAwards:false,
             searchValue: '',
             preOrders: { waitOfVisitor: 0, waitOfPey: 0 },
-            sliderItems: [
-                <img src={HomeSlide1} width='100%'/>,
-                <img src={HomeSlide2} width='100%'/>
-            ],
             wallet: 0,
             myNearItems: [
                 { price: 600000, distance: 1.2 },
@@ -88,8 +82,7 @@ export default class Home extends Component {
         }
     }
     billboard_layout(){
-        let {sliderItems} = this.state;
-        return { html: <ReactHtmlSlider items={sliderItems} /> }
+        return { html: <Billboard /> }
     }
     cartAndWallet_layout(){
         let {wallet} = this.state,{cart} = this.context;
@@ -97,24 +90,70 @@ export default class Home extends Component {
             style:{overflow:'visible'},
             className:'padding-0-12',
             row: [
-                this.box_layout(28,'سبد خرید',Object.keys(cart).length,'#2d3e91'),
+                this.cartAndWalletCard_layout(getSvg(28,{width:30,height:30}),'کیف پول',functions.splitPrice(wallet),'ریال'),
                 {size:12},
-                this.box_layout(29,'کیف پول',functions.splitPrice(wallet) + ' ریال','#61912d')
+                this.cartAndWalletCard_layout(getSvg(29,{width:30,height:30}),'سبد خرید',Object.keys(cart).length,'کالا')
             ]
         }
     }
+    cartAndWalletCard_layout(icon,title,value,unit){
+        return {
+            flex:1,className:'box',
+            column:[
+                {size:12},
+                {html:icon,align:'vh',size:40},
+                {html:title,className:'color605E5C size14 bold',align:'h'},
+                {
+                    align:'h',
+                    row:[
+                        {html:value,className:'color323130 size16 bold',align:'vh'},
+                        {size:4},
+                        {html:unit,className:'colorA19F9D size12',align:'vh'}
+                    ]
+                },
+                {size:12}
+            ]
+        }
+    }
+    orderCard_layout(icon,title,count,onClick){
+        return {
+            flex:1,className:'box',
+            attrs:{onClick},
+            row:[
+                {size:60,html:icon,align:'vh'},
+                {
+                    flex:1,
+                    column:[
+                        {flex:1},
+                        {html:title,className:'color605E5C size14 bold'},
+                        {
+                            row:[
+                                {html:count,className:'color323130 size14 bold'},
+                                {size:4},
+                                {html:'سفارش',className:'colorA19F9D size12'}
+                            ]
+                        },
+                        {flex:1}
+                    ]
+                },
+            ]
+        }
+    }
+    
     preOrders_layout(){
+        let {SetState} = this.context;
         let {preOrders} = this.state;
         return {
             className:'padding-0-12',
             column:[
                 {html: "پیش سفارشات",className: "size14 color323130 bold padding-0-12",size: 48,align: "v"},
                 {
+                    size:72,
                     style:{overflow:'visible'},
                     row: [
-                        this.box_layout('paperRocket','در انتظار تایید ویزیتور',preOrders.waitOfVisitor,'#2d3e91'),
+                        this.orderCard_layout(getSvg('paperRocket'),'در حال بررسی',preOrders.waitOfVisitor,()=>SetState({ordersHistoryZIndex:10})),
                         {size:12},
-                        this.box_layout(undefined,'در انتظار پرداخت',preOrders.waitOfPey,'#61912d')
+                        this.orderCard_layout(getSvg('pending'),'در انتظار پرداخت',preOrders.waitOfPey,()=>SetState({ordersHistoryZIndex:10}))
                     ]
                 },
             ]
@@ -131,16 +170,18 @@ export default class Home extends Component {
                         {html: "گارانتی",className: "size16 color323130 bold",align: "v"},
                         {flex:1},
                         {
-                            gap:6,
-                            attrs:{
-                                onClick:()=>{
-                                    SetState({guaranteePopupZIndex:10})
-                                }
-                            },
-                            row:[
-                                {align:'vh',html:getSvg('plusBox')},
-                                {html:'ثبت گارانتی جدید',className:'color0094D4 size12 bold',align:'v'}
-                            ]
+                            html:(
+                                <AIOButton
+                                    text='ثبت گارانتی جدید'
+                                    caret={false}
+                                    className='color0094D4 size12 bold'
+                                    before={getSvg('plusBox')}
+                                    type='button'
+                                    style={{background:'none'}}
+                                    position='bottom'
+                                    popOver={()=><SabteGarantiJadid close={false}/>}
+                                />
+                            )
                         }
                     ]
                 },
@@ -181,6 +222,65 @@ export default class Home extends Component {
             ]
         }
     }
+    bazargah_layout(){
+        let {bazargahItems = []} = this.context;
+        return {
+            column:[
+                {
+                    size:48,className:'padding-0-12',
+                    row:[
+                        {flex:1,html: "بازارگاه",className: "size14 color323130 bold padding-0-12",size: 48,align: "v"},
+                        {html:'مشاهده همه',align:'v',className:'color0094D4 size12 bold'}
+                    ]
+                },
+                {
+                    html:(
+                        <ReactHtmlSlider
+                            autoSlide={5000} arrow={false}
+                            items={bazargahItems.map((o)=><BazargahCard {...o} items={false}/>)}
+                        />
+                    )
+                }
+            ]
+        }
+    }
+    hint_layout(){
+        return {
+            className:'padding-0-12',
+            row:[
+                {flex:1},
+                {
+                    size:48,
+                    html:(
+                        <AIOButton 
+                            text={getSvg('hint')}
+                            style={{padding:0,background:'none'}}
+                            type='button'
+                            position='bottom'
+                            popOver={()=>{
+                                return (
+                                    <RVD
+                                        layout={{
+                                            className:'padding-0-12',
+                                            column:[
+                                                {size:60,html:'راهنما',className:'size18 bold',align:'vh'},
+                                                {size:48,html:'درحال بررسی',className:'color323130 size16 bold',align:'v'},
+                                                {html:'سفارش هایی هستند که شما ثبت کرده اید و ویزیتور شما درحال بررسی کالاهای سفارش شما هست.',className:'color605E5C size14'},
+                                                {size:12},
+                                                {size:48,html:'در انتظار تایید',className:'color323130 size16 bold',align:'v'},
+                                                {html:'سفارش هایی هستند که بعد از بررسی ویزیتور برای تایید و پرداخت به سمت شما برگشته است. سفارش هایی که ویزیتور مستقیما برای شما ثبت میکند نیز در این قسمت نمایش داده میشود',className:'color605E5C size14'},
+                                                {size:24}
+                                            ]
+                                        }}
+                                    />
+                                )
+                            }}
+                        />
+                    )
+                }
+            ]
+        }
+    }
     getContent() {
         let { gems, myNearItems} = this.state;
         let {SetState,testedChance,changeTheme,buruxlogod} = this.context;
@@ -195,35 +295,15 @@ export default class Home extends Component {
                     flex:1,scroll:'v',
                     column: [
                         this.billboard_layout(),
-                        { size: 12 },
                         this.cartAndWallet_layout(),
                         { size: 12 },
                         this.preOrders_layout(),
                         { size: 12 },
-                        // {style:{overflow:'visible'},html: <MyNear items={myNearItems} />},
-                        // {size:16},
+                        this.bazargah_layout(),
                         this.garanti_layout(),
                         { size: 12 },
-                        {
-                            size:100,
-                            style:{background:'#EDEBE9'},
-                            className:'box margin-0-12',
-                            row:[
-                                {size:80,html:getSvg('bazargahCommingSoon'),align:'vh'},
-                                {
-                                    flex:1,
-                                    column:[
-                                        {flex:1},
-                                        {html:'به زودی',className:'colorA19F9D size14'},
-                                        {size:6},
-                                        {html:'بازارگاه',className:'color605E5C size20 bold'},
-                                        {flex:1},
-                                    ]
-                                }
-                            ]
-                        },
+                        this.hint_layout(),
                         { size: 12 },
-                        
                         //this.score_layout(),
                         // { 
                         //     size: 72, 
@@ -275,7 +355,6 @@ export default class Home extends Component {
         )
     }
 }
-
 
 class MyNear extends Component {
     static contextType = appContext;

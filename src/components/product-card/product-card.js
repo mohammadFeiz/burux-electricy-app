@@ -51,7 +51,7 @@ export default class ProductCard extends Component{
     name_layout(){
         let {product} = this.props;
         let {name} = product;
-        return {html:name,className:'size14 padding-12 color575756 bold theme-1-colorDDD',style:{whiteSpace:'normal'}}
+        return {html:name,className:'size14 color575756 bold theme-1-colorDDD',style:{whiteSpace:'normal'}}
     }
     discount_layout(){
         let {product} = this.props;
@@ -98,7 +98,7 @@ export default class ProductCard extends Component{
         return (
             <RVD
                 layout={{
-                    className:'box gap-no-color',
+                    className:'box gap-no-color margin-0-12',
                     attrs:{onClick:()=>SetState({productZIndex:zIndex * 10,product})},
                     style:{
                         padding:6,height:120,
@@ -114,15 +114,17 @@ export default class ProductCard extends Component{
                             column:[this.image_layout(),this.count_layout()]
                         },
                         {
-                            flex:1,gap:6,
+                            flex:1,
                             column:[
+                                {flex:1},
                                 this.title_layout(),
                                 this.name_layout(),
+                                {flex:1},
                                 this.discount_layout(),
                                 this.details_layout(),
-                                {flex:1},
                                 this.notExist_layout(),
-                                {row:[this.isInCart_layout(),this.price_layout()]}
+                                {row:[this.isInCart_layout(),this.price_layout()]},
+                                {flex:1}
                             ]
                         }
                     ]

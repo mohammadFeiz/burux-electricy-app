@@ -13,33 +13,19 @@ export default class CategoryView extends Component {
     }
     render() {
         let {categoryZIndex:zIndex,SetState,category} = this.context;
-        let { name, type, products, campaign} = category;
+        let { name,products,src} = category;
         let {searchValue} = this.state;
         return (
             <RVD
                 layout={{
                     className:'fixed main-bg',style:{zIndex,overflow:'hidden'},
                     column: [
-                        {
-                            html:(
-                                <Header 
-                                    zIndex={zIndex} 
-                                    title={type === 'campaign'?campaign.name:name} 
-                                    onClose={()=>SetState({categoryZIndex:0,category:false})}
-                                    buttons={{cart:true}}
-                                />
-                            )
-                        },
+                        {html:(<Header zIndex={zIndex} title={name} buttons={{cart:true}} onClose={()=>SetState({categoryZIndex:0,category:false})}/>)},
                         {html:<SearchBox value={searchValue} onChange={(searchValue)=>this.setState({searchValue})}/>},
-                        { show: type === 'category', size: 36, html: name, align: "vh", className: "color605E5C size14 bold" },
-                        {size: 36, align: 'v', show: type === 'campaign', html: 'کالاهای جشنواره', className: 'size16 color323130 bold padding-0-12'},
                         {
                             flex:1,scroll: "v",
                             column:[
-                                {
-                                    show: type === 'campaign',
-                                    html: () => <ContentSlider items={[{ title: campaign.name, color: campaign.color, background: campaign.background, icon: <img src={campaign.src} alt='' height='100%' />, }]} />
-                                },
+                                {show: !!src,style:{marginBottom:12},html: () => <img src={src} alt='' width='100%' />},
                                 {
                                     gap: 12,
                                     column: products.map((product, i) => {

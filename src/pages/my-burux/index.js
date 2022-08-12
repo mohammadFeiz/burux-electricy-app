@@ -4,7 +4,9 @@ import myBuruxHeaderSrc from './../../utils/burux-header.jpg';
 import getSvg from './../../utils/getSvg';
 import appContext from '../../app-context';
 import functions from '../../functions';
+import AIOButton from './../../components/aio-button/aio-button';
 import './index.css';
+import SabteGarantiJadid from '../../components/garanti/sabte-garanti-jadid/sabte-garanti-jadid';
 export default class MyBurux extends Component{
     static contextType = appContext;
     constructor(props){
@@ -111,9 +113,18 @@ export default class MyBurux extends Component{
                         }),
                         {size:12},
                         this.getPanel({
-                            text1:'کالا های گارانتی شده',text2:guaranteeItems.length + ' عدد',text3:'درخواست گارانتی جدید',
+                            text1:'کالا های گارانتی شده',text2:guaranteeItems.length + ' عدد',
+                            text3:(
+                                <AIOButton 
+                                    type='button'
+                                    caret={false}
+                                    style={{background:'none',color:'inherit',fontWeight:'inherit',fontSize:'inherit'}}
+                                    position='bottom'
+                                    text='درخواست گارانتی جدید'
+                                    popOver={()=><SabteGarantiJadid close={false}/>}
+                                />
+                            ),
                             className:'box',
-                            onClick:()=>SetState({guaranteePopupZIndex:10})
                         })
                     ]
                 },

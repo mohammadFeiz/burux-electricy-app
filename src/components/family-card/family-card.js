@@ -25,7 +25,6 @@ export default class FamilyCard extends Component{
                             categoryZIndex:zIndex * 10,
                             category:{
                                 name:'خانواده ی ' + title,
-                                type:'category',
                                 products:await services({type:'familyProducts',parameter:{id},cache:12 * 60,cacheName:`products-of-family-with-id-${id}`}) 
                             }
                         })

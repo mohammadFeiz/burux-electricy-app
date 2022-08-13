@@ -7,6 +7,7 @@ export default class GarantiCard extends Component{
         if(color === 'یخی'){return '#edf0d8'}
     }
     getStatus(){
+        return false
         let {StatusCode,StatusText} = this.props;
         let types = {'0':{text:'در حال بررسی',color:'#662D91'},'1':{text:'اعلام به ویزیتور',color:'#005478'}}
         let color = types[StatusCode.toString()].color;

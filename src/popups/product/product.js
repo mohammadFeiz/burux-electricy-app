@@ -5,6 +5,7 @@ import Header from './../../components/header/header';
 import RVD from 'react-virtual-dom';
 import appContext from './../../app-context';
 import getSvg from './../../utils/getSvg';
+import functions from '../../functions';
 export default class Product extends Component {
     static contextType = appContext;
     componentDidMount(){
@@ -178,7 +179,15 @@ export default class Product extends Component {
                                     className: "padding-0-12", scroll: 'h', gap: 12,
                                     row: Object.keys(items).map((o) => {
                                         let itemId = o.toString();
-                                        let active = optionValues[id].toString() === itemId, style;
+                                        let active = false,style;
+                                        if(optionValues[id] === undefined){
+                                            console.error(`
+in product by id = ${this.context.product.id} there is an optionType by id = ${id}. but in optionValues we can find this id. optionValues is ${JSON.stringify(optionValues)}
+                                            `)
+                                        }
+                                        else{
+                                            active = optionValues[id].toString() === itemId;
+                                        }
                                         let className = 'size14 padding-3-12 product-option-value';
                                         if (active) { className += ' active'; }
                                         return { html: items[itemId], align: "vh", className, style, attrs: { onClick: () => this.changeOptionType({ [id]: itemId }), } };
@@ -264,7 +273,7 @@ export default class Product extends Component {
                 {
                     row: [
                         { flex: 1 },
-                        { html: selectedVariant.price, className: "color323130 bold" },
+                        { html: functions.splitPrice(selectedVariant.price), className: "color323130 bold" },
                         { size: 6 },
                         { html: "ریال", className: "color323130 bold" },
                     ],

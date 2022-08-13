@@ -77,7 +77,6 @@ export default class MyBurux extends Component{
                     row:[
                         {flex:1},
                         {className:'color323130 size20 bold',html:userInfo.cardName,align:'vh'},
-                        {size:36,html:getSvg(12),align:'vh'},
                         {flex:1}
                     ]
                 },

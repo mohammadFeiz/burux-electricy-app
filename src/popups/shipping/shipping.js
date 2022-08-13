@@ -1,5 +1,7 @@
 import React,{Component} from 'react';
 import RVD from 'react-virtual-dom';
+import Header from '../../components/header/header';
+import functions from '../../functions';
 import appContext from './../../app-context';
 export default class Shipping extends Component{
     static contextType = appContext;
@@ -17,179 +19,167 @@ export default class Shipping extends Component{
         paymentMethod:'0'
       }
     }
+    details_layout(){
+      let {name,code,campaign,basePrice,discountPercent} = this.state;
+      return {
+        className:'box padding-12',
+        column:[
+          {
+            size:36,childsProps:{align:'v'},
+            row:[
+              {html:'نام مشتری:',className:'colorA19F9D size14'},
+              {html:name,className:'size14'}
+            ]
+          },
+          {
+            size:36,childsProps:{align:'v'},
+            row:[
+              {html:'کد مشتری:',className:'colorA19F9D size14'},
+              {html:code,className:'size14'},
+              {flex:1},
+              {html:'درصد تخفیف:',className:'colorA19F9D size14'},
+              {html:discountPercent,className:'size14'},
+            ]
+          },
+          {
+            size:36,childsProps:{align:'v'},
+            row:[
+              {html:'نام کمپین:',className:'colorA19F9D size14'},
+              {html:campaign,className:'size14'},
+              {flex:1},
+              {html:'قیمت پایه:',className:'colorA19F9D size14'},
+              {html:basePrice,className:'size14'},
+            ]
+          }
+        ]
+      }
+    }
+    address_layout(){
+      let {address} = this.state;
+      return {
+        className:'box padding-12',
+        column:[
+          {size:36,align:'v',className:'color605E5C size14 bold',html:'آدرس تحویل'},
+          {
+            className:'size14 color575756 bgF1F1F1 padding-12 round-6',html:address
+          }
+        ]
+      }
+    }
+    phone_layout(){
+      let {phone} = this.state;
+      return {
+        className:'box padding-12',
+        column:[
+          {size:36,align:'v',className:'color605E5C size14 bold',html:'شماره تلفن'},
+          {
+            className:'size14 color575756 bgF1F1F1 padding-12 round-6',html:phone
+          }
+        ]
+      }
+    }
+    products_layout(){
+      let {shipping} = this.context;
+      let {cards} = shipping;
+      return {
+        className:'box padding-12',
+        column:[
+          {size:36,align:'v',className:'color605E5C size14 bold',html:'محصولات'},
+          {column:cards.map((card)=>{return {html:card}})}
+        ]
+      }
+    }
+    amount_layout(){
+      let {shipping} = this.context;
+      let {total,totalDiscount} = shipping;
+      return {
+        className:'box padding-12',
+        column:[
+          {
+            size:36,childsProps:{align:'v'},
+            row:[
+              {html:'قیمت کالاها:',className:'color605E5C size14'},
+              {flex:1},
+              {html:functions.splitPrice(total + totalDiscount) + ' ریال',className:'color605E5C size14'}
+            ]
+          },
+          {
+            size:36,childsProps:{align:'v'},
+            row:[
+              {html:'تخفیف:',className:'colorFDB913 size14'},
+              {flex:1},
+              {html:functions.splitPrice(totalDiscount) + ' ریال',className:'colorFDB913 size14'}
+            ]
+          },
+          {
+            size:36,childsProps:{align:'v'},
+            row:[
+              {html:'تخفیف پرداخت آنلاین:',className:'color00B5A5 size14'},
+              {flex:1},
+              {html:0 + ' ریال',className:'color00B5A5 size14'}
+            ]
+          },
+          {
+            size:36,childsProps:{align:'v'},
+            row:[
+              {html:'مبلغ قابل پرداخت:',className:'color323130 bold size16'},
+              {flex:1},
+              {html:functions.splitPrice(total) + ' ریال',className:'color323130 bold size16'}
+            ]
+          },
+        ]
+      }
+    }
+    header_layout(){
+      let {SetState} = this.context;
+      return {html:<Header title='ادامه فرایند خرید' onClose={()=>SetState({shippingZIndex:0})}/>}
+    }
     render(){
       let {phone,address,shippingMethod,name,code,campaign,basePrice,discountPercent,paymentMethod} = this.state;
-      let {shipping} = this.context;
+      let {shipping,shippingZIndex} = this.context;
       let {cartItems,cards} = shipping;
       return (
         <RVD
           layout={{
             className:'bgFFF fixed',
+            style:{zIndex:shippingZIndex},
             flex:1,scroll:'v',
             column:[
+              this.header_layout(),
               {
-                className:'box padding-12',
-                column:[
+                flex:1, scroll:'v',column:[
+                  this.details_layout(),
+                  {size:12},
+                  this.address_layout(),
+                  {size:12},
+                  this.phone_layout(),
+                  {size:12},
+                  // {
+                  //   className:'box padding-12',
+                  //   column:[
+                  //     {size:36,align:'v',className:'color605E5C size14 bold',html:'یادداشت'},
+                  //     {
+                  //       className:'size14 color575756 bgF1F1F1 padding-12 round-6',html:''
+                  //     }
+                  //   ]
+                  // },
+                  // {size:12},
+                  this.products_layout(),
+                  {size:12},
+                  this.amount_layout(),
+                  {size:12},
                   {
-                    size:36,childsProps:{align:'v'},
-                    row:[
-                      {html:'نام مشتری:',className:'colorA19F9D size14'},
-                      {html:name,className:'size14'}
-                    ]
-                  },
-                  {
-                    size:36,childsProps:{align:'v'},
-                    row:[
-                      {html:'کد مشتری:',className:'colorA19F9D size14'},
-                      {html:code,className:'size14'},
-                      {flex:1},
-                      {html:'درصد تخفیف:',className:'colorA19F9D size14'},
-                      {html:discountPercent,className:'size14'},
-                    ]
-                  },
-                  {
-                    size:36,childsProps:{align:'v'},
-                    row:[
-                      {html:'نام کمپین:',className:'colorA19F9D size14'},
-                      {html:campaign,className:'size14'},
-                      {flex:1},
-                      {html:'قیمت پایه:',className:'colorA19F9D size14'},
-                      {html:basePrice,className:'size14'},
-                    ]
-                  }
-                ]
-              },
-              {size:12},
-              {
-                className:'box padding-12',
-                column:[
-                  {size:36,align:'v',className:'color605E5C size14 bold',html:'آدرس تحویل'},
-                  {
-                    className:'size14 color575756 bgF1F1F1 padding-12 round-6',html:address
-                  }
-                ]
-              },
-              {size:12},
-              {
-                className:'box padding-12',
-                column:[
-                  {size:36,align:'v',className:'color605E5C size14 bold',html:'شماره تلفن'},
-                  {
-                    className:'size14 color575756 bgF1F1F1 padding-12 round-6',html:phone
-                  }
-                ]
-              },
-              //{size:12},
-              // {
-              //   className:'box padding-12',
-              //   column:[
-              //     {size:36,align:'v',className:'color605E5C size14 bold',html:'نحوه ارسال'},
-              //     {
-              //       html:(
-              //         <AIOButton
-              //           type='radio'
-              //           value={shippingMethod}
-              //           options={[
-              //             {value:'0',text:'ماشین توزیع شرکت بروکس (پیشنهادی)'},
-              //             {value:'1',text:'ماشین باربری'},
-              //           ]}
-              //           onChange={(shippingMethod)=>this.setState({shippingMethod})}
-              //           optionStyle={{width:'100%'}}
-  
-              //         />
-              //       )
-              //     }
-              //   ]
-              // },
-              {size:12},
-              {
-                className:'box padding-12',
-                column:[
-                  {size:36,align:'v',className:'color605E5C size14 bold',html:'یادداشت'},
-                  {
-                    className:'size14 color575756 bgF1F1F1 padding-12 round-6',html:''
-                  }
-                ]
-              },
-              {size:12},
-              {
-                className:'box padding-12',
-                column:[
-                  {size:36,align:'v',className:'color605E5C size14 bold',html:'محصولات'},
-                  {column:cards.map((card)=>{return {html:card}})}
-                ]
-              },
-              // {size:12},
-              // {
-              //   className:'box padding-12',
-              //   column:[
-              //     {size:36,align:'v',className:'color605E5C size14 bold',html:'نحوه پرداخت'},
-              //     {
-              //       html:(
-              //         <AIOButton
-              //           type='radio'
-              //           value={paymentMethod}
-              //           options={[
-              //             {value:'0',text:'آنلاین'},
-              //             {value:'1',text:'واریز (کارت به کارت)'},
-              //           ]}
-              //           onChange={(paymentMethod)=>this.setState({paymentMethod})}
-              //           optionStyle={{width:'100%'}}
-  
-              //         />
-              //       )
-              //     }
-              //   ]
-              // },
-              {size:12},
-              {
-                className:'box padding-12',
-                column:[
-                  {
-                    size:36,childsProps:{align:'v'},
-                    row:[
-                      {html:'قیمت کالاها:',className:'color605E5C size14'},
-                      {flex:1},
-                      {html:61000 + ' ریال',className:'color605E5C size14'}
-                    ]
-                  },
-                  {
-                    size:36,childsProps:{align:'v'},
-                    row:[
-                      {html:'تخفیف:',className:'colorFDB913 size14'},
-                      {flex:1},
-                      {html:7000 + ' ریال',className:'colorFDB913 size14'}
-                    ]
-                  },
-                  {
-                    size:36,childsProps:{align:'v'},
-                    row:[
-                      {html:'تخفیف پرداخت آنلاین:',className:'color00B5A5 size14'},
-                      {flex:1},
-                      {html:2000 + ' ریال',className:'color00B5A5 size14'}
-                    ]
-                  },
-                  {
-                    size:36,childsProps:{align:'v'},
-                    row:[
-                      {html:'مبلغ قابل پرداخت:',className:'color323130 bold size16'},
-                      {flex:1},
-                      {html:5344500 + ' ریال',className:'color323130 bold size16'}
+                    className:'box padding-12',
+                    column:[
+                      {size:36,align:'vh',className:'color605E5C size14 bold',html:<button className="button-2" onClick={()=>{
+                        let {services}=this.context;
+                        let res=services({type:"sendToVisitor"})
+                      }}>ارسال برای ویزیتور</button>},
+                      
                     ]
                   },
                 ]
-              },
-              {size:12},
-              {
-                className:'box padding-12',
-                column:[
-                  {size:36,align:'vh',className:'color605E5C size14 bold',html:<button className="button-2" onClick={()=>{
-                    let {services}=this.context;
-                    let res=services({type:"sendToVisitor"})
-                  }}>ارسال برای ویزیتور</button>},
-                  
-                ]
-              },
+              }
             ]
           }}
         />

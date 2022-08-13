@@ -41,7 +41,7 @@ export default class ProductCard extends Component{
     count_layout(){
         let {count,changeCount,max} = this.props;
         if(count === undefined){return false}
-        return {size:24,html:()=><ProductCount value={count} onChange={(count)=>changeCount(count)} max={max}/>}
+        return {size:30,html:()=><ProductCount value={count} onChange={(count)=>changeCount(count)} max={max}/>}
     }
     title_layout(){
         let {product} = this.props;
@@ -101,7 +101,7 @@ export default class ProductCard extends Component{
                     className:'box gap-no-color margin-0-12',
                     attrs:{onClick:()=>SetState({productZIndex:zIndex * 10,product})},
                     style:{
-                        padding:6,height:120,
+                        padding:6,height:130,
                         borderBottomLeftRadius:!isLast?0:undefined,
                         borderBottomRightRadius:!isLast?0:undefined,
                         borderTopLeftRadius:!isFirst?0:undefined,

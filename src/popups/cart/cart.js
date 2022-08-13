@@ -30,11 +30,11 @@ export default class Cart extends Component{
         let variantId = variantIds[i];
         let { product, count, variant } = cart[variantId];
         let { optionTypes,campaign } = product;
-        let { price,optionValues } = variant;
+        let { price,optionValues,discountPrice } = variant;
         let tabId,tabTitle;
         if(campaign){tabId = campaign.id; tabTitle = campaign.name}
         else{tabId = 'regular'; tabTitle = 'خرید عادی'}
-        tabsDictionary[tabId] = tabsDictionary[tabId] || {id:tabId,title:tabTitle,cards:[],total:0,cartItems:[]};
+        tabsDictionary[tabId] = tabsDictionary[tabId] || {id:tabId,title:tabTitle,cards:[],total:0,cartItems:[],totalDiscount:0};
         let details = [];
         for (let j = 0; j < optionTypes.length; j++) {
           let optionType = optionTypes[j];
@@ -51,6 +51,7 @@ export default class Cart extends Component{
         tabsDictionary[tabId].cartItems.push(cart[variantId])
         tabsDictionary[tabId].badge++;
         tabsDictionary[tabId].total += price * count;
+        tabsDictionary[tabId].totalDiscount += discountPrice * count;
       }
       this.tabs = Object.keys(tabsDictionary).map((tabId)=>{
         let {id,title,cartItems} = tabsDictionary[tabId]; 
@@ -86,7 +87,7 @@ export default class Cart extends Component{
     }
     payment_layout(){
       if(!this.tab){return false}
-      let {SetState} = this.context;
+      let {SetState,cartZIndex} = this.context;
       return {
         size: 72,className: "main-bg padding-0-12",
         row: [
@@ -99,9 +100,14 @@ export default class Cart extends Component{
               { flex: 1 },
             ],
           },
-          {html: <button onClick={()=>SetState({shipping:{...this.tab},shippingZIndex:10,cartZIndex:0})} className="button-2">ادامه فرایند خرید</button>,align: "v"},
+          {html: <button onClick={()=>this.continue()} className="button-2">ادامه فرایند خرید</button>,align: "v"},
         ],
       }
+    }
+    continue(){
+      let {SetState,cartZIndex} = this.context;
+      debugger;
+      SetState({shipping:{...this.tab},shippingZIndex:cartZIndex * 10})
     }
     render(){
         let {cartZIndex:zIndex} = this.context;

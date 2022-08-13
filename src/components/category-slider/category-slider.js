@@ -10,7 +10,7 @@ import appContext from '../../app-context';
 export default class CategorySlider extends Component{
     static contextType = appContext;
     render(){
-      let {products = [],title,showAll,onClick = ()=>{}} = this.props;
+      let {products = [],title,showAll} = this.props;
       if(products.length === 0){return null}
       return (
         <RVD

@@ -1,9 +1,7 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import RVD from "react-virtual-dom";
 import appContext from "../../app-context";
-import src1 from "./../../utils/brx66.png";
 import Tabs from "../../components/tabs/tabs";
-import ContentSlider from "../../components/content-slider";
 import CategorySlider from "../../components/category-slider/category-slider";
 import SearchBox from "../../components/search-box/index";
 import Header from "../../components/header/header";

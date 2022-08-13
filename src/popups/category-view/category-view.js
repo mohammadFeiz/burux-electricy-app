@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import RVD from 'react-virtual-dom';
-import ContentSlider from './../../components/content-slider/index';
 import Header from './../../components/header/header';
 import ProductCard from './../../components/product-card/product-card';
 import SearchBox from './../../components/search-box/index';

@@ -1,7 +1,6 @@
-import React, { Component, createRef } from 'react';
+import React, { Component } from 'react';
 import RVD from 'react-virtual-dom';
 import getSvg from './../../utils/getSvg';
-import SliderDots from '../../components/slider-dots';
 import appContext from '../../app-context';
 import functions from '../../functions';
 import GarantiCard from '../../components/garanti/garanti-card/garanti-card';
@@ -282,8 +281,6 @@ export default class Home extends Component {
         }
     }
     getContent() {
-        let { gems, myNearItems} = this.state;
-        let {SetState,testedChance,changeTheme,buruxlogod} = this.context;
         return {
             flex: 1,
             className:'home-page main-bg',style:{width:'100%'},
@@ -355,71 +352,3 @@ export default class Home extends Component {
         )
     }
 }
-
-class MyNear extends Component {
-    static contextType = appContext;
-    constructor(props) {
-        super(props);
-        let { items, index = 0 } = this.props;
-        this.state = { items, index }
-    }
-    changeIndex(dir) {
-        let { index, items } = this.state;
-        index += dir;
-        if (index < 0) { index = items.length - 1 }
-        if (index > items.length - 1) { index = 0 }
-        this.setState({ index })
-    }
-    render() {
-        let { items, index } = this.state;
-        let item = items[index];
-        return (
-            <RVD
-                layout={{
-                    className: 'my-near box',
-                    column: [
-                        {
-                            size: 36, row: [
-                                { size: 36, html: getSvg(30), align: 'vh' },
-                                { html: 'اطراف من',className: 'color605E5C bold size14', align: 'v' },
-                                { flex: 1 },
-                                { html: 'مشاهده همه',className: 'size12 color0094D4', align: 'v' },
-                                { size: 24 }
-
-                            ]
-                        },
-                        {
-                            row: [
-                                { size: 48, html: getSvg('chevronLeft', { flip: true }), align: 'vh', attrs: { onClick: () => this.changeIndex(-1) } },
-                                {
-                                    flex: 1,
-                                    column: [
-                                        { size: 36, html: 'سفارش به مبلغ ' + functions.splitPrice(item.price) + ' تومان', align: 'vh',className: 'color605E5C bold size14' },
-                                        {
-                                            size: 36, childsProps: { align: 'v' },
-                                            row: [
-                                                { flex: 1 },
-                                                { html: 'فاصله از شما:',className: 'color605E5C bold size14' },
-                                                { size: 6 },
-                                                { html: item.distance,className: 'color605E5C bold size14' },
-                                                { size: 6 },
-                                                { html: 'کیلومتر',className: 'size10 colorA19F9D' },
-                                                { flex: 1 }
-                                            ]
-                                        },
-                                        {
-                                            size: 60, html: <button>اخذ</button>, align: 'v'
-                                        }
-                                    ]
-                                },
-                                { size: 48, html: getSvg('chevronLeft'), align: 'vh', attrs: { onClick: () => this.changeIndex(1) } }
-                            ]
-                        },
-                        { html: <SliderDots length={items.length} index={index} /> }
-                    ]
-                }}
-            />
-        )
-    }
-}
-

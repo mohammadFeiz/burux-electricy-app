@@ -616,7 +616,9 @@ export default function services(getState) {
             "documenttotal": 0.0,
             "relatedteam": 1
         }
+        
       });
+      return res.data.isSuccess
       },
       async buy_search({parameter,getState}){
         if(!parameter.value){return []}

@@ -136,8 +136,9 @@ export default class Shipping extends Component{
     }
     render(){
       let {phone,address,shippingMethod,name,code,campaign,basePrice,discountPercent,paymentMethod} = this.state;
-      let {shipping,shippingZIndex} = this.context;
+      let {shipping,shippingZIndex,SetState} = this.context;
       let {cartItems,cards} = shipping;
+      debugger;
       return (
         <RVD
           layout={{
@@ -171,9 +172,22 @@ export default class Shipping extends Component{
                   {
                     className:'box padding-12',
                     column:[
-                      {size:36,align:'vh',className:'color605E5C size14 bold',html:<button className="button-2" onClick={()=>{
-                        let {services}=this.context;
-                        let res=services({type:"sendToVisitor"})
+                      {size:36,align:'vh',className:'color605E5C size14 bold',html:<button className="button-2" onClick={async ()=>{
+                        let {services,cart}=this.context;
+                        let res = await services({type:"sendToVisitor"})
+                        if(res){
+                          debugger;
+                          for(let i = 0; i < cartItems.length; i++){
+                            let {variant} = cartItems[i];
+                            let newCart = {};
+                            for(let prop in cart){
+                              if(prop !== variant.id){
+                                newCart[prop] = cart[prop]
+                              }
+                            }
+                            SetState({cart:newCart,shippingZIndex:0})
+                          }
+                        }
                       }}>ارسال برای ویزیتور</button>},
                       
                     ]

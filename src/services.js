@@ -100,7 +100,6 @@ export default function services(getState) {
         //return {visitorWait,factored,inProcess,inShopTrack,delivered,canceled,rejected};
       },
       async ordersHistory({baseUrl,fixDate}) {
-        debugger;
         let res = await Axios.post(`${baseUrl}/BOne/GetOrders`,{
           "FieldName":"cardcode",  
           "FieldValue":"c50000",
@@ -618,7 +617,8 @@ export default function services(getState) {
         }
         
       });
-      return res.data.isSuccess
+      try{return res.data.data[0].docNum}
+      catch{return false}
       },
       async buy_search({parameter,getState}){
         if(!parameter.value){return []}

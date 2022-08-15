@@ -84,20 +84,21 @@ export default class Home extends Component {
         return { html: <Billboard /> }
     }
     cartAndWallet_layout(){
-        let {wallet} = this.state,{cart} = this.context;
+        let {wallet} = this.state,{cart,SetState} = this.context;
         return {
             style:{overflow:'visible'},
             className:'padding-0-12',
             row: [
                 this.cartAndWalletCard_layout(getSvg(28,{width:30,height:30}),'کیف پول',functions.splitPrice(wallet),'ریال'),
                 {size:12},
-                this.cartAndWalletCard_layout(getSvg(29,{width:30,height:30}),'سبد خرید',Object.keys(cart).length,'کالا')
+                this.cartAndWalletCard_layout(getSvg(29,{width:30,height:30}),'سبد خرید',Object.keys(cart).length,'کالا',()=>SetState({cartZIndex:10}))
             ]
         }
     }
-    cartAndWalletCard_layout(icon,title,value,unit){
+    cartAndWalletCard_layout(icon,title,value,unit,onClick){
         return {
             flex:1,className:'box',
+            attrs:{onClick},
             column:[
                 {size:12},
                 {html:icon,align:'vh',size:40},

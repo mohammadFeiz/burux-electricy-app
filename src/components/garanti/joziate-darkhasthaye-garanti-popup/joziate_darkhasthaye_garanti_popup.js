@@ -3,6 +3,7 @@ import GarantiCard from './../garanti-card/garanti-card';
 import Header from './../../header/header';
 import RVD from 'react-virtual-dom';
 import appContext from './../../../app-context';
+import SearchBox from '../../search-box';
 export default class Joziate_Darkhasthaye_Garanti_Popup extends Component{
     static contextType = appContext;
     constructor(props){
@@ -26,23 +27,11 @@ export default class Joziate_Darkhasthaye_Garanti_Popup extends Component{
                     column:[
                         this.header_layout(),
                         {
-                            html:<input className='theme-1-dark-bg theme-1-colorFFF' type='text' placeholder='شماره درخواست گارانتی را جستجو کنید' value={searchValue} onChange={(e)=>{
+                            html:<SearchBox placeholder='شماره درخواست گارانتی را جستجو کنید' value={searchValue} onChange={(e)=>{
                                 this.setState({searchValue:e.target.value})
-                            }}
-                            style={{
-                                height: 40,
-                                background: 'rgb(241, 241, 241)',
-                                border: 'none',
-                                borderRadius: 4,
-                                width: '100%',
-                                margin: '0 12px',
-                                padding: '0 12px',
-                                outline:'none',
-                                marginBottom: 12,
-                                fontFamily: 'inherit'
-                            }}
-                            />
+                            }}/>,className:'margin-0-12 round-6'
                         },
+                        {size:12},
                         {
                             flex:1,scroll:'v',gap:12,
                             column:[

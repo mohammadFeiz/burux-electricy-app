@@ -382,11 +382,11 @@ export default function services(getState) {
         return res.map((o)=>{return {...o,campaign}})
       },
       async lastOrders({baseUrl}) {
-        return await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10180'}})
+        return await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10179'}})
          
       },
       async recommendeds({baseUrl}) {
-        return await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10180'}})
+        return await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10550'}})
         
       },
       async bestSellings({baseUrl}){

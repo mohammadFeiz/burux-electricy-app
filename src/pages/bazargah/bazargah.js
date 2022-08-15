@@ -61,7 +61,7 @@ export default class Bazargah extends Component{
                             gap:12,flex:1,scroll:'v',
                             column:bazargahItems.map((o)=>{
                                 return {
-                                    html:<BazargahCard {...o}/>
+                                    html:<BazargahCard {...o} address={false}/>
                                 }
                             })
                         },

@@ -1,6 +1,7 @@
 import React,{Component} from 'react';
 import RVD from 'react-virtual-dom';
 import myBuruxHeaderSrc from './../../utils/burux-header.jpg';
+import bill from './../../images/home-slide-4.jpg';
 import getSvg from './../../utils/getSvg';
 import appContext from '../../app-context';
 import functions from '../../functions';
@@ -64,7 +65,7 @@ export default class MyBurux extends Component{
             column:[
                 {
                     className:'my-burux-header',size:151,
-                    html:(<img src={myBuruxHeaderSrc} alt='' style={{backgroundSize:'cover'}}/>)
+                    html:(<img src={myBuruxHeaderSrc} alt='' style={{backgroundSize:'cover',width:'100%'}}/>)
                 },
                 {
                     size:100,style:{overflow:'visible'},

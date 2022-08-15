@@ -44,12 +44,12 @@ export default class GarantiCard extends Component{
             return (
                 <RVD
                     layout={{
-                        className:'box gap-no-color padding-12',
+                        className:'box gap-no-color padding-12 margin-0-12',
                         style:{
                             borderBottomLeftRadius:!isLast?0:undefined,
                             borderBottomRightRadius:!isLast?0:undefined,
                             borderTopLeftRadius:!isFirst?0:undefined,
-                            borderTopRightRadius:!isFirst?0:undefined
+                            borderTopRightRadius:!isFirst?0:undefined,
                         },
                         column:[
                             {

@@ -22,7 +22,7 @@ export default class SearchBox extends Component{
         return (
             <RVD
                 layout={{
-                    className:'search-box',
+                    className:'search-box bgFFF',
                     row: [
                         { size: 60, html: getSvg(26), align: 'vh' },
                         {

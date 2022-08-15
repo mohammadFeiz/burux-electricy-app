@@ -23,9 +23,6 @@ export default class Buy extends Component {
       ],
       activeTabId: "1",
       activeCartTabId:'regular',
-      lastOrders: [],
-      recommendeds: [],
-      bestSellings: [],
       families: [],
       categories: [],
     };
@@ -140,7 +137,6 @@ export default class Buy extends Component {
       gap:12,className:'margin-0-12',
       column:sliders.map(([key,name])=>{
         let products = this.state[key] || [];
-        if(!products.length){return false}
         return {
           html:()=>(
             <CategorySlider 

@@ -25,6 +25,7 @@ import Bazargah from "../bazargah/bazargah";
 import SabteGarantiJadid from "../../components/garanti/sabte-garanti-jadid/sabte-garanti-jadid";
 import SabteGarantiJadidBaJoziat from "../../components/garanti/sabte-garanti-jadid-ba-joziat/sabte-garanti-jadid-ba-joziat";
 import PayameSabteGaranti from "../../components/garanti/payame-sabte-garanti/payame-sabte-garanti";
+import Register from "../../components/register/register";
 export default class Main extends Component {
   constructor(props) {
     super(props);

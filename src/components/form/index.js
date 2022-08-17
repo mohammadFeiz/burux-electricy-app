@@ -206,7 +206,7 @@ export default class AIOForm extends Component {
     return props;
   }
   getInput(input){
-    let {rtl} = this.props;
+    let {rtl,theme:Theme} = this.props;
     let { label,affix,prefix} = input;
     let theme = this.getInputTheme(input);
     let value = this.getValue({field:input.field});
@@ -227,7 +227,7 @@ export default class AIOForm extends Component {
     let {label:themeLabel = {},error:themeError = {}} = theme;
     if (themeLabel.inline) {
       return {
-        className: 'aio-form-item',style:{overflow:'visible',marginBottom:theme.rowGap},
+        className: 'aio-form-item',style:{overflow:'visible'},
         row: [
           this.getLabelLayout(label,theme,input),
           {size:6,show: label !== undefined},
@@ -241,7 +241,7 @@ export default class AIOForm extends Component {
                   {show:!!input.affix,html:()=>this.getFix(input,rtl,'affix')}
                 ]
               },
-              {align:'v',show:error !== '',html:error,className:'aio-form-error',style:themeError}
+              {size:themeError.height,align:'v',html:error,className:error?'aio-form-error':'aio-form-no-error',style:themeError}
             ]
           },
           
@@ -260,7 +260,7 @@ export default class AIOForm extends Component {
               {show:!!input.affix,html:()=>this.getFix(input,rtl,'affix')}
             ]
           },
-          {size:themeError.height,show:error !== '',html:error,className:'aio-form-error',style:themeError}
+          {size:themeError.height,html:error,className:error?'aio-form-error':'aio-form-no-error',style:themeError}
         ],
       };
     }
@@ -326,7 +326,7 @@ export default class AIOForm extends Component {
   }
   getError(o,value,options){
     let {validations = []} = o
-    let lang = 'en';
+    let {lang = 'en'} = this.props;
     if(!validations.length){return ''}
     let a = { 
       value,title:o.label,lang,

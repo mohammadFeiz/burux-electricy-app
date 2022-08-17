@@ -5,7 +5,7 @@ import getSvg from '../../utils/getSvg';
 import functions from './../../functions';
 export default class BazargahCard extends Component{
     button_layout(){
-        let {type = 'free',deliveredDate,canseledDate} = this.props;
+        let {type = 'free',deliveredDate,canseledDate,onCatch} = this.props;
         let text = {
             'free':'اخذ سفارش',
             'waitToSend':'ارسال سفارش',
@@ -18,9 +18,12 @@ export default class BazargahCard extends Component{
             'delivered':'',
             'canseled':''
         }[type]
+        let onClick = {
+            'free':()=>onCatch()
+        }[type]
         return {
             size:48,align:'v',
-            html:<button className='button-2' style={{height:32,margin:'0 12px'}}>{text}</button>
+            html:<button className={className} style={{height:32,margin:'0 12px'}} onClick={onClick}>{text}</button>
         }
     }
     amount_layout(amount){

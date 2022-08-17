@@ -422,6 +422,71 @@ export default function services(getState) {
           return { name: o.attributes.name, price: o.attributes.price, unit: "", src: `http://shopback.bpilot.ir${src}`, discountPercent: 0, discountPrice: 0 };
         });
       },
+      async register({baseUrl,parameter}){
+        let res = await Axios.post(`${baseUrl}/Users/NewUser`, parameter);
+        let result = false;
+        try{
+          result = res.data.isSuccess || false
+        }
+        catch{result = false}
+        return result;
+      },
+      async bazargahItems({baseUrl}){
+        let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?cardCode=c50000`);
+        let bulbSrc = bulb10w;
+        try{
+          return res.data.data.map((o)=>{
+            let distance = 0;
+            try{
+              distance = +o.distance.toFixed(2) * 1000
+            }
+            catch{distance = 0}
+            return {
+              "amount":1350000,
+              distance,
+              "benefit":110000,
+              "totalTime":30,
+              "remainingTime": o.remainTime > 30 ? 30 : o.remainTime,
+              "address": o.billAddress,
+              "items":[{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},],
+              "cityId": null,
+              "provinceId": null,
+              "buyerId": "",
+              "receiverId": "2",
+              "buyerName": "test",
+              "receiverName": "test",
+              "buyerNumber": "09124769630",
+              "receiverNumber": "09124769630",
+              "orderId": "1",
+              "vendorId": "",
+              "shippingAddress": "تهران",
+              "zipCode": null,
+              "optionalAddress": null,
+              "city": null,
+              "province": null,
+              "longitude": "51.39411227464735",
+              "latitude": "35.760454449615835",
+              "orderDate": "2022-08-14T00:00:00",
+              "id": 19,
+              "createdDate": "2022-08-16T09:32:13.5450115+04:30",
+              "modifiedDate": null,
+              "isDeleted": false
+            }
+          })
+        }
+        catch{
+          return []
+        }
+      },
+      async bazargahCatch({baseUrl,parameter}){//اخذ سفارش بازارگاه
+        let res = await Axios.post(`${baseUrl}/OnlineShop/AddNewOrder`, {
+          cardCode :"c50000",
+          orderId :parameter.orderId
+        });
+        debugger;
+        
+        
+      },
       async getCategories(obj) {
         let { baseUrl } = obj;
         let res = await Axios.get(`${baseUrl}/Spree/GetAllCategories`);

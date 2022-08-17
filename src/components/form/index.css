@@ -62,7 +62,6 @@
   align-items: center;
 }
 .aio-form-item{
-  margin-bottom:24px;
   position:relative;
 }
 .aio-form .r-range-slider{
@@ -145,13 +144,15 @@ padding-bottom:0 !important;
 .aio-form-error{
 color:red;
 font-size:10px;
-position:absolute;
 display:flex;
 align-items: center;
-top:100%;
 padding-top:0 !important;
 padding-bottom:0 !important;
+height:16px;
 }
+.aio-form-no-error{
+  height:16px;
+  }
 .aio-form-footer-button{
   background:dodgerblue;
   border:none;

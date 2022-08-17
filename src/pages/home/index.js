@@ -223,7 +223,7 @@ export default class Home extends Component {
         }
     }
     bazargah_layout(){
-        let {bazargahItems = []} = this.context;
+        let {bazargahItems = [],SetState,services} = this.context;
         return {
             column:[
                 {
@@ -237,7 +237,15 @@ export default class Home extends Component {
                     html:(
                         <ReactHtmlSlider
                             autoSlide={5000} arrow={false}
-                            items={bazargahItems.map((o)=><BazargahCard {...o} items={false} address={false}/>)}
+                            items={bazargahItems.map((o,i)=><BazargahCard {...o} items={false} address={false} onCatch={async()=>{
+                                let res = await services({type:'bazargahCatch',parameter:{orderId:o.orderId}})
+                                if(res){
+                                    SetState({bazargahItems:this.context.bazargahItems.filter((o,index)=>{
+                                        return index !== i
+                                    })})
+                                    
+                                }
+                            }}/>)}
                         />
                     )
                 }

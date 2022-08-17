@@ -60,14 +60,25 @@ export default class Bazargah extends Component{
         this.getWaitToSend()
     }
     items_layout(){
+        let {services,SetState} = this.context;
         let {activeTabId} = this.state;
         if(activeTabId !== 0){return false}
         let {bazargahItems} = this.context;
+        if(bazargahItems.length === 0){return {html:'موردی وجود ندارد'}}
         return {
             gap:12,flex:1,scroll:'v',
-            column:bazargahItems.map((o)=>{
+            column:bazargahItems.map((o,i)=>{
                 return {
-                    html:<BazargahCard {...o}/>
+                    style:{overflow:'visible'},
+                    html:<BazargahCard {...o} onCatch={async()=>{
+                        let res = await services({type:'bazargahCatch',parameter:{orderId:o.orderId}})
+                        if(res){
+                            SetState({bazargahItems:this.context.bazargahItems.filter((o,index)=>{
+                                return index !== i
+                            })})
+                            
+                        }
+                    }}/>
                 }
             })
         }
@@ -80,7 +91,7 @@ export default class Bazargah extends Component{
         return {
             gap:12,flex:1,scroll:'v',
             column:waitToSend.map((o)=>{
-                return {html:<BazargahCard {...o}/>}
+                return {style:{overflow:'visible'},html:<BazargahCard {...o}/>}
             })
         }
     }

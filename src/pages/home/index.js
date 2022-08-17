@@ -237,7 +237,7 @@ export default class Home extends Component {
                     html:(
                         <ReactHtmlSlider
                             autoSlide={5000} arrow={false}
-                            items={bazargahItems.map((o)=><BazargahCard {...o} items={false}/>)}
+                            items={bazargahItems.map((o)=><BazargahCard {...o} items={false} address={false}/>)}
                         />
                     )
                 }

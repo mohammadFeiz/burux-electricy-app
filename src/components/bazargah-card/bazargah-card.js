@@ -5,9 +5,22 @@ import getSvg from '../../utils/getSvg';
 import functions from './../../functions';
 export default class BazargahCard extends Component{
     button_layout(){
+        let {type = 'free',deliveredDate,canseledDate} = this.props;
+        let text = {
+            'free':'اخذ سفارش',
+            'waitToSend':'ارسال سفارش',
+            'delivered':`تاریخ تحویل: ${deliveredDate}`,
+            'canseled':`تاریخ لغو: ${canseledDate}`
+        }[type];
+        let className = {
+            'free':'button-2',
+            'waitToSend':'button-2',
+            'delivered':'',
+            'canseled':''
+        }[type]
         return {
             size:48,align:'v',
-            html:<button className='button-2' style={{height:32,margin:'0 12px'}}>اخذ</button>
+            html:<button className='button-2' style={{height:32,margin:'0 12px'}}>{text}</button>
         }
     }
     amount_layout(amount){

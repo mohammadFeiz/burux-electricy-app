@@ -16,10 +16,17 @@ export default class ProductCard extends Component{
     isInCart(){
         let {cart} = this.context;
         let {product} = this.props;
-        for(let i = 0; i < product.variants.length; i++){
-            if(cart[product.variants[i].id]){return true}
+        try{
+            for(let i = 0; i < product.variants.length; i++){
+                if(cart[product.variants[i].id]){return true}
+            }
+            return false
         }
-        return false
+        catch{
+            return false
+        }
+    
+        
     }
     splitPrice(price){
         if(!price){return price}

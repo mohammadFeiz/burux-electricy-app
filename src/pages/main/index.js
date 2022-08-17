@@ -122,50 +122,7 @@ export default class Main extends Component {
           amount:1728340,distance:3500,benefit:135000,totalTime:30,remainingTime:27,address:'صیاد شیرازی، خیابان علامه امینی، بعد از باغ غدیر ...',
           items:[{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},]
         },
-      ],
-      bazargahHistory:[
-        {
-          amount:1025340,distance:3500,benefit:200000,totalTime:30,remainingTime:10,address:'صیاد شیرازی، خیابان علامه امینی، بعد از باغ غدیر ...',
-          items:[{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},]
-        },
-        {
-          amount:2120340,distance:700,benefit:120000,totalTime:30,remainingTime:2,address:'صیاد شیرازی، خیابان علامه امینی، بعد از باغ غدیر ...',
-          items:[{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},]
-        },
-        {
-          amount:4423340,distance:900,benefit:300000,totalTime:30,remainingTime:26,address:'صیاد شیرازی، خیابان علامه امینی، بعد از باغ غدیر ...',
-          items:[{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},]
-        },
-        {
-          amount:1623340,distance:1100,benefit:450000,totalTime:30,remainingTime:12,address:'صیاد شیرازی، خیابان علامه امینی، بعد از باغ غدیر ...',
-          items:[{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},]
-        },
-        {
-          amount:2524340,distance:1600,benefit:100000,totalTime:30,remainingTime:20,address:'صیاد شیرازی، خیابان علامه امینی، بعد از باغ غدیر ...',
-          items:[{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},]
-        },
-        {
-          amount:1324340,distance:500,benefit:50000,totalTime:30,remainingTime:5,address:'صیاد شیرازی، خیابان علامه امینی، بعد از باغ غدیر ...',
-          items:[{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},]
-        },
-        {
-          amount:3426340,distance:3010,benefit:450000,totalTime:30,remainingTime:29,address:'صیاد شیرازی، خیابان علامه امینی، بعد از باغ غدیر ...',
-          items:[{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},]
-        },
-        {
-          amount:1526340,distance:5100,benefit:1200000,totalTime:30,remainingTime:24,address:'صیاد شیرازی، خیابان علامه امینی، بعد از باغ غدیر ...',
-          items:[{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},]
-        },
-        {
-          amount:2627340,distance:3500,benefit:100000,totalTime:30,remainingTime:18,address:'صیاد شیرازی، خیابان علامه امینی، بعد از باغ غدیر ...',
-          items:[{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},]
-        },
-        {
-          amount:1728340,distance:3500,benefit:135000,totalTime:30,remainingTime:27,address:'صیاد شیرازی، خیابان علامه امینی، بعد از باغ غدیر ...',
-          items:[{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},]
-        },
-      ],
-      
+      ]
     };
   }
   getBuruxLogoD(){
@@ -225,9 +182,12 @@ export default class Main extends Component {
     let {services} = this.state;
     this.getGuaranteeItems()
     this.getCampaignsData();
-    let testedChance = await services({type:"get_tested_chance"});
+    //let testedChance = await services({type:"get_tested_chance"});
     let userInfo = await services({type:"userInfo",cache:1000});
-    this.setState({userInfo,testedChance});
+    this.setState({
+      userInfo,
+      //testedChance
+    });
   }
   getBottomMenu() {
     let { activeBottomMenu, bottomMenuItems } = this.state;
@@ -304,6 +264,7 @@ export default class Main extends Component {
           open={sidemenuOpen}
         />
         <Loading />
+        {/* <Popup><Register/></Popup> */}
         {splashScreen && <Splash d={buruxlogod}/>}
       </appContext.Provider>
     );

@@ -13,24 +13,42 @@ export default class Search extends Component {
         searchValue: "",
         searchFamilies: [{ name: "جنرال" },{ name: "جاینت" },{ name: "پنلی" },{ name: "سیم و کابل" }],
         result: [
-          {src: LampSrc,name: "لامپ",color: "آفتابی",unit: "",discountPercent: 1000,discountPrice: 10,Qty: 3,price: 324000},
-          {src: LampSrc,name: "لامپ",color: "آفتابی",unit: "",discountPercent: 1000,discountPrice: 10,Qty: 3,price: 324000},
-          {src: LampSrc,name: "لامپ",color: "آفتابی",unit: "",discountPercent: 1000,discountPrice: 10,Qty: 3,price: 324000},
-          {src: LampSrc,name: "لامپ",color: "آفتابی",unit: "",discountPercent: 1000,discountPrice: 10,Qty: 3,price: 324000},
-          {src: LampSrc,name: "لامپ",color: "آفتابی",unit: "",discountPercent: 1000,discountPrice: 10,Qty: 3,price: 324000},
-          {src: LampSrc,name: "لامپ",color: "آفتابی",unit: "",discountPercent: 1000,discountPrice: 10,Qty: 3,price: 324000},
-          {src: LampSrc,name: "لامپ",color: "آفتابی",unit: "",discountPercent: 1000,discountPrice: 10,Qty: 3,price: 324000}
+          
         ],
       };
     }
-    async changeSearch(searchValue) {
+    async search(){
       let {services} = this.context;
+      let {searchValue} = this.state;
+      this.setState({loading:true})
+      let res = await services({type:"getTaxonProducts", parameter:{Name:searchValue},loading:false});
+      this.setState({loading:false})
+      console.log(res)
+      this.setState({ result: res });
+    }
+    async changeSearch(searchValue) {
       clearTimeout(this.timeout);
       this.setState({ searchValue });
       this.timeout = setTimeout(async () => {
-        let res = await services({type:"search", parameter:searchValue});
-        this.setState({ result: res });
+        this.search()
       }, 2000);
+    }
+    result_layout(){
+      let { result,loading,searchValue } = this.state;
+      if(loading){
+        return {html:'در حال جستجو...',flex:1,align:'vh'}
+      }
+      if(!result){return null}
+      if(!result.length){
+        if(searchValue){return {html:'موردی یافت نشد',flex:1,align:'vh'}}
+        return false
+      }
+      return {
+        flex: 1,
+        column: result.map((o, i) => {
+          return {html:<ProductCard isFirst={i === 0} isLast={i === result.length - 1} product={o} type='horizontal'/>}
+        }),
+      }
     }
     render() {
       let { SetState,searchZIndex } = this.context;
@@ -53,12 +71,7 @@ export default class Search extends Component {
                 },
                 {size: 48,align: "v",className: "size14 color323130 bold padding-0-24",html: "محصولات"},
                 { size: 24 },
-                {
-                  flex: 1,
-                  column: result.map((o, i) => {
-                    return <ProductCard isFirst={i === 0} isLast={i === result.length - 1} product={o} type='horizontal'/>;
-                  }),
-                },
+                this.result_layout()
               ],
             }}
           />

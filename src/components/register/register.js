@@ -1,7 +1,9 @@
 import React,{Component} from 'react';
 import RVD from 'react-virtual-dom';
 import storeSvg from '../../utils/svgs/store-svg';
+import Header from '../header/header';
 import Form from '../form/form';
+import NeshanMap from '../neshan-map/neshan-map';
 
 export default class Register extends Component{
     constructor(props){
@@ -12,8 +14,7 @@ export default class Register extends Component{
     }
     header_layout(){
         return {
-            size:36,
-            html:'ثبت نام'
+            html:<Header buttons={{logo:true,gap:true}}/>
         }
     }
     logo_layout(){
@@ -61,14 +62,43 @@ export default class Register extends Component{
                         {label:'شماره تلفن همراه',type:'text',field:'model.mobile'},
                         {label:'شماره تلفن ثابت',type:'text',field:'model.phone'},
                         {label:'نام فروشگاه',type:'text',field:'model.shopName'},
+                        {label:'ثبت موقعیت جغرافیایی',type:'html',html:()=>{
+                            return (
+                                <NeshanMap
+                                    options={{
+                                        key: 'web.3b7ae71ad0f4482e84b0f8c47e762b5b',
+                                        center: [35.699739, 51.338097],
+                                        width:'100%',
+                                        zoom: 13,
+                                        maptype:'standard-day'
+                                        }}
+                                        onInit={(L, myMap) => {
+                                        let marker = L.marker([35.699739, 51.338097])
+                                        .addTo(myMap)
+                                        .bindPopup('I am a popup.');
+
+                                        myMap.on('click', function (e) {
+                                        marker.setLatLng(e.latlng)
+                                        });
+
+                                        L.circle([35.699739, 51.338097], {
+                                        color: 'dodgerblue',
+                                        fillColor: 'dodgerblue',
+                                        fillOpacity: 0.5,
+                                        radius: 1500
+                                        }).addTo(myMap);
+                                    }}
+                                    style={{
+                                        width:'100%',
+                                        height:'300px'
+                                    }}
+                                />
+                            )
+                        }},
                         {label:'استان',type:'text',field:'model.state',rowKey:'2'},
                         {type:'html',html:()=>'',rowKey:'2',rowWidth:12},
                         {label:'شهر',type:'text',field:'model.city',rowKey:'2'},
-                        {label:'آدرس',type:'textarea',field:'model.address'},
-                        
-                        
-                        
-                        
+                        {label:'آدرس',type:'textarea',field:'model.address'}
                     ]}
                 />
             )

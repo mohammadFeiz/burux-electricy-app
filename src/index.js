@@ -56,36 +56,6 @@ class InternalLogin extends Component{
     return <Main logout={()=>this.logout()}/>
   }
 }
-class Landing extends Component{
-  constructor(props){
-    super(props);
-    this.state = {inter:false,register:false}
-  }
-  onInter(){
-    this.setState({register:false})
-  }
-  render(){
-    let {inter,register} = this.state;
-    if(inter){return <BuruxAuth goToLanding={()=>{
-      this.setState({inter:false,register:false})
-    }}/>}
-    if(register){return <Register onInter={()=>this.onInter()}/>}
-    return (
-      <RVD
-        layout={{
-          className:'landing',
-          column:[
-            {flex:4},
-            {style:{overflow:'visible'},html:<button onClick={()=>this.setState({register:true})}>ثبت نام</button>},
-            {size:24},
-            {style:{overflow:'visible'},html:<button onClick={()=>this.setState({inter:true})}>ورود</button>},
-            {flex:1}
-          ]
-        }}
-      />
-    )
-  }
-}
 ReactDOM.render(
     <BuruxAuth />
   ,

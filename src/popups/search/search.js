@@ -40,11 +40,11 @@ export default class Search extends Component {
     result_layout(){
       let { result,loading,searchValue } = this.state;
       if(loading){
-        return {html:'در حال جستجو...',flex:1,align:'vh'}
+        return {html:'در حال جستجو...',size:60,align:'vh'}
       }
       if(!result){return null}
       if(!result.length){
-        if(searchValue){return {html:'موردی یافت نشد',flex:1,align:'vh'}}
+        if(searchValue){return {html:'موردی یافت نشد',size:60,align:'vh'}}
         return false
       }
       return {

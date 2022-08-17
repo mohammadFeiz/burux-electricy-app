@@ -390,7 +390,7 @@ export default function services(getState) {
         
       },
       async bestSellings({baseUrl}){
-        return await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10180'}})
+        return await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10178'}})
       
       },
       async preOrders({baseUrl}) {

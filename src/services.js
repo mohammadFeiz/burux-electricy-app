@@ -389,10 +389,10 @@ export default function services(getState) {
         return await this.getTaxonProducts({ baseUrl, parameter: { Taxons: '10550' } })
 
       },
-      async bestSellings({ baseUrl }) {
-        return await this.getTaxonProducts({ baseUrl, parameter: { Taxons: '10180' } })
 
-      },
+      async bestSellings({baseUrl}){
+        return await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10178'}})
+            },
       async preOrders({ baseUrl }) {
         let preOrders = { waitOfVisitor: 10, waitOfPey: 2 };
         let res = await Axios.post(`${baseUrl}/Visit/PreOrderStat`, { CardCode: "c50000" });

@@ -111,33 +111,63 @@ export default function services(getState) {
 
         // const results= res.data.data.results.map((x)=>x.orderState);
         let tabsDictionary = {
-          SalesApproved: [],
-          PaymentApproved: [],
-          WarhousePicked: [],
-          DeliveryPacked: [],
-          Delivered: [],
-          Invoiced: [],
-          Rejected: []
+          darHaleBarresi: [],
+          pardakhtShode: [],
+          amadesaziJahateHaml: [],
+          tasvieShode: [],
+          Returned: [],
+          Canselled: [],
+          Rejected: [],
+          NotSet:[],
+          PendingPreOrder:[],
+          Registered:[],
+          SalesApproved:[],
+          WaitingForPayment:[],
+          Delivered:[],
+          Invoiced :[],
+          PartiallyDelivered:[]
         };
         const results = res.data.data.results;
 
         for (let order of results) {
           let id = order.orderState;
-          if (tabsDictionary[id]) {
+          if(id === 'Preorder' ||id === 'CustomeApproved' ||id === 'VisitorApproved' ||id === 'SupervisorApproved' ||id === 'ManagerApproved'){
+            tabsDictionary['darHaleBarresi'].push(order)
+          }
+          else if(id === 'PaymentPassed' ||id === 'PaymentApproved'){
+            tabsDictionary['pardakhtShode'].push(order)
+          }
+          else if(id === 'WarhousePicked' ||id === 'DeliveryPacked'){
+            tabsDictionary['amadesaziJahateHaml'].push(order)
+          }
+          else if(id === 'Settlled' ||id === 'SettledWithBadDept'){
+            tabsDictionary['tasvieShode'].push(order)
+          }
+          
+          else if (tabsDictionary[id]) {
             tabsDictionary[id].push(order)
           }
+          else {
+            alert('unknown order')
+          }
         }
-
         const orderStatuses = {
           //Registered :"ثبت نام اولیه صورت گرفت منتظر تماس پشتیبان خود باشید",
-          SalesApproved: "درخواست تایید شده",//
-          PaymentApproved: "واریزی تایید شده",//
-          WarhousePicked: "تحویل از انبار",//
-          DeliveryPacked: "در حال آماده سازی",//
-          Delivered: "ارسال شده",//
-          Invoiced: "فاکتور شده",//
-          Rejected: "تایید نشده",//
-          NotSet: "نامشخص"
+          darHaleBarresi: "در حال بررسی",//
+          pardakhtShode:'پرداخت شده',
+          amadesaziJahateHaml:'آماده سازی جهت حمل',
+          tasvieShode:'تسویه شده',
+          Returned:'مرجوع شده',
+          Canselled:'لغو شده',
+          Rejected:'رد شده',
+          NotSet:'نا مشخص',
+          PendingPreOrder:'ارسال شده برای ویزیتور',
+          Registered:'سفارش ثبت شده',
+          SalesApproved:'تایید واحد مالی',
+          WaitingForPayment :'در انتظار پرداخت',
+          Delivered :'تحویل شده',
+          Invoiced :'فاکتور شده',
+          PartiallyDelivered :'بخشی از سفارش تحویل شده'
         }
 
         let tabs = [];

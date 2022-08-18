@@ -29,8 +29,9 @@ export default class Register extends Component{
         }
     }
     header_layout(){
+        let {onClose} = this.props;
         return {
-            html:<Header buttons={{logo:true,gap:true}}/>
+            html:<Header buttons={{logo:true,gap:true}} onClose={()=>onClose()}/>
         }
     }
     logo_layout(){

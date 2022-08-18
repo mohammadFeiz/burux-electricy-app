@@ -44,6 +44,7 @@ export default class Main extends Component {
     this.state = {
       buruxlogod:this.getBuruxLogoD(),
       splashScreen:true,
+      showRegister:true,
       services:Services(()=>this.state),
       theme,
       campaigns:[],
@@ -242,7 +243,7 @@ export default class Main extends Component {
       layout:(type,parameters)=>layout(type,()=>this.state,parameters)
     };
     let { 
-      sidemenuOpen, theme,orderZIndex,buruxlogod,splashScreen,
+      sidemenuOpen, theme,orderZIndex,buruxlogod,splashScreen,showRegister,
       cartZIndex,shippingZIndex,searchZIndex,productZIndex,categoryZIndex,
       guaranteePopupSuccessZIndex,guaranteePopupSubmitZIndex,guaranteePopupZIndex,ordersHistoryZIndex,
       joziate_darkhasthaye_garanti_popup_zIndex
@@ -273,8 +274,8 @@ export default class Main extends Component {
           onClose={() => this.setState({ sidemenuOpen: false })}
           open={sidemenuOpen}
         />
+        {!splashScreen && showRegister && <Popup><Register onClose={()=>this.setState({showRegister:false})}/></Popup>}
         <Loading />
-        {/* <Popup><Register/></Popup> */}
         {splashScreen && <Splash d={buruxlogod}/>}
       </appContext.Provider>
     );

@@ -53,6 +53,8 @@ export default class Register extends Component{
     async register(){
         let {services} = this.context;
         let res = await services({type:'register',parameter:this.state.model})
+        let {onClose} = this.props;
+        onClose()
         this.setState({model:{
             "latitude": 35.699739,
             "longitude": 51.338097,

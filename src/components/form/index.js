@@ -1,19 +1,18 @@
 import React,{Component,useState,useEffect,useRef} from 'react';
 import {Icon} from '@mdi/react';
-import {mdiPrinter,mdiClose,mdiChevronLeft,mdiChevronRight,mdiPlusThick,mdiAttachment,mdiAccount} from '@mdi/js';
+import {mdiPrinter,mdiClose,mdiChevronLeft,mdiChevronRight,mdiPlusThick,mdiAttachment} from '@mdi/js';
 import RRangeSlider from 'r-range-slider';
 import AIOButton from 'aio-button';
 import GAH from 'gah-datepicker';
 import AIOValidation from 'aio-validation';
 import AIOTable from 'aio-table';
-import {mdiChevronDown} from '@mdi/js';
 import ReactVirtualDom from 'react-virtual-dom';
 import './index.css';
 export default class AIOForm extends Component {
   constructor(props){
     super(props);
-    let {model,theme = {}} = this.props;
-    this.state = {initialModel:JSON.stringify(model),model,theme,groupDic:{}}
+    let {model} = this.props;
+    this.state = {initialModel:JSON.stringify(model),model,groupDic:{}}
   }
   getModel(){return this.props.onSubmit?this.state.model:this.props.model}
   getValue({field,def,props = this.props,input}){
@@ -59,52 +58,53 @@ export default class AIOForm extends Component {
     }
   }
   getInput_text({className,value,onChange,options,disabled,style,placeholder}, input){
-    let props = {...input.attrs,autoHeight:input.autoHeight,type:input.type,value,className,onChange,options,disabled,style,placeholder,options,optionText:input.optionText,optionValue:input.optionValue};
+    let props = {...input.attrs,autoHeight:input.autoHeight,type:input.type,value,className,onChange,options,disabled,style,placeholder,optionText:input.optionText,optionValue:input.optionValue};
     return (<Input {...props}/>);
   }
   getInput_number(obj,input){return this.getInput_text(obj,input)}
   getInput_password(obj,input){return this.getInput_text(obj,input)}
   getInput_textarea(obj,input){return this.getInput_text(obj,input)}
   getInput_color(obj,input){return this.getInput_text(obj,input)}
-  getInput_checkbox({className,onChange,value,disabled,style,text,subtext,theme}, input) {
+  getInput_checkbox({className,onChange,value,disabled,style,text,subtext}, input) {
+    let {checkIconColor,checkIconSize} = this.props;
     let props = {
-      disabled,style,value,subtext:input.subText,text,subtext,onChange:(value)=>onChange(!value),className,
-      iconSize:theme.checkIconSize,iconColor:theme.checkIconColor
+      disabled,style,value,text,subtext,onChange:(value)=>onChange(!value),className,
+      iconSize:checkIconSize,iconColor:checkIconColor
     }
     return (<AIOButton {...props} type='checkbox'/>);
   }
-  getInput_checklist({className,options:Options,disabled,style,theme}, input) {
+  getInput_checklist({className,options:Options,disabled,style}, input) {
+    let {checkIconColor,checkIconSize,inputStyle} = this.props;
     let options = Options.map((o)=>{
       let model = this.getModel(),value = this.getValue({field:o.field}),text = o.text;
       return {text,value,onChange:(val,obj)=>{this.onChange({field:o.field,onChange:o.onChange},!val)},...o}
     });
-    let {input:inputTheme = {}} = theme;
     let props = {
-      options,disabled,style,optionSubtext:input.optionSubtext,className,options,optionClassName:'"aio-form-input"',
-      optionStyle:()=>{return {width:input.optionWidth || 'fit-content',height:inputTheme.height,padding:inputTheme.padding,background:'none'}},
-      optionIconSize:theme.checkIconSize,optionIconColor:theme.checkIconColor
+      options,disabled,style,optionSubtext:input.optionSubtext,className,optionClassName:'"aio-form-input"',
+      optionStyle:()=>{return {width:input.optionWidth || 'fit-content',height:inputStyle.height,padding:inputStyle.padding,background:'none'}},
+      optionIconSize:checkIconSize,optionIconColor:checkIconColor
     }
     return (<AIOButton {...props} type='checklist'/>);
   }
-  getInput_radio({value,onChange,options,disabled,style,className,theme}, input) {
-    let {input:inputTheme = {}} = theme;
+  getInput_radio({value,onChange,options,disabled,style,className}, input) {
+    let {inputStyle,checkIconColor,checkIconSize} = this.props;
+    
     let props = {
       options,value,onChange,disabled,style,optionSubtext:input.optionSubtext,
       optionText:input.optionText,optionValue:input.optionValue,className,optionClassName:'"aio-form-input"',
-      optionStyle:()=>{return {width:input.optionWidth || 'fit-content',height:inputTheme.height,padding:inputTheme.padding,background:'none'}},
-      optionIconSize:theme.checkIconSize,optionIconColor:theme.checkIconColor
+      optionStyle:()=>{return {width:input.optionWidth || 'fit-content',height:inputStyle.height,padding:inputStyle.padding,background:'none'}},
+      optionIconSize:checkIconSize,optionIconColor:checkIconColor
     }
     return (<AIOButton {...props} type='radio'/>); 
   }
-  getInput_datepicker({value,onChange,disabled,style,className,placeholder,theme}, input) {
-    let {datepicker = {}} = theme;
+  getInput_datepicker({value,onChange,disabled,style,className,placeholder}, input) {
     let props = {
-      value,onChange:({dateString})=>onChange(dateString),disabled,style,placeHolder:placeholder,theme:[datepicker.color1,datepicker.color2],
+      value,onChange:({dateString})=>onChange(dateString),disabled,style,placeHolder:placeholder,theme:input.colors,
       className,calendarType:input.calendarType,unit:input.unit,onClear:input.onClear?()=>onChange(false):undefined
     }
     return (<GAH {...props}/>);
   }
-  getInput_slider({className,value = 0,onChange,disabled,style,start,end,step,theme}, input) {
+  getInput_slider({className,value = 0,onChange,disabled,style,start,end,step}, input) {
     let editValue;
     if(typeof input.editValue === 'string'){
       let str = input.editValue;
@@ -116,7 +116,7 @@ export default class AIOForm extends Component {
       }
     }
     else {editValue = input.editValue}
-    let props = {className,value,onChange,start,end,step,disabled,style,editValue,padding:input.padding,theme}
+    let props = {className,value,onChange,start,end,step,disabled,style,editValue,padding:input.padding}
     return (<Slider {...props}/>);
   }
   getInput_select({className,value,onChange,options,disabled,style,text}, input) {
@@ -127,16 +127,18 @@ export default class AIOForm extends Component {
     }
     return (<AIOButton {...props} type='select' popupWidth='fit' popupAttrs={{style:{maxHeight: 400 }}}/>);
   }
-  getInput_multiselect({className,value,onChange,options,disabled,style,text,subtext,theme}, input) {
+  getInput_multiselect({className,value,onChange,options,disabled,style,text,subtext}, input) {
+    let {checkIconColor,checkIconSize,tagAttrs} = this.props;
     let props = {className,value,onChange,options,text,subtext,disabled,search:input.search,style,popupWidth:'fit',
       optionText:input.optionText,optionValue:input.optionValue,optionBefore:input.optionBefore,optionAfter:input.optionAfter,
-      text,before:input.before,optionSubtext:input.optionSubtext,optionStyle:input.optionStyle,
-      optionIconSize:theme.checkIconSize,optionIconColor:theme.checkIconColor,optionTagAttrs:{style:{...theme.tag}}
+      before:input.before,optionSubtext:input.optionSubtext,optionStyle:input.optionStyle,
+      optionIconSize:checkIconSize,optionIconColor:checkIconColor,optionTagAttrs:tagAttrs
     }
     return (<AIOButton {...props} type="multiselect" popupAttrs={{ style:{maxHeight: 400 }}}/>);
   }
-  getInput_table({className,value,onChange,disabled,style,columns,theme}, input){
-    let props = {attrs:input.attrs,className,value,onChange,columns,addable:input.addable,rowNumber:input.rowNumber,disabled,style,theme}
+  getInput_table({className,value,onChange,disabled,style,columns}, input){
+    let {inputStyle} = this.props;
+    let props = {attrs:input.attrs,className,value,onChange,columns,addable:input.addable,rowNumber:input.rowNumber,disabled,style,inputStyle}
     return <Table {...props} getValue={this.getValue.bind(this)}/>
   }
   getInput_file({className,value,onChange,disabled,style,text}, input){
@@ -144,14 +146,16 @@ export default class AIOForm extends Component {
     return <File {...props} getValue={this.getValue.bind(this)}/>
   }
   getInput_group(obj,input){
+    let {groupAttrs = {}} = this.props;
     let {attrs = {}} = input;
     let {groupDic} = this.state;
-    let {theme = {}} = obj;
-    let {group = {}} = theme
+    let className = 'aio-form-group';
+    if(attrs.className){className += ' ' + attrs.className};
+    if(groupAttrs.className){className += ' ' + groupAttrs.className};
     groupDic[input.id] = groupDic[input.id] === undefined?true:groupDic[input.id];
     let open = groupDic[input.id];
     return (
-      <div {...attrs} style={{...group,...attrs.style}} className={'aio-form-group' + (attrs.className?' ' + attrs.className:'')} onClick={()=>{
+      <div {...attrs} style={{...groupAttrs.style,...attrs.style}} className={className} onClick={()=>{
         groupDic[input.id] = !groupDic[input.id];
         this.setState({groupDic})
       }}>
@@ -182,19 +186,17 @@ export default class AIOForm extends Component {
     if(value === undefined){return null}
     return <div {...attrs} onClick={()=>onClick(input)} className={`aio-form-${type}` + (rtl?' rtl':'') + (attrs.className?' ' + attrs.className:'')}>{value}</div>
   }
-  getInputTheme(input){
-    let {theme:stateTheme = {}} = this.state;
-    let {theme:inputTheme = {}} = input;
-    return {...stateTheme,...inputTheme,label:{...stateTheme.label,...inputTheme.label},input:{...stateTheme.input,...inputTheme.input}} 
-  }
-  getLabelLayout(label,theme,input){
-    let {inputs} = this.props;
-    let {label:themeLabel = {}} = theme;
-    let props = {align:'v',show: label !== undefined,style:{...themeLabel,width:'fit-content',height:'fit-content'},className:'aio-form-label'}
-    props.size = themeLabel.inline?themeLabel.width:themeLabel.height || 24;
+  label_layout(input){
+    let {inputs,labelAttrs:LA = {}} = this.props;
+    if(!input.label){return false}
+    let {labelAttrs:la = {}} = input;
+    let className = 'aio-form-label';
+    if(LA.className){className += ' ' + LA.className}
+    if(la.className){className += ' ' + la.className}
+    let props = {align:'v',style:{...LA.style,...la.style},className}
     let {onChangeInputs} = this.props;
     if(onChangeInputs){
-      props.html = (<AIOButton style={{padding:0,fontSize:'inherit'}} text={label} type='button' popOver={()=>{
+      props.html = (<AIOButton style={{padding:0,fontSize:'inherit'}} text={input.label} type='button' popOver={()=>{
         return (
           <FormGenerator input={input} onChange={()=>{
             onChangeInputs(inputs)
@@ -202,13 +204,32 @@ export default class AIOForm extends Component {
         )
       }}/>)
     }
-    else{props.html = label;}
+    else{props.html = input.label;}
     return props;
   }
+  validation_layout(error,input){
+    let {validationAttrs:VA = {}} = this.props;
+    let {validationAttrs:va = {}} = input;
+    let style = {...VA.style,...va.style};
+    let className = 'aio-form-error';
+    if(VA.className){className += ' ' + VA.className}
+    if(va.className){className += ' ' + va.className}
+    return {...VA,...va,show:error !== '',align:'v',html:error,style,className}
+  }
+  input_layout(input,props,error){
+    let {rtl} = this.props;
+    return {
+      row:[
+        {show:!!input.prefix,html:()=>this.getFix(input,rtl,'prefix')},
+        { flex:1,style:{overflow:'visible'},html: ()=>this['getInput_' + input.type](props,input) },
+        {show:!!input.affix,html:()=>this.getFix(input,rtl,'affix')},
+        this.validation_layout(error,input)
+      ]
+    }
+  }
   getInput(input){
-    let {rtl,theme:Theme} = this.props;
+    let {rtl,inline,inputStyle} = this.props;
     let { label,affix,prefix} = input;
-    let theme = this.getInputTheme(input);
     let value = this.getValue({field:input.field});
     let options = this.getValue({field:input.options,def:[]});
     let disabled = this.getValue({field:input.disabled,def:false});
@@ -220,48 +241,23 @@ export default class AIOForm extends Component {
     let columns = this.getValue({field:input.columns,def:[]});
     let placeholder = this.getValue({field:input.placeholder,def:false});
     let onChange = (value) => this.onChange(input, value);
-    let style = {...theme.input}; 
+    let style = {...inputStyle}; 
     let className = `aio-form-input aio-form-input-${input.type}` + (disabled === true?' disabled':'') + (input.className ? ' ' + input.className : '') + (affix?' has-affix':'') + (prefix?' has-prefix':'') + (rtl?' rtl':' ltr')
     let error = this.getError(input,value,options)
-    let props = {value,options,step,disabled:disabled === true,onChange,className,style,placeholder,text,subtext,start,end,theme,columns}
-    let {label:themeLabel = {},error:themeError = {}} = theme;
-    if (themeLabel.inline) {
+    let props = {value,options,step,disabled:disabled === true,onChange,className,style,placeholder,text,subtext,start,end,columns}
+    if (inline || input.inline) {
       return {
         className: 'aio-form-item',style:{overflow:'visible'},
         row: [
-          this.getLabelLayout(label,theme,input),
+          this.label_layout(input),
           {size:6,show: label !== undefined},
-          {
-            flex:1,
-            column:[
-              {
-                row:[
-                  {show:!!input.prefix,html:()=>this.getFix(input,rtl,'prefix')},
-                  { flex:1,style:{overflow:'visible',...input.style},html: ()=>this['getInput_' + input.type](props,input) },
-                  {show:!!input.affix,html:()=>this.getFix(input,rtl,'affix')}
-                ]
-              },
-              {size:themeError.height,align:'v',html:error,className:error?'aio-form-error':'aio-form-no-error',style:themeError}
-            ]
-          },
-          
-        ],
+          {flex:1,column:[this.input_layout(input,props,error)]}
+        ]
       };
     } else {
       return {
-        className: 'aio-form-item',
-        style:{overflow:'visible',marginBottom:theme.rowGap},
-        column: [
-          this.getLabelLayout(label,theme,input),
-          {
-            row:[
-              {show:!!input.prefix,html:()=>this.getFix(input,rtl,'prefix')},
-              { style:{overflow:'visible'},flex:1,html: ()=>this['getInput_' + input.type](props,input) },
-              {show:!!input.affix,html:()=>this.getFix(input,rtl,'affix')}
-            ]
-          },
-          {size:themeError.height,html:error,className:error?'aio-form-error':'aio-form-no-error',style:themeError}
-        ],
+        className: 'aio-form-item',style:{overflow:'visible'},
+        column: [this.label_layout(input),this.input_layout(input,props,error)]
       };
     }
   }
@@ -304,20 +300,14 @@ export default class AIOForm extends Component {
       else{this.res.push(input)}
     }
   }
-  getColumnGap(input){
-    let {theme = {}} = this.state;
-    let {columnGap:themeColumnGap = 12} = theme;
-    let {columnGap = themeColumnGap} = input;
-    return columnGap;
-  }
   getInputs(inputs){
     if(!inputs.length){return []}
-    let {onSwap} = this.props; 
-    let {theme} = this.state;
+    let {onSwap,rowGap = 16} = this.props; 
     return this.sortByRows(this.handleGroups(inputs)).map((input,i)=>{
       return {
         swapId:onSwap?input._index.toString():undefined,
         swapHandleClassName:'aio-form-label',
+        style:{marginBottom:rowGap},
         row:input.map((o)=>{
           return {...this.getInput(o),flex:o.rowWidth?undefined:1,size:o.rowWidth,align:'v'}
         })
@@ -347,17 +337,22 @@ export default class AIOForm extends Component {
     }
   }
   render() {
-    let {inputs = [],header,rtl,onSubmit,submitText = 'Submit',closeText = 'Close',resetText = 'Reset',onClose,footerAttrs,reset,tabs = [],tabSize = 36} = this.props;
-    let {theme} = this.state;
+    let {
+      inputs = [],header,rtl,bodyAttrs = {},onSubmit,closeText = 'Close',headerAttrs,
+      resetText = 'Reset',onClose,footerAttrs,reset,tabs = [],tabSize = 36,submitButtonAttrs = {}
+    } = this.props;
     this.isThereError = false;
     return (
       <ReactVirtualDom
         layout={{
           className: 'aio-form',
           column: [
-            {show: header !== undefined,html:<AIOFormHeader {...header} rtl={rtl} theme={theme} getValue={this.getValue.bind(this)}/>},
-            {className: 'aio-form-body',style:theme.body,scroll: 'v',flex: 1,column:()=>this.getInputs(inputs),show:tabs.length === 0},
-            {style:theme.body,flex: 1,show:tabs.length !== 0,row:[
+            {show: header !== undefined,html:<AIOFormHeader {...header} rtl={rtl} headerAttrs={headerAttrs} getValue={this.getValue.bind(this)}/>},
+            {
+              className: `aio-form-body${bodyAttrs.className?' ' + bodyAttrs.className:''}`,
+              style:bodyAttrs.style,scroll: 'v',flex: 1,column:()=>this.getInputs(inputs),show:tabs.length === 0
+            },
+            {flex: 1,show:tabs.length !== 0,row:[
               {className:'aio-form-tabs',size:tabSize,column:tabs.map((o)=>{
                 return {className:'aio-form-tab active',size:tabSize,html:o.html,align:'vh',style:{}}
               })},
@@ -367,11 +362,11 @@ export default class AIOForm extends Component {
               show: onSubmit !== undefined || reset === true || onClose !== undefined,
               html:()=>(
                 <AIOFormFooter 
+                  submitButtonAttrs={submitButtonAttrs}
                   isThereError={this.isThereError}
-                  theme={theme}
                   onClose={onClose} 
                   onSubmit={onSubmit?()=>onSubmit({...this.state.model}):undefined} 
-                  closeText={closeText} submitText={submitText} resetText={resetText}
+                  closeText={closeText} resetText={resetText}
                   footerAttrs={footerAttrs} 
                   onReset={reset?()=>this.reset():undefined}
                 />
@@ -383,16 +378,16 @@ export default class AIOForm extends Component {
     );
   }
 }
+AIOForm.defaultProps = {inputStyle:{},headerAttrs:{}}
 class AIOFormHeader extends Component {
   render() {
-    let {title,onClose,attrs = {},print,onBack,justify,onForward,rtl,theme,getValue} = this.props;
+    let {title,onClose,headerAttrs,print,onBack,justify,onForward,rtl,getValue} = this.props;
     let subtitle = getValue({field:this.props.subtitle})
     return (
       <ReactVirtualDom
         layout={{
-          className: 'aio-form-header' + (attrs.className?' ' + attrs.className:''),
-          style:{...theme.header,...attrs.style},
-          align: 'v',
+          className: 'aio-form-header' + (headerAttrs.className?' ' + headerAttrs.className:''),
+          style:headerAttrs.style,align: 'v',
           row: [
             {show:onBack !== undefined,html:<Icon path={rtl?mdiChevronRight:mdiChevronLeft} size={0.9}/>,align:'vh',size:36,attrs:{onClick:onBack}},
             {show:justify === true,flex:1},
@@ -414,29 +409,29 @@ class AIOFormHeader extends Component {
 }
 class AIOFormFooter extends Component{
   render(){
-    let {onClose,onSubmit,closeText,submitText,footerAttrs = {},onReset,resetText,isThereError,theme = {}} = this.props;
+    let {onClose,onSubmit,closeText,footerAttrs = {},submitButtonAttrs,onReset,resetText,isThereError} = this.props;
     return (
-      <ReactVirtualDom
-        layout={{
-          align: 'v',className: 'aio-form-footer',style:theme.footer,
-          row: [
-            {
-              show: onClose !== undefined,
-              html: () => (<button className="aio-form-footer-button aio-form-close-button" onClick={() => onClose()}>{closeText}</button>)
-            },
-            { size: 12, show:onSubmit !== undefined },
-            {
-              show: onSubmit !== undefined,
-              html: () => (<button className="aio-form-footer-button aio-form-submit-button" disabled={isThereError} onClick={() => onSubmit()}>{submitText}</button>)
-            },
-            { size: 12, show:onSubmit !== undefined },
-            {
-              show: onReset !== undefined,
-              html: () => (<button className="aio-form-footer-button aio-form-reset-button" onClick={() => onReset()}>{resetText}</button>),
-            }
-          ]
-        }}
-      />
+      <div 
+        className={'aio-form-footer' + (footerAttrs.className?' ' + footerAttrs.className:'')}
+        style={footerAttrs.style}
+      >
+        {
+          onClose !== undefined &&
+          <button className="aio-form-footer-button aio-form-close-button" onClick={() => onClose()}>{closeText}</button>
+        }
+        {
+          onSubmit !== undefined && 
+          <input type='button' 
+            className={submitButtonAttrs.className || "aio-form-footer-button aio-form-submit-button"} 
+            style={{...submitButtonAttrs.style,opacity:isThereError?0.5:undefined,cursor:isThereError?'not-allowed':'pointer'}}
+            disabled={isThereError} onClick={() => onSubmit()} value={submitButtonAttrs.value || 'Submit'}
+          />
+        }
+        {
+          onReset !== undefined &&
+          <button className="aio-form-footer-button aio-form-reset-button" onClick={() => onReset()}>{resetText}</button>
+        }    
+      </div>
     )
   }
 }
@@ -488,9 +483,6 @@ function Input(obj){
     }
   })
   let props = { ...obj, value, onChange: (e) => onChange(e) ,ref:dom};
-  if(props.type === 'color'){
-    props.value = 'rgba(0,0,0,1)'
-  }
   let uid = 'a' + Math.random();
   if(error !== false){
     return <div className='aio-form-inline-error aio-form-input' onClick={()=>setError(false)}>{error}</div>
@@ -506,10 +498,9 @@ function Input(obj){
 }
 class Slider extends Component{
   render(){
-    let {className,start,end,step,value,onChange,disabled,style = {},editValue,padding = style.padding,theme = {}} = this.props;
+    let {className,start,end,step,value,onChange,disabled,style = {},editValue,padding = style.padding} = this.props;
     if(!Array.isArray(value)){value = [value]}
-    let {slider:sliderTheme = {}} = theme;
-    let {color1 = 'dodgerblue',color2 = '#fff',color3 = '#bbb'} = sliderTheme;
+    let color1 = 'dodgerblue',color2 = '#fff',color3 = '#bbb';
     let props = {
       attrs:{className,style:{...style,padding}},start,end,step,points:value,onChange:disabled?undefined:(points)=>points.length === 1?onChange(points[0]):onChange([points[0],points[1]]),showValue:true,
       editValue,
@@ -615,10 +606,9 @@ class Table extends Component{
     })
   }
   getColumns(){ 
-    let {onChange,addable = true,disabled,columns,value,rowNumber,theme = {}} = this.props; 
-    let {input = {}} = theme;
-    let cellAttrs = {className:'aio-form-input',style:{height:input.height,borderColor:input.borderColor,background:'none',boxShadow:'none'}};
-    let titleAttrs = {className:'aio-form-input',style:{height:input.height,borderColor:input.borderColor,background:'none',boxShadow:'none'}}
+    let {onChange,addable = true,disabled,columns,value,rowNumber,inputStyle} = this.props; 
+    let cellAttrs = {className:'aio-form-input',style:{height:inputStyle.height,borderColor:inputStyle.borderColor,background:'none',boxShadow:'none'}};
+    let titleAttrs = {className:'aio-form-input',style:{height:inputStyle.height,borderColor:inputStyle.borderColor,background:'none',boxShadow:'none'}}
     let result = columns.map((column)=>{
     let a = {
       ...column,
@@ -661,7 +651,7 @@ class Table extends Component{
     }
     else if(['text','number','select','checkbox'].indexOf(column.type) !== -1 && !disabled){
       a.inlineEdit = {
-        type:column.type,disabled:column.disabled, 
+        type:column.type, 
         onChange:(row,val)=>{
           if(!value[row._index]){value[row._index] = {}}
           this.setValueByField(value[row._index],column.field,val)
@@ -697,9 +687,8 @@ class Table extends Component{
     return result;
   }
   render(){
-    let {value = [],disabled,className,style,attrs,theme = {}} = this.props;
+    let {value = [],disabled,className,style,attrs,inputStyle} = this.props;
     let model;
-    let {input = {}} = theme
     try{model = JSON.parse(JSON.stringify(value));}
     catch{model = []}
 
@@ -709,7 +698,7 @@ class Table extends Component{
         <div 
           className='aio-form-table-add aio-form-input' 
           onClick={()=>this.add()}
-          style={{fontSize:input.fontSize,background:input.background,borderWidth:input.borderWidth,borderColor:input.borderColor,height:input.height}}
+          style={{fontSize:inputStyle.fontSize,background:inputStyle.background,borderWidth:inputStyle.borderWidth,borderColor:inputStyle.borderColor,height:inputStyle.height}}
         >+</div>
       )
     }
@@ -720,7 +709,7 @@ class Table extends Component{
       },
       titleStyle:style,
       disabled,className,columns,
-      toolbarItems:this.getToolbarItems(),columns,
+      toolbarItems:this.getToolbarItems(),
       model:value,
       style:attrs?attrs.style:undefined
     }
@@ -730,8 +719,8 @@ class Table extends Component{
         model={props.model} 
         rowGap={0} 
         toolbarItems={props.toolbarItems} 
-        toolbarAttrs={{className:'aio-form-input',style:{...theme.input,border:'none',display:disabled?'none':undefined,borderRadius:0}}}
-        style={{borderColor:input.borderColor,borderWidth:input.borderWidth,borderRadius:input.borderRadius,fontSize:input.fontSize,color:input.color,background:input.background}}
+        toolbarAttrs={{className:'aio-form-input',style:{...inputStyle,border:'none',display:disabled?'none':undefined,borderRadius:0}}}
+        style={{borderColor:inputStyle.borderColor,borderWidth:inputStyle.borderWidth,borderRadius:inputStyle.borderRadius,fontSize:inputStyle.fontSize,color:inputStyle.color,background:inputStyle.background}}
       />
     )
   }
@@ -874,7 +863,9 @@ class FormGenerator extends Component{
           ]
         }}
         onChange={()=>onChange()}
-        theme={{rowGap:0,label:{inline:true,width:80},input:{height:24}}}
+        inline={true}
+        labelAttrs={{style:{width:80}}}
+        inputStyle={{height:24}}
         inputs={[
           {type:'text',field:'model.rowKey',label:'rowKey'},
           {type:'number',field:'model.rowWidth',label:'rowWidth'},
@@ -897,7 +888,7 @@ class FormGenerator extends Component{
           {type:'number',field:'model.end',label:'end',show:'model.type === "slider"'},
           {type:'number',field:'model.step',label:'step',show:'model.type === "slider"'},
           {
-            type:'table',field:'model.validations_obj',label:'Validations',theme:{label:{inline:false}},
+            type:'table',field:'model.validations_obj',label:'Validations',inline:false,
             onChange:(value)=>{
               input.validations = value.map(({operator,target = ''})=>{
                 let Target;

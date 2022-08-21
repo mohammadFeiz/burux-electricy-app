@@ -113,7 +113,7 @@ export default class Buy extends Component {
     };
   }
   billboard_layout(){
-    return {html:<Billboard/>}
+    return {html:<Billboard id='buy'/>}
   }
   families(){
     let {families} = this.state,{layout} = this.context;

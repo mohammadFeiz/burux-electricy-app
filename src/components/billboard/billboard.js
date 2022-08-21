@@ -8,6 +8,7 @@ export default class Billboard extends Component{
     static contextType = appContext;
     render(){
         let {campaigns,services,SetState} = this.context;
+        let {id} = this.props;
         let size= 160;
         let items = campaigns.map((campaign)=>{
             let {name,id} = campaign;
@@ -20,7 +21,7 @@ export default class Billboard extends Component{
             )
         })
         items.push(<img src={HomeSlide2} alt="" width='100%' style={{height:size}}/>)
-        items.push(<img src={HomeSlide3} alt="" width='100%' style={{height:size}}/>)
+        if(id === 'home'){items.push(<img src={HomeSlide3} alt="" width='100%' style={{height:size}}/>)}
         return <ReactHtmlSlider items={items} />
     }
 }

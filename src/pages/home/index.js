@@ -81,7 +81,7 @@ export default class Home extends Component {
         }
     }
     billboard_layout(){
-        return { html: <Billboard /> }
+        return { html: <Billboard id='home'/> }
     }
     cartAndWallet_layout(){
         let {wallet} = this.state,{cart,SetState} = this.context;

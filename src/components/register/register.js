@@ -15,15 +15,15 @@ export default class Register extends Component{
             model:{
                 "latitude": 35.699739,
                 "longitude": 51.338097,
-                "firstName": "Ali",
-                "lastName": "Ahmadi",
-                "mobile": "09372046549",
-                "storeName": "Ali Store",
-                "address": "Lorestan, Khorram Abad",
-                "province": "Lorestan",
-                "city": "Khorram Abad",
-                "landlineNumber": '02188050006',
-                "email":"test12564@gmailo.com"
+                "firstName": "",
+                "lastName": "",
+                "mobile": "",
+                "storeName": "",
+                "address": "",
+                "province": "",
+                "city": "",
+                "landlineNumber": '',
+                "email":""
             },
             showMap:false
         }
@@ -70,11 +70,6 @@ export default class Register extends Component{
             "email":""
         }})
     }
-    button_layout(){
-        return {
-            html:<button className='button-2' onClick={()=>this.register()}>ایجاد حساب کاربری</button>,className:'margin-0-12'
-        }
-    }
     footer_layout(){
         let {onInter} = this.props;
         return {
@@ -92,15 +87,22 @@ export default class Register extends Component{
                 <Form
                     lang={'fa'}
                     model={model}
-                    theme={{rowHeight:70,rowGap:6}}
+                    bodyAttrs={{className:'main-bg'}}
+                    theme={{rowHeight:70}}
+                    labelAttrs={{className:'size14 color605E5C'}}
+                    onSubmit={()=>this.register()}
+                    submitButtonAttrs={{className:'button-2',style:{width:'100%'},value:'ایجاد حساب کاربری'}}
+                    footerAttrs={{className:'main-bg padding-0-24'}}
+                    rowGap={24}
                     onChange={(model)=>this.setState({model})}
                     inputs={[
                         {label:'نام',type:'text',field:'model.firstName',rowKey:'1',validations:[['required']]},
                         {type:'html',html:()=>'',rowKey:'1',rowWidth:12},
                         {label:'نام خانوادگی',type:'text',field:'model.lastName',rowKey:'1',validations:[['required']]},
                         {label:'ایمیل',type:'text',field:'model.email',validations:[['required']]},
-                        {label:'شماره تلفن همراه',type:'text',field:'model.mobile',validations:[['required']]},
-                        {label:'شماره تلفن ثابت',type:'text',field:'model.landlineNumber',validations:[['required']]},
+                        {label:'تلفن همراه',type:'text',field:'model.mobile',rowKey:'3',validations:[['required']]},
+                        {type:'html',html:()=>'',rowKey:'3',rowWidth:12},
+                        {label:'تلفن ثابت',type:'text',field:'model.landlineNumber',rowKey:'3',validations:[['required']]},
                         {label:'نام فروشگاه',type:'text',field:'model.storeName',validations:[['required']]},
                         {label:'ثبت موقعیت جغرافیایی',type:'html',html:()=>{
                             let {showMap,model} = this.state;
@@ -142,10 +144,10 @@ export default class Register extends Component{
                                 />
                             )
                         }},
-                        {label:'استان',type:'text',field:'model.province',rowKey:'2'},
+                        {label:'استان',type:'text',field:'model.province',rowKey:'2',validations:[['required']]},
                         {type:'html',html:()=>'',rowKey:'2',rowWidth:12},
-                        {label:'شهر',type:'text',field:'model.city',rowKey:'2'},
-                        {label:'آدرس',type:'textarea',field:'model.address'}
+                        {label:'شهر',type:'text',field:'model.city',rowKey:'2',validations:[['required']]},
+                        {label:'آدرس',type:'textarea',field:'model.address',validations:[['required']]}
                     ]}
                 />
             )
@@ -173,7 +175,6 @@ export default class Register extends Component{
                                     this.subtext_layout(),
                                     {size:24},
                                     this.form_layout(),
-                                    this.button_layout(),
                                     this.footer_layout()       
                                 ]
                             }
@@ -228,10 +229,6 @@ class ShowMap extends Component{
                     .addTo(myMap)
                     .bindPopup('I am a popup.');
 
-                    // myMap.on('click', function (e) {
-                    //     debugger;
-                    //     marker.setLatLng(e.latlng)
-                    // });
                     myMap.on('move', function (e) {
                         //marker.setLatLng(e.target.getCenter())
                         let {lat,lng} = e.target.getCenter()

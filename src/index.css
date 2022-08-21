@@ -283,6 +283,9 @@ button{
 .margin-24{
 	margin:24px;
 }
+.margin-0-24{
+	margin:0 24px;
+}
 .round-24{
 	border-radius:24px;
 }
@@ -291,6 +294,12 @@ button{
 }
 .round-0-12{
 	border-radius:0 12px;
+}
+.round-6{
+	border-radius:6px;
+}
+.round-8{
+	border-radius:8px;
 }
 .check-button{
 	height:40px;

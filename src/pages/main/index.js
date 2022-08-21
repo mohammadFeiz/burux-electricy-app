@@ -26,6 +26,7 @@ import SabteGarantiJadid from "../../components/garanti/sabte-garanti-jadid/sabt
 import SabteGarantiJadidBaJoziat from "../../components/garanti/sabte-garanti-jadid-ba-joziat/sabte-garanti-jadid-ba-joziat";
 import PayameSabteGaranti from "../../components/garanti/payame-sabte-garanti/payame-sabte-garanti";
 import Register from "../../components/register/register";
+import JoziateSefaresheBazargah from "../../components/bazargah/joziate-sefaresh/joziate-sefaresh";
 export default class Main extends Component {
   constructor(props) {
     super(props);
@@ -44,7 +45,7 @@ export default class Main extends Component {
     this.state = {
       buruxlogod:this.getBuruxLogoD(),
       splashScreen:true,
-      showRegister:true,
+      showRegister:false,
       services:Services(()=>this.state),
       theme,
       campaigns:[],
@@ -275,6 +276,20 @@ export default class Main extends Component {
           open={sidemenuOpen}
         />
         {!splashScreen && showRegister && <Popup><Register onClose={()=>this.setState({showRegister:false})}/></Popup>}
+        {/* <Popup>
+          <JoziateSefaresheBazargah
+            code='34562'
+            totalTime={30}
+            remainingTime={12}
+            date='1401/5/12'
+            deliverTo='دانیال عنایتی'
+            mobile='09123534314'
+            address='استان، شهر، خیابان اول، خیابان دوم، کوچه اول، کوچه دوم، نبش کوچه سوم، پلاک 1'
+            amount={257000}
+            benefit={50000}
+            items={[{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc}]}
+          />
+        </Popup> */}
         <Loading />
         {splashScreen && <Splash d={buruxlogod}/>}
       </appContext.Provider>

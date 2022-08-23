@@ -22,6 +22,7 @@ export class BuruxAuth extends Component {
       "clientId":'RetailerApp'
     })
     return (<div><ReactKeycloakProvider authClient={authClient}><Login goToLanding={goToLanding}/></ReactKeycloakProvider></div>);
+    // return <Main />;
   }
 }
 function Login(props){

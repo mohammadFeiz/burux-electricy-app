@@ -184,6 +184,7 @@ export default class Main extends Component {
   async getBazargahItems(){
     let {services} = this.state;
     let bazargahItems = await services({type:'bazargahItems',loading:false});
+    debugger;
     this.setState({bazargahItems:bazargahItems || []})
     
   }

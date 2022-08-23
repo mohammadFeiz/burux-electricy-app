@@ -464,10 +464,9 @@ export default function services(getState) {
       async bazargahItems({baseUrl}){
         let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?cardCode=c50000&distance=100`);
         let bulbSrc = bulb10w;
-        try{
           return res.data.data.map((o)=>{
             let distance = 0;
-            const orderItems=[];
+            let orderItems=[];
             try{
               distance = +o.distance.toFixed(2) * 1000
               orderItems=o.orderItems.map(i=>{
@@ -510,10 +509,8 @@ export default function services(getState) {
               "isDeleted": o.isDeleted
             }
           })
-        }
-        catch{
-          return []
-        }
+        
+        
       },
       async bazargahCatch({baseUrl,parameter}){//اخذ سفارش بازارگاه
         let res = await Axios.post(`${baseUrl}/OnlineShop/AddNewOrder`, {

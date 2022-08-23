@@ -378,7 +378,6 @@ export default function services(getState) {
         return result;
       },
       async wallet({ baseUrl }) {
-        debugger;
         let res = await Axios.post(`${baseUrl}/BOne/CheckBallance`, { "Requests": [{ "CardCode": "c50000" }] });
         try { res = res.data.data.results[0].ballance }
         catch { res = 0 }
@@ -463,45 +462,52 @@ export default function services(getState) {
         return result;
       },
       async bazargahItems({baseUrl}){
-        let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?cardCode=c50000`);
+        let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?cardCode=c50000&distance=100`);
         let bulbSrc = bulb10w;
         try{
           return res.data.data.map((o)=>{
             let distance = 0;
+            const orderItems=[];
             try{
               distance = +o.distance.toFixed(2) * 1000
+              orderItems=o.orderItems.map(i=>{
+                return {name:i.productName,detail:`${i.options} - ${i.quantity}`,src:bulbSrc};
+              })
             }
-            catch{distance = 0}
+            catch{
+              distance = 0;
+              orderItems=[];
+            }
             return {
-              "amount":1350000,
+              "amount":o.finalAmount,
               distance,
               "benefit":110000,
               "totalTime":30,
               "remainingTime": o.remainTime > 30 ? 30 : o.remainTime,
               "address": o.billAddress,
-              "items":[{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},{name:'لامپ LED جنرال 7 وات بروکس',detail:'آفتابی - 2 عدد',src:bulbSrc},],
+              "items":orderItems,
               "cityId": null,
               "provinceId": null,
-              "buyerId": "",
-              "receiverId": "2",
-              "buyerName": "test",
-              "receiverName": "test",
-              "buyerNumber": "09124769630",
-              "receiverNumber": "09124769630",
-              "orderId": "1",
-              "vendorId": "",
-              "shippingAddress": "تهران",
-              "zipCode": null,
-              "optionalAddress": null,
-              "city": null,
-              "province": null,
-              "longitude": "51.39411227464735",
-              "latitude": "35.760454449615835",
-              "orderDate": "2022-08-14T00:00:00",
-              "id": 19,
-              "createdDate": "2022-08-16T09:32:13.5450115+04:30",
+              "buyerId": o.buyerId,
+              "receiverId": o.receiverId,
+              "buyerName": o.buyerName,
+              "receiverName": o.receiverName,
+              "buyerNumber": o.buyerNumber,
+              "receiverNumber": o.receiverNumber,
+              "orderId": o.orderId,
+              "vendorId": o.vendorId,
+              "shippingAddress": o.shippingAddress,
+              "zipCode": o.zipCode,
+              "optionalAddress": o.optionalAddress,
+              "city":o.city,
+              "province": o.province,
+              "longitude": o.longitude,
+              "latitude": o.latitude,
+              "orderDate": o.orderDate,
+              "id": o.id,
+              "createdDate": o.createdDate,
               "modifiedDate": null,
-              "isDeleted": false
+              "isDeleted": o.isDeleted
             }
           })
         }

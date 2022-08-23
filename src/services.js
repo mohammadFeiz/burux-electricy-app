@@ -378,6 +378,7 @@ export default function services(getState) {
         return result;
       },
       async wallet({ baseUrl }) {
+        debugger;
         let res = await Axios.post(`${baseUrl}/BOne/CheckBallance`, { "Requests": [{ "CardCode": "c50000" }] });
         try { res = res.data.data.results[0].ballance }
         catch { res = 0 }

@@ -1,6 +1,7 @@
 import React,{Component} from 'react';
 import RVD from 'react-virtual-dom';
 import BazargahSVG from './../../utils/svgs/bazargah-svg';
+import bazargahNoItemSrc from './../../images/bazargah-no-items.png';
 import appContext from '../../app-context';
 import bulbSrc from './../../images/10w-bulb.png';
 import Header from '../../components/header/header';
@@ -64,7 +65,11 @@ export default class Bazargah extends Component{
         let {activeTabId} = this.state;
         if(activeTabId !== 0){return false}
         let {bazargahItems} = this.context;
-        if(bazargahItems.length === 0){return {html:'موردی وجود ندارد'}}
+        if(bazargahItems.length === 0){
+            return {
+                size:400,html:<img src={bazargahNoItemSrc}/>,align:'vh'
+            }
+        }
         return {
             gap:12,flex:1,scroll:'v',
             column:bazargahItems.map((o,i)=>{

@@ -15,7 +15,6 @@ export default class MyBurux extends Component{
         this.state = {
             user:'محمد شریف فیض',
             customerCode:'c19428',shopName:'فروشگاه الکتریکی تهران',visitorName:'علی محمدی',nationalCode:'0386481784',
-            wallet:123456789,
             parts:[
                 {text:'پیگیری سفارش خرید',icon:13,onClick:()=>{
                     let {SetState} = this.context;
@@ -58,8 +57,8 @@ export default class MyBurux extends Component{
         }
     }
     getContent(){
-        let {user = '',customerCode,shopName,visitorName,nationalCode,wallet,parts} = this.state;
-        let {guaranteeItems,SetState,userInfo} = this.context;
+        let {user = '',customerCode,shopName,visitorName,nationalCode,parts} = this.state;
+        let {guaranteeItems,wallet,userInfo} = this.context;
         return {
             scroll:'v',flex:1,className:'my-burux-page main-bg',
             column:[

@@ -48,6 +48,7 @@ export default class Main extends Component {
       showRegister:false,
       services:Services(()=>this.state),
       theme,
+      wallet:0,
       campaigns:[],
       testedChance: true,
       sidemenuOpen: false,
@@ -186,11 +187,18 @@ export default class Main extends Component {
     this.setState({bazargahItems:bazargahItems || []})
     
   }
+  async getWallet(){
+    let {services} = this.state;
+    let wallet = await services({type:'wallet'})
+    this.setState({wallet})
+  }
+  
   async componentDidMount() {
     let {services} = this.state;
     this.getGuaranteeItems()
     this.getCampaignsData();
     this.getBazargahItems();
+    this.getWallet();
     setInterval(async ()=>{
       this.getBazargahItems()  
     },30000)

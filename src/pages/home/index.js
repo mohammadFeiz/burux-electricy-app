@@ -22,7 +22,6 @@ export default class Home extends Component {
             showAwards:false,
             searchValue: '',
             preOrders: { waitOfVisitor: 0, waitOfPey: 0 },
-            wallet: 0,
             myNearItems: [
                 { price: 600000, distance: 1.2 },
                 { price: 100000, distance: 24.0 },
@@ -36,11 +35,7 @@ export default class Home extends Component {
         let preOrders = await services({type:"preOrders"});
         this.setState({ preOrders });
     }
-    async getWallet(){
-        let {services} = this.context;
-        let wallet = await services({type:'wallet'})
-        this.setState({wallet})
-    }
+    
     box_layout(icon,title,value,color){
         let {theme} = this.context;
         if(theme === 'theme-1'){return this.box_layout_theme1(icon,title,value,color)}
@@ -84,14 +79,14 @@ export default class Home extends Component {
         return { html: <Billboard id='home'/> }
     }
     cartAndWallet_layout(){
-        let {wallet} = this.state,{cart,SetState} = this.context;
+        let {wallet,cart,SetState} = this.context;
         return {
             style:{overflow:'visible'},
             className:'padding-0-12',
             row: [
-                this.cartAndWalletCard_layout(getSvg(28,{width:30,height:30}),'کیف پول',functions.splitPrice(wallet),'ریال'),
+                this.cartAndWalletCard_layout(getSvg(29,{width:30,height:30}),'کیف پول',functions.splitPrice(wallet),'ریال'),
                 {size:12},
-                this.cartAndWalletCard_layout(getSvg(29,{width:30,height:30}),'سبد خرید',Object.keys(cart).length,'کالا',()=>SetState({cartZIndex:10}))
+                this.cartAndWalletCard_layout(getSvg(28,{width:30,height:30}),'سبد خرید',Object.keys(cart).length,'کالا',()=>SetState({cartZIndex:10}))
             ]
         }
     }
@@ -345,7 +340,6 @@ export default class Home extends Component {
     }
     async componentDidMount(){
         this.getPreOrders();
-        this.getWallet()
     }
     render() {
         let {showAwards} = this.state;

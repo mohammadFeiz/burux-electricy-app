@@ -58,10 +58,13 @@ export default class Header extends Component{
                                     style={{background:'none',margin:'0 6px',padding:0}}
                                     text={<div className='home-circle'></div>}
                                     options={[
-                                        {text:'خروج از حساب',value:'exit'}
+                                        {text:'ثبت نام',value:'register'},
+                                        {text:'خروج از حساب',value:'exit'},
+
                                     ]}
                                     onChange={(value)=>{
                                         if(value === 'exit'){this.context.logout()}
+                                        if(value === 'register'){this.context.SetState({showRegister:true})}
                                     }}
                                 />
                             ), 

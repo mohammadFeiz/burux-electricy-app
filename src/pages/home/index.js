@@ -219,7 +219,6 @@ export default class Home extends Component {
     }
     bazargah_layout(){
         let {bazargahItems = [],SetState,services} = this.context;
-        bazargahItems = []
         return {
             column:[
                 {

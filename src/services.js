@@ -462,7 +462,58 @@ export default function services(getState) {
         return result;
       },
       async bazargahItems({baseUrl}){
-        let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?cardCode=c50000&distance=100`);
+        let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?cardCode=c50000&distance=100&status=1`); // 1 for pending
+        let bulbSrc = bulb10w;
+          return res.data.data.map((o)=>{
+            let distance = 0;
+            let orderItems=[];
+            try{
+              distance = +o.distance.toFixed(2) * 1000
+              orderItems=o.orderItems.map(i=>{
+                return {name:i.productName,detail:`${i.options} - ${i.quantity}`,src:bulbSrc};
+              })
+            }
+            catch{
+              distance = 0;
+              orderItems=[];
+            }
+            return {
+              "amount":o.finalAmount,
+              distance,
+              "benefit":110000,
+              "totalTime":30,
+              "remainingTime": o.remainTime > 30 ? 30 : o.remainTime,
+              "address": o.billAddress,
+              "items":orderItems,
+              "cityId": null,
+              "provinceId": null,
+              "buyerId": o.buyerId,
+              "receiverId": o.receiverId,
+              "buyerName": o.buyerName,
+              "receiverName": o.receiverName,
+              "buyerNumber": o.buyerNumber,
+              "receiverNumber": o.receiverNumber,
+              "orderId": o.orderId,
+              "vendorId": o.vendorId,
+              "shippingAddress": o.shippingAddress,
+              "zipCode": o.zipCode,
+              "optionalAddress": o.optionalAddress,
+              "city":o.city,
+              "province": o.province,
+              "longitude": o.longitude,
+              "latitude": o.latitude,
+              "orderDate": o.orderDate,
+              "id": o.id,
+              "createdDate": o.createdDate,
+              "modifiedDate": null,
+              "isDeleted": o.isDeleted
+            }
+          })
+        
+        
+      },
+      async bazargahCatched({baseUrl}){
+        let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?cardCode=c50000&distance=100&status=2`); // 2 for taken
         let bulbSrc = bulb10w;
           return res.data.data.map((o)=>{
             let distance = 0;

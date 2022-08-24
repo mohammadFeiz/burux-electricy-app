@@ -517,7 +517,6 @@ export default function services(getState) {
           cardCode :"c50000",
           orderId :parameter.orderId
         });
-        debugger;
         
         
       },

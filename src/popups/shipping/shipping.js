@@ -146,17 +146,15 @@ export default class Shipping extends Component{
             let res = await services({type:"sendToVisitor"})
             if(res){
               debugger;
-              for(let i = 0; i < cartItems.length; i++){
-                let {variant} = cartItems[i];
-                let newCart = {};
-                for(let prop in cart){
-                  if(prop !== variant.id){
-                    newCart[prop] = cart[prop]
-                  }
+              let variantIds = cartItems.map((o)=>o.variant.id)
+              let newCart = {};
+              for(let prop in cart){
+                if(variantIds.indexOf(prop) === -1){
+                  newCart[prop] = cart[prop]
                 }
-                SetState({cart:newCart,cartZIndex:0,categoryZIndex:0,productZIndex:0})
-                this.setState({orderNumber:res})
               }
+              SetState({cart:newCart,cartZIndex:0,categoryZIndex:0,productZIndex:0})
+              this.setState({orderNumber:res})
             }
           }}>ارسال برای ویزیتور</button>},
           
@@ -194,7 +192,7 @@ export default class Shipping extends Component{
           }}
         />
         {orderNumber !== false && (
-          <Popup style={{zIndex:10000}}><SendToVisitor/></Popup>
+          <Popup style={{zIndex:10000}}><SendToVisitor orderNumber={orderNumber}/></Popup>
         )}
         </>
       )

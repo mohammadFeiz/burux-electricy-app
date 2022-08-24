@@ -9,6 +9,8 @@ import Tabs from '../../components/tabs/tabs';
 import getSvg from '../../utils/getSvg';
 import AIOButton from '../../components/aio-button/aio-button';
 import BazargahCard from '../../components/bazargah-card/bazargah-card';
+import Popup from '../../components/popup/popup';
+import JoziateSefaresheBazargah from '../../components/bazargah/joziate-sefaresh/joziate-sefaresh';
 export default class Bazargah extends Component{
     static contextType = appContext;
     constructor(props){
@@ -19,7 +21,8 @@ export default class Bazargah extends Component{
             notifTypes:[
                 {text:'پیامک و اعلان اپ',value:0},
                 {text:'سایر موارد',value:1}
-            ]
+            ],
+            showDetails:false
         }
     }
     async getWaitToSend(){
@@ -75,15 +78,22 @@ export default class Bazargah extends Component{
             column:bazargahItems.map((o,i)=>{
                 return {
                     style:{overflow:'visible'},
-                    html:<BazargahCard {...o} onCatch={async()=>{
-                        let res = await services({type:'bazargahCatch',parameter:{orderId:o.orderId}})
-                        if(res){
-                            SetState({bazargahItems:this.context.bazargahItems.filter((o,index)=>{
-                                return index !== i
-                            })})
-                            
-                        }
-                    }}/>
+                    html:(
+                        <BazargahCard {...o} 
+                            onCatch={async()=>{
+                                let res = await services({type:'bazargahCatch',parameter:{orderId:o.orderId}})
+                                if(res){
+                                    SetState({bazargahItems:this.context.bazargahItems.filter((o,index)=>{
+                                        return index !== i
+                                    })})
+                                    
+                                }
+                            }}
+                            onShowDetails={()=>{
+                                this.setState({showDetails:o})
+                            }}
+                        />
+                    )
                 }
             })
         }
@@ -125,6 +135,17 @@ export default class Bazargah extends Component{
         }
     }
     render(){
+        let {showDetails} = this.state;
+        if(showDetails){
+            return (
+                <Popup>
+          <JoziateSefaresheBazargah
+            {...showDetails}
+            onClose={()=>this.setState({showDetails:false})}
+          />
+        </Popup>
+            )
+        }
         return (
             <RVD
                 layout={{

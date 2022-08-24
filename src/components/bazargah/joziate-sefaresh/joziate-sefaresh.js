@@ -22,24 +22,24 @@ export default class JoziateSefaresheBazargah extends Component{
         }
     }
     details_layout(){
-        let {code,date,deliverTo,mobile,address,amount,benefit} = this.props;
+        let {orderId,createdDate,receiverName,receiverNumber,shippingAddress,amount,benefit} = this.props;
         return {
             column:[
                 {
                     column:[
-                        this.detailRow_layout('کد سفارش',code),
-                        this.detailRow_layout('تاریخ ثبت',date),
+                        this.detailRow_layout('کد سفارش',orderId),
+                        this.detailRow_layout('تاریخ ثبت',createdDate),
                         {size:12}
                     ],
                     style:{borderBottom:'2px solid #ddd'}
                 },
                 {size:16},
-                this.detailRow_layout('تحویل گیرنده',deliverTo),
-                this.detailRow_layout('موبایل',mobile),
+                this.detailRow_layout('تحویل گیرنده',receiverName),
+                this.detailRow_layout('موبایل',receiverNumber),
                 {
                     column:[
                         {html:'آدرس',className:'colorA19F9D size12 padding-0-24'},
-                        {html:address,className:'color323130 size12 bold padding-0-24'}
+                        {html:shippingAddress,className:'color323130 size12 bold padding-0-24'}
                     ]
                 },
                 {size:16},

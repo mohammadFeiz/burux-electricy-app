@@ -6,7 +6,7 @@ import functions from './../../functions';
 import TimerGauge from '../timer-gauge/timer-gauge';
 export default class BazargahCard extends Component{
     button_layout(){
-        let {type = 'free',deliveredDate,canseledDate,onCatch} = this.props;
+        let {type = 'free',deliveredDate,canseledDate,onCatch,onShowDetails = ()=>{}} = this.props;
         let text = {
             'free':'اخذ سفارش',
             'waitToSend':'ارسال سفارش',
@@ -24,7 +24,11 @@ export default class BazargahCard extends Component{
         }[type]
         return {
             size:48,align:'v',
-            html:<button className={className} style={{height:32,margin:'0 12px'}} onClick={onClick}>{text}</button>
+            row:[
+                {flex:1,html:<button className={className} style={{height:32,margin:'0 12px'}} onClick={onClick}>{text}</button>},
+                {flex:1,html:<button className='button-1' style={{height:32,margin:'0 12px'}} onClick={()=>onShowDetails()}>جزییات</button>}
+                
+            ]
         }
     }
     amount_layout(amount){
@@ -139,6 +143,7 @@ export default class BazargahCard extends Component{
                             ]
                         },
                         this.items_layout(items),
+                        {size:12},
                         this.button_layout()
                     ]
                 }}

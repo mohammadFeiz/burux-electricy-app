@@ -11,7 +11,7 @@ export class BuruxAuth extends Component {
   render(){
     let {goToLanding} = this.props; 
     let authClient = new Keycloak({
-      "realm": "master",
+      "realm": "burux",
       "url": "https://iam.burux.com/auth/",
       "ssl-required": "external",
       "resource": "RetailerApp",

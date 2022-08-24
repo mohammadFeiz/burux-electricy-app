@@ -478,11 +478,12 @@ export default function services(getState) {
               orderItems=[];
             }
             return {
+              type:'free',
               "amount":o.finalAmount,
               distance,
               "benefit":110000,
               "totalTime":60,
-              "remainingTime": o.remainTime > 30 ? 30 : o.remainTime,
+              "remainingTime": o.remainTime > 60 ? 60 : o.remainTime,
               "address": o.billAddress,
               "items":orderItems,
               "cityId": null,
@@ -529,11 +530,12 @@ export default function services(getState) {
               orderItems=[];
             }
             return {
+              type:'waitToSend',
               "amount":o.finalAmount,
               distance,
               "benefit":110000,
               "totalTime":10,
-              "remainingTime": o.remainTime > 30 ? 30 : o.remainTime,
+              "remainingTime": o.remainTime > 10 ? 10 : o.remainTime,
               "address": o.billAddress,
               "items":orderItems,
               "cityId": null,

@@ -60,6 +60,7 @@ export default class Bazargah extends Component{
         // ]
         let {services} = this.context;
         let waitToSend = await services({type:'bazargahCatched'})
+        debugger;
         this.setState({waitToSend})
     }
     async componentDidMount(){

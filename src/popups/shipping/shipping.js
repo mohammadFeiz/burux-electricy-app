@@ -145,7 +145,6 @@ export default class Shipping extends Component{
           {size:36,align:'vh',className:'color605E5C size14 bold',html:<button className="button-2" onClick={async ()=>{
             let res = await services({type:"sendToVisitor"})
             if(res){
-              debugger;
               let variantIds = cartItems.map((o)=>o.variant.id)
               let newCart = {};
               for(let prop in cart){

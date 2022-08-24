@@ -62,13 +62,13 @@ export default class ProductCard extends Component{
     }
     discount_layout(){
         let {product} = this.props;
-        let {discountPercent,discountPrice,inStock} = product;
+        let {discountPercent,discountPrice,inStock,price} = product;
         if(!discountPrice || !discountPercent || !inStock){return false}
         return {
             childsAttrs:{align:'v'},gap:4,className:'padding-0-12',
             row:[
                 {flex:1},
-                {html:this.splitPrice(discountPrice),className:'size14 colorA19F9D'},
+                {html:<del>{this.splitPrice(discountPrice + price)}</del>,className:'size14 colorA19F9D'},
                 {html:<div style={{background:'#FFD335',color:'#fff',padding:'1px 3px',fontSize:12,borderRadius:6}}>{discountPercent + '%'}</div>},
             ]
         }

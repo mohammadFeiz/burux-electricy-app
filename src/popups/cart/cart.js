@@ -106,7 +106,6 @@ export default class Cart extends Component{
     }
     continue(){
       let {SetState,cartZIndex} = this.context;
-      debugger;
       SetState({shipping:{...this.tab},shippingZIndex:cartZIndex * 10})
     }
     render(){

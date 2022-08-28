@@ -470,7 +470,9 @@ export default function services(getState) {
             try{
               distance = +o.distance.toFixed(2) * 1000
               orderItems=o.orderItems.map(i=>{
-                return {name:i.productName,detail:`${i.options} - ${i.quantity}`,src:bulbSrc};
+                
+                let src=i.imagesUrl.length ? i.imagesUrl.split(",")[0]:bulbSrc;
+                return {name:i.productName,detail:`${i.options} - ${i.quantity}`,src:src};
               })
             }
             catch{
@@ -522,7 +524,7 @@ export default function services(getState) {
             try{
               distance = +o.distance.toFixed(2) * 1000
               orderItems=o.orderItems.map(i=>{
-                return {name:i.productName,detail:`${i.options} - ${i.quantity}`,src:bulbSrc};
+                return {name:i.productName,detail:`${i.options} - ${i.quantity}`,src:i.imagesUrl.length ? i.imagesUrl.split(",")[0]:bulbSrc};
               })
             }
             catch{

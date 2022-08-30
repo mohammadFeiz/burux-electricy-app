@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import RVD from "react-virtual-dom";
 import getSvg from "../../utils/getSvg";
+//import Pricing from "./../../pricing";
 import Home from "./../home/index";
 import MyBurux from "./../my-burux/index";
 import Buy from "./../buy/index";
@@ -30,6 +31,19 @@ import JoziateSefaresheBazargah from "../../components/bazargah/joziate-sefaresh
 export default class Main extends Component {
   constructor(props) {
     super(props);
+    // let pricing = new Pricing('https://b1api.burux.com/api/BRXIntLayer/GetCalcData', 41, 10 * 60 * 1000)
+    // let getPrice = (items)=>{
+    //   let data = {
+    //     "cardGroupCode": 167,
+    //     "cardCode": "c68592",
+    //     "marketingdetails": {
+    //         "priceList": 2,
+    //         "slpcode": 62
+    //     },
+    //     "marketingLines": items
+    //   }
+    //   return pricing.autoPriceList(items.map(({itemCode})=>itemCode), data, null, null, null, null, null, "01");
+    // }
     setTimeout(()=>{
       this.setState({splashScreen:false})
     },7000)
@@ -43,6 +57,7 @@ export default class Main extends Component {
     }
     this.dateCalculator = dateCalculator();
     this.state = {
+      //getPrice,
       buruxlogod:this.getBuruxLogoD(),
       splashScreen:true,
       showRegister:false,
@@ -204,6 +219,7 @@ export default class Main extends Component {
     },30000)
     //let testedChance = await services({type:"get_tested_chance"});
     let userInfo = await services({type:"userInfo",cache:1000});
+    debugger;
     this.setState({
       userInfo,
       //testedChance

@@ -58,7 +58,7 @@ class InternalLogin extends Component{
   }
 }
 ReactDOM.render(
-    <BuruxAuth />
+    <Main />
   ,
   document.getElementById('root')
 );

@@ -28,6 +28,7 @@ import SabteGarantiJadidBaJoziat from "../../components/garanti/sabte-garanti-ja
 import PayameSabteGaranti from "../../components/garanti/payame-sabte-garanti/payame-sabte-garanti";
 import Register from "../../components/register/register";
 import JoziateSefaresheBazargah from "../../components/bazargah/joziate-sefaresh/joziate-sefaresh";
+import SignalR from '../../singalR/signalR';
 export default class Main extends Component {
   constructor(props) {
     super(props);
@@ -44,6 +45,8 @@ export default class Main extends Component {
     //   }
     //   return pricing.autoPriceList(items.map(({itemCode})=>itemCode), data, null, null, null, null, null, "01");
     // }
+    let signalR=new SignalR();
+    signalR.start();
     setTimeout(()=>{
       this.setState({splashScreen:false})
     },7000)
@@ -58,6 +61,7 @@ export default class Main extends Component {
     this.dateCalculator = dateCalculator();
     this.state = {
       //getPrice,
+      signalR,
       buruxlogod:this.getBuruxLogoD(),
       splashScreen:true,
       showRegister:false,

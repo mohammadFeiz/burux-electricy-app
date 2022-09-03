@@ -14,7 +14,7 @@ export default class TimerGauge extends Component{
                 label={{step:5,style:{offset:46,color:'#d5d5d5'}}}
                 start={0} radius={32} angle={360} end={totalTime} thickness={4}
                 text={[
-                    {value:remainingTime,style:{top:-10,fontSize:16,color:timeColor}},
+                    {value:remainingTime.toFixed(0),style:{top:-10,fontSize:16,color:timeColor}},
                     {value:'دقیقه',style:{top:10,fontSize:14,color:'#A19F9D',fontFamily:'IranSans_light'}}
                 ]}
                 ranges={[

@@ -61,15 +61,22 @@ export default class ProductCard extends Component{
         return {html:name,className:'size14 color575756 bold theme-1-colorDDD',style:{whiteSpace:'normal'}}
     }
     discount_layout(){
-        let {product} = this.props;
-        let {discountPercent,discountPrice,inStock,price} = product;
-        if(!discountPrice || !discountPercent || !inStock){return false}
+        let {product,count = 1} = this.props;
+        let {inStock,Price,B1Dscnt = 0,CmpgnDscnt = 0,PymntDscnt = 0} = product;
+        if(!Price || !inStock){return false}
         return {
             childsAttrs:{align:'v'},gap:4,className:'padding-0-12',
             row:[
                 {flex:1},
-                {html:<del>{this.splitPrice(discountPrice + price)}</del>,className:'size14 colorA19F9D'},
-                {html:<div style={{background:'#FFD335',color:'#fff',padding:'1px 3px',fontSize:12,borderRadius:6}}>{discountPercent + '%'}</div>},
+                {html:<del>{this.splitPrice(Price * count)}</del>,className:'size14 colorA19F9D'},
+                {
+                    gap:3,
+                    row:[
+                        {show:!!B1Dscnt,html:<div style={{background:'#FFD335',color:'#fff',padding:'1px 3px',fontSize:12,borderRadius:6}}>{B1Dscnt + '%'}</div>},
+                        {show:!!CmpgnDscnt,html:<div style={{background:'#ffa835',color:'#fff',padding:'1px 3px',fontSize:12,borderRadius:6}}>{CmpgnDscnt + '%'}</div>},
+                        {show:!!PymntDscnt,html:<div style={{background:'#ff4335',color:'#fff',padding:'1px 3px',fontSize:12,borderRadius:6}}>{PymntDscnt + '%'}</div>}
+                    ]
+                },
             ]
         }
     }
@@ -94,10 +101,10 @@ export default class ProductCard extends Component{
         return {flex:1,align:'v',html:'موجود در سبد خرید شما',className:'colorD83B01 bold size10 padding-0-12'}
     }
     price_layout(){
-        let {product} = this.props;
-        let {price,inStock} = product;
-        if(!inStock){return false}
-        return {row:[{flex:1},{html:this.splitPrice(price) + ' ریال',className:'size12 color404040 bold theme-1-colorEEE padding-0-12'}]}
+        let {product,count = 1} = this.props;
+        let {FinalPrice,inStock} = product;
+        if(!inStock || !FinalPrice){return false}
+        return {row:[{flex:1},{html:this.splitPrice(FinalPrice * count) + ' ریال',className:'size12 color404040 bold theme-1-colorEEE padding-0-12'}]}
     }
     horizontal_layout(){
         let {SetState} = this.context;
@@ -146,11 +153,11 @@ export default class ProductCard extends Component{
         return (
             <RVD
                 layout={{
-                    style:{height:256,width:140,borderRadius:12,fontSize:14,...style},
+                    style:{height:270,width:180,borderRadius:12,fontSize:14,...style},
                     className:'bgFFF borderDDD theme-1-dark-bg theme-1-border3F4456',
                     attrs:{onClick:()=>SetState({productZIndex:zIndex * 10,product})},
                     column:[
-                        {size:128,align:'vh',html:<img src={srcs[0] || NoSrc} width={'100%'} style={{width:'100%',height:'100%',borderRadius:8}} alt=''/>,style:{padding:6,paddingBottom:0}},
+                        {size:140,align:'vh',html:<img src={srcs[0] || NoSrc} width={'100%'} style={{width:'calc(100% - 24px)',height:'100%',borderRadius:8}} alt=''/>,style:{padding:6,paddingBottom:0}},
                         {html:name,className:'size12 padding-6-12 color575756 bold theme-1-colorDDD',style:{whiteSpace:'normal'}},
                         {flex:1},
                         this.isInCart_layout(),

@@ -211,21 +211,33 @@ export default class Main extends Component {
     //let testedChance = await services({type:"get_tested_chance"});
     let userInfo = await services({type:"userInfo",cache:1000});
     let pricing = new Pricing('https://b1api.burux.com/api/BRXIntLayer/GetCalcData', userInfo.cardCode, 10 * 60 * 1000)
-    debugger;
-    let getPrice = (items)=>{
+    let istarted = pricing.startservice().then((value) => { return value; });
+    let fixPrice = (items)=>{
       let data = {
-        "cardGroupCode": 167,
-        "cardCode": "c68592",
+        "CardGroupCode": 167,
+        "CardCode": "c68592",
         "marketingdetails": {
             "priceList": 2,
             "slpcode": userInfo.cardCode
         },
-        "marketingLines": items
+        "MarketingLines": items
       }
-      return pricing.autoPriceList(items.map(({itemCode})=>itemCode), data, null, null, null, null, null, "01");
+      let list = items.map(({itemCode})=>itemCode);
+      return pricing.autoPriceList(list, data, null, null, null, null, null, "01");
+    }
+    let updateProductPrice = (list)=>{
+      if(list === false){return false}
+      return list.map((o)=>{
+        let obj = fixPrice([{itemCode:o.defaultVariant.code,itemQty:1}])[0]
+        let newObj = {...o,...obj};
+        return newObj
+      })
     }
     this.setState({
       userInfo,
+      fixPrice,
+      updateProductPrice
+
       //testedChance
     });
   }

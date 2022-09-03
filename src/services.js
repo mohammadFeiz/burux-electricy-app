@@ -394,13 +394,17 @@ export default function services(getState) {
         let result = res.data.data.data;
         return result.map((o) => { return { name: o.attributes.name, id: o.id } });
       },
-      async campaignsProducts({ baseUrl, parameter }) {
+      async campaignsProducts({ baseUrl, parameter,getState }) {
         let { campaigns } = parameter;
         let result = {};
         for (let i = 0; i < campaigns.length; i++) {
           let campaign = campaigns[i];
           let res = await this.getTaxonProducts({ baseUrl, parameter: { Taxons: campaign.id } })
-          res = res.map((o) => { return { ...o, campaign } })
+          res = res.map((o) => { 
+            debugger
+            let priceObj = getState().getPrice([{itemCode:'1',itemQty:'2'}])
+            return { ...o, campaign } 
+          })
           result[campaign.id] = res;
         }
         return result;
@@ -409,20 +413,17 @@ export default function services(getState) {
         let { campaign } = parameter;
         let { id } = campaign;
         let res = await this.getTaxonProducts({ baseUrl, parameter: { Taxons: id } })
-        return res.map((o) => { return { ...o, campaign } })
+        return getState().updateProductPrice(res.map((o) => { return { ...o, campaign } }))
       },
       async lastOrders({ baseUrl }) {
-        return await this.getTaxonProducts({ baseUrl, parameter: { Taxons: '10179' } })
-
+        return getState().updateProductPrice(await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10179'}}),true)
       },
-      async recommendeds({ baseUrl }) {
-        return await this.getTaxonProducts({ baseUrl, parameter: { Taxons: '10550' } })
-
+      async recommendeds({ baseUrl,getState }) {
+        return getState().updateProductPrice(await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10550'}}),true)
       },
-
-      async bestSellings({baseUrl}){
-        return await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10178'}})
-            },
+      async bestSellings({baseUrl,getState}){
+        return getState().updateProductPrice(await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10178'}}),true)
+      },
       async preOrders({ baseUrl }) {
         let preOrders = { waitOfVisitor: 10, waitOfPey: 2 };
         let res = await Axios.post(`${baseUrl}/Visit/PreOrderStat`, { CardCode: "c50000" });
@@ -826,7 +827,10 @@ export default function services(getState) {
             Include: "variants,option_types,product_properties,taxons,images,default_variant"
           }
         );
-
+        if(res.data.data.status === 500){
+          debugger
+          return false
+        }
         const included = res.data.data.included;
 
         let skusId = [];

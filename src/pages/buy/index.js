@@ -63,7 +63,7 @@ export default class Buy extends Component {
     this.setState({ lastOrders });
   }
   async get_bestSellings() {
-    let {services} = this.context;
+    let {services,getPrice} = this.context;
     let bestSellings = await services({type:'bestSellings',cache:660});
     this.setState({ bestSellings });
   }

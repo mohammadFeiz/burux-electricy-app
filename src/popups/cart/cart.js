@@ -24,46 +24,58 @@ export default class Cart extends Component{
       return res
     }
     getDetails(){
-      let { cart,changeCart,cartZIndex } = this.context,tabsDictionary = {};
+      let { cart,changeCart,cartZIndex,fixPrice } = this.context,tabsDictionary = {};
       let variantIds = Object.keys(cart);
       for(let i = 0; i < variantIds.length; i++){
         let variantId = variantIds[i];
-        let { product, count, variant } = cart[variantId];
-        let { optionTypes,campaign } = product;
-        let { price,optionValues,discountPrice } = variant;
+        let { product } = cart[variantId];
+        let { campaign } = product;
         let tabId,tabTitle;
         if(campaign){tabId = campaign.id; tabTitle = campaign.name}
         else{tabId = 'regular'; tabTitle = 'خرید عادی'}
-        tabsDictionary[tabId] = tabsDictionary[tabId] || {id:tabId,title:tabTitle,cards:[],total:0,cartItems:[],totalDiscount:0};
-        let details = [];
-        for (let j = 0; j < optionTypes.length; j++) {
-          let optionType = optionTypes[j];
-          details.push([optionType.name, optionType.items[optionValues[optionType.id]]]);
-        }
-        let props = {
-          product,details,count,type:'horizontal',
-          title:product.campaign?product.campaign.name:undefined,//2
-          isFirst:i === 0,isLast: i === variantIds.length - 1,
-          parentZIndex:cartZIndex,
-          changeCount:(count) => changeCart(count,variantId)
-        }
-        tabsDictionary[tabId].cards.push(<ProductCard {...props} showIsInCart={false}/>)
+        tabsDictionary[tabId] = tabsDictionary[tabId] || {id:tabId,title:tabTitle,cards:[],total:0,cartItems:[],totalDiscount:0,flex:1};
         tabsDictionary[tabId].cartItems.push(cart[variantId])
         tabsDictionary[tabId].badge++;
-        tabsDictionary[tabId].total += price * count;
-        tabsDictionary[tabId].totalDiscount += discountPrice * count;
       }
-      this.tabs = Object.keys(tabsDictionary).map((tabId)=>{
-        let {id,title,cartItems} = tabsDictionary[tabId]; 
-        return {id,title,badge:cartItems.length,flex:1}
-      })
+      this.tabs = [];
+      for(let tabId in tabsDictionary){
+        let tab = tabsDictionary[tabId]
+        let fixedItems = fixPrice(tab.cartItems.map(({product,count})=>{
+          let itemCode = product.defaultVariant.code;
+          return {itemCode,itemQty:count} 
+        }))
+        tab.cartItems = tab.cartItems.map((o,i)=>{
+          return {...o,product:{...o.product,...fixedItems[i]}}
+        })
+        tab.badge = tab.cartItems.length;
+        tab.cards = tab.cartItems.map(({product,count,variant},i)=>{
+          let { optionTypes,campaign } = product;
+          let { optionValues } = variant;
+          tab.total += count * product.FinalPrice;
+          tab.totalDiscount += count * (product.Price - product.FinalPrice)
+          let details = [];
+          for (let j = 0; j < optionTypes.length; j++) {
+            let optionType = optionTypes[j];
+            details.push([optionType.name, optionType.items[optionValues[optionType.id]]]);
+          }
+          let props = {
+            product,details,count,type:'horizontal',
+            title:campaign?campaign.name:undefined,//2
+            isFirst:i === 0,isLast: i === tabsDictionary[tabId].cartItems.length - 1,
+            parentZIndex:cartZIndex,
+            changeCount:(count) => changeCart(count,variant.id)
+          }
+          return <ProductCard {...props} showIsInCart={false}/>
+        })
+        this.tabs.push(tab);
+      }
       if(tabsDictionary[this.state.activeTabId]){
         this.tab = tabsDictionary[this.state.activeTabId];
       }
       else{
         if(this.tabs[0]){
           this.state.activeTabId = this.tabs[0].id;
-          this.tab = tabsDictionary[this.tabs[0].id]
+          this.tab = this.tabs[0]
         }
         else{
           this.tab = undefined;

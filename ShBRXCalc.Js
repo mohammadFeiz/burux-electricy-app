@@ -1,5 +1,5 @@
 ﻿
-export default class Pricing {
+class Pricing {
     "use strict";
     //dbrequest = {};
     updateInterval = 10 * 60 * 1000; // 10min
@@ -11,19 +11,21 @@ export default class Pricing {
     db = {};
 
     constructor(fetchURL, applicator, interval = 10 * 60 * 1000) {
-        
+
         this.fetchUrl = fetchURL;
 
         this.updateInterval = interval;
         this.applicator = applicator;
     }
+
     openDataBase() {
         return new Promise(function (resolve, reject) {
 
         });
     }
+
     async CreateDatabase() {
-        let self = this;
+        self = this;
         return new Promise(function (resolve, reject) {
             self.ndbrequest = window.indexedDB.open("BRXINTLayerCalcData");
             self.ndbrequest.onerror = function (event) {
@@ -317,8 +319,9 @@ export default class Pricing {
         return this.pricingData.ItemPrices;
     }
 
-    
-    
+    get pricingData() {
+        return this.pricingData;
+    }
 
     startservice() {
         let self = this;
@@ -463,7 +466,6 @@ export default class Pricing {
         line.PriceAfterDiscount = line.Gross = line.PriceAfterVat = 0;
         line.DiscountSrc = 78;
         line.PriceSrc = 78;
-        return line
     }
 
     CalculateCommission(qty, commission, docdate, paydate, settleType
@@ -647,6 +649,7 @@ export default class Pricing {
         //shortrules = DisRules.filter((x) => (x.cardcode == cardcode || x.cardGroupCode == cardgroupcode || x.priceList == listnum)
         //    && (shortitem.indexOf((y) => y.itemCode == x.itemCode || y.groupCode == x.itemGroupCode) > -1)
         //    && (!x.validFrom || docdate >= x.validFrom) && (!x.validTo || docdate <= x.validTo));
+
         for (let item of lines) {
             res = null;
             res = item;
@@ -694,7 +697,7 @@ export default class Pricing {
             if (disctemp.length > 0) {
                 let temp = 0;
                 let temprule;
-                for (let rule of disctemp) {
+                for (rule of disctemp) {
                     if ((rule.price * (1 - rule.discountPercent / 100)) > temp) {
                         temp = rule.price * (1 - rule.discountPercent / 100);
                         temprule = rule;
@@ -718,7 +721,7 @@ export default class Pricing {
             if (disctemp.length > 0) {
                 let temprule;
                 let temp = 0;
-                for (let rule of disctemp) {
+                for (rule of disctemp) {
                     if ((rule.price * (1 - rule.discountPercent / 100)) > temp) {
                         temp = rule.price * (1 - rule.discountPercent / 100);
                         temprule = rule;
@@ -933,6 +936,7 @@ export default class Pricing {
 
         results.marketingdetails.DocumentDiscount = results.marketingdetails.DocumentDiscountPercent * sum / 100;
         results.DocumentTotal = sum - results.marketingdetails.DocumentDiscount;
+
         return results;
     }
 
@@ -1317,11 +1321,12 @@ export default class Pricing {
         // محاسبه قیمت و تخفیف در بی وان
         if (isneedb1) {
             DocAfterB1 = this.CalculateDocumentByB1(doctocalc, Items, DisRules, SlpCodes);
-            
+
             if (DocAfterB1 == null || DocAfterB1.MarketingLines == null) {
                 error += "خطا در محاسبه تخفیفات در بی وان";
                 return null;
             }
+
             let lp = {};
             for (let item of DocAfterB1.MarketingLines) {
                 lp = {};

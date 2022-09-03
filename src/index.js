@@ -14,25 +14,34 @@ class OTPLogin extends Component{
   constructor(props){
     super(props);
     this.apiBaseUrl="https://retailerapp.bbeta.ir/api/v1";
-    let recodeIn = localStorage.getItem('brxelcrecodein');
-    console.log('init recodeIn',recodeIn)
-    if(!recodeIn || recodeIn === null){
-      localStorage.setItem('brxelcrecodein','false');
+    let storage = localStorage.getItem('brxelcrecodein');
+    let recodeIn,phoneValue,mode = 'inter-phone';
+    if(!storage || storage === null){
+      localStorage.setItem('brxelcrecodein','{recodeIn:false,phoneValue:""}');
       recodeIn = false;
+      phoneValue = '';
     }
     else{
-      recodeIn = JSON.parse(recodeIn)
+      storage = JSON.parse(storage);
+      if(storage.recodeIn === false || new Date().getTime() >= storage.recodeIn){
+        recodeIn = false;
+        phoneValue = '';
+      }
+      else{
+        recodeIn = storage.recodeIn;
+        phoneValue = storage.phoneValue;
+        mode = 'inter-code'
+      }
     }
-    console.log('recodeIn',recodeIn)
-    this.state = {mode:'inter-phone',phoneValue:'',codeValue:'',recodeIn,recode:false,recodeLimit:0.1 * 1000 * 60,isAutenticated:false}
+    this.state = {mode,phoneValue,codeValue:'',recodeIn,recode:false,recodeLimit:1 * 1000 * 60,isAutenticated:false}
     setInterval(()=>{
-      let {mode,recode} = this.state;
+      let {mode,recode,phoneValue} = this.state;
       if(mode !== 'inter-code' || recode){return}
       let {recodeIn} = this.state;
       let remainingTime = recodeIn - new Date().getTime();
       if(remainingTime <= 0){
         this.setState({recode:true})
-        this.changeRecodeIn(false)
+        this.changeRecodeIn(false,phoneValue)
         return
       }
       $('.remaining-time-to-resend-code').html(this.remainingTimeToClock(remainingTime))
@@ -93,10 +102,9 @@ class OTPLogin extends Component{
       this.setState({mode:'error',codeValue:''})
     }
   }
-  changeRecodeIn(value){
-    console.log('changeRecodeIn',value)
-    this.setState({recodeIn:value});
-    localStorage.setItem('brxelcrecodein',JSON.stringify(value))
+  changeRecodeIn(recodeIn,phoneValue){
+    this.setState({recodeIn,phoneValue});
+    localStorage.setItem('brxelcrecodein',JSON.stringify({phoneValue,recodeIn}))
   }
   getSvg(){
     return (
@@ -122,10 +130,10 @@ class OTPLogin extends Component{
     return {html:this.getSvg()}
   }
   onInterPhone(){
-    let {recodeIn,recodeLimit,phoneValue} = this.state;
+    let {recodeLimit,phoneValue} = this.state;
     this.SMSToUser(phoneValue);
     this.setState({mode:'inter-code',recode:false,codeValue:''})
-    this.changeRecodeIn(new Date().getTime() + recodeLimit)
+    this.changeRecodeIn(new Date().getTime() + recodeLimit,phoneValue)
   }
   
   
@@ -133,12 +141,11 @@ class OTPLogin extends Component{
     let {recodeLimit,phoneValue} = this.state;
     this.SMSToUser(phoneValue);
     this.setState({recode:false});
-    this.changeRecodeIn(new Date().getTime() + recodeLimit)
+    this.changeRecodeIn(new Date().getTime() + recodeLimit,phoneValue)
   }
   onChangePhone(){
-    let {recodeLimit} = this.state;
-    this.setState({mode:'inter-phone',phoneValue:''});
-    this.changeRecodeIn(new Date().getTime() + recodeLimit)
+    this.setState({mode:'inter-phone'});
+    this.changeRecodeIn(false,'')
   }
   interPhone_layout(){
     let {phoneValue,mode} = this.state;
@@ -271,6 +278,7 @@ class OTPLogin extends Component{
     return (
       <RVD
         layout={{
+          style:{position:'fixed',left:0,top:0,width:'100%',height:'100%'},
           column:[
             this.header_layout(),
             {size:48},

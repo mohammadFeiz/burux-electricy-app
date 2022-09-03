@@ -52,7 +52,17 @@ export default class ProductCount extends Component{
                         {html: (<div onTouchStart={(e)=>this.touchStart(1)} className='product-count-button'>+</div>),show:onChange!== undefined},
                         { flex: 1, html: value },
                         {html: ()=>(<div onTouchStart={(e) =>this.touchStart(-1)} className='product-count-button'>-</div>),show:value > 1 && onChange!== undefined},
-                        {html: ()=>(<div onClick={(e) =>this.change(this.props.value - 1,min)} className='product-count-button product-delete-button'>{getSvg('delete',{width:28,height:28})}</div>),show:value === 1 && onChange!== undefined},
+                        {
+                            html: ()=>(
+                                <div 
+                                    onClick={(e)=>this.change(this.props.value - 1,min)} 
+                                    className='product-count-button'
+                                >
+                                    -
+                                </div>
+                            ),
+                            show:value === 1 && onChange!== undefined
+                        },
                     ] 
                 }}
             />

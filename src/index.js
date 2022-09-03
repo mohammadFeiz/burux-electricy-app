@@ -213,14 +213,24 @@ class OTPLogin extends Component{
         {
           className:'padding-0-12',
           html:(
-            <input 
-              type='number' value={codeValue} onChange={(e)=>{
-                let value = e.target.value;
-                if(value.toString().length > 4){return}
-                this.setState({codeValue:e.target.value})
-              }} maxLength={4} placeholder='- - - -'
-              style={{height:40,background:'#eee',border:'1px solid #0094D4',borderRadius:6,width:'100%',direction:'ltr',padding:'0 12px',fontFamily:'inherit',textAlign:'center'}}
-            />
+            <form style={{width:'100%',background:'yellow'}}>
+              <input 
+                type='text' value={codeValue} 
+                inputMode='numeric'
+                pattern='\d{4}'
+                autoComplete='one-time-code'
+                onChange={(e)=>{
+                  let value = e.target.value;
+                  if(value !== ''){
+                    value = value.toString();
+                    if(isNaN(+value[value.length - 1])){return}
+                  }
+                  if(value.toString().length > 4){return}
+                  this.setState({codeValue:e.target.value})
+                }} maxLength={4} placeholder='- - - -'
+                style={{height:40,background:'#eee',border:'1px solid #0094D4',borderRadius:6,width:'100%',direction:'ltr',fontFamily:'inherit',textAlign:'center'}}
+              />
+            </form>
           )
         },
         {size:16},

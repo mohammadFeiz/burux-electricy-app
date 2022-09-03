@@ -130,8 +130,8 @@ export default function services(getState) {
         const results = res.data.data.results;
 
         for (let order of results) {
-          let id = order.orderState;
-          if(id === 'Preorder' ||id === 'CustomeApproved' ||id === 'VisitorApproved' ||id === 'SupervisorApproved' ||id === 'ManagerApproved'){
+          let id = order.docStatus;
+          if(id === 'PreOrder' ||id === 'CustomeApproved' ||id === 'VisitorApproved' ||id === 'SupervisorApproved' ||id === 'ManagerApproved'){
             tabsDictionary['darHaleBarresi'].push(order)
           }
           else if(id === 'PaymentPassed' ||id === 'PaymentApproved'){
@@ -148,6 +148,7 @@ export default function services(getState) {
             tabsDictionary[id].push(order)
           }
           else {
+            debugger;
             alert('unknown order')
           }
         }

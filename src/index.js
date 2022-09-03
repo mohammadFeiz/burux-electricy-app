@@ -13,6 +13,7 @@ import $ from 'jquery';
 class OTPLogin extends Component{
   constructor(props){
     super(props);
+    this.apiBaseUrl="https://retailerapp.bbeta.ir/api/v1";
     let recodeIn = localStorage.getItem('brxelcrecodein');
     console.log('init recodeIn',recodeIn)
     if(!recodeIn || recodeIn === null){
@@ -45,10 +46,13 @@ class OTPLogin extends Component{
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //!!!!!!حتما بعد از هر تغییر صفحه رو ریفرش کن!!!!!!!!!!!!!
   //این تابع زمانی کال می شود که کاربر شماره را وارد کرد و تایید رو زد
-  SMSToUser(phoneNumber){
+  async SMSToUser(phoneNumber){
     //فقط ترتیبی بده که پیامک برای کاربر ارسال شود و نیازی نیست اینجا چیزی ریترن شود یا استیت اپ تغییر کند
     
-    //Axios.post('url',phoneNumber)
+   const sendSmsResult=await Axios.get(`${this.apiBaseUrl}/Users/FirstStep?phoneNumber=${phoneNumber}`);
+
+   if(sendSmsResult.data.isSuccess)
+      this.userId=sendSmsResult.data.data.id;
   }
 
   //این تابع زمانی کال می شود که کاربر کد پیامک شده را وارد کرد و تایید رو زد
@@ -62,6 +66,15 @@ class OTPLogin extends Component{
     //اگر کد وارد شده اشتباه بود باید فالس ریترن شود 
     //let res = await Axios.post('url',code)
     //return false    
+
+    if(this.userId != undefined){
+        const smsValidationResult=await Axios.get(`${this.apiBaseUrl}/Users/SecondStep?userId=${this.userId}&code=${code}`);
+
+        if(smsValidationResult.data.isSuccess)
+          return smsValidationResult.data.data;
+        else
+          return false;
+    }
   
   }
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////

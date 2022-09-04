@@ -108,12 +108,12 @@ export default class ProductCard extends Component{
     }
     horizontal_layout(){
         let {SetState} = this.context;
-        let {isLast,isFirst,product,zIndex = 1} = this.props;
+        let {isLast,isFirst,product,parentZIndex = 1} = this.props;
         return (
             <RVD
                 layout={{
                     className:'box gap-no-color margin-0-12',
-                    attrs:{onClick:()=>SetState({productZIndex:zIndex * 10,product})},
+                    attrs:{onClick:()=>SetState({productZIndex:parentZIndex * 10,product})},
                     style:{
                         padding:6,height:130,
                         borderBottomLeftRadius:!isLast?0:undefined,
@@ -148,14 +148,14 @@ export default class ProductCard extends Component{
     }
     vertical_layout(){
         let {SetState} = this.context;
-        let {style,zIndex = 1,product} = this.props;
+        let {style,product,parentZIndex = 1} = this.props;
         let {srcs = [],name} = product;
         return (
             <RVD
                 layout={{
                     style:{height:270,width:180,borderRadius:12,fontSize:14,...style},
                     className:'bgFFF borderDDD theme-1-dark-bg theme-1-border3F4456',
-                    attrs:{onClick:()=>SetState({productZIndex:zIndex * 10,product})},
+                    attrs:{onClick:()=>SetState({productZIndex:parentZIndex * 10,product})},
                     column:[
                         {size:140,align:'vh',html:<img src={srcs[0] || NoSrc} width={'100%'} style={{width:'calc(100% - 24px)',height:'100%',borderRadius:8}} alt=''/>,style:{padding:6,paddingBottom:0}},
                         {html:name,className:'size12 padding-6-12 color575756 bold theme-1-colorDDD',style:{whiteSpace:'normal'}},

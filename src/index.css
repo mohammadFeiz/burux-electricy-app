@@ -37,7 +37,7 @@
 body{
   	font-family:IRANSans-light;
 	direction: rtl;
-
+	overscroll-behavior-y: contain;
 }
 .otp-code{
 	height:36px;

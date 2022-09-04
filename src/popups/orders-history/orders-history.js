@@ -7,11 +7,17 @@ export default class OrdersHistory extends Component {
     static contextType = appContext;
     constructor(props) {
       super(props);
-      this.state = {activeTabId:false,tabs:[]};
+      this.state = {activeTabId:false,tabs:[],error:false};
     }
     async componentDidMount() {
       let {services} = this.context;
-      let {tabs,orders}= await services({type:"ordersHistory"});
+      let res = await services({type:"ordersHistory"});
+      console.log('res.data',res)
+      if(res.data && res.data.error){
+        this.setState({error:res.data.error});
+        return;
+      }
+      let {tabs,orders} = res;
       let tabsDic = {}
       for(let i = 0; i < orders.length; i++){
         let order = orders[i];
@@ -63,6 +69,20 @@ export default class OrdersHistory extends Component {
         })
       }
     }
+    error_layout(){
+      let {error} = this.state;
+      if(!error){return false}
+      return {
+        column:[
+          {
+            html:error,className:'size12 bold colorD83B01 padding-0-12',align:'vh',size:60
+          },
+          {
+            html:'باادمین سیستم تماس حاصل فرمایید',className:'size12 bold colorD83B01 padding-0-12',align:'vh'
+          },
+        ]
+      }
+    }
     render() {
       let { theme } = this.context;
       return (
@@ -72,6 +92,7 @@ export default class OrdersHistory extends Component {
               className: "popup main-bg",
               column: [
                 this.header_layout(),
+                this.error_layout(),
                 this.tabs_layout(),
                 { size: 12 },
                 this.orders_layout()

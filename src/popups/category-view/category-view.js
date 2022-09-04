@@ -30,7 +30,7 @@ export default class CategoryView extends Component {
                                     column: products.map((product, i) => {
                                         let { searchValue } = this.state;
                                         if (searchValue && product.name.indexOf(searchValue) === -1) { return false; }
-                                        return {html:<ProductCard zIndex={zIndex} product={product} isFirst={i === 0} isLast={i === products.length - 1} type='horizontal' />}
+                                        return {html:<ProductCard parentZIndex={zIndex} product={product} isFirst={i === 0} isLast={i === products.length - 1} type='horizontal' />}
                                     })
                                 }
                             ]

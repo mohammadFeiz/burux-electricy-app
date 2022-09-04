@@ -129,7 +129,7 @@ export default function services(getState,token,userCardCode) {
           PartiallyDelivered:[]
         };
         const results = res.data.data.results;
-
+        if(!Array.isArray(results)){debugger; return res.data}
         for (let order of results) {
           let id = order.docStatus;
           if(id === 'PreOrder' ||id === 'CustomeApproved' ||id === 'VisitorApproved' ||id === 'SupervisorApproved' ||id === 'ManagerApproved'){

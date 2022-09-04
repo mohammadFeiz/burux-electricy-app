@@ -243,7 +243,12 @@ export default class Shipping extends Component{
           {html:'شماره درخواست:',className:'color605#5C size12'},
           {html:orderNumber,className:'color605E5C size12 bold'},
           {flex:1},
-          {html:'مشاهده درخواست',className:'color0094D4 size14 bold'}
+          {html:'مشاهده درخواست',className:'color0094D4 size14 bold',attrs:{
+            onClick:()=>{
+              let {SetState} = this.context;
+              SetState({ordersHistoryZIndex:10,shippingZIndex:0})
+            }
+          }}
         ]
       }
     }
@@ -252,11 +257,10 @@ export default class Shipping extends Component{
       return {html:<button className='button-2' onClick={()=>SetState({shippingZIndex:0})}>بازگشت به خانه</button>,className:'padding-12'}
     }
     render(){
-        let {sendToVisitorZIndex:zIndex} = this.context;
       return (
         <RVD
           layout={{
-            style:{zIndex,width:'100%',height:'100%'},
+            style:{width:'100%',height:'100%'},
             className:'main-bg',
             column:[
               this.header_layout(),

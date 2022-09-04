@@ -237,19 +237,29 @@ in product by id = ${this.context.product.id} there is an optionType by id = ${i
         };
     }
     addToCart_layout() {
-        let { getCartCountByVariantId } = this.context;
+        let { getCartCountByVariantId,SetState,productZIndex } = this.context;
         let { selectedVariant } = this.state;
         if (!selectedVariant || !selectedVariant.inStock || selectedVariant.inStock === null) {
             return { html: '' }
         }
         let count = getCartCountByVariantId(selectedVariant.id)
-        if (!count) {
-            return {
-                html: (<button onClick={() => this.changeCount(1)} className={"button-2" + (!selectedVariant ? " disabled" : "")}>افزودن به سبد خرید</button>),
-                align: "v",
-            };
+        return {
+            column:[
+                {
+                    show:!!!count,html: (<button onClick={() => this.changeCount(1)} className={"button-2" + (!selectedVariant ? " disabled" : "")}>افزودن به سبد خرید</button>),
+                    align: "v",
+                },
+                { show:!!count, html: () => <ProductCount value={count} onChange={(count) => this.changeCount(count)} max={this.getInStock()} />,style:{width:90} },
+                {
+                    html:'مشاهده سبد خرید',align:'v',flex:1,className:'color0094D4 size12 bold',
+                    attrs:{
+                        onClick:()=>{
+                            SetState({cartZIndex:productZIndex * 10})
+                        }
+                    }
+                }
+            ]
         }
-        return { size: 96, html: () => <ProductCount value={count} onChange={(count) => this.changeCount(count)} max={this.getInStock()} /> }
     }
     price_layout() {
         let { selectedVariant } = this.state;
@@ -291,7 +301,7 @@ in product by id = ${this.context.product.id} there is an optionType by id = ${i
                 layout={{
                     className: "bgFFF fixed",
                     style:{zIndex},
-                    column: [this.header_layout(), this.body_layout(), this.footer_layout()],
+                    column: [this.header_layout(), this.body_layout(), this.footer_layout(),{size:12}],
                 }}
             />
         );

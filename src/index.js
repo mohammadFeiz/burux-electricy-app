@@ -33,7 +33,7 @@ class OTPLogin extends Component{
         mode = 'inter-code'
       }
     }
-    this.state = {mode,phoneValue,codeValue:'',recodeIn,recode:false,recodeLimit:1 * 1000 * 60,isAutenticated:false,registered:false}
+    this.state = {mode,phoneValue,codeValue:'4178',recodeIn,recode:false,recodeLimit:1 * 1000 * 60,isAutenticated:false,registered:false}
     setInterval(()=>{
       let {mode,recode,phoneValue} = this.state;
       if(mode !== 'inter-code' || recode){return}
@@ -96,16 +96,21 @@ class OTPLogin extends Component{
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
-  async onInterCode(){
-    let {codeValue} = this.state;
+  async onInterCode(codeValue = this.state.codeValue,showError){
     let res = await this.SendCodeToServer(codeValue);
     if(typeof res === 'object'){
       let token = res.accessToken.access_token;
       this.setState({isAutenticated:true,userInfo:res,token});
     }
     else{
-      this.setState({mode:'error',codeValue:''})
+      if(showError !== false){
+        this.setState({mode:'error',codeValue:''})
+      }
+      
     }
+  }
+  tryAuto(value){
+    this.onInterCode(value,false)
   }
   changeRecodeIn(recodeIn,phoneValue){
     this.setState({recodeIn,phoneValue});
@@ -218,10 +223,12 @@ class OTPLogin extends Component{
         {
           className:'padding-0-12',
           html:(
+              <>
               <input 
+                className='otp-code'
                 type='text' value={codeValue} 
                 inputMode='numeric'
-                pattern='\d{4}'
+                pattern="[0-9]+"
                 autoComplete='one-time-code'
                 onChange={(e)=>{
                   let value = e.target.value;
@@ -230,14 +237,22 @@ class OTPLogin extends Component{
                     if(isNaN(+value[value.length - 1])){return}
                   }
                   if(value.toString().length > 4){return}
-                  this.setState({codeValue:e.target.value})
+                  if(value.toString().length === 4){
+                    this.tryAuto(value)
+                  }
+                  this.setState({codeValue:value})
                 }} maxLength={4} placeholder='- - - -'
-                style={{height:40,background:'#eee',border:'1px solid #0094D4',borderRadius:6,width:'100%',direction:'ltr',fontFamily:'inherit',textAlign:'center'}}
+                
               />
+              <div className='otp-code-presentation'>{
+                codeValue.split('').join(' - ')
+                }</div>
+              </>
           )
         },
         {size:16},
         {
+          show:false,
           className:'padding-0-12',
           html:(
             <button className='button-2' style={disabledStyle} onClick={()=>this.onInterCode()}>تایید</button>

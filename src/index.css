@@ -39,6 +39,33 @@ body{
 	direction: rtl;
 
 }
+.otp-code{
+	height:36px;
+	background:#eee;
+	border:1px solid #0094D4;
+	border-radius:6px;
+	width:100%;
+	font-family:inherit;
+	text-align:center;
+    font-size:24px;
+    padding-left:24px;
+    letter-spacing:12px;
+	color:#eee;
+	outline: none;
+}
+.otp-code-presentation{
+	position:absolute;
+	direction:ltr;
+	left:0;
+	top:0;
+	width:calc(100% - 24px);
+	height:100%;
+	text-align: center;
+	font-size:24px;
+	line-height: 40px;
+	margin-left:12px;
+	pointer-events: none;
+}
 .landing{
 	position:fixed;
 	display:flex;

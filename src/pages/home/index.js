@@ -218,7 +218,8 @@ export default class Home extends Component {
         }
     }
     bazargah_layout(){
-        let {bazargahItems = [],SetState,services} = this.context;
+        let {bazargahItems = [],SetState,services,bazargahActive} = this.context;
+        if(!bazargahActive){return false}
         return {
             column:[
                 {

@@ -170,6 +170,7 @@ export default class Product extends Component {
             column: [
                 {
                     column: optionTypes.map(({ name, id, items = {} }, i) => {
+                        if(name === 'brand'){return false}
                         return {
                             column: [
                                 { size: 12 },

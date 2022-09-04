@@ -3,12 +3,12 @@ import RVD from 'react-virtual-dom';
 import storeSvg from '../../utils/svgs/store-svg';
 import Header from '../header/header';
 import Form from '../form/form';
+import Axios from 'axios';
 import mapSrc from './../../images/map.png';
+import getSvg from '../../utils/getSvg';
 import NeshanMap from '../neshan-map/neshan-map';
-import appContext from '../../app-context';
 
 export default class Register extends Component{
-    static contextType = appContext;
     constructor(props){
         super(props);
         this.state = {
@@ -17,7 +17,7 @@ export default class Register extends Component{
                 "longitude": 51.338097,
                 "firstName": "",
                 "lastName": "",
-                "mobile": "",
+                "mobile": this.props.mobile,
                 "storeName": "",
                 "address": "",
                 "province": "",
@@ -31,7 +31,11 @@ export default class Register extends Component{
     header_layout(){
         let {onClose} = this.props;
         return {
-            html:<Header buttons={{logo:true,gap:true}} onClose={()=>onClose()}/>
+            className:'box-shadow',size:60,style:{overflow:'visible',marginBottom:12},
+            row:[
+                {size:60,html:getSvg("chevronLeft", { flip: true }),align:'vh',attrs:{onClick:()=>onClose()}},
+                {flex:1,html:'ثبت نام',className:'size16 color605E5C',align:'v'}
+            ]
         }
     }
     logo_layout(){
@@ -52,23 +56,16 @@ export default class Register extends Component{
         }
     }
     async register(){
-        let {services} = this.context;
-        let res = await services({type:'register',parameter:this.state.model})
-        let {onClose} = this.props;
-        onClose()
-        this.setState({model:{
-            "latitude": 35.699739,
-            "longitude": 51.338097,
-            "firstName": "",
-            "lastName": "",
-            "mobile": "",
-            "storeName": "",
-            "address": "",
-            "province": "",
-            "city": "",
-            "landlineNumber": "",
-            "email":""
-        }})
+        let {model} = this.state;
+        let res = await Axios.post(`https://retailerapp.bbeta.ir/api/v1/Users/NewUser`, model);
+        let result = false;
+        try{result = res.data.isSuccess || false}
+        catch{result = false}
+        if(result){
+            let {onSuccess} = this.props;
+            onSuccess(res.data.data)
+        }
+        alert('خطا در برقراری ارتباط')
     }
     footer_layout(){
         let {onInter} = this.props;
@@ -100,7 +97,7 @@ export default class Register extends Component{
                         {type:'html',html:()=>'',rowKey:'1',rowWidth:12},
                         {label:'نام خانوادگی',type:'text',field:'model.lastName',rowKey:'1',validations:[['required']]},
                         {label:'ایمیل',type:'text',field:'model.email',validations:[['required']]},
-                        {label:'تلفن همراه',type:'text',field:'model.mobile',rowKey:'3',validations:[['required']]},
+                        {label:'تلفن همراه',type:'text',field:'model.mobile',rowKey:'3',validations:[['required']],disabled:true},
                         {type:'html',html:()=>'',rowKey:'3',rowWidth:12},
                         {label:'تلفن ثابت',type:'text',field:'model.landlineNumber',rowKey:'3',validations:[['required']]},
                         {label:'نام فروشگاه',type:'text',field:'model.storeName',validations:[['required']]},
@@ -161,7 +158,7 @@ export default class Register extends Component{
                 <RVD
                     layout={{
                         className:'main-bg',
-                        style:{width:'100%',height:'100%',overflow:'hidden'},
+                        style:{width:'100%',height:'100%',overflow:'hidden',position:'fixed',left:0,top:0},
                         column:[
                             this.header_layout(),
                             {size:12},
@@ -200,8 +197,13 @@ class ShowMap extends Component{
         this.state = {latitude,longitude};
     }
     header_layout(){
+        let {onClose} = this.props;
         return {
-            html:<Header title='انتخاب موقعیت فروشگاه' onClose={()=>this.props.onClose()}/>
+            className:'box-shadow',size:60,style:{overflow:'visible',marginBottom:12},
+            row:[
+                {size:60,html:getSvg("chevronLeft", { flip: true }),align:'vh',attrs:{onClick:()=>onClose()}},
+                {flex:1,html:'انتخاب موقعیت فروشگاه',className:'size16 color605E5C',align:'v'}
+            ]
         }
     }
     setCoords({latitude,longitude}){

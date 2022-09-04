@@ -3,7 +3,9 @@ import dateCalculator from "./utils/date-calculator";
 import $ from "jquery";
 import bulb10w from './images/10w-bulb.png';
 import nosrc from './images/no-src.png';
-export default function services(getState) {
+export default function services(getState,token) {
+  debugger;
+  Axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
   let fn = function () {
     return {
       async kalahaye_garanti_shode({ fix, baseUrl }) {
@@ -386,6 +388,7 @@ export default function services(getState) {
       },
       async userInfo({ baseUrl }) {
         let res = await Axios.post(`${baseUrl}/BOne/GetCustomer`, { "DocCode": "c50000" });
+        debugger;
         try { res = res.data.data.customer }
         catch { res = {} }
         return res

@@ -33,7 +33,7 @@ class OTPLogin extends Component{
         mode = 'inter-code'
       }
     }
-    this.state = {mode,phoneValue,codeValue:'',recodeIn,recode:false,recodeLimit:1 * 1000 * 60,isAutenticated:false}
+    this.state = {mode,phoneValue,codeValue:'',recodeIn,recode:false,recodeLimit:1 * 1000 * 60,isAutenticated:false,registered:false}
     setInterval(()=>{
       let {mode,recode,phoneValue} = this.state;
       if(mode !== 'inter-code' || recode){return}
@@ -96,7 +96,9 @@ class OTPLogin extends Component{
     let {codeValue} = this.state;
     let res = await this.SendCodeToServer(codeValue);
     if(typeof res === 'object'){
-      this.setState({isAutenticated:true,userInfo:res});
+      let token = res.accessToken.access_token;
+      let registered = res.alreadyRegistered;
+      this.setState({isAutenticated:true,userInfo:res,token,registered});
     }
     else{
       this.setState({mode:'error',codeValue:''})
@@ -281,9 +283,22 @@ class OTPLogin extends Component{
     this.onChangePhone();
   }
   render(){
-    let {isAutenticated} = this.state;
+    let {isAutenticated,userInfo,token,registered} = this.state;
     if(isAutenticated){
-      return <Main logout={()=>this.logout()}/>
+      if(!registered){
+        return (
+          <Register
+            mobile={userInfo.phoneNumber}
+            onClose={()=>{
+              this.setState({isAutenticated:false})
+            }}
+            onSuccess={(userInfo)=>{
+              this.setState({userInfo,registered:true})
+            }}
+          />
+        )
+      }
+      return <Main logout={()=>this.logout()} token={token} userInfo={userInfo}/>
     }
     return (
       <RVD

@@ -3,13 +3,12 @@ import dateCalculator from "./utils/date-calculator";
 import $ from "jquery";
 import bulb10w from './images/10w-bulb.png';
 import nosrc from './images/no-src.png';
-export default function services(getState,token) {
-  debugger;
+export default function services(getState,token,userCardCode) {
   Axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
   let fn = function () {
     return {
       async kalahaye_garanti_shode({ fix, baseUrl }) {
-        let res = await Axios.post(`${baseUrl}/Guarantee/GetAllGuarantees`, { CardCode: "C50000" });
+        let res = await Axios.post(`${baseUrl}/Guarantee/GetAllGuarantees`, { CardCode: userCardCode });
         if (res.data && res.data.isSuccess && res.data.data) {
           let items = fix(res.data.data.Items, { convertDateFields: ["CreateTime"] });
           return items.map((o) => {
@@ -30,7 +29,7 @@ export default function services(getState,token) {
         return res.data && res.data.isSuccess && res.data.data ? res.data.data : [];
       },
       async sabte_kalahaye_garanti({ baseUrl, parameter }) {
-        let res = await Axios.post(`${baseUrl}/Guarantee`, { CardCode: "C50000", Items: parameter });
+        let res = await Axios.post(`${baseUrl}/Guarantee`, { CardCode: userCardCode, Items: parameter });
         return !!res.data && !!res.data.isSuccess
       },
       async get_all_awards({ baseUrl }) {
@@ -56,7 +55,7 @@ export default function services(getState,token) {
         else { return []; }
       },
       // async peygiriye_sefareshe_kharid({baseUrl}) {
-      //   let res = await Axios.post(`${baseUrl}/Visit/GetAllUserPreOrder`,{CardCode: "c50000",Page: 1});
+      //   let res = await Axios.post(`${baseUrl}/Visit/GetAllUserPreOrder`,{CardCode: userCardCode,Page: 1});
       //   let result = res.data.data.Items;
       //   let visitorWait = [],factored = [],inProcess = [],inShopTrack = [],delivered = [],canceled = [],rejected = [];
       //   for (let i = 0; i < result.length; i++) {
@@ -79,7 +78,7 @@ export default function services(getState,token) {
       async peygiriye_sefareshe_kharid({ baseUrl, fixDate }) {
         let res = await Axios.post(`${baseUrl}/BOne/GetAllOrders`, {
           "FieldName": "cardcode",
-          "FieldValue": "c50000",
+          "FieldValue": userCardCode,
           "StartDate": "2022-06-19",
           "QtyInPage": 1000,
           "PageNo": 1
@@ -104,7 +103,7 @@ export default function services(getState,token) {
       async ordersHistory({ baseUrl, fixDate }) {
         let res = await Axios.post(`${baseUrl}/BOne/GetOrders`, {
           "FieldName": "cardcode",
-          "FieldValue": "c50000",
+          "FieldValue": userCardCode,
           // "StartDate":"2022-06-01",
           "StartDate": "2022-06-01",
           "QtyInPage": 1000,
@@ -150,7 +149,6 @@ export default function services(getState,token) {
             tabsDictionary[id].push(order)
           }
           else {
-            debugger;
             alert('unknown order')
           }
         }
@@ -381,14 +379,18 @@ export default function services(getState,token) {
         return result;
       },
       async wallet({ baseUrl }) {
-        let res = await Axios.post(`${baseUrl}/BOne/CheckBallance`, { "Requests": [{ "CardCode": "c50000" }] });
+        let res = await Axios.post(`${baseUrl}/BOne/CheckBallance`, { "Requests": [{ "CardCode": userCardCode }] });
         try { res = res.data.data.results[0].ballance }
         catch { res = 0 }
         return res
       },
       async userInfo({ baseUrl }) {
-        let res = await Axios.post(`${baseUrl}/BOne/GetCustomer`, { "DocCode": "c50000" });
-        debugger;
+        let res = await Axios.post(`${baseUrl}/BOne/GetCustomer`, { "DocCode": userCardCode });
+
+        if(res.status===401){
+          return false;
+        }
+
         try { res = res.data.data.customer }
         catch { res = {} }
         return res
@@ -405,7 +407,6 @@ export default function services(getState,token) {
           let campaign = campaigns[i];
           let res = await this.getTaxonProducts({ baseUrl, parameter: { Taxons: campaign.id } })
           res = res.map((o) => { 
-            debugger
             let priceObj = getState().getPrice([{itemCode:'1',itemQty:'2'}])
             return { ...o, campaign } 
           })
@@ -430,7 +431,7 @@ export default function services(getState,token) {
       },
       async preOrders({ baseUrl }) {
         let preOrders = { waitOfVisitor: 10, waitOfPey: 2 };
-        let res = await Axios.post(`${baseUrl}/Visit/PreOrderStat`, { CardCode: "c50000" });
+        let res = await Axios.post(`${baseUrl}/Visit/PreOrderStat`, { CardCode: userCardCode });
         if (!res || !res.data || !res.data.data) {
           console.error('services.preOrders Error!!!')
           return preOrders;
@@ -467,7 +468,7 @@ export default function services(getState,token) {
         return result;
       },
       async bazargahItems({baseUrl}){
-        let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?cardCode=c50000&distance=100&status=1`); // 1 for pending
+        let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?cardCode=${userCardCode}&distance=100&status=1`); // 1 for pending
         let bulbSrc = bulb10w;
           return res.data.data.map((o)=>{
             let distance = 0;
@@ -521,7 +522,7 @@ export default function services(getState,token) {
         
       },
       async bazargahCatched({baseUrl}){
-        let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?cardCode=c50000&distance=100&status=2`); // 2 for taken
+        let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?cardCode=${userCardCode}&distance=100&status=2`); // 2 for taken
         let bulbSrc = bulb10w;
           return res.data.data.map((o)=>{
             let distance = 0;
@@ -574,7 +575,7 @@ export default function services(getState,token) {
       },
       async bazargahCatch({baseUrl,parameter}){//اخذ سفارش بازارگاه
         let res = await Axios.post(`${baseUrl}/OnlineShop/AddNewOrder`, {
-          cardCode :"c50000",
+          cardCode :userCardCode,
           orderId :parameter.orderId
         });
         
@@ -824,7 +825,7 @@ export default function services(getState,token) {
       async getTaxonProducts({ baseUrl, parameter = {} }) {
         let res = await Axios.post(`${baseUrl}/Spree/Products`,
           {
-            CardCode: "c50000",
+            CardCode: userCardCode,
             //Taxons: "10179",
             Taxons: parameter.Taxons,
             Name: parameter.Name,
@@ -832,7 +833,6 @@ export default function services(getState,token) {
           }
         );
         if(res.data.data.status === 500){
-          debugger
           return false
         }
         const included = res.data.data.included;
@@ -852,7 +852,7 @@ export default function services(getState,token) {
 
         let b1Res = await Axios.post(`${baseUrl}/BOne/GetB1PriceList`,
           {
-            "CardCode": "c50000",
+            "CardCode": userCardCode,
             "ItemCode": skusId // should be an array
           });
 
@@ -863,7 +863,7 @@ export default function services(getState,token) {
       async getProductsWithCalculation({ baseUrl }, skusId) {
         let res = await Axios.post(`${baseUrl}/BOne/GetItemsByItemCode`,
           {
-            "CardCode": "c50000",
+            "CardCode": userCardCode,
             "ItemCode": skusId // should be an array
           }
         );
@@ -946,13 +946,13 @@ function Service({ services, baseUrl, getState, cacheAll }) {
         $(".loading").css("display", "none");
         return a
       }
-      if (!services[type]) { debugger }
+      if (!services[type]) {  }
       let result = await services[type](p);
       $(".loading").css("display", "none");
       setToCache(cacheName ? 'storage-' + cacheName : 'storage-' + type, result);
       return result;
     }
-    if (!services[type]) { debugger }
+    if (!services[type]) {  }
 
     let result = await services[type](p);
     $(".loading").css("display", "none");

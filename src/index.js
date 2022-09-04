@@ -60,8 +60,12 @@ class OTPLogin extends Component{
     
    const sendSmsResult=await Axios.get(`${this.apiBaseUrl}/Users/FirstStep?phoneNumber=${phoneNumber}`);
 
-   if(sendSmsResult.data.isSuccess)
-      this.userId=sendSmsResult.data.data.id;
+   if(sendSmsResult.data.isSuccess){
+    let data=sendSmsResult.data.data;
+      this.userId=data.id;
+      this.setState({registered:data.alreadyRegistered})
+   }
+      
   }
 
   //این تابع زمانی کال می شود که کاربر کد پیامک شده را وارد کرد و تایید رو زد
@@ -97,8 +101,7 @@ class OTPLogin extends Component{
     let res = await this.SendCodeToServer(codeValue);
     if(typeof res === 'object'){
       let token = res.accessToken.access_token;
-      let registered = res.alreadyRegistered;
-      this.setState({isAutenticated:true,userInfo:res,token,registered});
+      this.setState({isAutenticated:true,userInfo:res,token});
     }
     else{
       this.setState({mode:'error',codeValue:''})

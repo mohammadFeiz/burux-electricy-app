@@ -47,13 +47,16 @@ export default class Main extends Component {
       theme = theme === 'false'?false:'theme-1'
     }
     this.dateCalculator = dateCalculator();
+    let userCardCode=this.props.userInfo.cardCode;
+
     this.state = {
+      userCardCode,
       signalR,
       bazargahActive:false,
       buruxlogod:this.getBuruxLogoD(),
       splashScreen:true,
       showRegister:false,
-      services:Services(()=>this.state,this.props.userInfo.accessToken.access_token),
+      services:Services(()=>this.state,this.props.token,userCardCode),
       theme,
       wallet:0,
       campaigns:[],
@@ -161,8 +164,11 @@ export default class Main extends Component {
   
   async componentDidMount() {
     let {services,bazargahActive} = this.state;
-    let userInfo = await services({type:"userInfo",cache:1000});
-    
+    let userInfo = await services({type:"userInfo"});
+    if(userInfo===false){
+      this.props.logout();
+      return;
+    }
     this.getGuaranteeItems()
     this.getCampaignsData();
     if(bazargahActive){
@@ -178,7 +184,7 @@ export default class Main extends Component {
     let fixPrice = (items)=>{
       let data = {
         "CardGroupCode": 167,
-        "CardCode": "c68592",
+        "CardCode": this.state.userCardCode,
         "marketingdetails": {
             "priceList": 2,
             "slpcode": userInfo.cardCode

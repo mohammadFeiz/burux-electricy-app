@@ -291,6 +291,7 @@ export default class Main extends Component {
     );
   }
 }
+Main.defaultProps = {userInfo:{cardCode:'c50000'}}
 class Splash extends Component{
   state = {step:0}
   constructor(props){

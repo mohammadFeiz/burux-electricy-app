@@ -218,7 +218,6 @@ class OTPLogin extends Component{
         {
           className:'padding-0-12',
           html:(
-            <form style={{width:'100%',background:'yellow'}}>
               <input 
                 type='text' value={codeValue} 
                 inputMode='numeric'
@@ -235,7 +234,6 @@ class OTPLogin extends Component{
                 }} maxLength={4} placeholder='- - - -'
                 style={{height:40,background:'#eee',border:'1px solid #0094D4',borderRadius:6,width:'100%',direction:'ltr',fontFamily:'inherit',textAlign:'center'}}
               />
-            </form>
           )
         },
         {size:16},
@@ -281,11 +279,29 @@ class OTPLogin extends Component{
     }
   }
   logout(){
+    localStorage.clear('brxelctoken');
     this.state.recodeIn = false;
     this.setState({isAutenticated:false})
     this.onChangePhone();
   }
+  async interByStorage(){
+    this.mounted = true;
+    let storage = localStorage.getItem('brxelctoken');
+    if(!storage || storage === null){this.setState({}); return;}
+    storage = JSON.parse(storage);
+    Axios.defaults.headers.common['Authorization'] = 'Bearer ' + storage.token;
+    let res = await Axios.post(`${this.apiBaseUrl}/BOne/GetCustomer`, { "DocCode": storage.userInfo.cardCode });
+    if(res.status === 401){
+      this.setState({});
+      return;
+    }
+    this.setState({isAutenticated:true,userInfo:storage.userInfo,token:storage.token,registered:true})
+  }
+  componentDidMount(){
+    this.interByStorage();
+  }
   render(){
+    if(!this.mounted){return null}
     let {isAutenticated,userInfo,token,registered} = this.state;
     if(isAutenticated){
       if(!registered){
@@ -301,6 +317,7 @@ class OTPLogin extends Component{
           />
         )
       }
+      localStorage.setItem('brxelctoken',JSON.stringify({token,userInfo}));
       return <Main logout={()=>this.logout()} token={token} userInfo={userInfo}/>
     }
     return (

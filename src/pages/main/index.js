@@ -158,13 +158,13 @@ export default class Main extends Component {
   }
   async getWallet(){
     let {services} = this.state;
-    let wallet = await services({type:'wallet'})
+    let wallet = await services({type:'wallet',loading:false})
     this.setState({wallet})
   }
   
   async componentDidMount() {
     let {services,bazargahActive} = this.state;
-    let userInfo = await services({type:"userInfo"});
+    let userInfo = await services({type:"userInfo",loading:false});
     if(userInfo===false){
       this.props.logout();
       return;

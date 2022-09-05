@@ -32,7 +32,7 @@ export default class Register extends Component{
     header_layout(){
         let {onClose} = this.props;
         return {
-            className:'box-shadow',size:60,style:{overflow:'visible',marginBottom:12},
+            className:'box-shadow',size:60,style:{overflow:'visible',marginBottom:12,background:'#fff'},
             row:[
                 {size:60,html:getSvg("chevronLeft", { flip: true }),align:'vh',attrs:{onClick:()=>onClose()}},
                 {flex:1,html:'ثبت نام',className:'size16 color605E5C',align:'v'}

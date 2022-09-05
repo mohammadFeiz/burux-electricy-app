@@ -33,7 +33,7 @@ export default class Home extends Component {
     }
     async getPreOrders() {
         let {services} = this.context;
-        let preOrders = await services({type:"preOrders"});
+        let preOrders = await services({type:"preOrders",loading:false});
         this.setState({ preOrders });
     }
     

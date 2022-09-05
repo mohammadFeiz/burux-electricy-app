@@ -7,7 +7,7 @@ export default function services(getState,token,userCardCode) {
   Axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
   let fn = function () {
     return {
-      async kalahaye_garanti_shode({ fix, baseUrl }) {
+      async guaranteeItems({ fix, baseUrl }) {
         let res = await Axios.post(`${baseUrl}/Guarantee/GetAllGuarantees`, { CardCode: userCardCode });
         if (res.data && res.data.isSuccess && res.data.data) {
           let items = fix(res.data.data.Items, { convertDateFields: ["CreateTime"] });
@@ -240,82 +240,13 @@ export default function services(getState,token,userCardCode) {
           "DocType": docTypeDictionary[order.mainDocType],
           "isDraft": order.mainDocisDraft
         });
-
         let result = res.data.data.results;
-
-        // let total = 0,basePrice = 0,visitorName,paymentMethod;
-        // let {marketingLines = [],marketingdetails = {},paymentdetails = {}} = result;
-        // visitorName = marketingdetails.slpName;
-        // paymentMethod = paymentdetails.paymentTermName || '';
-
-        // for (let i = 0; i < marketingLines.length; i++){
-        //   let {priceAfterVat = 0,price = 0} = result.marketingLines[i];
-        //   total += priceAfterVat;
-        //   basePrice += price;
-        // }
-        // result = {
-        //   number: parameter,//
-        //   date: fixDate({date:result.docTime},"date").date,//
-        //   customerName: result.cardName,//
-        //   customerCode: result.cardCode,//
-        //   customerGroup: result.cardGroupCode,//
-        //   campain:result.marketingdetails.campaign,//
-        //   basePrice,//
-        //   visitorName,//
-        //   address: result.deliverAddress || '',//
-        //   mobile: userInfo.phone1,//
-        //   phone: userInfo.phone2,//
-        //   total,//
-        //   paymentMethod,//
-        //   items: marketingLines.map((o) => {
-        //     return {
-        //       name: o.itemName,//
-        //       count: o.itemQty,//
-        //       discountPrice: o.discount,//
-        //       discountPercent: o.discountPercent,//
-        //       unit: o.unitOfMeasure,//
-        //       price: o.priceAfterVat,//
-        //       src:undefined
-        //     };
-        //   }),
-        // };
-
         const products = result.marketingLines.map((i) => {
           return {
             name: i.itemName, discountPrice: i.priceAfterVat, dicountPercent: i.discountPercent, price: i.price, count: i.itemQty, src: bulb10w,
             details: [['رنگ نور', 'آفتابی'], ['واحد', 'شعله']]
           };
         })
-        // let products = [
-        //   {
-        //     name:'لامپ LED جنرال 10 وات بروکس',discountPrice:123456,dicountPercent:16,price:123456,count:10,src:bulb10w,
-        //     details:[['رنگ نور','آفتابی'],['واحد','شعله']]
-        //   },
-        //   {
-        //     name:'لامپ LED جنرال 10 وات بروکس',discountPrice:123456,dicountPercent:16,price:123456,count:10,src:bulb10w,
-        //     details:[['رنگ نور','آفتابی'],['واحد','شعله']]
-        //   },
-        //   {
-        //     name:'لامپ LED جنرال 10 وات بروکس',discountPrice:123456,dicountPercent:16,price:123456,count:10,src:bulb10w,
-        //     details:[['رنگ نور','آفتابی'],['واحد','شعله']]
-        //   },
-        //   {
-        //     name:'لامپ LED جنرال 10 وات بروکس',discountPrice:123456,dicountPercent:16,price:123456,count:10,src:bulb10w,
-        //     details:[['رنگ نور','آفتابی'],['واحد','شعله']]
-        //   },
-        //   {
-        //     name:'لامپ LED جنرال 10 وات بروکس',discountPrice:123456,dicountPercent:16,price:123456,count:10,src:bulb10w,
-        //     details:[['رنگ نور','آفتابی'],['واحد','شعله']]
-        //   },
-        //   {
-        //     name:'لامپ LED جنرال 10 وات بروکس',discountPrice:123456,dicountPercent:16,price:123456,count:10,src:bulb10w,
-        //     details:[['رنگ نور','آفتابی'],['واحد','شعله']]
-        //   },
-        //   {
-        //     name:'لامپ LED جنرال 10 وات بروکس',discountPrice:123456,dicountPercent:16,price:123456,count:10,src:bulb10w,
-        //     details:[['رنگ نور','آفتابی'],['واحد','شعله']]
-        //   }
-        // ];
         return {
           products,
           paymentMethod: result.paymentdetails.paymentTermName,

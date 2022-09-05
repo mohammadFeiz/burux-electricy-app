@@ -155,12 +155,12 @@ export default class Home extends Component {
         }
     }
     garanti_layout(){
-        let {guaranteeItems,SetState} = this.context;
+        let {guaranteeItems = [],SetState} = this.context;
         return {
             className:'padding-0-12',
             column:[
                 {
-                    className:'padding-0-12 box gap-no-color',size:48,style:{borderRadius:'14px 14px 0 0'},
+                    className:'padding-0-12 box gap-no-color',size:48,style:{borderRadius:guaranteeItems.length > 0 ?'14px 14px 0 0':'14px'},
                     row:[
                         {html: "گارانتی",className: "size16 color323130 bold",align: "v"},
                         {flex:1},
@@ -189,6 +189,7 @@ export default class Home extends Component {
                 },
                 {size:1},
                 {
+                    show:guaranteeItems.length > 0,
                     attrs:{onClick:()=>SetState({joziate_darkhasthaye_garanti_popup_zIndex:10})},
                     size:48,html:'مشاهده جزییات درخواست های گارانتی ها',className:'box color0094D4 size12 bold',align:'vh',style:{borderRadius:'0 0 14px 14px'}
                 }

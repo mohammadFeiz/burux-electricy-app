@@ -138,7 +138,7 @@ export default class Main extends Component {
   }
   async getGuaranteeItems(){
     let {services} = this.state;
-    let guaranteeItems = await services({type:"kalahaye_garanti_shode",loading:false});
+    let guaranteeItems = await services({type:"guaranteeItems",loading:false});
     let guaranteeExistItems = await services({type:"kalahaye_mojoode_garanti",loading:false});
     this.setState({
       guaranteeItems,
@@ -345,7 +345,7 @@ class Splash extends Component{
     return (
       <div className='splash-screen'>
         {getSvg(23,{d,width:240,height:110,style:{transform:`scale(${scale})`},...config})}
-        <div className='splash-text' style={{opacity,color}}>Electricy App</div>
+        <div className='splash-text' style={{opacity,color,fontFamily:'Iransans-medium',fontSize:48}}>بروکس من</div>
       </div>
     )
   }

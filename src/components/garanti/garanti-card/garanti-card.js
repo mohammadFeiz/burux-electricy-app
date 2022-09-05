@@ -95,7 +95,7 @@ export default class GarantiCard extends Component{
                                 childsProps:{align:'v'},
                                 row:[
                                     {html:'تاریخ ثبت :',className:'size12 color605E5C'},
-                                    {html:CreateTime,className:'size12 color605E5C'},
+                                    {html:_time + ' - ' + CreateTime,className:'size12 color605E5C'},
                                 ]
                             },
                             {size:12},

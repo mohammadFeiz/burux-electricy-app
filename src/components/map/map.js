@@ -1,48 +1,52 @@
 import React,{Component} from "react";
 export default class Map extends Component{
-    getOptions(){
-        let {changeView = true,zoom = 12,latitude,longitude,key} = this.props;
-        let options = {
-            key: key || 'web.3b7ae71ad0f4482e84b0f8c47e762b5b',
-            center: [latitude, longitude],
-            maptype:'standard-day',
-            dragging:changeView !== false,
-            zoomControl:changeView !== false,
-            zoom
-        }
-        if(changeView === false){
-            options.minZoom = zoom;
-            options.maxZoom = zoom;
-        }
-        return options
+    constructor(props){
+        super(props);
+        let {latitude,longitude} = props;
+        this.state = {latitude,longitude}
+    }
+    setCoords({latitude,longitude}){
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(()=>{
+            if(this.props.onChange){
+                this.props.onChange(latitude,longitude)
+            }
+            this.setState({latitude,longitude})
+        },500);   
     }
     render(){
-        let {onClick,points,onSubmit,multiple} = this.props;
+        let {
+            changeView,zoom = 12,onClick,style,
+            key = 'web.3b7ae71ad0f4482e84b0f8c47e762b5b',
+            onChange
+        } = this.props;
         let {latitude,longitude} = this.state;
         return (
             <NeshanMap
-                options={this.getOptions()} 
+                options={{
+                    key,
+                    center: [latitude, longitude],
+                    maptype:'standard-day',
+                    dragging:changeView !== false,
+                    zoomControl:changeView !== false,
+                    minZoom:changeView === false?zoom:undefined,
+                    maxZoom:changeView === false?zoom:undefined,
+                }}
+                
                 onInit={(L, myMap) => {
-                    if(points){
-                        for(let i = 0; i < points.length; i++){
-                            let {latitude,longitude,text} = points[i];
-                            let marker = L.marker([latitude, longitude]).addTo(myMap).bindPopup(text);
-                        }
+                    let marker = L.marker([latitude, longitude])
+                    .addTo(myMap)
+                    .bindPopup('I am a popup.');
+                    if(onClick){
+                        myMap.on('click', (e)=> onClick());
                     }
-                    if(onClick){myMap.on('click', (e)=> onClick());}
-                    if(onSubmit){
-                        if(!multiple){
-                            let marker = L.marker([latitude, longitude])
-                            .addTo(myMap)
-                            .bindPopup('I am a popup.');
-
-                            myMap.on('move', function (e) {
-                                //marker.setLatLng(e.target.getCenter())
-                                let {lat,lng} = e.target.getCenter()
-                                marker.setLatLng({lat,lng})
-                                setCoords({latitude:lat,longitude:lng})
-                            });
-                        }
+                    if(onChange){
+                        myMap.on('move', (e) => {
+                            //marker.setLatLng(e.target.getCenter())
+                            let {lat,lng} = e.target.getCenter()
+                            marker.setLatLng({lat,lng})
+                            this.setCoords({latitude:lat,longitude:lng})
+                        });
                     }
 
                     // L.circle([35.699739, 51.338097], {
@@ -52,10 +56,7 @@ export default class Map extends Component{
                     // radius: 1500
                     // }).addTo(myMap);
                 }}
-                style={{
-                    width:'100%',
-                    height:'120px'
-                }}
+                style={style}
             />
         )
     }

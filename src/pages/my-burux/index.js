@@ -24,7 +24,7 @@ export default class MyBurux extends Component{
                 {text:'حساب ها',icon:14,onClick:()=>{}},
                 {text:'جزییات درخواست های گارانتی',icon:14,onClick:async ()=>{
                     let {SetState,services} = this.context;
-                    let guaranteeItems = await services({type:'kalahaye_garanti_shode'});
+                    let guaranteeItems = await services({type:'guaranteeItems'});
                     SetState({guaranteeItems,joziate_darkhasthaye_garanti_popup_zIndex:10}) 
                 }},
                 {text:'قوانین و مقررات',icon:16,onClick:()=>{}},

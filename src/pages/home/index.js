@@ -12,6 +12,7 @@ import Header from '../../components/header/header';
 import ReactHtmlSlider from './../../components/react-html-slider/react-html-slider';
 import SabteGarantiJadid from '../../components/garanti/sabte-garanti-jadid/sabte-garanti-jadid';
 import Billboard from '../../components/billboard/billboard';
+import Flip from '../../components/flip/flip';
 
 export default class Home extends Component {
     static contextType = appContext;
@@ -291,6 +292,11 @@ export default class Home extends Component {
             ]
         }
     }
+    clock_layout(){
+        return {
+            align:'h',html:<Clock/>
+        }
+    }
     getContent() {
         return {
             flex: 1,
@@ -311,6 +317,7 @@ export default class Home extends Component {
                         this.garanti_layout(),
                         { size: 12 },
                         this.hint_layout(),
+                        this.clock_layout(),
                         { size: 12 },
                         //this.score_layout(),
                         // { 
@@ -358,6 +365,39 @@ export default class Home extends Component {
                     <Awards onClose={()=>this.setState({showAwards:false})}/>
                 }
             </>
+            
+        )
+    }
+}
+
+class Clock extends Component{
+    constructor(props){
+        super(props);
+        setInterval(()=>{
+            this.setState(this.getValues())
+        },1000)
+        this.state = {...this.getValues()}
+    }
+    getValues(){
+        let date = new Date();
+        let hour = date.getHours().toString();
+        if(hour.length === 1){hour = '0' + hour}
+        let minutes = date.getMinutes().toString();
+        if(minutes.length === 1){minutes = '0' + minutes}
+        let seconds = date.getSeconds().toString();
+        if(seconds.length === 1){seconds = '0' + seconds}
+        return {hour,minutes,seconds}
+    }
+    render(){
+        let {hour,minutes,seconds} = this.state;
+        return (
+            <div style={{display:'flex',direction:'ltr',fontSize:36,alignItems:'center'}}>
+                <Flip value={hour}/>
+                :
+                <Flip value={minutes}/>
+                :
+                <Flip value={seconds}/>
+            </div>
             
         )
     }

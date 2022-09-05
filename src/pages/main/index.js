@@ -315,8 +315,8 @@ class Splash extends Component{
     let c = step < range * 2?0:step - range * 2;
     let a = step < range?0:step - range;
     let b = step > 100?100:step;
-    let white = '#65bfe6';
-    let blue = '#0094D4';
+    let white = '#0666f8';
+    let blue = '#0d2d6a';
     if(step > 130){
       let color = this.colors1[step - 131];
       white = color;
@@ -345,7 +345,7 @@ class Splash extends Component{
     return (
       <div className='splash-screen'>
         {getSvg(23,{d,width:240,height:110,style:{transform:`scale(${scale})`},...config})}
-        <div className='splash-text' style={{opacity,color,fontFamily:'Iransans-medium',fontSize:48}}>بروکس من</div>
+        <div className='splash-text' style={{opacity,color,fontFamily:'Iransans-medium',fontSize:24}}>بروکس من</div>
       </div>
     )
   }

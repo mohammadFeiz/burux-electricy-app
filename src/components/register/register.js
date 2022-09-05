@@ -5,6 +5,7 @@ import Header from '../header/header';
 import Form from '../form/form';
 import Axios from 'axios';
 import mapSrc from './../../images/map.png';
+import Map from './../map/map';
 import getSvg from '../../utils/getSvg';
 import NeshanMap from '../neshan-map/neshan-map';
 
@@ -38,22 +39,12 @@ export default class Register extends Component{
             ]
         }
     }
-    logo_layout(){
-        return {
-            html:storeSvg,align:'vh'
-        }
-    }
+    logo_layout(){return {html:storeSvg,align:'vh'}}
     text_layout(){
-        return {
-            html:'به خانواده بزرگ بروکس بپیوندید',align:'h',
-            className:'size20 color323130 bold'
-        }
+        return {html:'به خانواده بزرگ بروکس بپیوندید',align:'h',className:'size20 color323130 bold'}
     }
     subtext_layout(){
-        return {
-            html:'بیش از 8000 فروشگاه در سطح کشور عضو این خانواده هستند',align:'vh',
-            className:'size14 color605E5C'
-        }
+        return {html:'بیش از 8000 فروشگاه در سطح کشور عضو این خانواده هستند',align:'vh',className:'size14 color605E5C'}
     }
     async register(){
         let {model} = this.state;
@@ -65,7 +56,7 @@ export default class Register extends Component{
             let {onSuccess} = this.props;
             onSuccess(res.data.data)
         }
-        alert('خطا در برقراری ارتباط')
+        else{alert('خطا در برقراری ارتباط')}
     }
     footer_layout(){
         let {onInter} = this.props;
@@ -107,37 +98,12 @@ export default class Register extends Component{
                             console.log(latitude,longitude)
                             if(showMap){return ''}
                             return (
-                                <NeshanMap
-                                    options={{
-                                        key: 'web.3b7ae71ad0f4482e84b0f8c47e762b5b',
-                                        center: [model.latitude, model.longitude],
-                                        maptype:'standard-day',
-                                        dragging:false,
-                                        zoomControl:false,
-                                        minZoom:12,
-                                        maxZoom:12,
-                                    }}
-                                    
-                                    onInit={(L, myMap) => {
-                                        let marker = L.marker([latitude, longitude])
-                                        .addTo(myMap)
-                                        .bindPopup('I am a popup.');
-
-                                        myMap.on('click', (e)=> {
-                                        this.setState({showMap:true})
-                                        });
-
-                                        // L.circle([35.699739, 51.338097], {
-                                        // color: 'dodgerblue',
-                                        // fillColor: 'dodgerblue',
-                                        // fillOpacity: 0.5,
-                                        // radius: 1500
-                                        // }).addTo(myMap);
-                                    }}
-                                    style={{
-                                        width:'100%',
-                                        height:'120px'
-                                    }}
+                                <Map
+                                    changeView={false}
+                                    onClick={()=>this.setState({showMap:true})}
+                                    latitude={model.latitude}
+                                    longitude={model.longitude}
+                                    style={{width:'100%',height:'120px'}}
                                 />
                             )
                         }},
@@ -151,8 +117,7 @@ export default class Register extends Component{
         }
     }
     render(){
-        let {showMap,latitude,longitude} = this.state;
-
+        let {showMap,model} = this.state;
         return (
             <>
                 <RVD
@@ -178,7 +143,7 @@ export default class Register extends Component{
                         ]
                     }}
                 />
-                {showMap && <ShowMap lat={latitude} lng={longitude} onClose={()=>this.setState({showMap:false})} onChange={(latitude,longitude)=>{
+                {showMap && <ShowMap latitude={model.latitude} longitude={model.longitude} onClose={()=>this.setState({showMap:false})} onChange={(latitude,longitude)=>{
                     let {model} = this.state;
                     model.latitude = latitude;
                     model.longitude = longitude;
@@ -206,51 +171,17 @@ class ShowMap extends Component{
             ]
         }
     }
-    setCoords({latitude,longitude}){
-        clearTimeout(this.timeout);
-        this.timeout = setTimeout(()=>{
-            this.setState({latitude,longitude})
-        },500);
-        
-    }
     map_layout(){
         let {latitude,longitude} = this.state;
-        let setCoords = this.setCoords.bind(this);
         return {
             flex:1,
             html:(
-                <NeshanMap
-                options={{
-                    key: 'web.3b7ae71ad0f4482e84b0f8c47e762b5b',
-                    center: [latitude, longitude],
-                    zoom: 13,
-                    maptype:'standard-day'
-                    }}
-                    onInit={(L, myMap) => {
-                    let marker = L.marker([latitude, longitude])
-                    .addTo(myMap)
-                    .bindPopup('I am a popup.');
-
-                    myMap.on('move', function (e) {
-                        //marker.setLatLng(e.target.getCenter())
-                        let {lat,lng} = e.target.getCenter()
-                        marker.setLatLng({lat,lng})
-                        setCoords({latitude:lat,longitude:lng})
-                    });
-
-                    // L.circle([35.699739, 51.338097], {
-                    // color: 'dodgerblue',
-                    // fillColor: 'dodgerblue',
-                    // fillOpacity: 0.5,
-                    // radius: 1500
-                    // }).addTo(myMap);
-                }}
-                style={{
-                    width:'100%',
-                    height:'100%'
-                }}
-            />
-            )
+                <Map
+                    latitude={latitude} longitude={longitude} style={{width:'100%',height:'100%'}}
+                    onChange={(latitude,longitude)=>this.setState({latitude,longitude})}
+                />
+            ),
+            
         }
     }
     footer_layout(){
@@ -262,8 +193,7 @@ class ShowMap extends Component{
             column:[
                 {html:`Latitude:${latitude.toFixed(6)} - Lonitude:${longitude.toFixed(6)}`,style:{width:'100%',background:'rgba(255,255,255,.8)',color:'dodgerblue',fontSize:12,borderRadius:5},align:'h'},
                 {size:6},
-                {html:<button onClick={()=>onChange(latitude,longitude)} className='button-2 box-shadow'>تایید موقعیت</button>,style:{background:'orange',width:'100%'}},
-                
+                {html:<button onClick={()=>onChange(latitude,longitude)} className='button-2 box-shadow'>تایید موقعیت</button>,style:{background:'orange',width:'100%'}},   
             ]
         }
     }
@@ -272,11 +202,7 @@ class ShowMap extends Component{
             <RVD
                 layout={{
                     style:{position:'fixed',left:0,top:0,width:'100%',height:'100%',zIndex:100},
-                    column:[
-                        this.header_layout(),
-                        this.map_layout(),
-                        this.footer_layout()
-                    ]
+                    column:[this.header_layout(),this.map_layout(),this.footer_layout()]
                 }}
             />
         )

@@ -683,7 +683,7 @@ export default function services(getState,token,userCardCode) {
           "marketdoc": {
             "docsource": 0,
             "approvalstatus": 0,
-            "doctype": 17,
+            "doctype": 23,
             "cardcode": userInfo.cardCode,
             "marketinglines": variants.map((i) => {
               return { itemcode: i.variant.code, itemqty: i.count }

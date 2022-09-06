@@ -5,6 +5,8 @@ import bill from './../../images/home-slide-4.jpg';
 import getSvg from './../../utils/getSvg';
 import appContext from '../../app-context';
 import functions from '../../functions';
+import {Icon} from '@mdi/react';
+import {mdiAccountCircle} from '@mdi/js';
 import AIOButton from './../../components/aio-button/aio-button';
 import './index.css';
 import SabteGarantiJadid from '../../components/garanti/sabte-garanti-jadid/sabte-garanti-jadid';
@@ -69,7 +71,9 @@ export default class MyBurux extends Component{
                 {
                     size:100,style:{overflow:'visible'},
                     html:(
-                        <div style={{background:'#aaa',width:132,height:132,left:'calc(50% - 66px)',position:'absolute',top:-32,borderRadius:'100%'}}></div>
+                        <div style={{background:'rgba(255,255,255,0.4)',boxShadow:'rgb(0 0 0 / 25%) 0px 4px 12px 1px',color:'#ccc',width:132,height:132,left:'calc(50% - 66px)',position:'absolute',top:-32,borderRadius:'100%',display:'flex',alignItems:'center',justifyContent:'center'}}>
+                            <Icon path={mdiAccountCircle} size={6}/>
+                        </div>
                     )
                 },
                 {

@@ -9,6 +9,7 @@ export default function services(getState,token,userCardCode) {
     return {
       async guaranteeItems({ fix, baseUrl }) {
         let res = await Axios.post(`${baseUrl}/Guarantee/GetAllGuarantees`, { CardCode: userCardCode });
+        if(res.status === 401){return false}
         if (res.data && res.data.isSuccess && res.data.data) {
           let items = fix(res.data.data.Items, { convertDateFields: ["CreateTime"] });
           return items.map((o) => {
@@ -129,7 +130,7 @@ export default function services(getState,token,userCardCode) {
           PartiallyDelivered:[]
         };
         const results = res.data.data.results;
-        if(!Array.isArray(results)){debugger; return res.data}
+        if(!Array.isArray(results)){return 'سفارشی تا کنون ثبت نشده است'}
         for (let order of results) {
           let id = order.docStatus;
           if(id === 'PreOrder' ||id === 'CustomeApproved' ||id === 'VisitorApproved' ||id === 'SupervisorApproved' ||id === 'ManagerApproved'){
@@ -309,12 +310,6 @@ export default function services(getState,token,userCardCode) {
 
         return result;
       },
-      async wallet({ baseUrl }) {
-        let res = await Axios.post(`${baseUrl}/BOne/CheckBallance`, { "Requests": [{ "CardCode": userCardCode }] });
-        try { res = res.data.data.results[0].ballance }
-        catch { res = 0 }
-        return res
-      },
       async userInfo({ baseUrl }) {
         let res = await Axios.post(`${baseUrl}/BOne/GetCustomer`, { "DocCode": userCardCode });
 
@@ -361,7 +356,7 @@ export default function services(getState,token,userCardCode) {
         return getState().updateProductPrice(await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10178'}}),true)
       },
       async preOrders({ baseUrl }) {
-        let preOrders = { waitOfVisitor: 10, waitOfPey: 2 };
+        let preOrders = { waitOfVisitor: 0, waitOfPey: 0 };
         let res = await Axios.post(`${baseUrl}/Visit/PreOrderStat`, { CardCode: userCardCode });
         if (!res || !res.data || !res.data.data) {
           console.error('services.preOrders Error!!!')

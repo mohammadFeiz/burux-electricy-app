@@ -139,6 +139,10 @@ export default class Main extends Component {
   async getGuaranteeItems(){
     let {services} = this.state;
     let guaranteeItems = await services({type:"guaranteeItems",loading:false});
+    if(guaranteeItems === false){
+      this.props.logout();
+      return;
+    }
     let guaranteeExistItems = await services({type:"kalahaye_mojoode_garanti",loading:false});
     this.setState({
       guaranteeItems,
@@ -156,19 +160,22 @@ export default class Main extends Component {
     this.setState({bazargahItems:bazargahItems || []})
     
   }
-  async getWallet(){
-    let {services} = this.state;
-    let wallet = await services({type:'wallet',loading:false})
-    this.setState({wallet})
+  async getB1Info(cardCode) {
+    const data = await fetch(`https://b1api.burux.com/api/BRXIntLayer/GetCalcData/${cardCode}`, {
+        mode: 'cors',headers: {'Access-Control-Allow-Origin': '*'}
+    }).then((response) => {
+        return response.json();
+    }).then((data) => {
+        return data;
+    }).catch(function (error) {
+        console.log(error);
+        return null;
+    });
+    return data;
   }
-  
   async componentDidMount() {
-    let {services,bazargahActive} = this.state;
-    let userInfo = await services({type:"userInfo",loading:false});
-    if(userInfo===false){
-      this.props.logout();
-      return;
-    }
+    let {userCardCode,bazargahActive,services} = this.state;
+    let b1Info = await this.getB1Info(userCardCode);
     this.getGuaranteeItems()
     this.getCampaignsData();
     if(bazargahActive){
@@ -177,17 +184,16 @@ export default class Main extends Component {
         this.getBazargahItems()  
       },30000)
     }
-    this.getWallet();
     //let testedChance = await services({type:"get_tested_chance"});
-    let pricing = new Pricing('https://b1api.burux.com/api/BRXIntLayer/GetCalcData', userInfo.cardCode, 10 * 60 * 1000)
+    let pricing = new Pricing('https://b1api.burux.com/api/BRXIntLayer/GetCalcData', userCardCode, 10 * 60 * 1000)
     let istarted = pricing.startservice().then((value) => { return value; });
     let fixPrice = (items)=>{
       let data = {
-        "CardGroupCode": 167,
+        "CardGroupCode": b1Info.customer.groupCode,
         "CardCode": this.state.userCardCode,
         "marketingdetails": {
-            "priceList": 2,
-            "slpcode": userInfo.cardCode
+            "priceList": b1Info.customer.priceListNum,
+            "slpcode": userCardCode
         },
         "MarketingLines": items
       }
@@ -203,10 +209,10 @@ export default class Main extends Component {
       })
     }
     this.setState({
-      userInfo,
+      userInfo:b1Info.customer,
       fixPrice,
-      updateProductPrice
-
+      updateProductPrice,
+      wallet:b1Info.customer.ballance
       //testedChance
     });
   }

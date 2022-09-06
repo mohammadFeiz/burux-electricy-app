@@ -13,8 +13,8 @@ export default class OrdersHistory extends Component {
       let {services} = this.context;
       let res = await services({type:"ordersHistory"});
       console.log('res.data',res)
-      if(res.data && res.data.error){
-        this.setState({error:res.data.error});
+      if(typeof res === 'string'){
+        this.setState({error:res});
         return;
       }
       let {tabs,orders} = res;
@@ -73,14 +73,7 @@ export default class OrdersHistory extends Component {
       let {error} = this.state;
       if(!error){return false}
       return {
-        column:[
-          {
-            html:error,className:'size12 bold colorD83B01 padding-0-12',align:'vh',size:60
-          },
-          {
-            html:'باادمین سیستم تماس حاصل فرمایید',className:'size12 bold colorD83B01 padding-0-12',align:'vh'
-          },
-        ]
+        column:[{html:error,className:'size12 bold colorD83B01 padding-0-12',align:'vh',size:60}]
       }
     }
     render() {

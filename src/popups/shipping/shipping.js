@@ -9,20 +9,18 @@ export default class Shipping extends Component{
     constructor(props){
       super(props);
       this.state = {
-        name:'حسین تیموری',
-        code:'c42345',
+        name:'',
+        code:'',
         campaign:'فروش ویژه 10 وات',
-        basePrice:'پاییز',
-        discountPercent:'الکتریکی',
-        address:'ونک - خیابان گاندی - نبش کوچه نوزدهم - بن بست چهارم - پلاک 122 طبقه',
+        basePrice:'',
+        customerGroup:'الکتریکی',
+        address:'',
         phone:'09123534314',
-        shippingMethod:'0',
-        paymentMethod:'0',
         orderNumber:false
       }
     }
     details_layout(){
-      let {name,code,campaign,basePrice,discountPercent} = this.state;
+      let {name,code,campaign,basePrice,customerGroup} = this.state;
       return {
         className:'box padding-12',
         column:[
@@ -39,8 +37,8 @@ export default class Shipping extends Component{
               {html:'کد مشتری:',className:'colorA19F9D size14'},
               {html:code,className:'size14'},
               {flex:1},
-              {html:'درصد تخفیف:',className:'colorA19F9D size14'},
-              {html:discountPercent,className:'size14'},
+              {html:'گروه مشتری:',className:'colorA19F9D size14'},
+              {html:customerGroup,className:'size14'},
             ]
           },
           {
@@ -55,6 +53,16 @@ export default class Shipping extends Component{
           }
         ]
       }
+    }
+    async componentDidMount(){
+      let {userInfo} = this.context;
+      this.setState({
+        name:userInfo.cardName,
+        code:userInfo.cardCode,
+        address:userInfo.address,
+        phone:userInfo.phone1,
+        customerGroup:userInfo.groupName
+      })
     }
     address_layout(){
       let {address} = this.state;

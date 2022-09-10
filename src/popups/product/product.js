@@ -41,7 +41,7 @@ export default class Product extends Component {
                 str.push(optionTypesDict[prop] + ' : ' + optionValuesDict[optionValues[prop]])
             }
             str = str.join(' -- ')
-            res.push({ text: str, value: id, variant: variants[i] })
+            res.push({ text: str, value: id, variant: variants[i],style:{height:36} })
         }
         this.options = res;
     }
@@ -99,25 +99,25 @@ export default class Product extends Component {
     }
     body_layout() {
         let { product } = this.context;
-        let { name, code, optionTypes, details, srcs } = product;
+        let { name, ItemCode, optionTypes, details, srcs } = product;
         let { srcIndex } = this.state;
         return {
             flex: 1,
             scroll: "v",
             gap: 12,
-            style: { padding: "12px 0" },
             column: [
-                this.image_layout(name, code, srcs[srcIndex]),
+                this.image_layout(name, ItemCode, srcs[srcIndex]),
                 this.options_layout(),
                 this.optionTypes_layout(optionTypes),
                 this.details_layout(details),
+                
             ],
         };
     }
-    image_layout(name, code, src) {
+    image_layout(name, ItemCode, src) {
         let { product } = this.context, { srcIndex } = this.state;
         return {
-            size: 346, className: "box",
+            size: 346, className: "box margin-0-12",
             column: [
                 { size: 24 },
                 {
@@ -131,7 +131,7 @@ export default class Product extends Component {
                 },
                 { size: 12 },
                 { size: 36, html: name, className: "size16 color323130 bold padding-0-12" },
-                { size: 36, html: "کد کالا : " + (code || ""), className: "size14 color605E5C padding-0-12" },
+                { size: 36, html: "کد کالا : " + (ItemCode || ""), className: "size14 color605E5C padding-0-12" },
                 { size: 12 },
             ],
         };
@@ -140,13 +140,14 @@ export default class Product extends Component {
         let { product } = this.context;
         if (product.optionTypes.length < 2) { return false }
         return {
-            className: 'box',
+            className: 'box margin-0-12',
             column: [
                 {
                     align: 'v', className: 'padding-12',
                     html: (
                         <AIOButton
                             type='select' className='product-exist-options main-bg'
+                            style={{width:'100%'}}
                             popupAttrs={{ style: { maxHeight: 400 } }}
                             options={this.options}
                             popupWidth='fit'
@@ -166,7 +167,7 @@ export default class Product extends Component {
         let { optionValues, selectedVariant } = this.state;
         if (!optionValues || !optionTypes) { return { html: '' } }
         return {
-            className: "box gap-no-color",
+            className: "box gap-no-color margin-0-12",
             column: [
                 {
                     column: optionTypes.map(({ name, id, items = {} }, i) => {
@@ -205,7 +206,7 @@ in product by id = ${this.context.product.id} there is an optionType by id = ${i
     details_layout(details) {
         let { showDetails } = this.state;
         return {
-            className: "box",
+            className: "box margin-0-12",
             style: { padding: 12 },
             column: [
                 {
@@ -232,8 +233,12 @@ in product by id = ${this.context.product.id} there is an optionType by id = ${i
     }
     footer_layout() {
         return {
-            size: 72, style: { background: "#fff" }, className: "padding-0-12",
-            row: [this.addToCart_layout(), { flex: 1 }, this.price_layout()],
+            size: 80, style: { background: "#fff",boxShadow:'0 0px 6px 1px rgba(0,0,0,.1)' }, className: "padding-0-24",
+            row: [
+                this.addToCart_layout(), 
+                { flex: 1 }, 
+                this.price_layout()
+            ],
         };
     }
     addToCart_layout() {
@@ -245,19 +250,22 @@ in product by id = ${this.context.product.id} there is an optionType by id = ${i
         let count = getCartCountByVariantId(selectedVariant.id)
         return {
             column:[
+                {flex:1},
                 {
                     show:!!!count,html: (<button onClick={() => this.changeCount(1)} className={"button-2" + (!selectedVariant ? " disabled" : "")}>افزودن به سبد خرید</button>),
                     align: "v",
                 },
-                { show:!!count, html: () => <ProductCount value={count} onChange={(count) => this.changeCount(count)} max={this.getInStock()} />,style:{width:90} },
+                { size:30,align:'v',show:!!count, html: () => <ProductCount value={count} onChange={(count) => this.changeCount(count)} max={this.getInStock()} />,style:{width:90} },
+                {size:12},
                 {
-                    html:'مشاهده سبد خرید',align:'v',flex:1,className:'color0094D4 size12 bold',
+                    size:24,html:'مشاهده سبد خرید',align:'v',className:'color0094D4 size12 bold',
                     attrs:{
                         onClick:()=>{
                             SetState({cartZIndex:productZIndex * 10})
                         }
                     }
-                }
+                },
+                {flex:1},
             ]
         }
     }
@@ -299,9 +307,14 @@ in product by id = ${this.context.product.id} there is an optionType by id = ${i
         return (
             <RVD
                 layout={{
-                    className: "bgFFF fixed",
+                    className: "main-bg fixed",
                     style:{zIndex},
-                    column: [this.header_layout(), this.body_layout(), this.footer_layout(),{size:12}],
+                    column: [
+                        this.header_layout(), 
+                        this.body_layout(), 
+                        {size:12},
+                        this.footer_layout()
+                    ],
                 }}
             />
         );

@@ -43,7 +43,7 @@ export default class PayameSabteGaranti extends Component {
     }
     backButton_layout(){
         let {SetState} = this.context;
-        return {html: (<button onClick={() => SetState({ guaranteePopupSuccessZIndex: 0 })} className="button-2">بازگشت</button>)}
+        return {html: (<button onClick={() => SetState({ guaranteePopupSuccessZIndex: 0,guaranteePopupZIndex:0 })} className="button-2">بازگشت</button>)}
     }
     render() {
         let { guaranteePopupSuccessZIndex: zIndex } = this.context;

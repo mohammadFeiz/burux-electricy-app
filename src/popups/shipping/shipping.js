@@ -22,7 +22,7 @@ export default class Shipping extends Component{
     details_layout(){
       let {name,code,campaign,basePrice,customerGroup} = this.state;
       return {
-        className:'box padding-12',
+        className:'box padding-12 margin-0-12',
         column:[
           {
             size:36,childsProps:{align:'v'},
@@ -67,9 +67,9 @@ export default class Shipping extends Component{
     address_layout(){
       let {address} = this.state;
       return {
-        className:'box padding-12',
+        className:'box padding-12 margin-0-12',
         column:[
-          {size:36,align:'v',className:'color605E5C size14 bold',html:'آدرس تحویل'},
+          {size:36,align:'v',className:'color605E5C size12 bold',html:'آدرس تحویل'},
           {
             className:'size14 color575756 bgF1F1F1 padding-12 round-6',html:address
           }
@@ -79,9 +79,9 @@ export default class Shipping extends Component{
     phone_layout(){
       let {phone} = this.state;
       return {
-        className:'box padding-12',
+        className:'box padding-12 margin-0-12',
         column:[
-          {size:36,align:'v',className:'color605E5C size14 bold',html:'شماره تلفن'},
+          {size:36,align:'v',className:'color605E5C size12 bold',html:'شماره تلفن'},
           {
             className:'size14 color575756 bgF1F1F1 padding-12 round-6',html:phone
           }
@@ -92,10 +92,11 @@ export default class Shipping extends Component{
       let {shipping} = this.context;
       let {cards} = shipping;
       return {
-        className:'box padding-12',
+        className:'box padding-12 margin-0-12',
         column:[
-          {size:36,align:'v',className:'color605E5C size14 bold',html:'محصولات'},
-          {column:cards.map((card)=>{return {html:card}})}
+          {size:36,align:'v',className:'color605E5C size12 bold',html:'محصولات'},
+          {
+            column:cards.map((card)=>{return {html:card,style:{overflow:'visible'}}})}
         ]
       }
     }
@@ -103,7 +104,7 @@ export default class Shipping extends Component{
       let {shipping} = this.context;
       let {total,totalDiscount} = shipping;
       return {
-        className:'box padding-12',
+        className:'box padding-12 margin-0-12',
         column:[
           {
             size:36,childsProps:{align:'v'},
@@ -148,7 +149,7 @@ export default class Shipping extends Component{
       let {shipping,SetState,services,cart} = this.context;
       let {cartItems} = shipping;
       return {
-        className:'box padding-12',
+        className:'padding-12',
         column:[
           {size:36,align:'vh',className:'color605E5C size14 bold',html:<button className="button-2" onClick={async ()=>{
             let res = await services({type:"sendToVisitor"})
@@ -175,13 +176,14 @@ export default class Shipping extends Component{
         <>
           <RVD
           layout={{
-            className:'bgFFF fixed',
+            className:'main-bg fixed',
             style:{zIndex:shippingZIndex},
-            flex:1,scroll:'v',
+            flex:1,
             column:[
               this.header_layout(),
               {
-                flex:1, scroll:'v',column:[
+                flex:1,scroll:'v',
+                column:[
                   this.details_layout(),
                   {size:12},
                   this.address_layout(),
@@ -191,10 +193,10 @@ export default class Shipping extends Component{
                   this.products_layout(),
                   {size:12},
                   this.amount_layout(),
-                  {size:12},
-                  this.sendToVisitor_layout()
-                ]
-              }
+                ],
+              },
+              {size:12},
+              this.sendToVisitor_layout()
             ]
           }}
         />

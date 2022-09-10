@@ -127,7 +127,7 @@ export default class Cart extends Component{
             <RVD 
               layout={{
                 style:{zIndex},flex: 1,className:'main-bg fixed',
-                column: [this.header_layout(),this.tabs_layout(),this.products_layout(),this.payment_layout()]
+                column: [this.header_layout(),this.tabs_layout(),{size:12},this.products_layout(),this.payment_layout()]
               }}
             />
         )

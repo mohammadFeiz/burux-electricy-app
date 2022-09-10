@@ -1,4 +1,5 @@
 import React,{Component} from 'react';
+import src from './../../images/logo.png';
 export default class Loading extends Component{
     cubes2(obj = {}){
       var {count = 5,thickness = [5,16],delay = 0.1,borderRadius = 0,colors = ['dodgerblue'],duration = 1,gap = 3} = obj;
@@ -23,6 +24,10 @@ export default class Loading extends Component{
     }
     
     render(){
-      return <div className='loading'>{this.cubes2({thickness:[12,60],colors:['transparent']})}</div>;
+      return (
+        <div className='loading'>
+          {this.cubes2({thickness:[12,60],colors:['transparent']})}
+        </div>
+      );
     }
   }

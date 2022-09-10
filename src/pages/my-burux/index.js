@@ -59,7 +59,6 @@ export default class MyBurux extends Component{
         }
     }
     getContent(){
-        let {user = '',customerCode,shopName,visitorName,nationalCode,parts} = this.state;
         let {guaranteeItems,wallet,userInfo} = this.context;
         return {
             scroll:'v',flex:1,className:'my-burux-page main-bg',
@@ -92,7 +91,7 @@ export default class MyBurux extends Component{
                             gap:1,
                             row:[
                                 this.getPanel({text1:'کد مشتری',text2:userInfo.cardCode}),
-                                this.getPanel({text1:'نام فروشگاه',text2:shopName})
+                                this.getPanel({text1:'نام فروشگاه',text2:userInfo.storeName})
                             ]
                         },
                         {

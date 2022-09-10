@@ -138,6 +138,7 @@ export default class Buy extends Component {
       column:sliders.map(([key,name])=>{
         let products = this.state[key] || [];
         return {
+          style:{overflow:'visible'},
           html:()=>(
             <CategorySlider 
               title={name} products={this.state[key]} 
@@ -159,6 +160,7 @@ export default class Buy extends Component {
         column: [
           {html:<Header zIndex={1} title='خرید کالا' buttons={{cart:true,sidemenu:true}}/>},
           {html:<SearchBox onClick={()=>SetState({searchZIndex:10})}/>},
+          {size:12},
           this.tabs()
         ]
       }}/>

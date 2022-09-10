@@ -171,7 +171,8 @@ export default class Main extends Component {
         console.log(error);
         return null;
     });
-    return data;
+    let {userInfo} = this.props;
+    return {...data,storeName:userInfo.storeName};
   }
   async componentDidMount() {
     let {userCardCode,bazargahActive,services} = this.state;
@@ -210,7 +211,7 @@ export default class Main extends Component {
       })
     }
     this.setState({
-      userInfo:b1Info.customer,
+      userInfo:{...b1Info.customer,storeName:b1Info.storeName},
       b1Info,
       fixPrice,
       updateProductPrice,

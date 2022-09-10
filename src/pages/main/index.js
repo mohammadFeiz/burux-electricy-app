@@ -203,13 +203,15 @@ export default class Main extends Component {
     let updateProductPrice = (list)=>{
       if(list === false){return false}
       return list.map((o)=>{
-        let obj = fixPrice([{itemCode:o.defaultVariant.code,itemQty:1}])[0]
+        let a=[{itemCode:o.defaultVariant.code,itemQty:1}];
+        let obj = fixPrice(a)[0]
         let newObj = {...o,...obj};
         return newObj
       })
     }
     this.setState({
       userInfo:b1Info.customer,
+      b1Info,
       fixPrice,
       updateProductPrice,
       wallet:b1Info.customer.ballance

@@ -347,7 +347,9 @@ export default function services(getState,token,userCardCode) {
         return getState().updateProductPrice(res.map((o) => { return { ...o, campaign } }))
       },
       async lastOrders({ baseUrl }) {
-        return getState().updateProductPrice(await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10179'}}),true)
+        const taxonProductsList=await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10179'}});
+        console.log(taxonProductsList);
+        return getState().updateProductPrice(taxonProductsList,true);
       },
       async recommendeds({ baseUrl,getState }) {
         return getState().updateProductPrice(await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10550'}}),true)
@@ -782,8 +784,27 @@ export default function services(getState,token,userCardCode) {
             "ItemCode": skusId // should be an array
           });
 
+        // const {b1Info} = getState();
         const spreeData = res.data.data;
         const b1Data = b1Res.data.data;
+        // const b1Data = b1Info.itemPrices.map((i)=>{
+        //   const onHand=i.inventory.filter(x=>x.whsCode==="01");
+        //   return {
+        //     "itemCode": i.mainSku,
+        //     "price": 0,
+        //     "finalPrice": 0,
+        //     "b1Dscnt": 0,
+        //     "cmpgnDscnt": 0,
+        //     "pymntDscnt": 0,
+        //     "onHand":onHand.length ? onHand[0] : {},
+        //     //   "onHand": {
+        //     //   "whsCode": "01",
+        //     //   "qty": 269.3,
+        //     //   "qtyLevel": 300,
+        //     //   "qtyLevRel": "Less"
+        //     // }
+        //   };
+        // });
         return this.getMappedAllProducts({ spreeResult: spreeData, b1Result: b1Data });
       },
       async getProductsWithCalculation({ baseUrl }, skusId) {

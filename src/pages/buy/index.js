@@ -44,7 +44,7 @@ export default class Buy extends Component {
   }
   async getCategories() {
     let {services} = this.context;
-    let categories = await services({type:"getCategories",cache:500});
+    let categories = await services({type:"getCategories"});
     this.setState({ categories });
   }
   async getFamilies() {
@@ -54,17 +54,17 @@ export default class Buy extends Component {
   }
   async get_recommendeds() {
     let {services} = this.context;
-    let recommendeds = await services({type:'recommendeds',cache:660});
+    let recommendeds = await services({type:'recommendeds'});
     this.setState({ recommendeds });
   }
   async get_lastOrders() {
     let {services} = this.context;
-    let lastOrders = await services({type:"lastOrders",cache:660});
+    let lastOrders = await services({type:"lastOrders"});
     this.setState({ lastOrders });
   }
   async get_bestSellings() {
     let {services,getPrice} = this.context;
-    let bestSellings = await services({type:'bestSellings',cache:660});
+    let bestSellings = await services({type:'bestSellings'});
     this.setState({ bestSellings });
   }
   //dont set async for parallel data fetching

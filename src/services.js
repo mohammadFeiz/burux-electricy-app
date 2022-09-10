@@ -778,33 +778,33 @@ export default function services(getState,token,userCardCode) {
         }
         if(!skusId.length === 0){return}
 
-        let b1Res = await Axios.post(`${baseUrl}/BOne/GetB1PriceList`,
-          {
-            "CardCode": userCardCode,
-            "ItemCode": skusId // should be an array
-          });
+        // let b1Res = await Axios.post(`${baseUrl}/BOne/GetB1PriceList`,
+        //   {
+        //     "CardCode": userCardCode,
+        //     "ItemCode": skusId // should be an array
+        //   });
 
-        // const {b1Info} = getState();
+        const {b1Info} = getState();
         const spreeData = res.data.data;
-        const b1Data = b1Res.data.data;
-        // const b1Data = b1Info.itemPrices.map((i)=>{
-        //   const onHand=i.inventory.filter(x=>x.whsCode==="01");
-        //   return {
-        //     "itemCode": i.mainSku,
-        //     "price": 0,
-        //     "finalPrice": 0,
-        //     "b1Dscnt": 0,
-        //     "cmpgnDscnt": 0,
-        //     "pymntDscnt": 0,
-        //     "onHand":onHand.length ? onHand[0] : {},
-        //     //   "onHand": {
-        //     //   "whsCode": "01",
-        //     //   "qty": 269.3,
-        //     //   "qtyLevel": 300,
-        //     //   "qtyLevRel": "Less"
-        //     // }
-        //   };
-        // });
+        // const b1Data = b1Res.data.data;
+        const b1Data = b1Info.itemPrices.map((i)=>{
+          const onHand=i.inventory.filter(x=>x.whsCode==="01");
+          return {
+            "itemCode": i.mainSku,
+            "price": 0,
+            "finalPrice": 0,
+            "b1Dscnt": 0,
+            "cmpgnDscnt": 0,
+            "pymntDscnt": 0,
+            "onHand":onHand.length ? onHand[0] : {},
+            //   "onHand": {
+            //   "whsCode": "01",
+            //   "qty": 269.3,
+            //   "qtyLevel": 300,
+            //   "qtyLevRel": "Less"
+            // }
+          };
+        });
         return this.getMappedAllProducts({ spreeResult: spreeData, b1Result: b1Data });
       },
       async getProductsWithCalculation({ baseUrl }, skusId) {

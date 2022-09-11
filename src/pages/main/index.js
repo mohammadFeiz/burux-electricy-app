@@ -175,6 +175,7 @@ export default class Main extends Component {
     return {...data,storeName:userInfo.storeName};
   }
   async componentDidMount() {
+    let developerMode = true
     let {userCardCode,bazargahActive,services} = this.state;
     let b1Info = await this.getB1Info(userCardCode);
     this.getGuaranteeItems()
@@ -188,7 +189,20 @@ export default class Main extends Component {
     //let testedChance = await services({type:"get_tested_chance"});
     let pricing = new Pricing('https://b1api.burux.com/api/BRXIntLayer/GetCalcData', userCardCode, 10 * 60 * 1000)
     let istarted = pricing.startservice().then((value) => { return value; });
-    let fixPrice = (items)=>{
+    let fixPrice = (items,caller)=>{
+      if(developerMode){
+        if(!caller){
+          console.error('fixPrice missing caller. items is ',items)
+        }
+        for(let i = 0; i < items.length; i++){
+          if(!items[i].itemCode){
+            console.error(caller + ' missing itemCode. item is ',items[i])
+          }
+          if(!items[i].itemQty){
+            console.error(caller + ' missing itemQty. item is ',items[i])
+          }
+        }
+      }
       let data = {
         "CardGroupCode": b1Info.customer.groupCode,
         "CardCode": this.state.userCardCode,
@@ -199,13 +213,14 @@ export default class Main extends Component {
         "MarketingLines": items
       }
       let list = items.map(({itemCode})=>itemCode);
-      return pricing.autoPriceList(list, data, null, null, null, null, null, "01");
+      list = pricing.autoPriceList(list, data, null, null, null, null, null, "01");
+      return list
     }
-    let updateProductPrice = (list)=>{
+    let updateProductPrice = (list,caller)=>{
       if(list === false){return false}
       return list.map((o)=>{
         let a=[{itemCode:o.defaultVariant.code,itemQty:1}];
-        let obj = fixPrice(a)[0]
+        let obj = fixPrice(a,caller)[0]
         let newObj = {...o,...obj};
         return newObj
       })

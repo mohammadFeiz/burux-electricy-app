@@ -94,13 +94,6 @@ export default class MyBurux extends Component{
                                 this.getPanel({text1:'نام فروشگاه',text2:userInfo.storeName})
                             ]
                         },
-                        {
-                            gap:1,
-                            row:[
-                                this.getPanel({text1:'ویزیتور',text2:userInfo.slpname}),
-                                this.getPanel({text1:'کد ملی',text2:userInfo.idNumber})
-                            ]
-                        },
                         this.getPanel({text3:'مشاهده کامل اطلاعات کاربری'})
                     ]
                 },

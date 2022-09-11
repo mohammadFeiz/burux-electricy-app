@@ -333,7 +333,6 @@ export default function services(getState,token,userCardCode) {
           let campaign = campaigns[i];
           let res = await this.getTaxonProducts({ baseUrl, parameter: { Taxons: campaign.id } })
           res = res.map((o) => { 
-            let priceObj = getState().getPrice([{itemCode:'1',itemQty:'2'}])
             return { ...o, campaign } 
           })
           result[campaign.id] = res;
@@ -344,18 +343,17 @@ export default function services(getState,token,userCardCode) {
         let { campaign } = parameter;
         let { id } = campaign;
         let res = await this.getTaxonProducts({ baseUrl, parameter: { Taxons: id } })
-        return getState().updateProductPrice(res.map((o) => { return { ...o, campaign } }))
+        return getState().updateProductPrice(res.map((o) => { return { ...o, campaign } }),'services => getCampaignProducts')
       },
       async lastOrders({ baseUrl }) {
         const taxonProductsList=await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10179'}});
-        console.log(taxonProductsList);
-        return getState().updateProductPrice(taxonProductsList,true);
+        return getState().updateProductPrice(taxonProductsList,'services => lastOrders');
       },
       async recommendeds({ baseUrl,getState }) {
-        return getState().updateProductPrice(await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10550'}}),true)
+        return getState().updateProductPrice(await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10550'}}),'services => recommendeds')
       },
       async bestSellings({baseUrl,getState}){
-        return getState().updateProductPrice(await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10178'}}),true)
+        return getState().updateProductPrice(await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10178'}}),'services => bestSellings')
       },
       async preOrders({ baseUrl }) {
         let preOrders = { waitOfVisitor: 0, waitOfPey: 0 };

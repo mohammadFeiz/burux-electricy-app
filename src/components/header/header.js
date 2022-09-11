@@ -58,7 +58,6 @@ export default class Header extends Component{
                                     style={{background:'none',margin:'0 6px',padding:0}}
                                     text={<div className='home-circle'></div>}
                                     options={[
-                                        {text:'ثبت نام',value:'register'},
                                         {text:'خروج از حساب',value:'exit'},
 
                                     ]}

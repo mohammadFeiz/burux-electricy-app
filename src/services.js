@@ -560,7 +560,7 @@ export default function services(getState,token,userCardCode) {
             }
           }
         }
-        return result
+        return result;
       },
       getProductVariant(include_variant, include_srcs, b1Result, optionTypes, defaultVariantId) {
         let { id, attributes, relationships } = include_variant;
@@ -572,9 +572,10 @@ export default function services(getState,token,userCardCode) {
         try { inStock = b1_item.onHand.qty } catch { inStock = 0 }
         try { discountPrice = Math.round(b1_item.price * discountPercent / 100) } catch { discountPrice = 0 }
         let optionValues = this.getVariantOptionValues(relationships.option_values.data, optionTypes)
+        let code=b1_item ? b1_item.itemCode : '';
         return {
           id, optionValues, discountPrice, price, inStock, srcs,
-          code: b1_item ? b1_item.itemCode : '',
+          code,
           discountPercent,
           isDefault: defaultVariantId === id
         }
@@ -742,6 +743,12 @@ export default function services(getState,token,userCardCode) {
 
         return categories;
       },
+      async getGuaranteesImages({ baseUrl }) {
+        const imgResult= await Axios.get(`${baseUrl}/Guarantee/GetGuaranteesImages?ids=${itemCodes}`); // itemCodes => itemCode of products, seprtaed by comma
+
+        //response
+        // var res=[{"ItemCode":"3254","ImagesUrl":"http://link.com"}]
+      },
       async refreshB1Rules({ baseUrl }) {
         await Axios.get(`${baseUrl}/BOne/RefreshRules`);
       },
@@ -788,7 +795,7 @@ export default function services(getState,token,userCardCode) {
         const b1Data = b1Info.itemPrices.map((i)=>{
           const onHand=i.inventory.filter(x=>x.whsCode==="01");
           return {
-            "itemCode": i.mainSku,
+            "itemCode": i.itemCode,
             "price": 0,
             "finalPrice": 0,
             "b1Dscnt": 0,
@@ -815,7 +822,6 @@ export default function services(getState,token,userCardCode) {
 
         const included = res.data.data.included;
 
-        console.log(res.data)
         return res;
       }
     }

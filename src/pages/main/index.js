@@ -29,6 +29,7 @@ import PayameSabteGaranti from "../../components/garanti/payame-sabte-garanti/pa
 import Register from "../../components/register/register";
 import JoziateSefaresheBazargah from "../../components/bazargah/joziate-sefaresh/joziate-sefaresh";
 import SignalR from '../../singalR/signalR';
+import services from "./../../services";
 export default class Main extends Component {
   constructor(props) {
     super(props);
@@ -46,11 +47,20 @@ export default class Main extends Component {
     else {
       theme = theme === 'false'?false:'theme-1'
     }
+    let images = localStorage.getItem('electricy-images');
+    if(images === undefined || images === null){
+      images = {};
+      localStorage.setItem('electricy-images','{}')
+    }
+    else {
+      images = JSON.parse(images);
+    }
     this.dateCalculator = dateCalculator();
     let userCardCode=this.props.userInfo.cardCode;
 
     this.state = {
       userCardCode,
+      images,
       signalR,
       bazargahActive:false,
       buruxlogod:this.getBuruxLogoD(),
@@ -136,6 +146,25 @@ export default class Main extends Component {
     if(!cartItem){return 0}
     return cartItem.count || 0;
   }
+  async getGuaranteeImages(items){
+    if(!items.length){return}
+    let {services,images} = this.state;
+    let itemCodes = [];
+    for(let i = 0; i < items.length; i++){
+      let {Details = []} = items[i];
+      for(let j = 0; j < Details.length; j++){
+        let {Code} = Details[j];
+        if(images[Code]){continue}
+        if(itemCodes.indexOf(Code) !== -1){continue}
+        itemCodes.push(Code);
+      } 
+    }
+    let res = await services({type:'getGuaranteesImages',parameter:itemCodes.toString()});
+    for(let i = 0; i < res.length; i++){
+      images[res.ItemCode] = res.ImagesUrl;
+    }
+    this.setState({images})
+  }
   async getGuaranteeItems(){
     let {services} = this.state;
     let guaranteeItems = await services({type:"guaranteeItems",loading:false});
@@ -143,6 +172,7 @@ export default class Main extends Component {
       this.props.logout();
       return;
     }
+    this.getGuaranteeImages(guaranteeItems);
     let guaranteeExistItems = await services({type:"kalahaye_mojoode_garanti",loading:false});
     this.setState({
       guaranteeItems,

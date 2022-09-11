@@ -10,11 +10,13 @@ import {mdiAccountCircle} from '@mdi/js';
 import AIOButton from './../../components/aio-button/aio-button';
 import './index.css';
 import SabteGarantiJadid from '../../components/garanti/sabte-garanti-jadid/sabte-garanti-jadid';
+import Popup from '../../components/popup/popup';
 export default class MyBurux extends Component{
     static contextType = appContext;
     constructor(props){
         super(props);
         this.state = {
+            showProfile:false,
             user:'محمد شریف فیض',
             customerCode:'c19428',shopName:'فروشگاه الکتریکی تهران',visitorName:'علی محمدی',nationalCode:'0386481784',
             parts:[
@@ -125,14 +127,23 @@ export default class MyBurux extends Component{
                 },
                 {size:16},
                 this.parts_layout(),
-                {
-                    size:96,html:getSvg(18),align:'vh'
-                }
+                {size:96,html:getSvg(18),align:'vh'}
             ]
         }
     }
     render(){
-        return (<RVD layout={this.getContent()}/>)
+        let {showProfile} = this.state;
+        return (<>
+            <RVD layout={this.getContent()}/>
+            {
+                showProfile && 
+                (
+                    <Popup>
+                        
+                    </Popup>
+                )
+            }
+        </>)
     }
 }
 class Part extends Component{

@@ -13,7 +13,7 @@ export default function services(getState,token,userCardCode) {
         if (res.data && res.data.isSuccess && res.data.data) {
           let items = fix(res.data.data.Items, { convertDateFields: ["CreateTime"] });
           return items.map((o) => {
-            return { ...o, Details: o.Details.map((d) => { return { ...d, src: bulb10w } }) }
+            return { ...o, Details: o.Details.map((d) => { return { ...d } }) }
           })
         }
         else { return []; }
@@ -743,9 +743,14 @@ export default function services(getState,token,userCardCode) {
 
         return categories;
       },
-      async getGuaranteesImages({ baseUrl }) {
-        const imgResult= await Axios.get(`${baseUrl}/Guarantee/GetGuaranteesImages?ids=${itemCodes}`); // itemCodes => itemCode of products, seprtaed by comma
-
+      async getGuaranteesImages({ baseUrl,parameter }) {
+        let res = await Axios.get(`${baseUrl}/Guarantee/GetGuaranteesImages?ids=${parameter}`); // itemCodes => itemCode of products, seprtaed by comma
+        try{
+          return res.data.data || []
+        }
+        catch{
+          return []
+        }
         //response
         // var res=[{"ItemCode":"3254","ImagesUrl":"http://link.com"}]
       },

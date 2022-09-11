@@ -1,6 +1,9 @@
 import React,{Component} from 'react';
 import RVD from 'react-virtual-dom';
+import bulb10w from './../../../images/10w-bulb.png';
+import appContext from '../../../app-context';
 export default class GarantiCard extends Component{
+    static contextType = appContext;
     getColor(color){
         if(color === 'آفتابی'){return '#F9E695'}
         if(color === 'مهتابی'){return '#a0def8'}
@@ -104,7 +107,9 @@ export default class GarantiCard extends Component{
                                 row:[
                                     {
                                         gap:6,
-                                        row:Details.slice(0,5).map(({src},i)=>{
+                                        row:Details.slice(0,5).map((o,i)=>{
+                                            let {images} = this.context;
+                                            let src = images[o.Code] || bulb10w;
                                             return {
                                                 size:36,gap:12,
                                                 html:<img src={src} style={{width:36,height:36,border:'1px solid #ddd',borderRadius:6}}/>

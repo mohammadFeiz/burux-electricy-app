@@ -59,6 +59,7 @@ export default class Main extends Component {
     let userCardCode=this.props.userInfo.cardCode;
 
     this.state = {
+      profile:this.props.userInfo,
       userCardCode,
       images,
       signalR,

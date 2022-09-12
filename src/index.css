@@ -150,6 +150,9 @@ button{
 .theme-1 .color605E5C{
 	color:#ddd;
 }
+.colorC7E7F4{
+	color:#C7E7F4;
+}
 .colorA19F9D{
 	color:#A19F9D;
 }
@@ -208,6 +211,9 @@ button{
 }
 .size28{
 	font-size:28px;
+}
+.size36{
+	font-size:36px;
 }
 .button-1{
 	color:#0094D4;
@@ -511,4 +517,33 @@ button{
 
 }
 .tick-flip *{
+}
+
+
+.blue-gradient{
+	background: rgb(13, 67, 110);
+}
+.blue-gradient-point1{
+	position:absolute;
+	width:100%;
+	height:100%;
+	left:0;
+	top:0;
+	background:radial-gradient(circle,rgb(26, 146, 250,0.8) 0%,rgba(0,134,255,0.5) 20%, rgba(0,134,255,0.1) 40%, transparent 80%, transparent 100%);
+	background-position-x: -200px;
+	background-position-y: -110px;
+	background-repeat: no-repeat;
+	background-size: 130% 150%;
+}
+.blue-gradient-point2{
+	position:absolute;
+	width:100%;
+	height:100%;
+	left:0;
+	top:0;
+	background:radial-gradient(circle,rgb(26, 146, 250,0.8) 0%,rgba(0,134,255,0.7) 20%, rgba(0,134,255,0.1) 40%, transparent 80%, transparent 100%);
+	background-position-x: 100px;
+	background-position-y: 0px;
+	background-repeat: no-repeat;
+	background-size: 130% 150%;
 }

@@ -12,38 +12,44 @@ import NeshanMap from '../neshan-map/neshan-map';
 export default class Register extends Component{
     constructor(props){
         super(props);
+        let model = {
+            "latitude": 35.699739,
+            "longitude": 51.338097,
+            "firstName": "",
+            "lastName": "",
+            "mobile": '',
+            "storeName": "",
+            "address": "",
+            "province": "",
+            "city": "",
+            "landlineNumber": '',
+            "email":""
+        };
+        model = {...model,...props.model}
         this.state = {
-            model:{
-                "latitude": 35.699739,
-                "longitude": 51.338097,
-                "firstName": "",
-                "lastName": "",
-                "mobile": this.props.mobile,
-                "storeName": "",
-                "address": "",
-                "province": "",
-                "city": "",
-                "landlineNumber": '',
-                "email":""
-            },
+            model,
             showMap:false
         }
     }
     header_layout(){
-        let {onClose} = this.props;
+        let {onClose,mode} = this.props;
         return {
             className:'box-shadow',size:60,style:{overflow:'visible',marginBottom:12,background:'#fff'},
             row:[
                 {size:60,html:getSvg("chevronLeft", { flip: true }),align:'vh',attrs:{onClick:()=>onClose()}},
-                {flex:1,html:'ثبت نام',className:'size16 color605E5C',align:'v'}
+                {flex:1,html:mode === 'edit'?'ویرایش اطلاعات کاربری':'ثبت نام',className:'size16 color605E5C',align:'v'}
             ]
         }
     }
     logo_layout(){return {html:storeSvg,align:'vh'}}
     text_layout(){
+        let {mode} = this.props;
+        if(mode === 'edit'){return false}
         return {html:'به خانواده بزرگ بروکس بپیوندید',align:'h',className:'size20 color323130 bold'}
     }
     subtext_layout(){
+        let {mode} = this.props;
+        if(mode === 'edit'){return false}
         return {html:'بیش از 8000 فروشگاه در سطح کشور عضو این خانواده هستند',align:'vh',className:'size14 color605E5C'}
     }
     async register(){
@@ -58,7 +64,21 @@ export default class Register extends Component{
         }
         else{alert('خطا در برقراری ارتباط')}
     }
+    async edit(){
+        debugger;
+        let {model} = this.state;
+        let res = await Axios.post(`https://retailerapp.bbeta.ir/api/v1/Users/UpdateUser`, model);
+        let result = false;
+        try{result = res.data.isSuccess || false}
+        catch{result = false}
+        if(result){
+            let {onClose} = this.props;
+            onClose(model)
+        }
+        else{alert('خطا در برقراری ارتباط')}
+    }
     footer_layout(){
+        return false
         let {onInter} = this.props;
         return {
             size:48,align:'h',gap:12,
@@ -69,7 +89,8 @@ export default class Register extends Component{
         }
     }
     form_layout(){
-        let {model,showMap} = this.state;
+        let {model} = this.state;
+        let {mode} = this.props;
         return {
             html:(
                 <Form
@@ -78,8 +99,8 @@ export default class Register extends Component{
                     bodyAttrs={{className:'main-bg'}}
                     theme={{rowHeight:70}}
                     labelAttrs={{className:'size14 color605E5C'}}
-                    onSubmit={()=>this.register()}
-                    submitButtonAttrs={{className:'button-2',style:{width:'100%'},value:'ایجاد حساب کاربری'}}
+                    onSubmit={()=>mode === 'edit'?this.edit():this.register()}
+                    submitButtonAttrs={{className:'button-2',style:{width:'100%'},value:mode === 'edit'?'ثبت':'ایجاد حساب کاربری'}}
                     footerAttrs={{className:'main-bg padding-0-24'}}
                     rowGap={24}
                     onChange={(model)=>this.setState({model})}
@@ -110,7 +131,11 @@ export default class Register extends Component{
                         {label:'استان',type:'text',field:'model.province',rowKey:'2',validations:[['required']]},
                         {type:'html',html:()=>'',rowKey:'2',rowWidth:12},
                         {label:'شهر',type:'text',field:'model.city',rowKey:'2',validations:[['required']]},
-                        {label:'آدرس',type:'textarea',field:'model.address',validations:[['required']]}
+                        {label:'آدرس',type:'textarea',field:'model.address',validations:[['required']]},
+                        {label:'شماره شبا',type:'text',field:'model.sheba'},
+                        {label:'شماره کارت بانکی',type:'number',field:'model.cardBankNumber'},
+                        {label:'نام دارنده کارت بانکی',type:'text',field:'model.cardBankName'},
+                        
                     ]}
                 />
             )

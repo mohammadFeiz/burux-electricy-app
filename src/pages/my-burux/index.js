@@ -11,6 +11,7 @@ import AIOButton from './../../components/aio-button/aio-button';
 import './index.css';
 import SabteGarantiJadid from '../../components/garanti/sabte-garanti-jadid/sabte-garanti-jadid';
 import Popup from '../../components/popup/popup';
+import Register from '../../components/register/register';
 export default class MyBurux extends Component{
     static contextType = appContext;
     constructor(props){
@@ -96,7 +97,7 @@ export default class MyBurux extends Component{
                                 this.getPanel({text1:'نام فروشگاه',text2:userInfo.storeName})
                             ]
                         },
-                        this.getPanel({text3:'مشاهده کامل اطلاعات کاربری'})
+                        this.getPanel({text3:'مشاهده کامل اطلاعات کاربری',onClick:()=>this.setState({showProfile:true})})
                     ]
                 },
                 {size:16},
@@ -133,13 +134,42 @@ export default class MyBurux extends Component{
     }
     render(){
         let {showProfile} = this.state;
+        let {profile,SetState,userInfo} = this.context;
+        console.log(profile)
+        let model = {
+            firstName:profile.firstName,
+            lastName:profile.lastName,
+            mobile:profile.phoneNumber,
+            storeName:profile.storeName,
+            address:profile.address,
+            province:profile.userProvince,
+            city:profile.userCity,
+            landlineNumber:profile.landline,
+            email:profile.email,
+            latitude:+profile.latitude,
+            longitude:+profile.longitude,
+            userId:profile.id
+        }
         return (<>
             <RVD layout={this.getContent()}/>
             {
                 showProfile && 
                 (
                     <Popup>
-                        
+                        <RVD
+                            layout={{
+                                className:'fixed',
+                                html:(
+                                    <Register 
+                                        mode='edit' model={model} 
+                                        onClose={(model)=>{
+                                            this.setState({showProfile:false});
+                                            SetState({userInfo:{...userInfo,storeName:model.storeName}})
+                                        }}
+                                    />
+                                )
+                            }}
+                        />
                     </Popup>
                 )
             }

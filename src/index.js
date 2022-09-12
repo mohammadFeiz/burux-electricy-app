@@ -322,7 +322,7 @@ class OTPLogin extends Component{
       if(!registered){
         return (
           <Register
-            mobile={userInfo.phoneNumber}
+            model={{mobile:userInfo.phoneNumber}}
             onClose={()=>{
               this.setState({isAutenticated:false})
             }}

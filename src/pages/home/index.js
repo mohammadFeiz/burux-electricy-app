@@ -13,6 +13,8 @@ import ReactHtmlSlider from './../../components/react-html-slider/react-html-sli
 import SabteGarantiJadid from '../../components/garanti/sabte-garanti-jadid/sabte-garanti-jadid';
 import Billboard from '../../components/billboard/billboard';
 import Flip from '../../components/flip/flip';
+import Popup from '../../components/popup/popup';
+import Wallet from '../../popups/wallet/wallet';
 
 export default class Home extends Component {
     static contextType = appContext;
@@ -21,6 +23,7 @@ export default class Home extends Component {
         this.state = {
             gems: 500,
             showAwards:false,
+            showWallet:true,
             searchValue: '',
             preOrders: { waitOfVisitor: 0, waitOfPey: 0 },
             myNearItems: [
@@ -350,13 +353,19 @@ export default class Home extends Component {
         this.getPreOrders();
     }
     render() {
-        let {showAwards} = this.state;
+        let {showAwards,showWallet} = this.state;
         return (
             <>
                 <RVD layout={this.getContent()} />
                 {
                     showAwards &&
                     <Awards onClose={()=>this.setState({showAwards:false})}/>
+                }
+                {
+                    showWallet &&
+                    <Popup>
+                        <Wallet onClose={()=>this.setState({showWallet:false})}/>
+                    </Popup>
                 }
             </>
             

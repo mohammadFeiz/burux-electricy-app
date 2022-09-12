@@ -447,33 +447,32 @@ export default function services(getState,token,userCardCode) {
         
         
       },
-      async walletItems({baseUrl}){
-        return [
-          {title:'ارسال سفارش از بازارگاه',date:'1401/4/4',time:'12:10',type:'in',amount:4235345},
-          {title:'برداشت از کیف پول',date:'1401/4/4',time:'12:10',type:'out',amount:4235345},
-          {title:'ارسال سفارش از بازارگاه',date:'1401/4/4',time:'12:10',type:'in',amount:4235345},
-          {title:'ارسال سفارش از بازارگاه',date:'1401/4/4',time:'12:10',type:'in',amount:4235345},
-          {title:'برداشت از کیف پول',date:'1401/4/4',time:'12:10',type:'out',amount:4235345},
-          {title:'ارسال سفارش از بازارگاه',date:'1401/4/4',time:'12:10',type:'in',amount:4235345},
-          {title:'برداشت از کیف پول',date:'1401/4/4',time:'12:10',type:'out',amount:4235345},
-          {title:'ارسال سفارش از بازارگاه',date:'1401/4/4',time:'12:10',type:'in',amount:4235345},
-          {title:'برداشت از کیف پول',date:'1401/4/4',time:'12:10',type:'out',amount:4235345},
-          {title:'ارسال سفارش از بازارگاه',date:'1401/4/4',time:'12:10',type:'in',amount:4235345},
-          {title:'ارسال سفارش از بازارگاه',date:'1401/4/4',time:'12:10',type:'in',amount:4235345},
-          {title:'برداشت از کیف پول',date:'1401/4/4',time:'12:10',type:'out',amount:4235345},
-          {title:'ارسال سفارش از بازارگاه',date:'1401/4/4',time:'12:10',type:'in',amount:4235345},
-          {title:'ارسال سفارش از بازارگاه',date:'1401/4/4',time:'12:10',type:'in',amount:4235345},
-          {title:'برداشت از کیف پول',date:'1401/4/4',time:'12:10',type:'out',amount:4235345},
-          {title:'ارسال سفارش از بازارگاه',date:'1401/4/4',time:'12:10',type:'in',amount:4235345},
-          {title:'ارسال سفارش از بازارگاه',date:'1401/4/4',time:'12:10',type:'in',amount:4235345},
-          {title:'برداشت از کیف پول',date:'1401/4/4',time:'12:10',type:'out',amount:4235345},
-          {title:'ارسال سفارش از بازارگاه',date:'1401/4/4',time:'12:10',type:'in',amount:4235345},
-          {title:'برداشت از کیف پول',date:'1401/4/4',time:'12:10',type:'out',amount:4235345},
-          {title:'ارسال سفارش از بازارگاه',date:'1401/4/4',time:'12:10',type:'in',amount:4235345},
-          {title:'برداشت از کیف پول',date:'1401/4/4',time:'12:10',type:'out',amount:4235345},
-          {title:'برداشت از کیف پول',date:'1401/4/4',time:'12:10',type:'out',amount:4235345},
-          {title:'ارسال سفارش از بازارگاه',date:'1401/4/4',time:'12:10',type:'in',amount:4235345},
-      ]
+      async walletItems({baseUrl,fixDate,parameter}){
+        let { userCardCode }  = getState();
+        let res = await Axios.post(`${baseUrl}/BOne/UserTransaction`, {
+          "requests": [
+              {
+                  "cardCode": userCardCode,
+                  "startDate": parameter===false ? "" : `${parameter.gregorian[0]}/${parameter.gregorian[1]}/${parameter.gregorian[2]}`,
+                  // "transactionReqNo" : 1
+              }
+          ]
+      });
+
+      var result=res.data.data.results[0].lineDetails;
+      let titleDic= {
+        IncomingPayment:"واریز به کیف پول",
+        OutgoingPayment:"برداشت از کیف پول"
+      }
+
+      let typeDic= {
+        IncomingPayment:"in",
+        OutgoingPayment:"out"
+      }
+
+      return result.map((x)=>{
+        return fixDate({title:titleDic[x.realtedDoc.docType] ,date:x.date,type:typeDic[x.realtedDoc.docType] ,amount:x.sum},"date");
+      });
       },
       async bazargahCatched({baseUrl}){
         let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?cardCode=${userCardCode}&distance=100&status=2`); // 2 for taken

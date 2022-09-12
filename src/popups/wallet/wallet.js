@@ -5,6 +5,7 @@ import getSvg from "../../utils/getSvg";
 import functions from "../../functions";
 import GAH from 'gah-datepicker';
 import appContext from "../../app-context";
+import services from "../../services";
 export default class Wallet extends Component{
     static contextType = appContext
     constructor(props){
@@ -34,7 +35,8 @@ export default class Wallet extends Component{
     }
     async componentDidMount(){
         let {services} = this.context;
-        let items = await services({type:'walletItems'});
+        let {fromDate}=this.state;
+        let items = await services({type:'walletItems',parameter:fromDate});
         this.setState({items})
     }
     header_layout(){
@@ -117,6 +119,7 @@ export default class Wallet extends Component{
         }
     }
     filter_layout(){
+        let {services}=this.context;
         let {fromDate,toDate} = this.state;
         let style = {borderRadius:24,width:100,height:24,border:'1px solid #605E5C'}
         let fromStyle = fromDate === false?{color:'#605E5C'}:{border:'1px solid #605E5C',color:'#fff',background:'#605E5C'}
@@ -133,26 +136,30 @@ export default class Wallet extends Component{
                             value={fromDate}
                             style={{...style,...fromStyle}}
                             calendarType='jalali'
-                            onChange={(obj)=>this.setState({fromDate:obj.dateString})}
+                            onChange={async (obj)=>{
+                                this.setState({fromDate:obj.dateString});
+                                let items = await services({type:'walletItems',parameter:obj});
+                                this.setState({items});
+                            }}
                             onClear={()=>this.setState({fromDate:false})}
                         />
                     ),align:'v'
                 },
                 {flex:1},
-                {html:'تا تاریخ : ',className:'size12 color323130',align:'v'},
-                {size:6},
-                {
-                    html:(
-                        <GAH
-                            value={toDate}
-                            style={{...style,...toStyle}}
-                            calendarType='jalali'
-                            onChange={(obj)=>this.setState({toDate:obj.dateString})}
-                            onClear={()=>this.setState({toDate:false})}
-                        />
-                    ),align:'v'
-                },
-                {flex:1}
+                // {html:'تا تاریخ : ',className:'size12 color323130',align:'v'},
+                // {size:6},
+                // {
+                //     html:(
+                //         <GAH
+                //             value={toDate}
+                //             style={{...style,...toStyle}}
+                //             calendarType='jalali'
+                //             onChange={(obj)=>this.setState({toDate:obj.dateString})}
+                //             onClear={()=>this.setState({toDate:false})}
+                //         />
+                //     ),align:'v'
+                // },
+                // {flex:1}
             ]
         }
     }
@@ -176,7 +183,7 @@ export default class Wallet extends Component{
                 {
                     column:[
                         {html:o.title,className:'size14 color323130 bold'},
-                        {html:o.date + ' ' + o.time,className:'size12 colorA19F9D'}
+                        {html:o.date + ' ' + o._time,className:'size12 colorA19F9D'}
                     ]
                 },
                 {flex:1},

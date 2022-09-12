@@ -29,8 +29,8 @@ export default class MyBurux extends Component{
                 {text:'حساب ها',icon:14,onClick:()=>{}},
                 {text:'جزییات درخواست های گارانتی',icon:14,onClick:async ()=>{
                     let {SetState,services} = this.context;
-                    let guaranteeItems = await services({type:'guaranteeItems'});
-                    SetState({guaranteeItems,joziate_darkhasthaye_garanti_popup_zIndex:10}) 
+                    let {items,total} = await services({type:'guaranteeItems'});
+                    SetState({guaranteeItems:items,totalGuaranteeItems:total,joziate_darkhasthaye_garanti_popup_zIndex:10}) 
                 }},
                 {text:'قوانین و مقررات',icon:16,onClick:()=>{}},
                 {text:'خروج از حساب کاربری',icon:17,onClick:()=>this.context.logout(),color:'#A4262C'},
@@ -62,7 +62,7 @@ export default class MyBurux extends Component{
         }
     }
     getContent(){
-        let {guaranteeItems,wallet,userInfo} = this.context;
+        let {totalGuaranteeItems,wallet,userInfo} = this.context;
         return {
             scroll:'v',flex:1,className:'my-burux-page main-bg',
             column:[
@@ -111,7 +111,7 @@ export default class MyBurux extends Component{
                         }),
                         {size:12},
                         this.getPanel({
-                            text1:'کالا های گارانتی شده',text2:guaranteeItems.length + ' عدد',
+                            text1:'کالا های گارانتی شده',text2:totalGuaranteeItems + ' عدد',
                             text3:(
                                 <AIOButton 
                                     type='button'

@@ -23,7 +23,7 @@ export default class Home extends Component {
         this.state = {
             gems: 500,
             showAwards:false,
-            showWallet:true,
+            showWallet:false,
             searchValue: '',
             preOrders: { waitOfVisitor: 0, waitOfPey: 0 },
             myNearItems: [
@@ -88,7 +88,7 @@ export default class Home extends Component {
             style:{overflow:'visible'},
             className:'padding-0-12',
             row: [
-                this.cartAndWalletCard_layout(getSvg(29,{width:30,height:30}),'کیف پول',functions.splitPrice(wallet),'ریال'),
+                this.cartAndWalletCard_layout(getSvg(29,{width:30,height:30}),'کیف پول',functions.splitPrice(wallet),'ریال',()=>this.setState({showWallet:true})),
                 {size:12},
                 this.cartAndWalletCard_layout(getSvg(28,{width:30,height:30}),'سبد خرید',Object.keys(cart).length,'کالا',()=>SetState({cartZIndex:10}))
             ]

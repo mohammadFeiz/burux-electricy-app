@@ -141,7 +141,11 @@ export default class Wallet extends Component{
                                 let items = await services({type:'walletItems',parameter:obj});
                                 this.setState({items});
                             }}
-                            onClear={()=>this.setState({fromDate:false})}
+                            onClear={async ()=>{
+                                this.setState({fromDate:false});
+                                let items = await services({type:'walletItems',parameter:false});
+                                this.setState({items});
+                            }}
                         />
                     ),align:'v'
                 },

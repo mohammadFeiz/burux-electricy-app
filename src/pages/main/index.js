@@ -100,6 +100,7 @@ export default class Main extends Component {
         { text: "بروکس من", icon: 21, id: "d" },
       ],
       guaranteeItems: [],
+      totalGuaranteeItems:0,
       guaranteeExistItems: [],
       activeBottomMenu: "a",
       popup: {},
@@ -167,16 +168,19 @@ export default class Main extends Component {
     this.setState({images})
   }
   async getGuaranteeItems(){
+    debugger;
     let {services} = this.state;
-    let guaranteeItems = await services({type:"guaranteeItems",loading:false});
-    if(guaranteeItems === false){
+    let res = await services({type:"guaranteeItems",loading:false});
+    if(res === false){
       this.props.logout();
       return;
     }
-    this.getGuaranteeImages(guaranteeItems);
+    let {items,total} = res
+    this.getGuaranteeImages(items);
     let guaranteeExistItems = await services({type:"kalahaye_mojoode_garanti",loading:false});
     this.setState({
-      guaranteeItems,
+      guaranteeItems:items,
+      totalGuaranteeItems:total,
       guaranteeExistItems
     });
   }

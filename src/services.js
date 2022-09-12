@@ -12,11 +12,12 @@ export default function services(getState,token,userCardCode) {
         if(res.status === 401){return false}
         if (res.data && res.data.isSuccess && res.data.data) {
           let items = fix(res.data.data.Items, { convertDateFields: ["CreateTime"] });
-          return items.map((o) => {
+          items = items.map((o) => {
             return { ...o, Details: o.Details.map((d) => { return { ...d } }) }
           })
+          return {items,total:res.data.data.TotalItems}
         }
-        else { return []; }
+        else { return {items:[],total:0}; }
         // return [];
       },
       async kalahaye_mojoode_garanti({ baseUrl }) {

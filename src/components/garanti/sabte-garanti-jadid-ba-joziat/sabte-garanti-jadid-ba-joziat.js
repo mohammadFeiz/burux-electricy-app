@@ -45,9 +45,10 @@ export default class SabteGarantiJadidBaJoziat extends Component {
         let { items } = this.state;
         let res = await services({ type: "sabte_kalahaye_garanti", parameter: items });
         if (res) {
-            let guaranteeItems = await services({ type: "guaranteeItems" });
+            let {items,total} = await services({ type: "guaranteeItems" });
             SetState({
-                guaranteeItems,
+                guaranteeItems:items,
+                totalGuaranteeItems:total,
                 guaranteePopupSuccessText: "درخواست گارانتی شما با موفقیت ثبت شد",
                 guaranteePopupSuccessSubtext: "درخواست گارانتی شما تا 72 ساعت آینده بررسی خواهد شد",
                 guaranteePopupSuccessZIndex: 10,

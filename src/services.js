@@ -767,6 +767,12 @@ export default function services(getState,token,userCardCode) {
         try { return res.data.data[0].docNum }
         catch { return false }
       },
+      async getProductFullDetail({baseUrl,parameter}){
+        //پروداکت رو همینجوری برای اینکه یک چیزی ریترن بشه فرستادم تو از کد و آی دی آبجکت کامل پروداکت رو بساز و ریترن کن
+        let {code,id,product} = parameter;
+        
+        return product;
+      },
       async buy_search({ parameter, getState }) {
         if (!parameter.value) { return [] }
         let { allProducts } = getState();

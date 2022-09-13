@@ -131,7 +131,7 @@ export default class Buy extends Component {
     }
   }
   sliders(){
-    let {SetState} = this.context;
+    let {SetState,services} = this.context;
     let sliders = [['bestSellings','پر فروش ترین محصولات'],['lastOrders','آخرین سفارشات شما'],['recommendeds','پیشنهاد سفارش']]
     return {
       gap:12,className:'margin-0-12',
@@ -145,7 +145,6 @@ export default class Buy extends Component {
               showAll={()=>{
                 SetState({categoryZIndex:10,category:{products,name}})
               }}
-              onClick={(product)=>SetState({product,productZIndex:10})}
             />
           )
         }

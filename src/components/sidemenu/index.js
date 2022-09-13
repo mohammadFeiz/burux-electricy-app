@@ -19,7 +19,7 @@ export default class SideMenu extends Component {
                 { text: 'بازارگاه', icon: 35 },
                 { text: 'چت با ویزیتور', icon: 36 },
                 { text: 'تماس با ویزیتور', icon: 37 },
-                { text: 'تماس با پشتیبانی', icon: 38 }
+                { text: 'تماس با پشتیبانی', icon: 38 },
             ]
         }
     }
@@ -35,16 +35,32 @@ export default class SideMenu extends Component {
                         column: [
                             { size: 60, html: getSvg(23,{d:buruxlogod}),className: 'sidemenu-header', align: 'v' },
                             {
-                                column: items.map(({ icon, text, onClick = () => { } }) => {
+                                column: items.map(({ icon, text, onClick = () => { },style }) => {
                                     return {
                                         attrs: { onClick: () => { onClick(); onClose() } },
+                                        style,
                                         size: 48, row: [
                                             { size: 48, html: getSvg(icon, { fill: '#A19F9D' }), align: 'vh' },
                                             { flex: 1, html: text, align: 'v' }
                                         ]
                                     }
                                 })
-                            }
+                            },
+                            {flex:1},
+                            {
+                                align:'h',
+                                html:(
+                                    <button 
+                                        className='button-2 margin-0-12' 
+                                        style={{background:'red',border:'1px solid red',color:'#fff',display:'flex',alignItems:'center',justifyContent:'center'}}
+                                    >
+                                        {getSvg(17,{fill:'#fff'})}
+                                        <div style={{width:6}}></div>
+                                        خروج از حساب کاربری
+                                    </button>
+                                )
+                            },
+                            {size:12}
                         ]
                     }}
                 />

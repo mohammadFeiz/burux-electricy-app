@@ -138,6 +138,7 @@ export default class MyBurux extends Component{
         console.log(profile)
         let model = {
             firstName:profile.firstName,
+            cardCode:profile.cardCode,
             lastName:profile.lastName,
             mobile:profile.phoneNumber,
             storeName:profile.storeName,

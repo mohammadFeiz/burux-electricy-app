@@ -105,6 +105,7 @@ export default class Register extends Component{
                     rowGap={24}
                     onChange={(model)=>this.setState({model})}
                     inputs={[
+                        {label:'کد مشتری',type:'text',field:'model.cardCode',disabled:true},
                         {label:'نام',type:'text',field:'model.firstName',rowKey:'1',validations:[['required']]},
                         {type:'html',html:()=>'',rowKey:'1',rowWidth:12},
                         {label:'نام خانوادگی',type:'text',field:'model.lastName',rowKey:'1',validations:[['required']]},

@@ -168,7 +168,6 @@ export default class Main extends Component {
     this.setState({images})
   }
   async getGuaranteeItems(){
-    debugger;
     let {services} = this.state;
     let res = await services({type:"guaranteeItems",loading:false});
     if(res === false){

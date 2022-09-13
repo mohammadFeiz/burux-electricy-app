@@ -343,18 +343,18 @@ export default function services(getState,token,userCardCode) {
       async getCampaignProducts({ baseUrl, parameter }) {
         let { campaign } = parameter;
         let { id } = campaign;
-        let res = await this.getTaxonProducts({ baseUrl, parameter: { Taxons: id } })
+        let res = await this.getTaxonProducts({ baseUrl, parameter: { Taxons: id, type:0 } })
         return getState().updateProductPrice(res.map((o) => { return { ...o, campaign } }),'services => getCampaignProducts')
       },
       async lastOrders({ baseUrl }) {
-        const taxonProductsList=await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10179'}});
+        const taxonProductsList=await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10179', type:0}});
         return getState().updateProductPrice(taxonProductsList,'services => lastOrders');
       },
       async recommendeds({ baseUrl,getState }) {
-        return getState().updateProductPrice(await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10550'}}),'services => recommendeds')
+        return getState().updateProductPrice(await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10550', type:0}}),'services => recommendeds')
       },
       async bestSellings({baseUrl,getState}){
-        return getState().updateProductPrice(await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10178'}}),'services => bestSellings')
+        return getState().updateProductPrice(await this.getTaxonProducts({baseUrl,parameter:{Taxons:'10178', type:0}}),'services => bestSellings')
       },
       async preOrders({ baseUrl }) {
         let preOrders = { waitOfVisitor: 0, waitOfPey: 0 };
@@ -536,6 +536,8 @@ export default function services(getState,token,userCardCode) {
         
       },
       async getCategories(obj) {
+        return [];
+
         let { baseUrl } = obj;
         let res = await Axios.get(`${baseUrl}/Spree/GetAllCategories`);
         let dataResult = res.data.data.data;
@@ -625,7 +627,38 @@ export default function services(getState,token,userCardCode) {
         }
         return sorted
       },
-      getMappedAllProducts({ spreeResult, b1Result }) {
+      getMappedAllProducts({ spreeResult, b1Result, loadType }) {
+
+        const included=spreeResult.included;
+
+        if(loadType===0){
+          
+          let finalResult =[];
+          
+          for (const item of spreeResult.data) {
+            
+            const defaultVariantId = item.relationships.default_variant.data.id;
+            const defaultVariantImagesId = item.relationships.images.data.map(x=>x.id);
+            const defaultVariant=included.find(x=>x.type==="variant" && x.id===defaultVariantId);
+            const defaultVariantImages=included.filter(x=>x.type==="image" && defaultVariantImagesId.includes(x.id));
+            const defaultVariantSku=defaultVariant.attributes.sku;
+            const itemFromB1=b1Result.find(x=>x.itemCode===defaultVariantSku);
+            const srcs=defaultVariantImages.map(x=>{
+              return "http://shopback.bpilot.ir" + x.attributes.original_url;
+            });
+
+            if(itemFromB1==undefined) continue;
+
+            const defaultVariantQty=itemFromB1.onHand.qty;
+            finalResult.push({name:item.attributes.name,id:item.id,
+                inStock:defaultVariantQty, details:[], optionTypes:[], variants:[], srcs,
+                 defaultVariant:{code:defaultVariantSku,srcs},
+                price:0, discountPrice:0, discountPercent:0});
+          }
+
+          return finalResult;
+        }
+
         let products = spreeResult.data;
         let { include_optionTypes, include_variants, include_details, include_srcs, meta_optionTypes } = this.sortIncluded(spreeResult);
         var finalResult = [];
@@ -788,32 +821,34 @@ export default function services(getState,token,userCardCode) {
         await Axios.get(`${baseUrl}/BOne/RefreshCentralInvetoryProducts`);
       },
       async getTaxonProducts({ baseUrl, parameter = {} }) {
+        let loadType=parameter.type;
         let res = await Axios.post(`${baseUrl}/Spree/Products`,
           {
             CardCode: userCardCode,
             //Taxons: "10179",
             Taxons: parameter.Taxons,
             Name: parameter.Name,
-            Include: "variants,option_types,product_properties,taxons,images,default_variant"
+            Include: loadType === 0 ? "default_variant,images" : "variants,option_types,product_properties,taxons,images,default_variant"
           }
         );
+
         if(res.data.data.status === 500){
           return false
         }
-        const included = res.data.data.included;
+        // const included = res.data.data.included;
 
-        let skusId = [];
+        // let skusId = [];
 
-        for (let includeItem of included) {
+        // for (let includeItem of included) {
 
-          if (includeItem.type === "variant"
-            && includeItem.attributes != undefined
-            && includeItem.attributes.sku != undefined
-            && includeItem.attributes.sku.length) {
-            skusId.push(includeItem.attributes.sku);
-          }
-        }
-        if(!skusId.length === 0){return}
+        //   if (includeItem.type === "variant"
+        //     && includeItem.attributes != undefined
+        //     && includeItem.attributes.sku != undefined
+        //     && includeItem.attributes.sku.length) {
+        //     skusId.push(includeItem.attributes.sku);
+        //   }
+        // }
+        // if(!skusId.length === 0){return}
 
         // let b1Res = await Axios.post(`${baseUrl}/BOne/GetB1PriceList`,
         //   {
@@ -842,7 +877,7 @@ export default function services(getState,token,userCardCode) {
             // }
           };
         });
-        return this.getMappedAllProducts({ spreeResult: spreeData, b1Result: b1Data });
+        return this.getMappedAllProducts({ spreeResult: spreeData, b1Result: b1Data, loadType });
       },
       async getProductsWithCalculation({ baseUrl }, skusId) {
         let res = await Axios.post(`${baseUrl}/BOne/GetItemsByItemCode`,

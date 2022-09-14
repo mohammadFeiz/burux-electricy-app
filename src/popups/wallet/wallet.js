@@ -5,6 +5,7 @@ import getSvg from "../../utils/getSvg";
 import functions from "../../functions";
 import GAH from 'gah-datepicker';
 import appContext from "../../app-context";
+import noItemSrc from './../../images/not-found.png';
 import $ from 'jquery';
 export default class Wallet extends Component{
     static contextType = appContext
@@ -54,7 +55,7 @@ export default class Wallet extends Component{
         }, 300);
         let {services} = this.context;
         let {fromDate}=this.state;
-        let items = await services({type:'walletItems',parameter:fromDate});
+        let items = await services({type:'walletItems',parameter:fromDate,loading:false});
         this.setState({items})
     }
     header_layout(){
@@ -131,7 +132,8 @@ export default class Wallet extends Component{
             column:[
                 this.filter_layout(),
                 {size:12},
-                this.cards_layout()
+                this.cards_layout(),
+                this.noItem_layout()
             ]
         }
     }
@@ -158,6 +160,7 @@ export default class Wallet extends Component{
                                 let items = await services({type:'walletItems',parameter:obj});
                                 this.setState({items});
                             }}
+                            theme={['#0d436e','#fff']}
                             onClear={async ()=>{
                                 this.setState({fromDate:false});
                                 let items = await services({type:'walletItems',parameter:false});
@@ -185,7 +188,8 @@ export default class Wallet extends Component{
         }
     }
     cards_layout(){
-        let {items} = this.state;
+        let {items = []} = this.state;
+        if(!items.length){return false}
         return {
             style:{background:'#eee'},
             flex:1,scroll:'v',gap:1,
@@ -222,6 +226,19 @@ export default class Wallet extends Component{
                     ]
                 },
                 {size:12}
+            ]
+        }
+    }
+    noItem_layout(){
+        let {items = []} = this.state;
+        if(items.length){return false}
+        return {
+            style:{background:'#eee',opacity:0.5},
+            flex:1,scroll:'v',gap:1,align:'vh',
+            column:[
+                {html:<img src={noItemSrc} alt='' width='128' height='128'/>},
+                {html:'سابقه ای موجود نیست',style:{color:'#858a95'}},
+                {size:60}
             ]
         }
     }

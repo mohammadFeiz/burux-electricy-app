@@ -3,6 +3,7 @@ import RVD from "react-virtual-dom";
 import appContext from "../../app-context";
 import Header from "../../components/header/header";
 import Tabs from "../../components/tabs/tabs";
+import noItemSrc from './../../images/not-found.png';
 import $ from 'jquery';
 export default class OrdersHistory extends Component {
     static contextType = appContext;
@@ -92,7 +93,12 @@ export default class OrdersHistory extends Component {
       let {error} = this.state;
       if(!error){return false}
       return {
-        column:[{html:error,className:'size12 bold colorD83B01 padding-0-12',align:'vh',size:60}]
+        align:'vh',flex:1,
+        column:[
+          {html:<img src={noItemSrc} alt='' width='128' height='128'/>},
+          {html:error,style:{color:'#858a95'}},
+          {size:60}
+      ]
       }
     }
     render() {

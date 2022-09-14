@@ -963,7 +963,7 @@ function Service({ services, baseUrl, getState, cacheAll }) {
   }
   return async ({ type, parameter, loading = true, cache, cacheName }) => {
     let p = { fix, fixDate, parameter, dateCalculator: d, getState, baseUrl, services }
-    if (loading) {debugger; console.log(type); $(".loading").css("display", "flex"); }
+    if (loading) {$(".loading").css("display", "flex"); }
     if (cache) {
       let a = getFromCache(cacheName ? 'storage-' + cacheName : 'storage-' + type, cache);
       if (a !== false) {

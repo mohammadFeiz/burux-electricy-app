@@ -557,3 +557,64 @@ button{
 	background-repeat: no-repeat;
 	background-size: 130% 150%;
 }
+
+
+.part0{
+	animation-name: part0;
+  	animation-duration: 1.2s;  
+	animation-timing-function: ease-out;
+	animation-fill-mode: forwards;
+	opacity:0;
+
+
+}
+.part1{
+	animation-name: part0;
+  	animation-duration: 1.2s;  
+	animation-timing-function: ease-out;
+	animation-fill-mode: forwards;
+	animation-delay: 0.08s;
+	opacity:0;
+
+}
+.part2{
+	animation-name: part0;
+  	animation-duration: 1.2s;  
+	animation-timing-function: ease-out;
+	animation-fill-mode: forwards;
+	opacity:0;
+	animation-delay: 0.16s;
+
+}
+.part3{
+	animation-name: part0;
+  	animation-duration: 1.2s;  
+	animation-timing-function: ease-out;
+	animation-fill-mode: forwards;
+	opacity:0;
+	animation-delay: 0.24s;
+
+}
+.part4{
+	animation-name: part0;
+  	animation-duration: 1.2s;  
+	animation-timing-function: ease-out;
+	animation-fill-mode: forwards;
+	opacity:0;
+	animation-delay: 0.32s;
+
+}
+.part5{
+	animation-name: part0;
+  	animation-duration: 1.2s;  
+	animation-timing-function: ease-out;
+	animation-fill-mode: forwards;
+	opacity:0;
+	animation-delay: 0.4s;
+
+}
+
+@keyframes part0{
+	from {opacity:0;}
+	to {opacity:1;}
+}

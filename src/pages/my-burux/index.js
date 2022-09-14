@@ -59,7 +59,7 @@ export default class MyBurux extends Component{
         let {parts} = this.state;
         return {
             className:'margin-0-12' + (theme === false?' box':''),gap:theme === false?1:6,
-            column:parts.map(({text,icon,color,onClick})=>{return {html:<Part {...{text,icon,color,onClick}}/>}})
+            column:parts.map(({text,icon,color,onClick},i)=>{return {html:<Part {...{text,icon,color,onClick}}/>,className:'part' + i}})
         }
     }
     getContent(){

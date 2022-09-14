@@ -7,6 +7,7 @@ import SearchBox from '../../search-box';
 import $ from 'jquery';
 import AIOButton from '../../aio-button/aio-button';
 import {Icon} from '@mdi/react';
+import noItemSrc from './../../../images/not-found.png';
 import {mdiSort,mdiArrowDown,mdiArrowUp} from '@mdi/js'
 export default class Joziate_Darkhasthaye_Garanti_Popup extends Component{
     static contextType = appContext;
@@ -121,6 +122,7 @@ export default class Joziate_Darkhasthaye_Garanti_Popup extends Component{
                     column:[
                         this.header_layout(),
                         {
+                            show:guaranteeItems.length !== 0,
                             row:[
                                 {
                                     flex:1,html:<SearchBox placeholder='شماره درخواست گارانتی را جستجو کنید' value={searchValue} onChange={(searchValue)=>{
@@ -143,7 +145,7 @@ export default class Joziate_Darkhasthaye_Garanti_Popup extends Component{
                         },
                         {size:12},
                         {
-                            flex:1,scroll:'v',gap:12,
+                            flex:1,scroll:'v',gap:12,show:guaranteeItems.length !== 0,
                             column:[
                                 {
                                     gap:2,column:guaranteeItems.filter(({Details})=>{
@@ -159,6 +161,16 @@ export default class Joziate_Darkhasthaye_Garanti_Popup extends Component{
                                         }
                                     })
                                 }
+                            ]
+                        },
+                        {
+                            show:guaranteeItems.length === 0,
+                            style:{background:'#eee',opacity:0.5},
+                            flex:1,scroll:'v',gap:1,align:'vh',
+                            column:[
+                                {html:<img src={noItemSrc} alt='' width='128' height='128'/>},
+                                {html:'سابقه ای موجود نیست',style:{color:'#858a95'}},
+                                {size:60}
                             ]
                         }
                     ]

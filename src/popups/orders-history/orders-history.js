@@ -1,15 +1,24 @@
-import React, { Component } from "react";
+import React, { Component,createRef } from "react";
 import RVD from "react-virtual-dom";
 import appContext from "../../app-context";
 import Header from "../../components/header/header";
 import Tabs from "../../components/tabs/tabs";
+import $ from 'jquery';
 export default class OrdersHistory extends Component {
     static contextType = appContext;
     constructor(props) {
       super(props);
+      this.dom = createRef()
       this.state = {activeTabId:false,tabs:[],error:false};
     }
     async componentDidMount() {
+      $(this.dom.current).animate({
+        height: '100%',
+        width: '100%',
+        left:'0%',
+        top:'0%',
+        opacity:1
+    }, 300);
       let {services} = this.context;
       let res = await services({type:"ordersHistory"});
       console.log('res.data',res)
@@ -33,9 +42,19 @@ export default class OrdersHistory extends Component {
       }
       this.setState({tabs:Tabs,activeTabId:Tabs[0].id});
     }
-    header_layout(){
+    onClose(){
       let { SetState} = this.context;
-      return {html:<Header title="پیگیری سفارش خرید" onClose={()=>SetState({ordersHistoryZIndex:0})}/>}
+        $(this.dom.current).animate({
+            height: '0%',
+            width: '0%',
+            left:'50%',
+            top:'100%',
+            opacity:0
+        }, 300,()=>SetState({ordersHistoryZIndex:0}));
+      
+    }
+    header_layout(){
+      return {html:<Header title="پیگیری سفارش خرید" onClose={()=>this.onClose()}/>}
     }
     tabs_layout() {
       let {tabs,activeTabId} = this.state;
@@ -79,10 +98,11 @@ export default class OrdersHistory extends Component {
     render() {
       let { theme } = this.context;
       return (
-        <div className={"popup-container" + (theme?' ' + theme:'')}>
           <RVD
             layout={{
-              className: "popup main-bg",
+              className: "fixed main-bg",
+              attrs:{ref:this.dom},
+              style:{left:'50%',top:'50%',height:'0%',width:'0%',opacity:0},
               column: [
                 this.header_layout(),
                 this.error_layout(),
@@ -92,7 +112,7 @@ export default class OrdersHistory extends Component {
               ],
             }}
           />
-        </div>
+        
       );
     }
   }

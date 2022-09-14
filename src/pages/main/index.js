@@ -30,6 +30,7 @@ import Register from "../../components/register/register";
 import JoziateSefaresheBazargah from "../../components/bazargah/joziate-sefaresh/joziate-sefaresh";
 import SignalR from '../../singalR/signalR';
 import services from "./../../services";
+import logo2 from './../../images/logo2.png';
 export default class Main extends Component {
   constructor(props) {
     super(props);
@@ -161,7 +162,7 @@ export default class Main extends Component {
         itemCodes.push(Code);
       } 
     }
-    let res = await services({type:'getGuaranteesImages',parameter:itemCodes.toString()});
+    let res = await services({type:'getGuaranteesImages',parameter:itemCodes.toString(),loading:false});
     for(let i = 0; i < res.length; i++){
       images[res.ItemCode] = res.ImagesUrl;
     }
@@ -175,7 +176,7 @@ export default class Main extends Component {
       return;
     }
     let {items,total} = res
-    this.getGuaranteeImages(items);
+    //this.getGuaranteeImages(items);
     let guaranteeExistItems = await services({type:"kalahaye_mojoode_garanti",loading:false});
     this.setState({
       guaranteeItems:items,
@@ -402,8 +403,13 @@ class Splash extends Component{
     if(step === 160){config = {fill:"#fff"}}
     return (
       <div className='splash-screen'>
+        <div style={{flex:1}}></div>
+        <div className='splash-logo' style={{opacity}}>
+          <img src={logo2} alt='' width='180' height='180'/>
+        </div>
         {getSvg(23,{d,width:240,height:110,style:{transform:`scale(${scale})`},...config})}
         <div className='splash-text' style={{opacity,color,fontFamily:'Iransans-medium',fontSize:24}}>بروکس من</div>
+        <div style={{flex:1}}></div>
       </div>
     )
   }

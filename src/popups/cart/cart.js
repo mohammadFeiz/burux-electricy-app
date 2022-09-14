@@ -1,15 +1,26 @@
-import React,{Component} from 'react';
+import React,{Component,createRef} from 'react';
 import appContext from './../../app-context';
 import RVD from 'react-virtual-dom';
 import Tabs from './../../components/tabs/tabs';
 import ProductCard from './../../components/product-card/product-card';
 import Header from './../../components/header/header';
+import $ from 'jquery';
 //props : cart,changeCount
 export default class Cart extends Component{
     static contextType = appContext;
     constructor(props){
       super(props);
+      this.dom = createRef();
       this.state = {activeTabId:'regular'}
+    }
+    componentDidMount(){
+      $(this.dom.current).animate({
+          height: '100%',
+          width: '100%',
+          left:'0%',
+          top:'0%',
+          opacity:1
+      }, 300);
     }
     splitPrice(price){
       if(!price){return price}
@@ -83,9 +94,20 @@ export default class Cart extends Component{
         }
       }
     }
+    onClose(){
+      let {SetState} = this.context;
+      $(this.dom.current).animate({
+        height: '0%',
+        width: '0%',
+        left:'50%',
+        top:'100%',
+        opacity:0
+      }, 300,()=>SetState({cartZIndex:0}));
+      
+    }
     header_layout(){
         let {SetState,cartZIndex} = this.context;
-        return {html:<Header zIndex={cartZIndex} onClose={()=>SetState({cartZIndex:0})} title='سبد خرید'/>}
+        return {html:<Header zIndex={cartZIndex} onClose={()=>this.onClose()} title='سبد خرید'/>}
     }
     tabs_layout(){
       if(!this.tabs.length){return false}
@@ -126,7 +148,9 @@ export default class Cart extends Component{
         return (
             <RVD 
               layout={{
-                style:{zIndex},flex: 1,className:'main-bg fixed',
+                style:{zIndex,left:'50%',top:'100%',height:'0%',width:'0%',opacity:0},
+                attrs:{ref:this.dom},
+                flex: 1,className:'main-bg fixed',
                 column: [this.header_layout(),this.tabs_layout(),{size:12},this.products_layout(),this.payment_layout()]
               }}
             />

@@ -53,6 +53,7 @@ export default class SideMenu extends Component {
                                     <button 
                                         className='button-2 margin-0-12' 
                                         style={{background:'red',border:'1px solid red',color:'#fff',display:'flex',alignItems:'center',justifyContent:'center'}}
+                                        onClick={()=>this.context.logout()}
                                     >
                                         {getSvg(17,{fill:'#fff'})}
                                         <div style={{width:6}}></div>

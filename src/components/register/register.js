@@ -1,4 +1,4 @@
-import React,{Component} from 'react';
+import React,{Component,createRef} from 'react';
 import RVD from 'react-virtual-dom';
 import storeSvg from '../../utils/svgs/store-svg';
 import Header from '../header/header';
@@ -8,10 +8,12 @@ import mapSrc from './../../images/map.png';
 import Map from './../map/map';
 import getSvg from '../../utils/getSvg';
 import NeshanMap from '../neshan-map/neshan-map';
+import $ from 'jquery';
 
 export default class Register extends Component{
     constructor(props){
         super(props);
+        this.dom = createRef()
         let model = {
             "latitude": 35.699739,
             "longitude": 51.338097,
@@ -31,12 +33,22 @@ export default class Register extends Component{
             showMap:false
         }
     }
+    onClose(){
+        let {onClose} = this.props;
+        $(this.dom.current).animate({
+            height: '0%',
+            width: '0%',
+            left:'50%',
+            top:'100%',
+            opacity:0
+        }, 300,()=>onClose());
+    }
     header_layout(){
         let {onClose,mode} = this.props;
         return {
             className:'box-shadow',size:60,style:{overflow:'visible',marginBottom:12,background:'#fff'},
             row:[
-                {size:60,html:getSvg("chevronLeft", { flip: true }),align:'vh',attrs:{onClick:()=>onClose()}},
+                {size:60,html:getSvg("chevronLeft", { flip: true }),align:'vh',attrs:{onClick:()=>this.onClose()}},
                 {flex:1,html:mode === 'edit'?'ویرایش اطلاعات کاربری':'ثبت نام',className:'size16 color605E5C',align:'v'}
             ]
         }
@@ -65,7 +77,6 @@ export default class Register extends Component{
         else{alert('خطا در برقراری ارتباط')}
     }
     async edit(){
-        debugger;
         let {model} = this.state;
         let res = await Axios.post(`https://retailerapp.bbeta.ir/api/v1/Users/UpdateUser`, model);
         let result = false;
@@ -142,6 +153,15 @@ export default class Register extends Component{
             )
         }
     }
+    componentDidMount(){
+        $(this.dom.current).animate({
+            height: '100%',
+            width: '100%',
+            left:'0%',
+            top:'0%',
+            opacity:1
+        }, 300);
+    }
     render(){
         let {showMap,model} = this.state;
         return (
@@ -149,7 +169,8 @@ export default class Register extends Component{
                 <RVD
                     layout={{
                         className:'main-bg',
-                        style:{width:'100%',height:'100%',overflow:'hidden',position:'fixed',left:0,top:0},
+                        attrs:{ref:this.dom},
+                        style:{width:'100%',height:'100%',overflow:'hidden',position:'fixed',left:'50%',top:'100%',height:'0%',width:'0%',opacity:0},
                         column:[
                             this.header_layout(),
                             {size:12},

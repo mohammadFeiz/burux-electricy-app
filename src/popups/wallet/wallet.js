@@ -1,21 +1,32 @@
-import React,{Component} from "react";
+import React,{Component,createRef} from "react";
 import Header from "../../components/header/header";
 import RVD from "react-virtual-dom";
 import getSvg from "../../utils/getSvg";
 import functions from "../../functions";
 import GAH from 'gah-datepicker';
 import appContext from "../../app-context";
-import services from "../../services";
+import $ from 'jquery';
 export default class Wallet extends Component{
     static contextType = appContext
     constructor(props){
         super(props);
+        this.dom = createRef();
         this.state = {
             taraz:12445465,
             fromDate:false,
             toDate:false,
             items:[]
         }
+    }
+    onClose(){
+        let {onClose} = this.props;
+        $(this.dom.current).animate({
+            height: '0%',
+            width: '0%',
+            left:'50%',
+            top:'100%',
+            opacity:0
+        }, 300,()=>onClose());
     }
     svg_in(){
         return (
@@ -34,13 +45,19 @@ export default class Wallet extends Component{
         )
     }
     async componentDidMount(){
+        $(this.dom.current).animate({
+            height: '100%',
+            width: '100%',
+            left:'0%',
+            top:'0%',
+            opacity:1
+        }, 300);
         let {services} = this.context;
         let {fromDate}=this.state;
         let items = await services({type:'walletItems',parameter:fromDate});
         this.setState({items})
     }
     header_layout(){
-        let {onClose} = this.props;
         let {taraz} = this.state;
         return {
             className:'blue-gradient',
@@ -54,7 +71,7 @@ export default class Wallet extends Component{
                 {
                     size:60,
                     row:[
-                        {size:60,html:getSvg('chevronLeft',{flip:true,fill:'#fff'}),align:'vh',attrs:{onClick:()=>onClose()}}
+                        {size:60,html:getSvg('chevronLeft',{flip:true,fill:'#fff'}),align:'vh',attrs:{onClick:()=>this.onClose()}}
                     ]
                 },
                 {html:'تراز حساب',className:'size12 colorC7E7F4',align:'h'},
@@ -213,6 +230,8 @@ export default class Wallet extends Component{
             <RVD
                 layout={{
                     className:'main-bg fixed',
+                    attrs:{ref:this.dom},
+                    style:{left:'50%',top:'100%',height:'0%',width:'0%',opacity:0},
                     column:[
                         this.header_layout(),
                         this.body_layout()

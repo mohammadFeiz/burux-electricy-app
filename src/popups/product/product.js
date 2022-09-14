@@ -278,21 +278,25 @@ in product by id = ${this.context.product.id} there is an optionType by id = ${i
             column: [
                 { flex: 1 },
                 {
-                    show: !!selectedVariant.discountPercent,
                     row: [
                         { flex: 1 },
-                        { html: selectedVariant.discountPrice, className: "colorA19F9D" },
+                        { html: <del>{functions.splitPrice(selectedVariant.Price)}</del>, className: "colorA19F9D" },
                         { size: 6 },
                         {
-                            html: "%" + selectedVariant.discountPercent,
+                            html: "%" + selectedVariant.CmpgnDscnt,show:!!selectedVariant.CmpgnDscnt,
                             style: { background: "#FDB913", color: "#fff", borderRadius: 8, padding: "0 3px" },
+                        },
+                        { size: 6 },
+                        {
+                            html: "%" + selectedVariant.PymntDscnt,show:!!selectedVariant.PymntDscnt,
+                            style: { background: "#ff4335", color: "#fff", borderRadius: 8, padding: "0 3px" },
                         },
                     ],
                 },
                 {
                     row: [
                         { flex: 1 },
-                        { html: functions.splitPrice(selectedVariant.price), className: "color323130 bold" },
+                        { html: functions.splitPrice(selectedVariant.FinalPrice), className: "color323130 bold" },
                         { size: 6 },
                         { html: "ریال", className: "color323130 bold" },
                     ],

@@ -830,7 +830,7 @@ export default function services(getState,token,userCardCode) {
           variants.push({
             id:varId,
             optionValues,
-            inStock:price.OnHand.qty,
+            inStock:price.OnHand !== null?price.OnHand.qty:0,
             srcs,
             code:varSku,
             isDefault: defaultVariantId === varId,

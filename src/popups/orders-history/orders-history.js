@@ -93,7 +93,7 @@ export default class OrdersHistory extends Component {
       let {error} = this.state;
       if(!error){return false}
       return {
-        align:'vh',flex:1,
+        align:'vh',flex:1,style:{opacity:0.5},
         column:[
           {html:<img src={noItemSrc} alt='' width='128' height='128'/>},
           {html:error,style:{color:'#858a95'}},

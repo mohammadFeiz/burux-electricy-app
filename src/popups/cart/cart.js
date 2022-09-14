@@ -4,6 +4,7 @@ import RVD from 'react-virtual-dom';
 import Tabs from './../../components/tabs/tabs';
 import ProductCard from './../../components/product-card/product-card';
 import Header from './../../components/header/header';
+import noItemSrc from './../../images/not-found.png';
 import $ from 'jquery';
 //props : cart,changeCount
 export default class Cart extends Component{
@@ -117,7 +118,15 @@ export default class Cart extends Component{
       if(this.tab){
         return {flex: 1,scroll:'v',column: this.tab.cards.map((card) => {return {html:card}})}
       }
-      return {flex:1,align:'vh',html:'سبد خرید شما خالی است'}
+      return {
+        style:{background:'#eee',opacity:0.5},
+        flex:1,align:'vh',
+        column:[
+            {html:<img src={noItemSrc} alt='' width='128' height='128'/>},
+            {html:'سبد خرید شما خالی است',style:{color:'#858a95'}},
+            {size:60}
+        ]
+      }
     }
     payment_layout(){
       if(!this.tab){return false}

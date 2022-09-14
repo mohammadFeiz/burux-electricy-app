@@ -629,10 +629,9 @@ export default function services(getState,token,userCardCode) {
       },
       getMappedAllProducts({ spreeResult, b1Result, loadType }) {
 
-        const included=spreeResult.included;
-
         if(loadType===0){
           
+          const included=spreeResult.included;
           let finalResult =[];
           
           for (const item of spreeResult.data) {
@@ -768,9 +767,90 @@ export default function services(getState,token,userCardCode) {
         catch { return false }
       },
       async getProductFullDetail({baseUrl,parameter}){
+
         //پروداکت رو همینجوری برای اینکه یک چیزی ریترن بشه فرستادم تو از کد و آی دی آبجکت کامل پروداکت رو بساز و ریترن کن
         let {code,id,product} = parameter;
+        console.log(product)
+        let res = await Axios.post(`${baseUrl}/Spree/Products`,
+              {
+                Ids: id,
+                Include: "variants,option_types,product_properties,images"
+              }
+            );
+
+        if(res.data.data.status === 500){
+          return false
+        }
+
+        const productResult=res.data.data.data[0];
+        if(productResult==undefined)
+          return {};
+
+        const included = res.data.data.included;
+        let { relationships } = productResult;
+        let {fixPrice} = getState();
+        let variants = [];
+        let details = [];
+        let optionTypes = [];
+        const defaultVariantId=product.defaultVariant.code;
+        let { include_optionTypes, include_variants, include_details, include_srcs, meta_optionTypes } = this.sortIncluded(res.data.data);
         
+        for (let i = 0; i < relationships.option_types.data.length; i++) {
+          let { id } = relationships.option_types.data[i];
+          id = id.toString();
+          if (!meta_optionTypes[id]) {
+            console.error(`in product by id = ${product.id} in relationships.option_types.data[${i}] id is ${id}. but we cannot find this id in meta.filters.option_values`)
+            console.log('product is', product)
+            console.log('meta.filters.option_values is', meta_optionTypes)
+            continue;
+          }
+          let { option_values } = meta_optionTypes[id];
+          let { attributes } = include_optionTypes[id];
+          let items = {}
+          for (let j = 0; j < option_values.length; j++) {
+            let o = option_values[j];
+            items[o.id.toString()] = o.presentation;
+          }
+          optionTypes.push({ id, name: attributes.presentation, items })
+        }
+
+        for (const item of relationships.variants.data) {
+          const variant = included.find(x=>x.type==="variant" && x.id===item.id);
+          let varId = variant.id.toString();
+          let varSku = variant.attributes.sku;
+          let optionValues = this.getVariantOptionValues(variant.relationships.option_values.data, optionTypes)
+          const variantImagesId = variant.relationships.images.data.map(x=>x.id);
+          const variantImages=included.filter(x=>x.type==="image" && variantImagesId.includes(x.id));
+          const srcs=variantImages.map(x=>{
+            return "http://shopback.bpilot.ir" + x.attributes.original_url;
+          });
+
+          let price=fixPrice([{itemCode : varSku, itemQty : 1}])[0];
+          if(price==undefined) continue;
+          variants.push({
+            id:varId,
+            optionValues,
+            inStock:price.OnHand.qty,
+            srcs,
+            code:varSku,
+            isDefault: defaultVariantId === varId,
+            ...price
+          });
+        }
+        
+        for (let i = 0; i < relationships.product_properties.data.length; i++) {
+          let detail = relationships.product_properties.data[i];
+          let { id } = detail;
+          id = id.toString();
+          let { attributes } = include_details[id];
+          let { name, value } = attributes;
+          details.push([name, value])
+        }
+
+        product.details = details;
+        product.variants = variants;
+        product.optionTypes = optionTypes;
+        console.log(product);
         return product;
       },
       async buy_search({ parameter, getState }) {

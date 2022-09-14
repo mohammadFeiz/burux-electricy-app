@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import RVD from 'react-virtual-dom';
-import myBuruxHeaderSrc from './../../utils/burux-header.jpg';
+import myBuruxHeaderSrc from './../../images/Burux-billboard-01.jpg';
 import bill from './../../images/home-slide-4.jpg';
 import getSvg from './../../utils/getSvg';
 import appContext from '../../app-context';
@@ -12,6 +12,7 @@ import './index.css';
 import SabteGarantiJadid from '../../components/garanti/sabte-garanti-jadid/sabte-garanti-jadid';
 import Popup from '../../components/popup/popup';
 import Register from '../../components/register/register';
+import logo3 from './../../images/logo3.png';
 export default class MyBurux extends Component{
     static contextType = appContext;
     constructor(props){
@@ -128,7 +129,7 @@ export default class MyBurux extends Component{
                 },
                 {size:16},
                 this.parts_layout(),
-                {size:96,html:getSvg(18),align:'vh'}
+                {size:120,html:<img src={logo3} width='120' height='120'/>,align:'vh'}
             ]
         }
     }

@@ -35,7 +35,7 @@ export default class Main extends Component {
   constructor(props) {
     super(props);
     
-    let signalR=new SignalR();
+    let signalR=new SignalR(()=>this.state);
     signalR.start();
     setTimeout(()=>{
       this.setState({splashScreen:false})
@@ -61,10 +61,13 @@ export default class Main extends Component {
 
     this.state = {
       profile:this.props.userInfo,
+      SetState: (obj) => this.setState(obj),
+      showMessage:this.showMessage.bind(this),
       userCardCode,
       images,
       signalR,
-      bazargahActive:false,
+      messages:[],
+      bazargahActive:true,
       buruxlogod:this.getBuruxLogoD(),
       splashScreen:true,
       showRegister:false,
@@ -209,6 +212,9 @@ export default class Main extends Component {
     let {userInfo} = this.props;
     return {...data,storeName:userInfo.storeName};
   }
+  showMessage(message){
+    this.setState({message:this.state.messages.concat(message)});
+  }
   async componentDidMount() {
     let developerMode = true
     let {userCardCode,bazargahActive,services} = this.state;
@@ -304,7 +310,6 @@ export default class Main extends Component {
   render() {
     let context = {
       ...this.state,
-      SetState: (obj) => this.setState(obj),
       changeCart:this.changeCart.bind(this),
       getCartCountByVariantId:this.getCartCountByVariantId.bind(this),
       changeTheme:this.changeTheme.bind(this),
@@ -315,7 +320,7 @@ export default class Main extends Component {
       sidemenuOpen, theme,orderZIndex,buruxlogod,splashScreen,showRegister,
       cartZIndex,shippingZIndex,searchZIndex,productZIndex,categoryZIndex,
       guaranteePopupSuccessZIndex,guaranteePopupSubmitZIndex,guaranteePopupZIndex,ordersHistoryZIndex,
-      joziate_darkhasthaye_garanti_popup_zIndex
+      joziate_darkhasthaye_garanti_popup_zIndex,messages
     } = this.state;
     return (
       <appContext.Provider value={context}>
@@ -346,11 +351,27 @@ export default class Main extends Component {
         {!splashScreen && showRegister && <Popup><Register onClose={()=>this.setState({showRegister:false})}/></Popup>}
         <Loading />
         {splashScreen && <Splash d={buruxlogod}/>}
+        {messages.length && <Message messages={messages} onChange={(res)=>this.setState({messages:res})}/>}
       </appContext.Provider>
     );
   }
 }
 Main.defaultProps = {userInfo:{cardCode:'c50000'}}
+class Message extends Component{
+  constructor(props){
+    super(props);
+    this.iv = setInterval(()=>{
+      let {messages,onChange} = this.props;
+      if(!messages.length){clearInterval(this.iv); return}
+      messages = messages.slice(1,messages.length);
+      onChange(messages);
+    },3000)
+  }
+  render(){
+    let {messages} = this.props;
+    return <div className='my-burux-message'>{messages[0]}</div>
+  }
+}
 class Splash extends Component{
   state = {step:0}
   constructor(props){

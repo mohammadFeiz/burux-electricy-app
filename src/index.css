@@ -618,3 +618,20 @@ button{
 	from {opacity:0;}
 	to {opacity:1;}
 }
+
+.my-burux-message{
+	position:fixed;
+	width:300px;
+	left:calc(50% - 150px);
+	bottom:100px;
+	z-index:1000000000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background:rgba(0, 0, 0, 0.6);
+	border-radius:8px;
+	box-shadow:2px 2px 5px 1px rgba(0,0,0,0.3);
+	font-size:12px;
+	padding:12px;
+	color:#fff;
+}

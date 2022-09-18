@@ -27,15 +27,19 @@ import {HubConnectionBuilder} from "@microsoft/signalr";
 //     event.preventDefault();
 // });
 
-export default function SignalR() {
+export default function SignalR(getState) {
     
     var connection = new HubConnectionBuilder().withUrl("https://retailerapp.bbeta.ir/hubclient").build();
 
     let $$={
         start(){
 
-            connection.on("ReceiveMessage", function (message) {
-                console.log(message);
+            connection.on("BazargahOrder", function (o) {
+                let {services,SetState,bazargahItems,showMessage} = getState();                
+                let order = services({parameter:o})
+                bazargahItems.push(order);
+                showMessage('سفارش جدیدی در بازارگاه دارید')
+                SetState({bazargahItems})
             });
             
             connection.start().then(function () {

@@ -396,57 +396,55 @@ export default function services(getState,token,userCardCode) {
       },
       async bazargahItems({baseUrl}){
         let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?cardCode=${userCardCode}&distance=100&status=1`); // 1 for pending
+        return res.data.data.map((o)=>this.bazargahItem({parameter:o}))
+      },
+      bazargahItem({parameter:o}){
         let bulbSrc = bulb10w;
-          return res.data.data.map((o)=>{
-            let distance = 0;
-            let orderItems=[];
-            try{
-              distance = +o.distance.toFixed(2) * 1000
-              orderItems=o.orderItems.map(i=>{
-                
-                let src=i.imagesUrl.length ? i.imagesUrl.split(",")[0]:bulbSrc;
-                return {name:i.productName,detail:`${i.options} - ${i.quantity}`,src:src};
-              })
-            }
-            catch{
-              distance = 0;
-              orderItems=[];
-            }
-            return {
-              type:'free',
-              "amount":o.finalAmount,
-              distance,
-              "benefit":110000,
-              "totalTime":10,
-              "remainingTime": o.remainTime > 10 ? 10 : o.remainTime,
-              "address": o.billAddress,
-              "items":orderItems,
-              "cityId": null,
-              "provinceId": null,
-              "buyerId": o.buyerId,
-              "receiverId": o.receiverId,
-              "buyerName": o.buyerName,
-              "receiverName": o.receiverName,
-              "buyerNumber": o.buyerNumber,
-              "receiverNumber": o.receiverNumber,
-              "orderId": o.orderId,
-              "vendorId": o.vendorId,
-              "shippingAddress": o.shippingAddress,
-              "zipCode": o.zipCode,
-              "optionalAddress": o.optionalAddress,
-              "city":o.city,
-              "province": o.province,
-              "longitude": o.longitude,
-              "latitude": o.latitude,
-              "orderDate": o.orderDate,
-              "id": o.id,
-              "createdDate": o.createdDate,
-              "modifiedDate": null,
-              "isDeleted": o.isDeleted
-            }
+        let distance = 0;
+        let orderItems=[];
+        try{
+          distance = +o.distance.toFixed(2) * 1000
+          orderItems=o.orderItems.map(i=>{    
+            let src=i.imagesUrl.length ? i.imagesUrl.split(",")[0]:bulbSrc;
+            return {name:i.productName,detail:`${i.options} - ${i.quantity}`,src:src};
           })
-        
-        
+        }
+        catch{
+          distance = 0;
+          orderItems=[];
+        }
+        return {
+          type:'free',
+          "amount":o.finalAmount,
+          distance,
+          "benefit":110000,
+          "totalTime":10,
+          "remainingTime": o.remainTime > 10 ? 10 : o.remainTime,
+          "address": o.billAddress,
+          "items":orderItems,
+          "cityId": null,
+          "provinceId": null,
+          "buyerId": o.buyerId,
+          "receiverId": o.receiverId,
+          "buyerName": o.buyerName,
+          "receiverName": o.receiverName,
+          "buyerNumber": o.buyerNumber,
+          "receiverNumber": o.receiverNumber,
+          "orderId": o.orderId,
+          "vendorId": o.vendorId,
+          "shippingAddress": o.shippingAddress,
+          "zipCode": o.zipCode,
+          "optionalAddress": o.optionalAddress,
+          "city":o.city,
+          "province": o.province,
+          "longitude": o.longitude,
+          "latitude": o.latitude,
+          "orderDate": o.orderDate,
+          "id": o.id,
+          "createdDate": o.createdDate,
+          "modifiedDate": null,
+          "isDeleted": o.isDeleted
+        }
       },
       async walletItems({baseUrl,fixDate,parameter}){
         let { userCardCode }  = getState();

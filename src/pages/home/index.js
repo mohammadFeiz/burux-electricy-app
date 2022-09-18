@@ -23,6 +23,7 @@ export default class Home extends Component {
         this.state = {
             gems: 500,
             showAwards:false,
+            testedChance:false,
             showWallet:false,
             searchValue: '',
             preOrders: { waitOfVisitor: 0, waitOfPey: 0 },
@@ -296,6 +297,7 @@ export default class Home extends Component {
         }
     }
     getContent() {
+        let {testedChance} = this.state;
         return {
             flex: 1,
             className:'home-page main-bg',style:{width:'100%'},
@@ -317,32 +319,32 @@ export default class Home extends Component {
                         this.hint_layout(),
                         { size: 12 },
                         //this.score_layout(),
-                        // { 
-                        //     size: 72, 
-                        //     row: [
-                        //         { size: 12 },
-                        //         {
-                        //             show:testedChance === false,align:'v',column:[
-                        //                 {
-                        //                     className:'go-to-awards',
-                        //                     attrs:{
-                        //                         onClick:()=>{
-                        //                             this.setState({showAwards:true})
-                        //                         }
-                        //                     },
-                        //                     size:36,row:[
-                        //                         {html:'جایزه روز',style:{fontSize:24},align:'v'},
-                        //                         {html:'شانست رو امتحان کن',style:{fontSize:11},align:'v'}
-                        //                     ]
-                        //                 }
-                        //             ]
+                        { 
+                            size: 72, 
+                            row: [
+                                { size: 12 },
+                                {
+                                    show:testedChance === false,align:'v',column:[
+                                        {
+                                            className:'go-to-awards',
+                                            attrs:{
+                                                onClick:()=>{
+                                                    this.setState({showAwards:true})
+                                                }
+                                            },
+                                            size:36,row:[
+                                                {html:'جایزه روز',style:{fontSize:24},align:'v'},
+                                                {html:'شانست رو امتحان کن',style:{fontSize:11},align:'v'}
+                                            ]
+                                        }
+                                    ]
                                     
-                        //         },
-                        //         { flex: 1 }, 
-                        //         { html: getSvg(31), align: 'vh' }, 
-                        //         { size: 12 }
-                        //     ] 
-                        // }
+                                },
+                                { flex: 1 }, 
+                                { html: getSvg(31), align: 'vh' }, 
+                                { size: 12 }
+                            ] 
+                        }
                     ]
                 }
 

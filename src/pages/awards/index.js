@@ -22,14 +22,7 @@ export default class Awards extends Component {
       awardIndex: 0,
       awards: [],
       userAwards:[
-        { title: '10 الماس', subtitle: 'باشگاه مشتریان', date: '1400/2/2',used:true,code:'dsf56464hh' },
-        { title: '1 درصد', subtitle: 'تخفیف مازاد (تا سقف 2 میلیون)', icon: 2, date: '1400/2/2',used:false,remaining:10,code:'dsf56464hh'},
-        { title: '200 هزار تومن', subtitle: 'شارژ کیف پول', date: '1400/2/2',used:false,remaining:7,code:'dsf56464hh'},
-        { title: '300 هزار تومن', subtitle: 'شارژ کیف پول' , date: '1400/2/2',used:false,remaining:3,code:'dsf56464hh'},
-        { title: '500 هزار تومن', subtitle: 'شارژ کیف پول' , date: '1400/2/2',used:true,code:'dsf56464hh'},
-        { title: '2 برابر', subtitle: 'دریافت هزینه ارسال سفارش از بازارگاه', date: '1400/2/2',used:false,remaining:1,code:'dsf56464hh'},
-        { title: '50 روز', subtitle: 'خرید اعتباری با پرداخت 50 روزه', date: '1400/2/2',used:true,code:'dsf56464hh'},
-        { title: '', subtitle: 'جمع آوری فوری کالاهای گارانتی', date: '1400/2/2',used:true,code:'dsf56464hh'},
+        
       ]
     }
 
@@ -84,7 +77,7 @@ export default class Awards extends Component {
                   items={awards.map(({ icon }) => getSvg(icon))} 
                   getResult={(result,index)=>this.getChanceResult(result,index)}
                   showIndex={true}
-                  manipulate={[44,60,77,4,100]}
+                  manipulate={[44,60,77,4,50]}
                 />
               ), 
               style: { padding: '0 24px' }, align: 'h'
@@ -110,7 +103,7 @@ export default class Awards extends Component {
                     {
                       size:36,align:'v',
                       html:<Icon path={mdiClose} size={1} />,
-                      attrs:{onClick:()=>window.location.reload()}
+                      attrs:{onClick:()=>this.setState({chanceResult:false})}
                     }
                   ]
                 },

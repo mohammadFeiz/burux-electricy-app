@@ -394,17 +394,24 @@ export default function services(getState,token,userCardCode) {
         catch{result = false}
         return result;
       },
-      async bazargahItems({baseUrl}){
-        let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?cardCode=${userCardCode}&distance=100&status=1`); // 1 for pending
-        return res.data.data.map((o)=>this.bazargahItem({parameter:o}))
+      async bazargah_orders({baseUrl,parameter}){
+        let {type} = parameter;
+        let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?cardCode=${userCardCode}&distance=100&status=${{'wait_to_get':'1','wait_to_send':'2'}[type]}`); // 1 for pending
+        let data = [];
+        try{data = res.data.data || [];}
+        catch{data = []}
+        let time = getState().bazargah[{'wait_to_get':'forsate_akhze_sefareshe_bazargah','wait_to_send':'2'}[type]];
+        let result = data.map((order)=>this.bazargahItem({parameter:{order,time,type}}));
+        return result.filter((order)=>order !== false)
       },
-      bazargahItem({parameter:o}){
+      bazargahItem({parameter}){
+        let {order,time,type} = parameter;
         let bulbSrc = bulb10w;
         let distance = 0;
         let orderItems=[];
         try{
-          distance = +o.distance.toFixed(2) * 1000
-          orderItems=o.orderItems.map(i=>{    
+          distance = +order.distance.toFixed(2) * 1000
+          orderItems=order.orderItems.map(i=>{    
             let src=i.imagesUrl.length ? i.imagesUrl.split(",")[0]:bulbSrc;
             return {name:i.productName,detail:`${i.options} - ${i.quantity}`,src:src};
           })
@@ -413,38 +420,51 @@ export default function services(getState,token,userCardCode) {
           distance = 0;
           orderItems=[];
         }
+        let now = new Date().getTime();
+        let date = new Date(order.orderDate).getTime()
+        let passedTime = now - date;
+        passedTime = passedTime / 1000 / 60;
+        let forsat = {'wait_to_get':'forsate_akhze_sefareshe_bazargah','wait_to_send':'forsate_ersale_sefareshe_bazargah'}[type];
+        let totalTime = getState().bazargah[forsat];
+        if(passedTime > totalTime){return false} 
         return {
-          type:'free',
-          "amount":o.finalAmount,
+          type,
+          "amount":order.finalAmount,
           distance,
           "benefit":110000,
-          "totalTime":10,
-          "remainingTime": o.remainTime > 10 ? 10 : o.remainTime,
-          "address": o.billAddress,
+          "totalTime":time,
+          "address": order.billAddress,
           "items":orderItems,
           "cityId": null,
           "provinceId": null,
-          "buyerId": o.buyerId,
-          "receiverId": o.receiverId,
-          "buyerName": o.buyerName,
-          "receiverName": o.receiverName,
-          "buyerNumber": o.buyerNumber,
-          "receiverNumber": o.receiverNumber,
-          "orderId": o.orderId,
-          "vendorId": o.vendorId,
-          "shippingAddress": o.shippingAddress,
-          "zipCode": o.zipCode,
-          "optionalAddress": o.optionalAddress,
-          "city":o.city,
-          "province": o.province,
-          "longitude": o.longitude,
-          "latitude": o.latitude,
-          "orderDate": o.orderDate,
-          "id": o.id,
-          "createdDate": o.createdDate,
+          "buyerId": order.buyerId,
+          "receiverId": order.receiverId,
+          "buyerName": order.buyerName,
+          "receiverName": order.receiverName,
+          "buyerNumber": order.buyerNumber,
+          "receiverNumber": order.receiverNumber,
+          "orderId": order.orderId,
+          "vendorId": order.vendorId,
+          "shippingAddress": order.shippingAddress,
+          "zipCode": order.zipCode,
+          "optionalAddress": order.optionalAddress,
+          "city":order.city,
+          "province": order.province,
+          "longitude": order.longitude,
+          "latitude": order.latitude,
+          "orderDate": order.orderDate,
+          "id": order.id,
+          "createdDate": order.createdDate,
           "modifiedDate": null,
-          "isDeleted": o.isDeleted
+          "isDeleted": order.isDeleted
         }
+      },
+      async akhze_sefareshe_bazargah({baseUrl,parameter}){//اخذ سفارش بازارگاه
+        let res = await Axios.post(`${baseUrl}/OnlineShop/AddNewOrder`, {
+          cardCode :userCardCode,
+          orderId :parameter.orderId
+        });
+        debugger;
       },
       async walletItems({baseUrl,fixDate,parameter}){
         let { userCardCode }  = getState();
@@ -473,66 +493,8 @@ export default function services(getState,token,userCardCode) {
         return fixDate({title:titleDic[x.realtedDoc.docType] ,date:x.date,type:typeDic[x.realtedDoc.docType] ,amount:x.sum},"date");
       });
       },
-      async bazargahCatched({baseUrl}){
-        let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?cardCode=${userCardCode}&distance=100&status=2`); // 2 for taken
-        let bulbSrc = bulb10w;
-          return res.data.data.map((o)=>{
-            let distance = 0;
-            let orderItems=[];
-            try{
-              distance = +o.distance.toFixed(2) * 1000
-              orderItems=o.orderItems.map(i=>{
-                return {name:i.productName,detail:`${i.options} - ${i.quantity}`,src:i.imagesUrl.length ? i.imagesUrl.split(",")[0]:bulbSrc};
-              })
-            }
-            catch{
-              distance = 0;
-              orderItems=[];
-            }
-            return {
-              type:'waitToSend',
-              "amount":o.finalAmount,
-              distance,
-              "benefit":110000,
-              "totalTime":60,
-              "remainingTime": o.remainTime > 60 ? 60 : o.remainTime,
-              "address": o.billAddress,
-              "items":orderItems,
-              "cityId": null,
-              "provinceId": null,
-              "buyerId": o.buyerId,
-              "receiverId": o.receiverId,
-              "buyerName": o.buyerName,
-              "receiverName": o.receiverName,
-              "buyerNumber": o.buyerNumber,
-              "receiverNumber": o.receiverNumber,
-              "orderId": o.orderId,
-              "vendorId": o.vendorId,
-              "shippingAddress": o.shippingAddress,
-              "zipCode": o.zipCode,
-              "optionalAddress": o.optionalAddress,
-              "city":o.city,
-              "province": o.province,
-              "longitude": o.longitude,
-              "latitude": o.latitude,
-              "orderDate": o.orderDate,
-              "id": o.id,
-              "createdDate": o.createdDate,
-              "modifiedDate": null,
-              "isDeleted": o.isDeleted
-            }
-          })
-        
-        
-      },
-      async bazargahCatch({baseUrl,parameter}){//اخذ سفارش بازارگاه
-        let res = await Axios.post(`${baseUrl}/OnlineShop/AddNewOrder`, {
-          cardCode :userCardCode,
-          orderId :parameter.orderId
-        });
-        
-        
-      },
+      
+      
       async getCategories(obj) {
         return [];
 
@@ -1048,13 +1010,13 @@ function Service({ services, baseUrl, getState, cacheAll }) {
         $(".loading").css("display", "none");
         return a
       }
-      if (!services[type]) {  }
+      if (!services[type]) {debugger;}
       let result = await services[type](p);
       $(".loading").css("display", "none");
       setToCache(cacheName ? 'storage-' + cacheName : 'storage-' + type, result);
       return result;
     }
-    if (!services[type]) {  }
+    if (!services[type]) {  debugger}
 
     let result = await services[type](p);
     $(".loading").css("display", "none");

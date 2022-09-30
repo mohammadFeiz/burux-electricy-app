@@ -1,8 +1,30 @@
 import React,{Component} from 'react';
 import Gauge from 'r-gauger';
 export default class TimerGauge extends Component{
+    constructor(props){
+        super(props);
+        this.state = {remainingTime:this.getRemainigTime()}
+        setInterval(()=>{
+            this.setState({remainingTime:this.getRemainigTime()})
+        },60000)
+    }
+    getRemainigTime(){
+        let {startTime,totalTime,onExpired} = this.props;
+        let now = new Date().getTime();
+        let date = new Date(startTime).getTime()
+        let passedTime = now - date;
+        passedTime = passedTime / 1000 / 60;
+        if(passedTime > totalTime){
+            onExpired()
+            return false
+        }
+        try{return +(totalTime - passedTime).toFixed(0)}
+        catch{return 0}
+    }
     render(){
-        let {totalTime,remainingTime} = this.props;
+        let {totalTime} = this.props;
+        let {remainingTime} = this.state;
+        if(remainingTime === false){return false}
         let timeRate = remainingTime / totalTime;
         let timeColor;
         if(timeRate < 0.33){timeColor = 'red'}
@@ -11,10 +33,9 @@ export default class TimerGauge extends Component{
         return (
             <Gauge
                 style={{width:100,height:120}} rotate={180} direction='clockwise'
-                label={{step:5,style:{offset:46,color:'#d5d5d5'}}}
                 start={0} radius={32} angle={360} end={totalTime} thickness={4}
                 text={[
-                    {value:remainingTime.toFixed(0),style:{top:-10,fontSize:16,color:timeColor}},
+                    {value:remainingTime,style:{top:-10,fontSize:16,color:timeColor}},
                     {value:'دقیقه',style:{top:10,fontSize:14,color:'#A19F9D',fontFamily:'IranSans_light'}}
                 ]}
                 ranges={[

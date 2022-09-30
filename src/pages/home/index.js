@@ -4,7 +4,6 @@ import getSvg from './../../utils/getSvg';
 import appContext from '../../app-context';
 import functions from '../../functions';
 import GarantiCard from '../../components/garanti/garanti-card/garanti-card';
-import BazargahCard from './../../components/bazargah-card/bazargah-card';
 import AIOButton from './../../components/aio-button/aio-button';
 import './index.css';
 import Awards from './../awards/index';
@@ -15,6 +14,7 @@ import Billboard from '../../components/billboard/billboard';
 import Flip from '../../components/flip/flip';
 import Popup from '../../components/popup/popup';
 import Wallet from '../../popups/wallet/wallet';
+import Bazargah from '../bazargah/bazargah';
 
 export default class Home extends Component {
     static contextType = appContext;
@@ -224,40 +224,7 @@ export default class Home extends Component {
         }
     }
     bazargah_layout(){
-        let {bazargahItems = [],SetState,services,bazargahActive} = this.context;
-        if(!bazargahActive){return false}
-        return {
-            column:[
-                {
-                    size:48,className:'padding-0-12',
-                    row:[
-                        {flex:1,html: "بازارگاه",className: "size14 color323130 bold padding-0-12",size: 48,align: "v"},
-                        {html:'مشاهده همه',align:'v',className:'color0094D4 size12 bold',show:bazargahItems.length !== 0}
-                    ]
-                },
-                {
-                    size:48,show:bazargahItems.length === 0,className:'box margin-0-12 padding-0-12 size14 color605E5C',align:'v',style:{marginBottom:12},
-                    html:'سفارشی در نزدیکی شما ثبت نشده است' 
-                },
-                {
-                    show:bazargahItems.length !== 0, 
-                    html:(
-                        <ReactHtmlSlider
-                            autoSlide={5000} arrow={false}
-                            items={bazargahItems.map((o,i)=><BazargahCard {...o} items={false} address={false} onCatch={async()=>{
-                                let res = await services({type:'bazargahCatch',parameter:{orderId:o.orderId}})
-                                if(res){
-                                    SetState({bazargahItems:this.context.bazargahItems.filter((o,index)=>{
-                                        return index !== i
-                                    })})
-                                    
-                                }
-                            }}/>)}
-                        />
-                    )
-                }
-            ]
-        }
+        return {html:<Bazargah renderInHome={true}/>}
     }
     hint_layout(){
         return {

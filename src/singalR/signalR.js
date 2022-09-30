@@ -34,12 +34,15 @@ export default function SignalR(getState) {
     let $$={
         start(){
 
-            connection.on("BazargahOrder", function (o) {
-                let {services,SetState,bazargahItems,showMessage} = getState();                
-                let order = services({parameter:o})
-                bazargahItems.push(order);
+            connection.on("BazargahOrder", async (order)=> {
+                let {services,SetState,bazargah,showMessage} = getState();                
+                let time = bazargah.forsate_akhze_sefareshe_bazargah;
+                order = await services({type:'bazargahItem',parameter:{order,time,type:'wait_to_get'}})
+                if(order === false){return;}
+                bazargah.wait_to_get = bazargah.wait_to_get || [];
+                bazargah.wait_to_get.push(order);
                 showMessage('سفارش جدیدی در بازارگاه دارید')
-                SetState({bazargahItems})
+                SetState({bazargah})
             });
             
             connection.start().then(function () {

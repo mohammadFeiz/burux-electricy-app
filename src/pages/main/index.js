@@ -27,9 +27,7 @@ import SabteGarantiJadid from "../../components/garanti/sabte-garanti-jadid/sabt
 import SabteGarantiJadidBaJoziat from "../../components/garanti/sabte-garanti-jadid-ba-joziat/sabte-garanti-jadid-ba-joziat";
 import PayameSabteGaranti from "../../components/garanti/payame-sabte-garanti/payame-sabte-garanti";
 import Register from "../../components/register/register";
-import JoziateSefaresheBazargah from "../../components/bazargah/joziate-sefaresh/joziate-sefaresh";
 import SignalR from '../../singalR/signalR';
-import services from "./../../services";
 import logo2 from './../../images/logo2.png';
 export default class Main extends Component {
   constructor(props) {
@@ -58,8 +56,16 @@ export default class Main extends Component {
     }
     this.dateCalculator = dateCalculator();
     let userCardCode=this.props.userInfo.cardCode;
-
+    let backOffice = {
+      forsate_ersale_sefareshe_bazargah:600,
+      forsate_akhze_sefareshe_bazargah:600
+    }
     this.state = {
+      bazargah:{
+        active:true,
+        forsate_ersale_sefareshe_bazargah:backOffice.forsate_ersale_sefareshe_bazargah,
+        forsate_akhze_sefareshe_bazargah:backOffice.forsate_akhze_sefareshe_bazargah
+      },
       profile:this.props.userInfo,
       SetState: (obj) => this.setState(obj),
       showMessage:this.showMessage.bind(this),
@@ -67,7 +73,6 @@ export default class Main extends Component {
       images,
       signalR,
       messages:[],
-      bazargahActive:true,
       buruxlogod:this.getBuruxLogoD(),
       splashScreen:true,
       showRegister:false,
@@ -100,7 +105,7 @@ export default class Main extends Component {
       bottomMenuItems: [
         { text: "خانه", icon: 19, id: "a" },
         { text: "خرید", icon: 'buy', id: "b" },
-        { text: "بازارگاه", icon: 20, id: "c",show:()=>this.state.bazargahActive },
+        { text: "بازارگاه", icon: 20, id: "c",show:()=>this.state.bazargah.active },
         { text: "بروکس من", icon: 21, id: "d" },
       ],
       guaranteeItems: [],
@@ -110,7 +115,6 @@ export default class Main extends Component {
       popup: {},
       peygiriyeSefaresheKharid_tab:undefined,
       buy_view:undefined,//temporary state
-      bazargahItems:[]
     };
   }
   getBuruxLogoD(){
@@ -192,11 +196,11 @@ export default class Main extends Component {
     let campaigns = await services({type:"getCampaigns",cache:120,loading:false});
     this.setState({ campaigns});
   }
-  async getBazargahItems(){
-    let {services} = this.state;
-    let bazargahItems = await services({type:'bazargahItems',loading:false});
-    this.setState({bazargahItems:bazargahItems || []})
-    
+  async getBazargahOrders(){
+    let {services,bazargah} = this.state;
+    bazargah.wait_to_get = await services({type:'bazargah_orders',parameter:{type:'wait_to_get'},loading:false});
+    bazargah.wait_to_send = await services({type:'bazargah_orders',parameter:{type:'wait_to_send'},loading:false});
+    this.setState({bazargah})
   }
   async getB1Info(cardCode) {
     const data = await fetch(`https://b1api.burux.com/api/BRXIntLayer/GetCalcData/${cardCode}`, {
@@ -217,16 +221,11 @@ export default class Main extends Component {
   }
   async componentDidMount() {
     let developerMode = true
-    let {userCardCode,bazargahActive,services} = this.state;
+    let {userCardCode,bazargah} = this.state;
     let b1Info = await this.getB1Info(userCardCode);
     this.getGuaranteeItems()
     this.getCampaignsData();
-    if(bazargahActive){
-      this.getBazargahItems();
-      setInterval(async ()=>{
-        this.getBazargahItems()  
-      },30000)
-    }
+    if(bazargah.active){this.getBazargahOrders();}
     //let testedChance = await services({type:"get_tested_chance"});
     let pricing = new Pricing('https://b1api.burux.com/api/BRXIntLayer/GetCalcData', userCardCode, 10 * 60 * 1000)
     let istarted = pricing.startservice().then((value) => { return value; });

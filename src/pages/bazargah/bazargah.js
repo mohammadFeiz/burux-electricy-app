@@ -191,6 +191,7 @@ export default class Bazargah extends Component{
 
 
 class JoziateSefaresheBazargah extends Component{
+    static contextType=appContext;
     header_layout(){
         return {
             html:(

@@ -66,7 +66,7 @@ export default class Register extends Component{
     }
     async register(){
         let {model} = this.state;
-        let res = await Axios.post(`https://retailerapp.bbeta.ir/api/v1/Users/NewUser`, model);
+        let res = await Axios.post(`https://localhost:44339/api/v1/Users/NewUser`, model);
         let result = false;
         try{result = res.data.isSuccess || false}
         catch{result = false}
@@ -78,7 +78,7 @@ export default class Register extends Component{
     }
     async edit(){
         let {model} = this.state;
-        let res = await Axios.post(`https://retailerapp.bbeta.ir/api/v1/Users/UpdateUser`, model);
+        let res = await Axios.post(`https://localhost:44339/api/v1/Users/UpdateUser`, model);
         let result = false;
         try{result = res.data.isSuccess || false}
         catch{result = false}

@@ -12,7 +12,7 @@ import $ from 'jquery';
 class OTPLogin extends Component{
   constructor(props){
     super(props);
-    this.apiBaseUrl="https://localhost:44339/api/v1";
+    this.apiBaseUrl="https://retailerapp.bbeta.ir/api/v1";
     let storage = localStorage.getItem('brxelcrecodein');
     let recodeIn,phoneValue,mode = 'inter-phone';
     if(!storage || storage === null){

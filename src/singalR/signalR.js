@@ -29,7 +29,7 @@ import {HubConnectionBuilder} from "@microsoft/signalr";
 
 export default function SignalR(getState) {
     
-    var connection = new HubConnectionBuilder().withUrl("https://localhost:44339/hubclient").build();
+    var connection = new HubConnectionBuilder().withUrl("https://retailerapp.bbeta.ir/hubclient").build();
 
     let $$={
         start(){

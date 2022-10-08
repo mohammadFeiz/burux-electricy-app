@@ -941,8 +941,8 @@ export default function services(getState,token,userCardCode) {
   }
   return Service({
     services: fn(),
-    baseUrl: 'https://localhost:44339/api/v1',
-    // baseUrl:'https://localhost:44339/api/v1',
+    baseUrl: 'https://retailerapp.bbeta.ir/api/v1',
+    // baseUrl:'https://retailerapp.bbeta.ir/api/v1',
     getState,
     cacheAll: true
   })

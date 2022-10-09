@@ -30,6 +30,15 @@ import {HubConnectionBuilder} from "@microsoft/signalr";
 export default function SignalR(getState) {
     
     var connection = new HubConnectionBuilder().withUrl("https://retailerapp.bbeta.ir/hubclient").build();
+    const orderStatuses={
+        Pending,
+        Taken,
+        DeliveredToCustomer,
+        CancelledByCustomer,
+        CancelledByElectricCustomer,
+        DeliveredToDeliverer,
+        Preparing
+    };
 
     let $$={
         start(){

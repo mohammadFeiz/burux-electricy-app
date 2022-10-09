@@ -396,7 +396,7 @@ export default function services(getState,token,userCardCode) {
       },
       async bazargah_orders({baseUrl,parameter}){
         let {type} = parameter;
-        let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?cardCode=${userCardCode}&distance=100&status=${{'wait_to_get':'1','wait_to_send':'2'}[type]}`); // 1 for pending
+        let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?time=10000&cardCode=${userCardCode}&distance=100&status=${{'wait_to_get':'1','wait_to_send':'2'}[type]}`); // 1 for pending
         let data = [];
         try{data = res.data.data || [];}
         catch{data = []}
@@ -464,7 +464,6 @@ export default function services(getState,token,userCardCode) {
           cardCode :userCardCode,
           orderId :parameter.orderId
         });
-        debugger;
       },
       async walletItems({baseUrl,fixDate,parameter}){
         let { userCardCode }  = getState();

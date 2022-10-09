@@ -45,13 +45,27 @@ export default function SignalR(getState) {
         start(){
 
             connection.on("BazargahOrder", async (order)=> {
-                let {services,SetState,bazargah,showMessage} = getState();                
+                let {services,SetState,bazargah,showMessage,userCardCode} = getState();                
                 let time = bazargah.forsate_akhze_sefareshe_bazargah;
-                order = await services({type:'bazargahItem',parameter:{order,time,type:'wait_to_get'}})
+                let type;
+                if(order.status === 'Pending'){type = 'wait_to_get'}
+                else if(order.status === 'Taken'){type = 'wait_to_send'}
+                else {return}
+                order = await services({type:'bazargahItem',parameter:{order,time,type}})
                 if(order === false){return;}
-                bazargah.wait_to_get = bazargah.wait_to_get || [];
-                bazargah.wait_to_get.push(order);
-                showMessage('سفارش جدیدی در بازارگاه دارید')
+                if(type === 'wait_to_get'){
+                    bazargah.wait_to_get = bazargah.wait_to_get || [];
+                    bazargah.wait_to_get.push(order);
+                    showMessage('سفارش جدیدی در بازارگاه دارید')
+                }
+                else if(type === 'wait_to_send'){
+                    bazargah.wait_to_get = bazargah.wait_to_get || [];
+                    bazargah.wait_to_get = bazargah.wait_to_get.filter((o)=>o.orderId !== order.orderId)
+                    if(userCardCode === order.cardCode){
+                        bazargah.wait_to_send = bazargah.wait_to_send || [];
+                        bazargah.wait_to_send.push(order) 
+                    }
+                }
                 SetState({bazargah})
             });
             

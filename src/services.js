@@ -402,7 +402,8 @@ export default function services(getState,token,userCardCode) {
         catch{data = []}
         let time = getState().bazargah[{'wait_to_get':'forsate_akhze_sefareshe_bazargah','wait_to_send':'2'}[type]];
         let result = data.map((order)=>this.bazargahItem({parameter:{order,time,type}}));
-        return result.filter((order)=>order !== false)
+        result = result.filter((order)=>order !== false)
+        return result
       },
       bazargahItem({parameter}){
         let {order,time,type} = parameter;

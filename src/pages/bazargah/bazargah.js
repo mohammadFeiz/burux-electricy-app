@@ -102,7 +102,7 @@ export default class Bazargah extends Component{
         }
     }
     renderInHome(){
-        let {bazargah,SetState,services} = this.context;
+        let {bazargah,SetState} = this.context;
         if(!bazargah.active || !bazargah.wait_to_get){return false}
         return (
             <RVD
@@ -133,9 +133,7 @@ export default class Bazargah extends Component{
                                                     bazargah.wait_to_get = bazargah.wait_to_get.filter((o,index)=>index !== i)
                                                     SetState({bazargah})
                                                 }}
-                                                onShowDetails={()=>{
-                                                    this.setState({showDetails:o})
-                                                }}
+                                                onShowDetails={()=>this.setState({showDetails:o})}
                                             />
                                         )
                                     })}
@@ -333,13 +331,12 @@ class JoziateSefaresheBazargah extends Component{
                         {
                             className:'padding-0-12',align:'v',
                             size:60,html:<button className='button-2' onClick={async ()=>{
-                                let {SetState,bazargah,services} = this.context;
+                                let {services} = this.context;
                                 let {orderId} = this.props;
                                 let res = await services({type:'akhze_sefareshe_bazargah',parameter:{orderId}})
-                                if(res){
-                                    bazargah.wait_to_get = bazargah.wait_to_get.filter((o)=>o.orderId !== orderId)
-                                    SetState({bazargah}) 
-                                }
+                                let {showMessage} = this.context;
+                                if(res){showMessage('سفارش با موفقیت اخذ شد')}
+                                else{showMessage('اخذ سفارش با خطا روبرو شد')}
                             }}>اخذ سفارش</button>
                         }
                     ]

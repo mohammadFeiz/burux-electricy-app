@@ -57,8 +57,8 @@ export default class Main extends Component {
     this.dateCalculator = dateCalculator();
     let userCardCode=this.props.userInfo.cardCode;
     let backOffice = {
-      forsate_ersale_sefareshe_bazargah:600,
-      forsate_akhze_sefareshe_bazargah:600
+      forsate_ersale_sefareshe_bazargah:6000,
+      forsate_akhze_sefareshe_bazargah:6000
     }
     this.state = {
       bazargah:{
@@ -217,7 +217,8 @@ export default class Main extends Component {
     return {...data,storeName:userInfo.storeName};
   }
   showMessage(message){
-    this.setState({message:this.state.messages.concat(message)});
+    alert(message)
+    //this.setState({message:this.state.messages.concat(message)});
   }
   async componentDidMount() {
     let developerMode = true

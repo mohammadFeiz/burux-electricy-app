@@ -57,8 +57,8 @@ export default class Main extends Component {
     this.dateCalculator = dateCalculator();
     let userCardCode=this.props.userInfo.cardCode;
     let backOffice = {
-      forsate_ersale_sefareshe_bazargah:6000,
-      forsate_akhze_sefareshe_bazargah:6000
+      forsate_ersale_sefareshe_bazargah:60,
+      forsate_akhze_sefareshe_bazargah:30
     }
     this.state = {
       bazargah:{

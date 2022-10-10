@@ -233,8 +233,8 @@ class JoziateSefaresheBazargah extends Component{
                     style:{borderTop:'5px solid #ddd',borderBottom:'5px solid #ddd'},
                     column:[
                         {size:12},
-                        this.detailRow_layout('مبلغ پرداختی کل: ',functions.splitPrice(amount) + ' تومان'),
-                        this.detailRow_layout('سود شما از فروش:',functions.splitPrice(benefit) + ' تومان'),
+                        this.detailRow_layout('مبلغ پرداختی کل: ',functions.splitPrice(amount) + ' ریال'),
+                        this.detailRow_layout('سود شما از فروش:',functions.splitPrice(benefit) + ' ریال'),
                         {size:12}
                     ]
                 }
@@ -373,7 +373,7 @@ class BazargahCard extends Component{
                 {html:getSvg('cash'),size:36,align:'vh'},
                 {html:'مبلغ سفارش:',className:'size14 color605E5C',align:'v'},
                 {html:functions.splitPrice(amount),align:'v',className:'bold color323130 size14'},
-                {html:'تومان',align:'v',className:'colorA19F9D size12'}
+                {html:'ریال',align:'v',className:'colorA19F9D size12'}
             ]
         }
     }
@@ -409,6 +409,7 @@ class BazargahCard extends Component{
         }
     }
     benefit_layout(benefit){
+        return false;
         if(!benefit){return false}
         return {
             gap:4,
@@ -416,7 +417,7 @@ class BazargahCard extends Component{
                 {html:getSvg('benefit'),size:36,align:'vh'},
                 {html:'سود:',className:'size14 colorF15A29',align:'v'},
                 {html:functions.splitPrice(benefit),align:'v',className:'bold colorF15A29 size14'},
-                {html:'تومان',align:'v',className:'colorF15A29 size12'}
+                {html:'ریال',align:'v',className:'colorF15A29 size12'}
             ]
         }
     }

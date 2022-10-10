@@ -102,7 +102,7 @@ export default class Bazargah extends Component{
         }
     }
     renderInHome(){
-        let {bazargah,SetState} = this.context;
+        let {bazargah,SetState,services} = this.context;
         if(!bazargah.active || !bazargah.wait_to_get){return false}
         return (
             <RVD
@@ -133,7 +133,9 @@ export default class Bazargah extends Component{
                                                     bazargah.wait_to_get = bazargah.wait_to_get.filter((o,index)=>index !== i)
                                                     SetState({bazargah})
                                                 }}
-                                                onShowDetails={()=>this.setState({showDetails:o})}
+                                                onShowDetails={()=>{
+                                                    this.setState({showDetails:o})
+                                                }}
                                             />
                                         )
                                     })}
@@ -335,8 +337,12 @@ class JoziateSefaresheBazargah extends Component{
                                 let {orderId} = this.props;
                                 let res = await services({type:'akhze_sefareshe_bazargah',parameter:{orderId}})
                                 let {showMessage} = this.context;
-                                if(res){showMessage('سفارش با موفقیت اخذ شد')}
-                                else{showMessage('اخذ سفارش با خطا روبرو شد')}
+                                if(res){
+                                    showMessage('سفارش با موفقیت اخذ شد')
+                                }
+                                else{
+                                    showMessage('اخذ سفارش با خطا روبرو شد')
+                                }
                             }}>اخذ سفارش</button>
                         }
                     ]

@@ -465,6 +465,8 @@ export default function services(getState,token,userCardCode) {
           cardCode :userCardCode,
           orderId :parameter.orderId
         });
+
+        return res.data.isSuccess;
       },
       async walletItems({baseUrl,fixDate,parameter}){
         let { userCardCode }  = getState();

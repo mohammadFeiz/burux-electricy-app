@@ -498,7 +498,6 @@ export default function services(getState,token,userCardCode) {
       
       
       async getCategories(obj) {
-        return [];
 
         let { baseUrl } = obj;
         let res = await Axios.get(`${baseUrl}/Spree/GetAllCategories`);

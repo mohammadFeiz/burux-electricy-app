@@ -107,13 +107,12 @@ export default class Register extends Component{
                 <Form
                     lang={'fa'}
                     model={model}
-                    bodyAttrs={{className:'main-bg'}}
-                    theme={{rowHeight:70}}
+                    bodyStyle={{background:'#fff'}}
+                    inputStyle={{height:30,background:'#f5f5f5',border:'none'}}
                     labelAttrs={{className:'size14 color605E5C'}}
                     onSubmit={()=>mode === 'edit'?this.edit():this.register()}
-                    submitButtonAttrs={{className:'button-2',style:{width:'100%'},value:mode === 'edit'?'ثبت':'ایجاد حساب کاربری'}}
+                    submitText={mode === 'edit'?'ثبت':'ایجاد حساب کاربری'}
                     footerAttrs={{className:'main-bg padding-0-24'}}
-                    rowGap={24}
                     onChange={(model)=>this.setState({model})}
                     inputs={[
                         {label:'کد مشتری',type:'text',field:'model.cardCode',disabled:true,show:mode === 'edit'},

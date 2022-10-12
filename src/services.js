@@ -427,9 +427,14 @@ export default function services(getState,token,userCardCode) {
         passedTime = passedTime / 1000 / 60;
         let forsat = {'wait_to_get':'forsate_akhze_sefareshe_bazargah','wait_to_send':'forsate_ersale_sefareshe_bazargah'}[type];
         let totalTime = getState().bazargah[forsat];
+        if(!totalTime){debugger;}
         if(passedTime > totalTime){return false} 
         return {
           type,
+          sendStatus:{
+            itemsChecked:{},//{'0':true,'1':false}
+            delivererId:'0',
+          },
           "amount":order.finalAmount,
           distance,
           "benefit":110000,
@@ -460,6 +465,32 @@ export default function services(getState,token,userCardCode) {
           "isDeleted": order.isDeleted
         }
       },
+      async taghire_vaziate_ersale_sefareshe_bazargah({parameter}){
+        let {orderId,sendStatus} = parameter;
+        // sendStatus:{
+        //   itemsChecked:{},//{'0':true,'1':false}
+        //   delivererId:'0',
+        // }
+        
+        //if(!res){return false}
+        return true
+
+      },
+      async get_deliverers(){
+        return [
+          {name:'عباس حسنی',id:'0',mobile:'09123434568'},
+          {name:'علی عنایتی',id:'1',mobile:'09125345646'},
+          {name:'دانیال کاوه',id:'2',mobile:'09126456345'},
+          {name:'محمد احمدی',id:'3',mobile:'09123345435'}
+        ] 
+      },
+      async add_deliverer({parameter}){
+        let {mobile,name} = parameter;
+        return true
+      },
+      async taide_code_tahvil({parameter}){
+        return true;
+      },
       async akhze_sefareshe_bazargah({baseUrl,parameter}){//اخذ سفارش بازارگاه
         let res = await Axios.post(`${baseUrl}/OnlineShop/AddNewOrder`, {
           cardCode :userCardCode,
@@ -472,31 +503,27 @@ export default function services(getState,token,userCardCode) {
         let { userCardCode }  = getState();
         let res = await Axios.post(`${baseUrl}/BOne/UserTransaction`, {
           "requests": [
-              {
-                  "cardCode": userCardCode,
-                  "startDate": parameter===false ? "" : `${parameter.gregorian[0]}/${parameter.gregorian[1]}/${parameter.gregorian[2]}`,
-                  // "transactionReqNo" : 1
-              }
+            {
+              "cardCode": userCardCode,
+              "startDate": parameter===false ? "" : `${parameter.gregorian[0]}/${parameter.gregorian[1]}/${parameter.gregorian[2]}`,
+              // "transactionReqNo" : 1
+            }
           ]
-      });
+        });
 
-      var result=res.data.data.results[0].lineDetails;
-      let titleDic= {
-        IncomingPayment:"واریز به کیف پول",
-        OutgoingPayment:"برداشت از کیف پول"
-      }
-
-      let typeDic= {
-        IncomingPayment:"in",
-        OutgoingPayment:"out"
-      }
-
-      return result.map((x)=>{
-        return fixDate({title:titleDic[x.realtedDoc.docType] ,date:x.date,type:typeDic[x.realtedDoc.docType] ,amount:x.sum},"date");
-      });
+        var result=res.data.data.results[0].lineDetails;
+        let titleDic= {
+          IncomingPayment:"واریز به کیف پول",
+          OutgoingPayment:"برداشت از کیف پول"
+        }
+        let typeDic= {
+          IncomingPayment:"in",
+          OutgoingPayment:"out"
+        }
+        return result.map((x)=>{
+          return fixDate({title:titleDic[x.realtedDoc.docType] ,date:x.date,type:typeDic[x.realtedDoc.docType] ,amount:x.sum},"date");
+        });
       },
-      
-      
       async getCategories(obj) {
 
         let { baseUrl } = obj;

@@ -212,6 +212,9 @@ button{
 .size20{
 	font-size:20px;
 }
+.size24{
+	font-size:24px;
+}
 .size28{
 	font-size:28px;
 }
@@ -244,9 +247,10 @@ button{
 	right:0;
 	top:50%;
 }
-.button-2.disabled{
+.button-2.disabled,.button-2:disabled{
 	background: #A19F9D;
 	border:2px solid #A19F9D;
+	opacity:0.6;
 	
 }
 
@@ -321,6 +325,9 @@ button{
 }
 .margin-0-24{
 	margin:0 24px;
+}
+.margin-0-36{
+	margin:0 36px;
 }
 .round-24{
 	border-radius:24px;

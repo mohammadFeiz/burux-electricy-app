@@ -134,7 +134,7 @@ export default class Bazargah extends Component{
         return {
             gap:12,flex:1,scroll:'v',
             column:wait_to_send.map((o)=>{
-                return {style:{overflow:'visible'},html:<BazargahCard {...o}/>}
+                return {style:{overflow:'visible'},html:<BazargahCard {...o} onSend={()=>this.setState({showDetails:o})}/>}
             })
         }
     }

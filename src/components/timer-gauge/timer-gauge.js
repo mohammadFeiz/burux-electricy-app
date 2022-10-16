@@ -18,8 +18,10 @@ export default class TimerGauge extends Component{
             onExpired()
             return false
         }
-        try{return +(totalTime - passedTime).toFixed(0)}
-        catch{return 0}
+        let res;
+        try{res = +(totalTime - passedTime).toFixed(0)}
+        catch{res = 0}
+        return res
     }
     render(){
         let {totalTime} = this.props;

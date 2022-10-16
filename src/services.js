@@ -400,7 +400,7 @@ export default function services(getState,token,userCardCode) {
         let data = [];
         try{data = res.data.data || [];}
         catch{data = []}
-        let time = getState().bazargah[{'wait_to_get':'forsate_akhze_sefareshe_bazargah','wait_to_send':'2'}[type]];
+        let time = getState().bazargah[{'wait_to_get':'forsate_akhze_sefareshe_bazargah','wait_to_send':'forsate_ersale_sefareshe_bazargah'}[type]];
         let result = data.map((order)=>this.bazargahItem({parameter:{order,time,type}}));
         result = result.filter((order)=>order !== false)
         return result
@@ -427,7 +427,6 @@ export default function services(getState,token,userCardCode) {
         passedTime = passedTime / 1000 / 60;
         let forsat = {'wait_to_get':'forsate_akhze_sefareshe_bazargah','wait_to_send':'forsate_ersale_sefareshe_bazargah'}[type];
         let totalTime = getState().bazargah[forsat];
-        if(!totalTime){debugger;}
         if(passedTime > totalTime){return false}
         
         return {

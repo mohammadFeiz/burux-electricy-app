@@ -274,6 +274,7 @@ class JoziateSefaresheBazargah extends Component{
         this.get_deliverers();
     }
     async changeSendStatus(key,value){
+        debugger;
         let {services} = this.context;
         let {orderId} = this.props;
         let {sendStatus} = this.state;
@@ -375,9 +376,9 @@ class JoziateSefaresheBazargah extends Component{
             let {sendStep,sendStatus} = this.state;
             if(key === 'onBack'){
                 if(sendStep === 0){return ()=>this.props.onClose()}
-                if(sendStep === 1){return this.setState({sendStep:0})}
-                if(sendStep === 2){return this.setState({sendStep:1})}
-                if(sendStep === 3){return this.setState({sendStep:2})}
+                if(sendStep === 1){return ()=>this.setState({sendStep:0})}
+                if(sendStep === 2){return ()=>this.setState({sendStep:1})}
+                if(sendStep === 3){return ()=>this.setState({sendStep:2})}
             }
             if(key === 'isCheckable'){return sendStep === 1}
             if(key === 'title'){return 'ارسال سفارش'}
@@ -497,6 +498,7 @@ class JoziateSefaresheBazargah extends Component{
         }
     }
     item_layout({src,name,detail,isFirst,isLast,isCheckable,id}){
+        debugger;
         let {sendStatus} = this.state;
         let borderRadius,onClick;
         if(isFirst && isLast){borderRadius = 8} 

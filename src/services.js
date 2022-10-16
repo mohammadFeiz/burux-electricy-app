@@ -438,6 +438,7 @@ export default function services(getState,token,userCardCode) {
           "amount":order.finalAmount,
           distance,
           "benefit":110000,
+          'deliveredCode':order.deliveredCode,
           "totalTime":time,
           "address": order.billAddress,
           "items":orderItems,

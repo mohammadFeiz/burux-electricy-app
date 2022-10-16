@@ -255,7 +255,7 @@ class JoziateSefaresheBazargah extends Component{
     static contextType=appContext;
     constructor(props){
         super(props);
-        this.state = {sendStep:0,sendStatus:props.sendStatus,deliverers:[],code0:'',code1:'',code2:'',staticCode:'1234'}
+        this.state = {sendStep:0,sendStatus:props.sendStatus,deliverers:[],code0:'',code1:'',code2:'',staticCode:props.deliveredCode}
     }
     async get_deliverers(){
         let {services} = this.context;

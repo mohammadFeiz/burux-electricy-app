@@ -407,14 +407,15 @@ export default function services(getState,token,userCardCode) {
       },
       bazargahItem({parameter}){
         let {order,time,type} = parameter;
+
         let bulbSrc = bulb10w;
         let distance = 0;
         let orderItems=[];
         try{
-          distance = +order.distance.toFixed(2) * 1000
+          distance = + order.distance.toFixed(2) * 1000;
           orderItems=order.orderItems.map(i=>{    
-            let src=i.imagesUrl.length ? i.imagesUrl.split(",")[0]:bulbSrc;
-            return {name:i.productName,detail:`${i.options} - ${i.quantity}`,src:src};
+            let src=i.imagesUrl != null && i.imagesUrl != undefined ? i.imagesUrl.split(",")[0]:bulbSrc;
+            return {name:i.productName,detail:`${i.options} - ${i.quantity}`,src:src, id:i.id};
           })
         }
         catch{
@@ -428,13 +429,10 @@ export default function services(getState,token,userCardCode) {
         let forsat = {'wait_to_get':'forsate_akhze_sefareshe_bazargah','wait_to_send':'forsate_ersale_sefareshe_bazargah'}[type];
         let totalTime = getState().bazargah[forsat];
         if(passedTime > totalTime){return false}
-        
         return {
           type,
           sendStatus:{
-            itemsChecked:orderItems.map(x=>{
-              return {'x.id':x.provided}
-            }),//{'0':true,'1':false}
+            itemsChecked:order.providedData === null ? {} : order.providedData,//{'0':true,'1':false}
             delivererId:order.delivererId,
           },
           "amount":order.finalAmount,
@@ -467,15 +465,18 @@ export default function services(getState,token,userCardCode) {
           "isDeleted": order.isDeleted
         }
       },
-      async taghire_vaziate_ersale_sefareshe_bazargah({parameter}){
+      async taghire_vaziate_ersale_sefareshe_bazargah({parameter,baseUrl}){
         let {orderId,sendStatus} = parameter;
+        let result = await Axios.get(`${baseUrl}/OS/OrderItemStatus?orderId=${orderId}&data=${JSON.stringify(sendStatus)}`);
+
         // sendStatus:{
         //   itemsChecked:{},//{'0':true,'1':false}
         //   delivererId:'0',
         // }
         
         //if(!res){return false}
-        return true
+
+        return result.data.isSuccess;
 
       },
       async get_deliverers({baseUrl}){
@@ -504,10 +505,15 @@ export default function services(getState,token,userCardCode) {
         return result.data.isSuccess;
       },
       async taide_code_tahvil({parameter}){
+
+        // let result = await Axios.get(`${baseUrl}/DeliveredCodeValidation?code=${}&id=${}`);
+        // if(!result.data.isSuccess) return;
+
+        // return result.data.data;
         return true;
       },
       async akhze_sefareshe_bazargah({baseUrl,parameter}){//اخذ سفارش بازارگاه
-        let res = await Axios.post(`${baseUrl}/OnlineShop/AddNewOrder`, {
+        let res = await Axios.post(`${baseUrl}/OS/AddNewOrder`, {
           cardCode :userCardCode,
           orderId :parameter.orderId
         });

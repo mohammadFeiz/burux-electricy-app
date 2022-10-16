@@ -387,7 +387,7 @@ class JoziateSefaresheBazargah extends Component{
                 if(sendStep === 2){return 'ارسال سفارش'}
             }
             if(key === 'buttonDisabled'){
-                let {itemsChecked,delivererId} = sendStatus;
+                let {itemsChecked = {},delivererId} = sendStatus;
                 if(sendStep === 0){return false}
                 if(sendStep === 1){
                     return Object.keys(itemsChecked).filter((o)=>!!itemsChecked[o]).length !== this.props.items.length

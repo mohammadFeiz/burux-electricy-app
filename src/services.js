@@ -428,12 +428,15 @@ export default function services(getState,token,userCardCode) {
         let forsat = {'wait_to_get':'forsate_akhze_sefareshe_bazargah','wait_to_send':'forsate_ersale_sefareshe_bazargah'}[type];
         let totalTime = getState().bazargah[forsat];
         if(!totalTime){debugger;}
-        if(passedTime > totalTime){return false} 
+        if(passedTime > totalTime){return false}
+        
         return {
           type,
           sendStatus:{
-            itemsChecked:{},//{'0':true,'1':false}
-            delivererId:'0',
+            itemsChecked:orderItems.map(x=>{
+              return {'x.id':x.provided}
+            }),//{'0':true,'1':false}
+            delivererId:order.delivererId,
           },
           "amount":order.finalAmount,
           distance,
@@ -476,17 +479,30 @@ export default function services(getState,token,userCardCode) {
         return true
 
       },
-      async get_deliverers(){
-        return [
-          {name:'عباس حسنی',id:'0',mobile:'09123434568'},
-          {name:'علی عنایتی',id:'1',mobile:'09125345646'},
-          {name:'دانیال کاوه',id:'2',mobile:'09126456345'},
-          {name:'محمد احمدی',id:'3',mobile:'09123345435'}
-        ] 
+      async get_deliverers({baseUrl}){
+
+        let result = await Axios.get(`${baseUrl}/Deliverer`);
+        if(!result.data.isSuccess) return;
+        return result.data.data.map(x=>{
+          return {name:x.fullName,id:x.id,mobile:x.phoneNumber};
+        });
+
+        // return [
+        //   {name:'عباس حسنی',id:'0',mobile:'09123434568'},
+        //   {name:'علی عنایتی',id:'1',mobile:'09125345646'},
+        //   {name:'دانیال کاوه',id:'2',mobile:'09126456345'},
+        //   {name:'محمد احمدی',id:'3',mobile:'09123345435'}
+        // ] 
       },
-      async add_deliverer({parameter}){
+      async add_deliverer({parameter,baseUrl}){
         let {mobile,name} = parameter;
-        return true
+
+        let result = await Axios.post(`${baseUrl}/Deliverer`,{
+          phoneNumber:mobile,
+          fullName:name
+        });
+
+        return result.data.isSuccess;
       },
       async taide_code_tahvil({parameter}){
         return true;
@@ -970,7 +986,6 @@ export default function services(getState,token,userCardCode) {
   return Service({
     services: fn(),
     baseUrl: 'https://retailerapp.bbeta.ir/api/v1',
-    // baseUrl:'https://retailerapp.bbeta.ir/api/v1',
     getState,
     cacheAll: true
   })

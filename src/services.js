@@ -460,7 +460,7 @@ export default function services(getState,token,userCardCode) {
           "province": order.province,
           "longitude": order.longitude,
           "latitude": order.latitude,
-          "orderDate": order.orderDate,
+          "orderDate": type === 'wait_to_send'?order.acceptedDate:order.orderDate,
           "id": order.id,
           "createdDate": order.createdDate,
           "modifiedDate": null,

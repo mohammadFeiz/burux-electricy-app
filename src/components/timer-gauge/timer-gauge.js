@@ -10,6 +10,7 @@ export default class TimerGauge extends Component{
     }
     getRemainigTime(){
         let {startTime,totalTime,onExpired = ()=>{}} = this.props;
+        if(!typeof onExpired === 'function'){debugger;}
         let now = new Date().getTime();
         let date = new Date(startTime).getTime()
         let passedTime = now - date;

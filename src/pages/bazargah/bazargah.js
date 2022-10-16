@@ -274,7 +274,6 @@ class JoziateSefaresheBazargah extends Component{
         this.get_deliverers();
     }
     async changeSendStatus(key,value){
-        debugger;
         let {services} = this.context;
         let {orderId} = this.props;
         let {sendStatus} = this.state;
@@ -498,7 +497,6 @@ class JoziateSefaresheBazargah extends Component{
         }
     }
     item_layout({src,name,detail,isFirst,isLast,isCheckable,id}){
-        debugger;
         let {sendStatus} = this.state;
         let borderRadius,onClick;
         if(isFirst && isLast){borderRadius = 8} 

@@ -432,8 +432,8 @@ export default function services(getState,token,userCardCode) {
         return {
           type,
           sendStatus:{
-            itemsChecked:order.providedData === null && order.providedData.itemsChecked ? {} : order.providedData.itemsChecked,//{'0':true,'1':false}
-            delivererId:order.delivererId,
+            itemsChecked:order.providedData !== null && order.providedData.itemsChecked ? order.providedData.itemsChecked : {},//{'0':true,'1':false}
+            delivererId:order.providedData !== null && order.providedData.delivererId ? order.providedData.delivererId : {},
           },
           "amount":order.finalAmount,
           distance,

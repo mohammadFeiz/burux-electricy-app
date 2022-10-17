@@ -139,7 +139,7 @@ class OTPLogin extends Component{
   }
   header_layout(){
     return {
-      size:210,html:<img src={logo1} alt='' width='210' height='210'/>,align:'vh'
+      size:210,html:<img src={logo1} alt='' width='210' height='210' style={{borderRadius:24}}/>,align:'vh'
     }
   }
   onInterPhone(){
@@ -148,7 +148,6 @@ class OTPLogin extends Component{
     this.setState({mode:'inter-code',recode:false,codeValue:''})
     this.changeRecodeIn(new Date().getTime() + recodeLimit,phoneValue)
   }
-  
   
   onRecode(){
     let {recodeLimit,phoneValue} = this.state;
@@ -273,7 +272,7 @@ class OTPLogin extends Component{
                 }} maxLength={4} placeholder='- - - -'
                 
               />
-              <div className='otp-code-presentation'>{
+              <div className='otp-code-presentation' onClick={()=>$('otp-code').focus()}>{
                 codeValue.split('').join(' - ')
                 }</div>
               </>

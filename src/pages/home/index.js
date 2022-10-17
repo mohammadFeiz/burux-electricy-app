@@ -26,7 +26,7 @@ export default class Home extends Component {
             testedChance:false,
             showWallet:false,
             searchValue: '',
-            showCallPopup:true,
+            showCallPopup:false,
             preOrders: { waitOfVisitor: 0, waitOfPey: 0 },
             myNearItems: [
                 { price: 600000, distance: 1.2 },
@@ -322,7 +322,7 @@ class Call extends Component{
                 layout={{
                     style:{direction:'ltr',position:'fixed',height:'100%',width:'100%',left:0,top:0,background:'rgba(0,0,0,0.6)'},
                     column:[
-                        {flex:1},
+                        {flex:1,attrs:{onClick:()=>onClose()}},
                         {
                             size:48,
                             row:[

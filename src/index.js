@@ -16,12 +16,14 @@ class OTPLogin extends Component{
     let storage = localStorage.getItem('brxelcrecodein');
     let recodeIn,phoneValue,mode = 'inter-phone';
     if(!storage || storage === null){
-      localStorage.setItem('brxelcrecodein','{recodeIn:false,phoneValue:""}');
+      localStorage.setItem('brxelcrecodein',JSON.stringify({recodeIn:false,phoneValue:""}));
       recodeIn = false;
-      phoneValue = '';
+      phoneValue = ''; 
     }
     else{
+      console.log(storage)
       storage = JSON.parse(storage);
+      
       if(storage.recodeIn === false || new Date().getTime() >= storage.recodeIn){
         recodeIn = false;
         phoneValue = '';
@@ -137,10 +139,7 @@ class OTPLogin extends Component{
   }
   header_layout(){
     return {
-      column:[
-        {html:this.getSvg()},
-        {html:<img src={logo1} alt='' width='210' height='210'/>,style:{positon:'absolute',top:-210,right:0}}
-      ]
+      size:210,html:<img src={logo1} alt='' width='210' height='210'/>,align:'vh'
     }
   }
   onInterPhone(){
@@ -182,25 +181,32 @@ class OTPLogin extends Component{
     if(error){disabledStyle = {background:'#ccc',border:'1px solid #ddd'}}
     return {
       column:[
-        {html:'ورود | ثبت نام',className:'size20 color323130 bold padding-0-12'},
-        {size:12},
-        {html:'شماره تلفن همراه خود را وارد کنید. پیامکی حاوی کد برای شما ارسال میشود',className:'size14 color605E5C padding-0-12'},
-        {size:24},
         {
-          className:'padding-0-12',
-          html:(
-            <input 
-              type='text' value={phoneValue} onChange={(e)=>this.changePhoneValue(e.target.value)} placeholder='09...'
-              style={{height:40,background:'#eee',border:'1px solid #0094D4',borderRadius:6,width:'100%',direction:'ltr',padding:'0 12px',fontFamily:'inherit'}}
-            />
-          )
-        },
-        {
-          size:12,html:error,size:24,align:'v',className:'padding-0-12 colorD83B01 size12 bold',style:{marginBottom:12}
-        },
-        {
-          className:'padding-0-12',
-          html:(<button disabled={!!error} className='button-2' style={disabledStyle} onClick={()=>this.onInterPhone()}>ورود</button>)
+          style:{
+            background:'#fff',margin:12,padding:12
+          },
+          column:[
+            {html:'ورود | ثبت نام',className:'size20 color323130 bold padding-0-12'},
+            {size:12},
+            {html:'شماره تلفن همراه خود را وارد کنید. پیامکی حاوی کد برای شما ارسال میشود',className:'size14 color605E5C padding-0-12'},
+            {size:24},
+            {
+              className:'padding-0-12',
+              html:(
+                <input 
+                  type='text' value={phoneValue} onChange={(e)=>this.changePhoneValue(e.target.value)} placeholder='09...'
+                  style={{height:40,background:'#eee',border:'1px solid #0094D4',borderRadius:6,width:'100%',direction:'ltr',padding:'0 12px',fontFamily:'inherit'}}
+                />
+              )
+            },
+            {
+              size:12,html:error,size:24,align:'v',className:'padding-0-12 colorD83B01 size12 bold',style:{marginBottom:12}
+            },
+            {
+              className:'padding-0-12',
+              html:(<button disabled={!!error} className='button-2' style={disabledStyle} onClick={()=>this.onInterPhone()}>ورود</button>)
+            }
+          ]
         },
         {size:16},
         {
@@ -228,6 +234,10 @@ class OTPLogin extends Component{
     let disabledStyle = {}
     if(disabled){disabledStyle = {background:'#ccc',border:'1px solid #ddd'}}
     return {
+      style:{
+        background:'#fff',margin:12,padding:12
+      },
+      
       column:[
         {
           html:'کد تایید را وارد کنید',
@@ -357,14 +367,15 @@ class OTPLogin extends Component{
     return (
       <RVD
         layout={{
-          style:{position:'fixed',left:0,top:0,width:'100%',height:'100%'},
+          style:{position:'fixed',left:0,top:0,width:'100%',height:'100%',background:'#eff8fc'},
           column:[
+            {size:48},
             this.header_layout(),
             {flex:1},
             this.interPhone_layout(),
             this.interCode_layout(),
             this.error_layout(),
-            {size:36}
+            {flex:3}
           ]
         }}
       />

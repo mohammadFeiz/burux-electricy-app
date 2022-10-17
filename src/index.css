@@ -138,6 +138,9 @@ button{
 .colorD83B01{
 	color:#D83B01;
 }
+.colorA4262C{
+	color:#a4262C;
+}
 .bgD83B01{
 	background:#D83B01;
 }
@@ -641,4 +644,10 @@ button{
 	font-size:12px;
 	padding:12px;
 	color:#fff;
+}
+
+.phone-button{
+	position:fixed;
+	left:12px;
+	bottom:68px;
 }

@@ -13,13 +13,11 @@ export default class SideMenu extends Component {
                 { text: 'درخواست گارانتی', icon: 32, onClick: () => this.context.SetState({ guaranteePopupZIndex: 10 }) },
                 { text: 'جایزه ها', icon: 15 },
                 //{ text: 'کیف پول', icon: 33 },
-                { text: 'باشگاه مشتریان', icon: 21 },
                 { text: 'پیگیری سفارش خرید', icon: 13,onClick:()=>this.context.SetState({ordersHistoryZIndex:10})},
                 //{ text: 'تاریخچه سفارشات', icon: 34 },
                 { text: 'بازارگاه', icon: 35 },
-                { text: 'چت با ویزیتور', icon: 36 },
-                { text: 'تماس با ویزیتور', icon: 37 },
                 { text: 'تماس با پشتیبانی', icon: 38 },
+                { text: 'خروج از حساب کاربری', icon: 17,className:'colorA4262C',fill:'#A4262c',onClick:()=>this.context.logout() },
             ]
         }
     }
@@ -35,12 +33,13 @@ export default class SideMenu extends Component {
                         column: [
                             { size: 60, html: getSvg(23,{d:buruxlogod}),className: 'sidemenu-header', align: 'v' },
                             {
-                                column: items.map(({ icon, text, onClick = () => { },style }) => {
+                                column: items.map(({ icon, text, onClick = () => { },style,className,fill = '#A19F9D' }) => {
                                     return {
                                         attrs: { onClick: () => { onClick(); onClose() } },
                                         style,
+                                        className,
                                         size: 48, row: [
-                                            { size: 48, html: getSvg(icon, { fill: '#A19F9D' }), align: 'vh' },
+                                            { size: 48, html: getSvg(icon, { fill }), align: 'vh' },
                                             { flex: 1, html: text, align: 'v' }
                                         ]
                                     }

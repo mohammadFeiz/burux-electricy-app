@@ -26,6 +26,7 @@ export default class Home extends Component {
             testedChance:false,
             showWallet:false,
             searchValue: '',
+            showCallPopup:true,
             preOrders: { waitOfVisitor: 0, waitOfPey: 0 },
             myNearItems: [
                 { price: 600000, distance: 1.2 },
@@ -226,43 +227,6 @@ export default class Home extends Component {
     bazargah_layout(){
         return {html:<Bazargah renderInHome={true}/>}
     }
-    hint_layout(){
-        return {
-            className:'padding-0-12',
-            row:[
-                {flex:1},
-                {
-                    size:48,
-                    html:(
-                        <AIOButton 
-                            text={getSvg('hint')}
-                            style={{padding:0,background:'none'}}
-                            type='button'
-                            position='bottom'
-                            popOver={()=>{
-                                return (
-                                    <RVD
-                                        layout={{
-                                            className:'padding-0-12',
-                                            column:[
-                                                {size:60,html:'راهنما',className:'size18 bold',align:'vh'},
-                                                {size:48,html:'درحال بررسی',className:'color323130 size16 bold',align:'v'},
-                                                {html:'سفارش هایی هستند که شما ثبت کرده اید و ویزیتور شما درحال بررسی کالاهای سفارش شما هست.',className:'color605E5C size14'},
-                                                {size:12},
-                                                {size:48,html:'در انتظار تایید',className:'color323130 size16 bold',align:'v'},
-                                                {html:'سفارش هایی هستند که بعد از بررسی ویزیتور برای تایید و پرداخت به سمت شما برگشته است. سفارش هایی که ویزیتور مستقیما برای شما ثبت میکند نیز در این قسمت نمایش داده میشود',className:'color605E5C size14'},
-                                                {size:24}
-                                            ]
-                                        }}
-                                    />
-                                )
-                            }}
-                        />
-                    )
-                }
-            ]
-        }
-    }
     getContent() {
         let {testedChance} = this.state;
         return {
@@ -282,8 +246,6 @@ export default class Home extends Component {
                         { size: 12 },
                         this.bazargah_layout(),
                         this.garanti_layout(),
-                        { size: 12 },
-                        this.hint_layout(),
                         { size: 12 },
                         //this.score_layout(),
                         { 
@@ -322,7 +284,7 @@ export default class Home extends Component {
         this.getPreOrders();
     }
     render() {
-        let {showAwards,showWallet} = this.state;
+        let {showAwards,showWallet,showCallPopup} = this.state;
         return (
             <>
                 <RVD layout={this.getContent()} />
@@ -336,8 +298,86 @@ export default class Home extends Component {
                         <Wallet onClose={()=>this.setState({showWallet:false})}/>
                     </Popup>
                 }
+                <AIOButton 
+                    text={getSvg(showCallPopup?'phoneClose':'phone')}
+                    style={{padding:0,background:'none'}}
+                    caret={false}
+                    type='button'
+                    className='phone-button'
+                    onClick={()=>this.setState({showCallPopup:true})}
+                />
+                {
+                    showCallPopup && <Call onClose={()=>this.setState({showCallPopup:false})}/>
+                }
             </>
             
+        )
+    }
+}
+class Call extends Component{
+    render(){
+        let {onClose} = this.props;
+        return (
+            <RVD
+                layout={{
+                    style:{direction:'ltr',position:'fixed',height:'100%',width:'100%',left:0,top:0,background:'rgba(0,0,0,0.6)'},
+                    column:[
+                        {flex:1},
+                        {
+                            size:48,
+                            row:[
+                                {size:12},
+                                {html:getSvg('poshtibani'),align:'vh'},
+                                {size:12},
+                                {html:'تماس با ویزیتور',align:'v',style:{color:'#fff'}}
+                            ]
+                        },
+                        {size:12},
+                        {
+                            size:48,
+                            row:[
+                                {size:12},
+                                {html:getSvg('tamasbavizitor'),align:'vh'},
+                                {size:12},
+                                {html:'تماس با پشتیبانی',align:'v',style:{color:'#fff'}}
+                            ]
+                        },
+                        {size:12},
+                        {
+                            size:48,
+                            row:[
+                                {size:12},
+                                {html:getSvg('phoneClose'),align:'vh',attrs:{onClick:()=>{
+                                    onClose()
+                                }}}
+                            ]
+                        },
+                        {
+                            size:68
+                        }
+                    ]
+                }}
+            />        
+        )
+    }
+}
+class Help extends Component{
+    render(){
+        return (
+            <RVD
+                layout={{
+                    className:'padding-0-12',
+                    column:[
+                        {size:60,html:'راهنما',className:'size18 bold',align:'vh'},
+                        {size:48,html:'درحال بررسی',className:'color323130 size16 bold',align:'v'},
+                        {html:'سفارش هایی هستند که شما ثبت کرده اید و ویزیتور شما درحال بررسی کالاهای سفارش شما هست.',className:'color605E5C size14'},
+                        {size:12},
+                        {size:48,html:'در انتظار تایید',className:'color323130 size16 bold',align:'v'},
+                        {html:'سفارش هایی هستند که بعد از بررسی ویزیتور برای تایید و پرداخت به سمت شما برگشته است. سفارش هایی که ویزیتور مستقیما برای شما ثبت میکند نیز در این قسمت نمایش داده میشود',className:'color605E5C size14'},
+                        {size:24}
+                    ]
+                }}
+            />
         )
     }
 }

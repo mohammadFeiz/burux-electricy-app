@@ -13,7 +13,6 @@ export default class Wallet extends Component{
         super(props);
         this.dom = createRef();
         this.state = {
-            taraz:12445465,
             fromDate:false,
             toDate:false,
             items:[]
@@ -59,7 +58,7 @@ export default class Wallet extends Component{
         this.setState({items})
     }
     header_layout(){
-        let {taraz} = this.state;
+        let {wallet} = this.context;
         return {
             className:'blue-gradient',
             column:[
@@ -80,7 +79,7 @@ export default class Wallet extends Component{
                     size:72,
                     row:[
                         {flex:1},
-                        {html:functions.splitPrice(taraz),className:'colorFFF size36 bold',align:'v'},
+                        {html:functions.splitPrice(wallet),className:'colorFFF size36 bold',align:'v'},
                         {size:6},
                         {html:'تومان',className:'size14 colorFFF',align:'v'},
                         {flex:1}

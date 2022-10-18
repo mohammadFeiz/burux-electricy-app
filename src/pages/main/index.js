@@ -24,6 +24,7 @@ import Popup from "../../components/popup/popup";
 import OrderPopup from "../../popups/order-popup/order-popup";
 import "./index.css";
 import Bazargah from "../bazargah/bazargah";
+import dotsloading from './../../images/simple_loading.gif';
 import SabteGarantiJadid from "../../components/garanti/sabte-garanti-jadid/sabte-garanti-jadid";
 import SabteGarantiJadidBaJoziat from "../../components/garanti/sabte-garanti-jadid-ba-joziat/sabte-garanti-jadid-ba-joziat";
 import PayameSabteGaranti from "../../components/garanti/payame-sabte-garanti/payame-sabte-garanti";
@@ -37,7 +38,7 @@ export default class Main extends Component {
     let signalR=new SignalR(()=>this.state);
     signalR.start();
     setTimeout(()=>{
-      this.setState({splashScreen:false})
+      //this.setState({splashScreen:false})
     },7000)
     let theme = localStorage.getItem('electricy-theme');
     if(theme === undefined || theme === null){
@@ -424,6 +425,10 @@ class Splash extends Component{
             {size:152},
             {html:<img src={splashSrc} width='200' alt=''/>,align:'vh'},
             {flex:1},
+            {
+              align:'vh',html:<img src={dotsloading} height='72px'/>
+            },
+            {size:24},
             {html:'چند لحظه صبر کنید',className:'colorFFF size14',align:'vh'},
             {size:48}
           ]

@@ -38,7 +38,7 @@ export default class Main extends Component {
     let signalR=new SignalR(()=>this.state);
     signalR.start();
     setTimeout(()=>{
-      //this.setState({splashScreen:false})
+      this.setState({splashScreen:false})
     },7000)
     let theme = localStorage.getItem('electricy-theme');
     if(theme === undefined || theme === null){
@@ -353,7 +353,6 @@ export default class Main extends Component {
         {!splashScreen && showRegister && <Popup><Register onClose={()=>this.setState({showRegister:false})}/></Popup>}
         <Loading />
         {splashScreen && <Splash d={buruxlogod}/>}
-        {messages.length && <Message messages={messages} onChange={(res)=>this.setState({messages:res})}/>}
       </appContext.Provider>
     );
   }

@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import RVD from 'react-virtual-dom';
-import bulb10w from './../../../images/10w-bulb.png';
+import bulb10w from './../../../images/no-src.png';
 import appContext from '../../../app-context';
 export default class GarantiCard extends Component{
     static contextType = appContext;

@@ -15,6 +15,7 @@ import Form from '../../components/form/form';
 import {mdiCheck} from '@mdi/js';
 import Slider from 'r-range-slider';
 import Map from '../../components/map/map';
+import bazargahBlankSrc from './../../images/blank-bazargah.png';
 import $ from 'jquery';
 //import functions from '../../../functions';
 import functions from '../../functions';
@@ -178,8 +179,17 @@ export default class Bazargah extends Component{
                             ]
                         },
                         {
-                            size:48,show:bazargah.wait_to_get.length === 0,className:'box margin-0-12 padding-0-12 size14 color605E5C',align:'v',style:{marginBottom:12},
-                            html:'سفارشی در نزدیکی شما ثبت نشده است' 
+                            className:'box margin-0-12 padding-0-12 size14 color605E5C',show:bazargah.wait_to_get.length === 0,
+                            column:[
+                                {size:12},
+                                {
+                                    html:<img src={bazargahBlankSrc}/>,align:'vh'
+                                },
+                                {
+                                    size:48,align:'vh',style:{marginBottom:12},
+                                    html:'سفارشی در نزدیکی شما ثبت نشده است' 
+                                },
+                            ]
                         },
                         {
                             show:!!bazargah.wait_to_get.length, 
@@ -229,7 +239,7 @@ export default class Bazargah extends Component{
                     column:[
                         {html:<Header title='بازارگاه' buttons={{sidemenu:true}}/>},
                         this.tabs_layout(),
-                        this.notifType_layout(),
+                        //this.notifType_layout(),
                         {size:12},
                         this.wait_to_get_layout(),
                         this.wait_to_send_layout(),

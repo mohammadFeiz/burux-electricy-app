@@ -8,6 +8,7 @@ import Buy from "./../buy/index";
 import appContext from "../../app-context";
 import SideMenu from "../../components/sidemenu";
 import bulbSrc from './../../images/10w-bulb.png';
+import splashSrc from './../../images/logo444.png';
 import Loading from "../../components/loading";
 import Services from "./../../services";
 import layout from "../../layout";
@@ -415,23 +416,19 @@ class Splash extends Component{
     )
   }
   render(){
-    let {d} = this.props;
-    let {step} = this.state;
-    let scale = 0.6 + step / 500;
-    let opacity = step < 100 ? 0 :(step - 100) / 60
-    let color = this.colors[step - 101]
-    let config = {fill:'currentcolor',gradient:this.getGradient(),gradientId:'grad1'}
-    if(step === 160){config = {fill:"#fff"}}
     return (
-      <div className='splash-screen'>
-        <div style={{flex:1}}></div>
-        <div className='splash-logo' style={{opacity}}>
-          <img src={logo2} alt='' width='180' height='180'/>
-        </div>
-        {getSvg(23,{d,width:240,height:110,style:{transform:`scale(${scale})`},...config})}
-        <div className='splash-text' style={{opacity,color,fontFamily:'Iransans-medium',fontSize:24}}>بروکس من</div>
-        <div style={{flex:1}}></div>
-      </div>
+      <RVD
+        layout={{
+          style:{background:'#0094D4',position:'fixed',width:'100%',height:'100%',left:0,top:0},
+          column:[
+            {size:152},
+            {html:<img src={splashSrc} width='200' alt=''/>,align:'vh'},
+            {flex:1},
+            {html:'چند لحظه صبر کنید',className:'colorFFF size14',align:'vh'},
+            {size:48}
+          ]
+        }}
+      />
     )
   }
 }

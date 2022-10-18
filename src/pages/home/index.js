@@ -14,6 +14,7 @@ import Billboard from '../../components/billboard/billboard';
 import Flip from '../../components/flip/flip';
 import Popup from '../../components/popup/popup';
 import Wallet from '../../popups/wallet/wallet';
+import blankGuarantee from './../../images/blank-guarantee.png';
 import Bazargah from '../bazargah/bazargah';
 
 export default class Home extends Component {
@@ -164,11 +165,12 @@ export default class Home extends Component {
         let {guaranteeItems = [],SetState} = this.context;
         return {
             className:'padding-0-12',
+            style:{marginTop:12},
             column:[
                 {
-                    className:'padding-0-12 box gap-no-color',size:48,style:{borderRadius:guaranteeItems.length > 0 ?'14px 14px 0 0':'14px'},
+                    className:'padding-0-12',size:48,style:{borderRadius:guaranteeItems.length > 0 ?'14px 14px 0 0':'14px'},
                     row:[
-                        {html: "گارانتی",className: "size16 color323130 bold",align: "v"},
+                        {html: "مرجوع کالای سوخته",className: "size14 color323130 bold",align: "v"},
                         {flex:1},
                         {
                             html:(
@@ -187,12 +189,33 @@ export default class Home extends Component {
                     ]
                 },
                 {
-                    gap:1,column:guaranteeItems.slice(0,2).map((o,i)=>{
+                    show:!!guaranteeItems.length,gap:1,column:guaranteeItems.slice(0,2).map((o,i)=>{
                         return {
                             html:<GarantiCard {...o} type='2'/>
                         }
                     })
                 },
+                {
+                    className:'box',
+                    show:!!!guaranteeItems.length,
+                    column:[
+                        {size:12},
+                        {
+                            gap:1,column:[
+                                {html:<img src={blankGuarantee}/>,align:'vh'}
+                            ]
+                        },
+                        {
+                            html:'با ثبت درخواست مرجوع کالاهای سوخته خود سریع تر ازهر زمان کالای خود را مرجوع کنید',
+                            align:'vh',
+                            className:'size14 color605E5C',
+                            style:{textAlign:'center'}
+                        },
+                        {size:12}
+
+                    ]
+                },
+                
                 {size:1},
                 {
                     show:guaranteeItems.length > 0,

@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import RVD from 'react-virtual-dom';
-import myBuruxHeaderSrc from './../../images/Burux-billboard-01.jpg';
+import myBuruxHeaderSrc from './../../images/Burux-billboard-01.png';
 import bill from './../../images/home-slide-4.jpg';
 import getSvg from './../../utils/getSvg';
 import appContext from '../../app-context';

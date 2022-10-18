@@ -5,6 +5,8 @@ import Header from './../../components/header/header';
 import RVD from 'react-virtual-dom';
 import appContext from './../../app-context';
 import getSvg from './../../utils/getSvg';
+import { mdiChevronLeft } from '@mdi/js';
+import {Icon} from '@mdi/react';
 import functions from '../../functions';
 export default class Product extends Component {
     static contextType = appContext;
@@ -231,6 +233,23 @@ in product by id = ${this.context.product.id} there is an optionType by id = ${i
             ]
         };
     }
+    showCart_layout(){
+        let { SetState,productZIndex } = this.context;
+        return {
+            className:'padding-0-12 bgFFF',size:36,align:'v',
+            row:[
+                {html:'مشاهده',className:'colorA19F9D size12 bold',align:'v'},
+                {size:4},
+                {html:'سبد خرید',className:'color0094D4 size12 bold',align:'v',attrs:{
+                    onClick:()=>{
+                        SetState({cartZIndex:productZIndex * 10})
+                    }
+                }},
+                {size:4},
+                {html:<Icon path={mdiChevronLeft} size={0.8} color={'#0094D4'}/>,align:'vh'}
+            ]
+        }
+    }
     footer_layout() {
         return {
             size: 80, style: { background: "#fff",boxShadow:'0 0px 6px 1px rgba(0,0,0,.1)' }, className: "padding-0-24",
@@ -250,22 +269,12 @@ in product by id = ${this.context.product.id} there is an optionType by id = ${i
         let count = getCartCountByVariantId(selectedVariant.id)
         return {
             column:[
-                {flex:1},
                 {
-                    show:!!!count,html: (<button onClick={() => this.changeCount(1)} className={"button-2" + (!selectedVariant ? " disabled" : "")}>افزودن به سبد خرید</button>),
+                    flex:1,show:!!!count,html: (<button onClick={() => this.changeCount(1)} className={"button-2" + (!selectedVariant ? " disabled" : "")}>افزودن به سبد خرید</button>),
                     align: "v",
                 },
-                { size:30,align:'v',show:!!count, html: () => <ProductCount value={count} onChange={(count) => this.changeCount(count)} max={this.getInStock()} />,style:{width:90} },
-                {size:12},
-                {
-                    size:24,html:'مشاهده سبد خرید',align:'v',className:'color0094D4 size12 bold',
-                    attrs:{
-                        onClick:()=>{
-                            SetState({cartZIndex:productZIndex * 10})
-                        }
-                    }
-                },
-                {flex:1},
+                { flex:1,align:'v',show:!!count, html: () => <ProductCount value={count} onChange={(count) => this.changeCount(count)} max={this.getInStock()} />,style:{width:90} },
+                
             ]
         }
     }
@@ -315,8 +324,9 @@ in product by id = ${this.context.product.id} there is an optionType by id = ${i
                     style:{zIndex},
                     column: [
                         this.header_layout(), 
-                        this.body_layout(), 
+                        this.body_layout(),
                         {size:12},
+                        this.showCart_layout(), 
                         this.footer_layout()
                     ],
                 }}

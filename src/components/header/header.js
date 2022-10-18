@@ -26,7 +26,7 @@ export default class Header extends Component{
                         {show:buttons.gap === true,size:12},
                         {show:buttons.sidemenu === true,size: 60,html: getSvg(22),attrs: { onClick: () => SetState({ sidemenuOpen: true }) },align:'vh'},
                         {show:!!onClose,size:60,html:getSvg("chevronLeft", { flip: true }),align:'vh',attrs:{onClick:onClose}},
-                        {show:buttons.logo === true,html:getSvg(23, { d: buruxlogod }),align:'vh',attrs:{onClick:()=>onClose()}},
+                        {show:buttons.logo === true,html:getSvg('mybrxlogo'),align:'vh',attrs:{onClick:()=>onClose()}},
                         {html: title,className: "size16 color605E5C",align:'v',show:!!title},
                         {flex:1},
                         {
@@ -37,16 +37,6 @@ export default class Header extends Component{
                                 badgeAttrs={{ className: "badge-1" }} onClick={() => SetState({cartZIndex:zIndex * 10})}
                               />
                             ),
-                        },
-                        {
-                            show:buttons.gems === true,align:'vh',
-                            html:(
-                                <div style={{height: 32,border: '1px solid',borderRadius: 32,background:'#00B5A510',display: 'flex',fontSize:12,alignItems: 'center',padding: '0 8px',color: '#00B5A5',margin:'0 6px'}}>
-                                    بزودی
-                                    <div style={{width:3}}></div>
-                                    {Gems_SVG()}
-                                </div>
-                            )
                         },
                         {size:6}
 

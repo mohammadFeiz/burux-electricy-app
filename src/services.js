@@ -394,18 +394,18 @@ export default function services(getState,token,userCardCode) {
         catch{result = false}
         return result;
       },
-      async bazargah_orders({baseUrl,parameter}){
+      async bazargah_orders({baseUrl,parameter,fixDate}){
         let {type} = parameter;
         let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?time=10000&cardCode=${userCardCode}&distance=100&status=${{'wait_to_get':'1','wait_to_send':'2'}[type]}`); // 1 for pending
         let data = [];
         try{data = res.data.data || [];}
         catch{data = []}
         let time = getState().bazargah[{'wait_to_get':'forsate_akhze_sefareshe_bazargah','wait_to_send':'forsate_ersale_sefareshe_bazargah'}[type]];
-        let result = data.map((order)=>this.bazargahItem({parameter:{order,time,type}}));
+        let result = data.map((order)=>this.bazargahItem({parameter:{order,time,type},fixDate}));
         result = result.filter((order)=>order !== false)
         return result
       },
-      bazargahItem({parameter}){
+      bazargahItem({parameter,fixDate}){
         let {order,time,type} = parameter;
 
         let bulbSrc = bulb10w;
@@ -429,7 +429,7 @@ export default function services(getState,token,userCardCode) {
         let forsat = {'wait_to_get':'forsate_akhze_sefareshe_bazargah','wait_to_send':'forsate_ersale_sefareshe_bazargah'}[type];
         let totalTime = getState().bazargah[forsat];
         if(passedTime > totalTime){return false}
-        return {
+        let res = {
           type,
           sendStatus:{
             itemsChecked:order.providedData !== null && order.providedData.itemsChecked ? order.providedData.itemsChecked : {},//{'0':true,'1':false}
@@ -465,6 +465,8 @@ export default function services(getState,token,userCardCode) {
           "modifiedDate": null,
           "isDeleted": order.isDeleted
         }
+        return fixDate(res,'orderDate');
+
       },
       async taghire_vaziate_ersale_sefareshe_bazargah({parameter,baseUrl}){
         let {orderId,sendStatus} = parameter;

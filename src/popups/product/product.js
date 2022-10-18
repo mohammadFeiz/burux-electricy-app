@@ -234,7 +234,8 @@ in product by id = ${this.context.product.id} there is an optionType by id = ${i
         };
     }
     showCart_layout(){
-        let { SetState,productZIndex } = this.context;
+        let { SetState,productZIndex,cart } = this.context;
+        if(!Object.keys(cart).length){return false}
         return {
             className:'padding-0-12 bgFFF',size:36,align:'v',
             row:[

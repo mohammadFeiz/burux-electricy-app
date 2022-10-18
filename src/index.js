@@ -62,7 +62,8 @@ class OTPLogin extends Component{
    const sendSmsResult=await Axios.get(`${this.apiBaseUrl}/Users/FirstStep?phoneNumber=${phoneNumber}`);
 
    if(sendSmsResult.data.isSuccess){
-    let data=sendSmsResult.data.data;
+      let data=sendSmsResult.data.data;
+      
       this.userId=data.id;
       this.setState({registered:data.alreadyRegistered})
    }
@@ -80,14 +81,14 @@ class OTPLogin extends Component{
     //اگر کد وارد شده اشتباه بود باید فالس ریترن شود 
     //let res = await Axios.post('url',code)
     //return false    
-
     if(this.userId != undefined){
         const smsValidationResult=await Axios.get(`${this.apiBaseUrl}/Users/SecondStep?userId=${this.userId}&code=${code}`);
-
+        console.log(smsValidationResult)
+      debugger;
         if(smsValidationResult.data.isSuccess)
           return smsValidationResult.data.data;
         else
-          return false;
+          alert(smsValidationResult.data.message);
     }
   
   }

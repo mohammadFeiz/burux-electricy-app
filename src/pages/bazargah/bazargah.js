@@ -58,7 +58,7 @@ export default class Bazargah extends Component{
                     html:(
                         <BazargahCard {...o} 
                             onExpired={()=>{
-                                bazargah.wait_to_get = bazargah.wait_to_get.filter((o,index)=>index !== i)
+                                bazargah.wait_to_get = bazargah.wait_to_get.filter((oo)=>o.orderId !== oo.orderId)
                                 SetState({bazargah})
                             }}
                             onShowDetails={()=>{
@@ -71,7 +71,7 @@ export default class Bazargah extends Component{
         }
     }
     mock_wait_to_send_layout(){
-        
+        let {SetState} = this.context;
         let {activeTabId} = this.state;
         if(activeTabId !== 1){return false}
         let wait_to_send = [
@@ -119,13 +119,14 @@ export default class Bazargah extends Component{
         if(wait_to_send.length === 0){return {size:96,align:'vh',html:'موردی وجود ندارد'}}
         return {
             gap:12,flex:1,scroll:'v',
-            column:wait_to_send.map((o)=>{
+            column:wait_to_send.map((o,i)=>{
                 return {style:{overflow:'visible'},html:<BazargahCard {...o} onSend={()=>this.setState({showDetails:o})}/>}
             })
         }
     }
     wait_to_send_layout(){
         //return this.mock_wait_to_send_layout()
+        let {SetState} = this.context;
         let {activeTabId} = this.state;
         if(activeTabId !== 1){return false}
         let {bazargah} = this.context;
@@ -134,8 +135,11 @@ export default class Bazargah extends Component{
         if(wait_to_send.length === 0){return {size:96,align:'vh',html:'موردی وجود ندارد'}}
         return {
             gap:12,flex:1,scroll:'v',
-            column:wait_to_send.map((o)=>{
-                return {style:{overflow:'visible'},html:<BazargahCard {...o} onSend={()=>this.setState({showDetails:o})}/>}
+            column:wait_to_send.map((o,i)=>{
+                return {style:{overflow:'visible'},html:<BazargahCard {...o} onSend={()=>this.setState({showDetails:o})} onExpired={()=>{
+                    bazargah.wait_to_send = bazargah.wait_to_send.filter((oo)=>o.orderId !== oo.orderId)
+                    SetState({bazargah})
+                }}/>}
             })
         }
     }
@@ -201,7 +205,7 @@ export default class Bazargah extends Component{
                                             <BazargahCard 
                                                 {...o} items={false} address={false} 
                                                 onExpired={()=>{
-                                                    bazargah.wait_to_get = bazargah.wait_to_get.filter((o,index)=>index !== i)
+                                                    bazargah.wait_to_get = bazargah.wait_to_get.filter((oo)=>o.orderId !== oo.orderId)
                                                     SetState({bazargah})
                                                 }}
                                                 onShowDetails={()=>{
@@ -315,7 +319,7 @@ class JoziateSefaresheBazargah extends Component{
             let {orderId} = this.props;
             let res = await services({type:'akhze_sefareshe_bazargah',parameter:{orderId}})
             let {showMessage} = this.context;
-            if(res){showMessage('سفارش با موفقیت اخذ شد')}
+            if(res){showMessage('سفارش با موفقیت اخذ شد'); this.props.onClose()}
             else{showMessage('اخذ سفارش با خطا روبرو شد')}   
         }
         if(type === 'wait_to_send'){
@@ -605,7 +609,10 @@ class JoziateSefaresheBazargah extends Component{
                                     className='color0094D4 bold size14'
                                     text='افزودن پیک جدید'
                                     position='bottom'
-                                    popOver={()=><AddDeliverer/>}
+                                    popOver={(obj)=><AddDeliverer onSuccess={(model)=>{
+                                        this.setState({deliverers:deliverers.concat({...model})});
+                                        obj.toggle()
+                                    }}/>}
                                 />
                             )
                         } 
@@ -823,10 +830,12 @@ class JoziateSefaresheBazargah extends Component{
                         },
                         {flex:1},
                         {
-                            row:[
-                                {html:getSvg('phone'),align:'vh'},
-                                {html:'تماس',className:'color0094D4 size14 bold',align:'v'}
-                            ]
+                            html:(
+                                <a href={`tel:${deliverer.mobile}`} style={{display:'flex',alignItems:'center'}}>
+                                    {getSvg('phone',{style:{transform:'scale(0.6)'}})}
+                                    <span className='color0094D4 size14 bold'>تماس</span>
+                                </a>
+                            )
                         }
                     ]
                 },
@@ -926,6 +935,7 @@ class AddDeliverer extends Component{
     }
     render(){
         let {model} = this.state;
+        let {onSuccess} = this.props;
         return (
             <Form
                 lang='fa'
@@ -935,8 +945,10 @@ class AddDeliverer extends Component{
                     let {services,showMessage} = this.context;
                     let res = await services({type:'add_deliverer',parameter:model});
                     if(res){
-                        this.setState({model:{name:'',mobile:''}});
                         showMessage('افزودن پیک با موفقیت انجام شد')
+                        onSuccess({...model})
+                        this.setState({model:{name:'',mobile:''}});
+                        
                     }
                     else {showMessage('افزودن پیک با خطا مواجه شد')}
                 }}

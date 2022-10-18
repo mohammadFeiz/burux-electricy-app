@@ -293,8 +293,7 @@ export default class Home extends Component {
                                     
                                 },
                                 { flex: 1 }, 
-                                { html: getSvg(31), align: 'vh' }, 
-                                { size: 12 }
+                               
                             ] 
                         }
                     ]
@@ -350,17 +349,7 @@ class Call extends Component{
                             size:48,
                             row:[
                                 {size:12},
-                                {html:getSvg('poshtibani'),align:'vh'},
-                                {size:12},
-                                {html:'تماس با ویزیتور',align:'v',style:{color:'#fff'}}
-                            ]
-                        },
-                        {size:12},
-                        {
-                            size:48,
-                            row:[
-                                {size:12},
-                                {html:getSvg('tamasbavizitor'),align:'vh'},
+                                {html:<a style={{height:48}} href="tel:02175116">{getSvg('tamasbavizitor')}</a>,align:'vh'},
                                 {size:12},
                                 {html:'تماس با پشتیبانی',align:'v',style:{color:'#fff'}}
                             ]

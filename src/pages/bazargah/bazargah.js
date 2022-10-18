@@ -450,7 +450,7 @@ class JoziateSefaresheBazargah extends Component{
                     style:{borderTop:'5px solid #ddd',borderBottom:'5px solid #ddd'},
                     column:[
                         this.detailRow_layout('مبلغ پرداختی کل: ',functions.splitPrice(amount) + ' ریال'),
-                        this.detailRow_layout('سود شما از فروش:',functions.splitPrice(benefit) + ' ریال')
+                        //this.detailRow_layout('سود شما از فروش:',functions.splitPrice(benefit) + ' ریال')
                     ]
                 },
                 {size:6}
@@ -1028,7 +1028,7 @@ class BazargahCard extends Component{
         }
     }
     time_layout(totalTime,orderDate){
-        let {onExpired,id} = this.props;
+        let {onExpired = ()=>{},id} = this.props;
         return {size:110,align:'h',html:(<TimerGauge key={id} onExpired={()=>onExpired()} totalTime={totalTime} startTime={orderDate}/>)}
     }
     items_layout(items){

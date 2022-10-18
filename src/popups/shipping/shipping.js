@@ -28,7 +28,10 @@ export default class Shipping extends Component{
             size:36,childsProps:{align:'v'},
             row:[
               {html:'نام مشتری:',className:'colorA19F9D size14'},
-              {html:name,className:'size14'}
+              {html:name,className:'size14'},
+              {flex:1},
+              {html:'نام کمپین:',className:'colorA19F9D size14'},
+              {html:campaign,className:'size14'}
             ]
           },
           {
@@ -41,22 +44,14 @@ export default class Shipping extends Component{
               {html:customerGroup,className:'size14'},
             ]
           },
-          {
-            size:36,childsProps:{align:'v'},
-            row:[
-              {html:'نام کمپین:',className:'colorA19F9D size14'},
-              {html:campaign,className:'size14'},
-              {flex:1},
-              {html:'قیمت پایه:',className:'colorA19F9D size14'},
-              {html:basePrice,className:'size14'},
-            ]
-          }
+          
         ]
       }
     }
     async componentDidMount(){
-      let {userInfo} = this.context;
+      let {userInfo,shipping} = this.context;
       this.setState({
+        campaign:shipping.title,
         name:userInfo.cardName,
         code:userInfo.cardCode,
         address:userInfo.address,

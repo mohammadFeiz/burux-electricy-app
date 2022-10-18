@@ -94,7 +94,7 @@ export default function services(getState,token,userCardCode) {
           }
           for (let j = 0; j < o.documents.length; j++) {
             let item = o.documents[j];
-            dict[o.orderState].push({
+            dict[o.docStatus].push({
               docType: item.docType, isDraft: item.isDraft, docEntry: item.docEntry, date: fixDate({ date: item.docTime }, "date").date, total: item.documentTotal
             });
           }
@@ -396,11 +396,11 @@ export default function services(getState,token,userCardCode) {
       },
       async bazargah_orders({baseUrl,parameter,fixDate}){
         let {type} = parameter;
-        let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?time=10000&cardCode=${userCardCode}&distance=100&status=${{'wait_to_get':'1','wait_to_send':'2'}[type]}`); // 1 for pending
+        let time = getState().bazargah[{'wait_to_get':'forsate_akhze_sefareshe_bazargah','wait_to_send':'forsate_ersale_sefareshe_bazargah'}[type]];
+        let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?time=${time}&cardCode=${userCardCode}&distance=100&status=${{'wait_to_get':'1','wait_to_send':'2'}[type]}`); // 1 for pending
         let data = [];
         try{data = res.data.data || [];}
         catch{data = []}
-        let time = getState().bazargah[{'wait_to_get':'forsate_akhze_sefareshe_bazargah','wait_to_send':'forsate_ersale_sefareshe_bazargah'}[type]];
         let result = data.map((order)=>this.bazargahItem({parameter:{order,time,type},fixDate}));
         result = result.filter((order)=>order !== false)
         return result
@@ -465,8 +465,8 @@ export default function services(getState,token,userCardCode) {
           "modifiedDate": null,
           "isDeleted": order.isDeleted
         }
-        return fixDate(res,'orderDate');
-
+        let fixed = fixDate(res,'createdDate')
+        return fixed
       },
       async taghire_vaziate_ersale_sefareshe_bazargah({parameter,baseUrl}){
         let {orderId,sendStatus} = parameter;
@@ -551,7 +551,7 @@ export default function services(getState,token,userCardCode) {
       async getCategories(obj) {
 
         let { baseUrl } = obj;
-        let res = await Axios.get(`${baseUrl}/Spree/GetAllCategories`);
+        let res = await Axios.get(`${baseUrl}/Spree/GetAllCategoriesbyIds?ids=10820,10179,10180,10550`);
         let dataResult = res.data.data.data;
         let included = res.data.data.included;
         let categories = dataResult.map((o) => {
@@ -919,6 +919,7 @@ export default function services(getState,token,userCardCode) {
         await Axios.get(`${baseUrl}/BOne/RefreshCentralInvetoryProducts`);
       },
       async getTaxonProducts({ baseUrl, parameter = {} }) {
+        debugger
         let loadType=parameter.type;
         let res = await Axios.post(`${baseUrl}/Spree/Products`,
           {

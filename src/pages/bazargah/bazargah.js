@@ -806,7 +806,7 @@ class JoziateSefaresheBazargah extends Component{
                             onClick={async ()=>{
                                 if(disabled){return}
                                 let {services,showMessage} = this.context;
-                                let res = await services({type:'taide_code_tahvil',parameter:{staticCode,dynamicCode:`${code0}${code1}${code2}`}})
+                                let res = await services({type:'taide_code_tahvil',parameter:{staticCode,orderId:this.props.orderId,dynamicCode:`${code0}${code1}${code2}`}})
                                 if(res){
                                     showMessage('کد تایید شد');
                                     this.setState({sendStep:4})

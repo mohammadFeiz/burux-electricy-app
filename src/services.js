@@ -511,13 +511,14 @@ export default function services(getState,token,userCardCode) {
 
         return result.data.isSuccess;
       },
-      async taide_code_tahvil({parameter}){
+      async taide_code_tahvil({parameter,baseUrl}){
+        let {dynamicCode,staticCode,orderId}=parameter;
+        console.log(parameter);
+        let result = await Axios.get(`${baseUrl}/OS/DeliveredCodeValidation?code=${staticCode+dynamicCode}&id=${orderId}`);
+        console.log(result);
+        if(!result.data.isSuccess) return false;
 
-        // let result = await Axios.get(`${baseUrl}/DeliveredCodeValidation?code=${}&id=${}`);
-        // if(!result.data.isSuccess) return;
-
-        // return result.data.data;
-        return true;
+        return result.data.data;
       },
       async akhze_sefareshe_bazargah({baseUrl,parameter}){//اخذ سفارش بازارگاه
         let res = await Axios.post(`${baseUrl}/OS/AddNewOrder`, {

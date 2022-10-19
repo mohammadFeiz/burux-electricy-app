@@ -15,7 +15,7 @@ export default class Header extends Component{
         return length > 0?length:undefined;
     }
     render(){
-        let {SetState,buruxlogod} = this.context;
+        let {SetState,bazargah} = this.context;
         let {title,buttons = {},onClose,zIndex = 1} = this.props;
         return (
             <RVD
@@ -29,6 +29,7 @@ export default class Header extends Component{
                         {show:buttons.logo === true,html:getSvg('mybrxlogo'),align:'vh',attrs:{onClick:()=>onClose()}},
                         {html: title,className: "size16 color605E5C",align:'v',show:!!title},
                         {flex:1},
+                        {show:buttons.bazargahPower === true,size: 60,html: getSvg('power'),attrs: { onClick: () => bazargah.setActivity(false) },align:'vh'},
                         {
                             size:60,show:buttons.cart === true,align:'vh',
                             html: ()=>(

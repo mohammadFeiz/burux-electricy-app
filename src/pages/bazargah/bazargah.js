@@ -36,10 +36,9 @@ export default class Bazargah extends Component{
         }
     }
     wait_to_get_layout(){
-        let {services,SetState} = this.context;
+        let {bazargah,SetState} = this.context;
         let {activeTabId} = this.state;
-        if(activeTabId !== 0){return false}
-        let {bazargah} = this.context;
+        if(activeTabId !== 0 || !bazargah.active){return false}
         if(!bazargah.wait_to_get){
             return {
                 size:400,html:'در حال بارگزاری',className:'size12 color605E5C',align:'vh'
@@ -126,10 +125,10 @@ export default class Bazargah extends Component{
     }
     wait_to_send_layout(){
         //return this.mock_wait_to_send_layout()
-        let {SetState} = this.context;
+        let {SetState,bazargah} = this.context;
+        if(!bazargah.active){return false}
         let {activeTabId} = this.state;
         if(activeTabId !== 1){return false}
-        let {bazargah} = this.context;
         let {wait_to_send} = bazargah;
         if(!wait_to_send){return {size:96,align:'vh',html:'در حال بارگزاری'}}
         if(wait_to_send.length === 0){return {size:96,align:'vh',html:'موردی وجود ندارد'}}
@@ -156,6 +155,8 @@ export default class Bazargah extends Component{
         }
     }
     tabs_layout(){
+        let {bazargah} = this.context;
+        if(!bazargah.active){return false}
         let {activeTabId} = this.state;
         return {
             html:(
@@ -222,8 +223,19 @@ export default class Bazargah extends Component{
             />
         )
     }
+    bazargahPower_layout(){
+        let {bazargah} = this.context;
+        if(bazargah.active){return false}
+        return {
+            html:getSvg('bazargahPower'),
+            attrs:{
+                onClick:()=>bazargah.setActivity(true)
+            }
+        }
+    }
     render(){
         let {showDetails} = this.state;
+        let {bazargah} = this.context;
         if(showDetails){
             return (
                 <Popup>
@@ -241,7 +253,8 @@ export default class Bazargah extends Component{
                 layout={{
                     className:'main-bg',style:{width:'100%'},
                     column:[
-                        {html:<Header title='بازارگاه' buttons={{sidemenu:true}}/>},
+                        {html:<Header title='بازارگاه' buttons={{sidemenu:true,bazargahPower:bazargah.active === true}}/>},
+                        this.bazargahPower_layout(),
                         this.tabs_layout(),
                         //this.notifType_layout(),
                         {size:12},

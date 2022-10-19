@@ -35,12 +35,15 @@ export default class Product extends Component {
             }
         }
         let res = [];
+        this.ovs = []
+            
         for (let i = 0; i < variants.length; i++) {
             let { optionValues, inStock, id } = variants[i];
             if (!inStock || inStock === null) { continue }
             let str = [];
             for (let prop in optionValues) {
                 str.push(optionTypesDict[prop] + ' : ' + optionValuesDict[optionValues[prop]])
+                this.ovs.push(optionValuesDict[optionValues[prop]]);
             }
             str = str.join(' -- ')
             res.push({ text: str, value: id, variant: variants[i],style:{height:36} })
@@ -67,7 +70,14 @@ export default class Product extends Component {
     }
     changeOptionType(obj) {
         let { optionValues } = this.state;
-        let newSelected = { ...optionValues, ...obj };
+        let key = Object.keys(obj)[0]
+        let newSelected;
+        if(obj[key] === optionValues[key]){
+            newSelected = {...optionValues,[key]:undefined};
+        }
+        else{
+            newSelected = { ...optionValues, ...obj };
+        }
         let variant = this.getVariantBySelected(newSelected);
         this.setState({
             optionValues: newSelected,
@@ -181,7 +191,9 @@ export default class Product extends Component {
                                 { size: 6 },
                                 {
                                     className: "padding-0-12", scroll: 'h', gap: 12,
-                                    row: Object.keys(items).map((o) => {
+                                    row: Object.keys(items).filter((o)=>{
+                                        return this.ovs.indexOf(items[o]) !== -1
+                                    }).map((o) => {
                                         let itemId = o.toString();
                                         let active = false,style;
                                         if(optionValues[id] === undefined){

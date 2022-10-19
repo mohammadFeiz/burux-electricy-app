@@ -468,6 +468,10 @@ export default function services(getState,token,userCardCode) {
         let fixed = fixDate(res,'createdDate')
         return fixed
       },
+      async bazargah_activity({parameter}){
+        //parameter is boolean
+        return parameter
+      },
       async taghire_vaziate_ersale_sefareshe_bazargah({parameter,baseUrl}){
         let {orderId,sendStatus} = parameter;
         let result = await Axios.get(`${baseUrl}/OS/OrderItemStatus?orderId=${orderId}&data=${JSON.stringify(sendStatus)}`);

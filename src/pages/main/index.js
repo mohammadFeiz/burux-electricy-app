@@ -64,6 +64,11 @@ export default class Main extends Component {
     }
     this.state = {
       bazargah:{
+        setActivity:async (state)=>{
+          let {services,bazargah} = this.state;
+          let res = await services({type:'bazargah_activity',parameter:state})
+          this.setState({bazargah:{...bazargah,active:res}})
+        },
         active:true,
         forsate_ersale_sefareshe_bazargah:backOffice.forsate_ersale_sefareshe_bazargah,
         forsate_akhze_sefareshe_bazargah:backOffice.forsate_akhze_sefareshe_bazargah
@@ -107,7 +112,7 @@ export default class Main extends Component {
       bottomMenuItems: [
         { text: "خانه", icon: 19, id: "a" },
         { text: "خرید", icon: 'buy', id: "b" },
-        { text: "بازارگاه", icon: 20, id: "c",show:()=>this.state.bazargah.active },
+        { text: "بازارگاه", icon: 20, id: "c" },
         { text: "بروکس من", icon: 21, id: "d" },
       ],
       guaranteeItems: [],

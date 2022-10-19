@@ -69,6 +69,7 @@ export default class Main extends Component {
           let res = await services({type:'bazargah_activity',parameter:state})
           this.setState({bazargah:{...bazargah,active:res}})
         },
+        // active:this.props.userInfo.isBazargahActive,
         active:true,
         forsate_ersale_sefareshe_bazargah:backOffice.forsate_ersale_sefareshe_bazargah,
         forsate_akhze_sefareshe_bazargah:backOffice.forsate_akhze_sefareshe_bazargah

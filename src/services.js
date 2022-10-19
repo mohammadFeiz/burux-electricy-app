@@ -397,7 +397,8 @@ export default function services(getState,token,userCardCode) {
       async bazargah_orders({baseUrl,parameter,fixDate}){
         let {type} = parameter;
         let time = getState().bazargah[{'wait_to_get':'forsate_akhze_sefareshe_bazargah','wait_to_send':'forsate_ersale_sefareshe_bazargah'}[type]];
-        let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?time=${time}&cardCode=${userCardCode}&distance=100&status=${{'wait_to_get':'1','wait_to_send':'2'}[type]}`); // 1 for pending
+        // let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?time=${time}&cardCode=${userCardCode}&distance=100&status=${{'wait_to_get':'1','wait_to_send':'2'}[type]}`); // 1 for pending
+        let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?time=100000&cardCode=${userCardCode}&distance=100&status=${{'wait_to_get':'1','wait_to_send':'2'}[type]}`); // 1 for pending
         let data = [];
         try{data = res.data.data || [];}
         catch{data = []}
@@ -468,9 +469,16 @@ export default function services(getState,token,userCardCode) {
         let fixed = fixDate(res,'createdDate')
         return fixed
       },
-      async bazargah_activity({parameter}){
-        //parameter is boolean
-        return parameter
+      async bazargah_activity({parameter,baseUrl}){
+
+        let res = await Axios.get(`${baseUrl}/Users/ActivateBazargah?isBazargahActive=${parameter}`);
+        let result = false;
+        try{
+          result = res.data.isSuccess || false
+        }
+        catch{result = false}
+
+        return res.data.data.isBazargahActive;  
       },
       async taghire_vaziate_ersale_sefareshe_bazargah({parameter,baseUrl}){
         let {orderId,sendStatus} = parameter;
@@ -513,7 +521,7 @@ export default function services(getState,token,userCardCode) {
       },
       async taide_code_tahvil({parameter,baseUrl}){
         let {dynamicCode,staticCode,orderId}=parameter;
-        console.log(parameter);
+
         let result = await Axios.get(`${baseUrl}/OS/DeliveredCodeValidation?code=${staticCode+dynamicCode}&id=${orderId}`);
         console.log(result);
         if(!result.data.isSuccess) return false;

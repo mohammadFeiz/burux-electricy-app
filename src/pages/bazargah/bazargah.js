@@ -808,8 +808,8 @@ class JoziateSefaresheBazargah extends Component{
                                 let {services,showMessage} = this.context;
                                 let res = await services({type:'taide_code_tahvil',parameter:{staticCode,orderId:this.props.orderId,dynamicCode:`${code0}${code1}${code2}`}})
                                 if(res){
-                                    showMessage('کد تایید شد');
-                                    this.setState({sendStep:4})
+                                    showMessage('کالا تحویل شد.');
+                                    this.context.SetState({activeBottomMenu:"a"})
                                 }
                                 else{
                                     showMessage('کد معتبر نیست')

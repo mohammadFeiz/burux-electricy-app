@@ -431,7 +431,7 @@ class Splash extends Component{
             {html:<img src={splashSrc} width='200' alt=''/>,align:'vh'},
             {flex:1},
             {
-              align:'vh',html:<img src={dotsloading} height='72px'/>
+              align:'vh',html:<img src={dotsloading} height='40px'/>
             },
             {size:24},
             {html:'چند لحظه صبر کنید',className:'colorFFF size14',align:'vh'},

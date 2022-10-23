@@ -45,15 +45,12 @@ export default function SignalR(getState) {
         start(){
 
             connection.on("BazargahOrder", async (order)=> {
+                debugger;
                 let {services,SetState,bazargah,showMessage,userCardCode} = getState();                
                 let time = bazargah.forsate_akhze_sefareshe_bazargah;
                 let type;
-                let orderStatus="";
-                if(order.status === 'Pending' || order.status===1){type = 'Pending'}
-                else if(order.status === 'Taken'  || order.status===2){type = 'Taken'}
-
-                if(orderStatus === 'Pending'){type = 'wait_to_get'}
-                else if(orderStatus === 'Taken'){type = 'wait_to_send'}
+                if(order.status === 'Pending' || order.status===1){type = 'wait_to_get'}
+                else if(order.status === 'Taken'  || order.status===2){type = 'wait_to_send'}
                 else {return}
                 order = await services({type:'bazargahItem',parameter:{order,time,type}})
                 if(order === false){return;}

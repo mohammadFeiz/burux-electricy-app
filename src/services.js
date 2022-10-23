@@ -413,7 +413,7 @@ export default function services(getState,token,userCardCode) {
         let distance = 0;
         let orderItems=[];
         try{
-          distance = + order.distance.toFixed(2) * 1000;
+          distance = +order.distance.toFixed(2);
           orderItems=order.orderItems.map(i=>{    
             let src=i.imagesUrl != null && i.imagesUrl != undefined ? i.imagesUrl.split(",")[0]:bulbSrc;
             return {name:i.productName,detail:`${i.options} - ${i.quantity}`,src:src, id:i.id};

@@ -31,7 +31,7 @@ export default class TimerGauge extends Component{
         let timeRate = remainingTime / totalTime;
         let timeColor;
         if(timeRate < 0.15){timeColor = 'red'}
-        else if(timeRate < 0.50){timeColor = 'yellow'}
+        else if(timeRate < 0.50){timeColor = 'orange'}
         else {timeColor = 'green'}
         return (
             <Gauge

@@ -1012,15 +1012,7 @@ class BazargahCard extends Component{
         }
     }
     distance_layout(distance){
-        let distanceValue,distanceUnit;
-        if(distance > 999){
-            distanceValue = distance / 1000;
-            distanceUnit = 'کیلومتر'
-        }
-        else{
-            distanceValue = distance;
-            distanceUnit = 'متر'
-        }
+        let distanceValue = distance,distanceUnit = 'کیلومتر';
         return {
             gap:4,
             row:[

@@ -55,7 +55,7 @@ export default class Bazargah extends Component{
                 return {
                     style:{overflow:'visible'},
                     html:(
-                        <BazargahCard {...o} 
+                        <BazargahCard key={o.orderId} {...o} 
                             onExpired={()=>{
                                 bazargah.wait_to_get = bazargah.wait_to_get.filter((oo)=>o.orderId !== oo.orderId)
                                 SetState({bazargah})
@@ -119,7 +119,7 @@ export default class Bazargah extends Component{
         return {
             gap:12,flex:1,scroll:'v',
             column:wait_to_send.map((o,i)=>{
-                return {style:{overflow:'visible'},html:<BazargahCard {...o} onSend={()=>this.setState({showDetails:o})}/>}
+                return {style:{overflow:'visible'},html:<BazargahCard key={o.orderId} {...o} onSend={()=>this.setState({showDetails:o})}/>}
             })
         }
     }
@@ -179,7 +179,10 @@ export default class Bazargah extends Component{
                         {
                             size:48,className:'padding-0-12',
                             row:[
-                                {flex:1,html: "بازارگاه",className: "size14 color323130 bold padding-0-12",size: 48,align: "v"},
+                                {html: "بازارگاه",className: "size14 color323130 bold padding-0-12",size: 48,align: "v"},
+                                {size:6},
+                                {html:<div className='my-burux-badge'>{bazargah.wait_to_get.length}</div>,align:'vh'},
+                                {flex:1},
                                 {html:'مشاهده همه',align:'v',className:'color0094D4 size12 bold',show:!!bazargah.wait_to_get.length,attrs:{onClick:()=>SetState({activeBottomMenu:'c'})}}
                             ]
                         },

@@ -651,3 +651,11 @@ button{
 	left:12px;
 	bottom:68px;
 }
+
+.my-burux-badge{
+	background:dodgerblue;
+	color:#fff;
+	font-size:12px;
+	border-radius:12px;
+	padding:0 6px;
+}

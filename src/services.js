@@ -397,7 +397,7 @@ export default function services(getState,token,userCardCode) {
       async bazargah_orders({baseUrl,parameter,fixDate}){
         let {type} = parameter;
         let time = getState().bazargah[{'wait_to_get':'forsate_akhze_sefareshe_bazargah','wait_to_send':'forsate_ersale_sefareshe_bazargah'}[type]];
-        let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?time=${time}&cardCode=${userCardCode}&distance=100&status=${{'wait_to_get':'1','wait_to_send':'2'}[type]}`); // 1 for pending
+        let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?time=${time}&distance=100&status=${{'wait_to_get':'1','wait_to_send':'2'}[type]}`); // 1 for pending
         //let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?time=100000&cardCode=${userCardCode}&distance=100&status=${{'wait_to_get':'1','wait_to_send':'2'}[type]}`); // 1 for pending
         let data = [];
         try{data = res.data.data || [];}
@@ -407,8 +407,7 @@ export default function services(getState,token,userCardCode) {
         return result
       },
       bazargahItem({parameter,fixDate}){
-        let {order,time,type} = parameter;
-
+        let {order,type} = parameter;
         let bulbSrc = bulb10w;
         let distance = 0;
         let orderItems=[];
@@ -440,7 +439,7 @@ export default function services(getState,token,userCardCode) {
           distance,
           "benefit":110000,
           'deliveredCode':order.deliveredCode,
-          "totalTime":time,
+          "totalTime":totalTime,
           "address": order.billAddress,
           "items":orderItems,
           "cityId": null,

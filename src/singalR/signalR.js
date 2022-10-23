@@ -43,16 +43,13 @@ export default function SignalR(getState) {
 
     let $$={
         start(){
-
             connection.on("BazargahOrder", async (order)=> {
-                debugger;
-                let {services,SetState,bazargah,showMessage,userCardCode} = getState();                
-                let time = bazargah.forsate_akhze_sefareshe_bazargah;
+                let {services,SetState,bazargah,showMessage,userInfo} = getState();                
                 let type;
                 if(order.status === 'Pending' || order.status===1){type = 'wait_to_get'}
                 else if(order.status === 'Taken'  || order.status===2){type = 'wait_to_send'}
                 else {return}
-                order = await services({type:'bazargahItem',parameter:{order,time,type}})
+                order = await services({type:'bazargahItem',parameter:{order,type}})
                 if(order === false){return;}
                 if(type === 'wait_to_get'){
                     bazargah.wait_to_get = bazargah.wait_to_get || [];
@@ -62,7 +59,7 @@ export default function SignalR(getState) {
                 else if(type === 'wait_to_send'){
                     bazargah.wait_to_get = bazargah.wait_to_get || [];
                     bazargah.wait_to_get = bazargah.wait_to_get.filter((o)=>o.orderId !== order.orderId)
-                    if(userCardCode === order.cardCode){
+                    if(userInfo.osVendorId === order.cardCode){
                         bazargah.wait_to_send = bazargah.wait_to_send || [];
                         bazargah.wait_to_send.push(order) 
                     }

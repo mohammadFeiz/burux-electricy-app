@@ -7,6 +7,7 @@ import GarantiCard from '../../components/garanti/garanti-card/garanti-card';
 import AIOButton from './../../components/aio-button/aio-button';
 import './index.css';
 import Awards from './../awards/index';
+import Card from '../../components/card/card';
 import Header from '../../components/header/header';
 import ReactHtmlSlider from './../../components/react-html-slider/react-html-slider';
 import SabteGarantiJadid from '../../components/garanti/sabte-garanti-jadid/sabte-garanti-jadid';
@@ -91,57 +92,28 @@ export default class Home extends Component {
             style:{overflow:'visible'},
             className:'padding-0-12',
             row: [
-                this.cartAndWalletCard_layout(getSvg(29,{width:30,height:30}),'کیف پول',functions.splitPrice(wallet),'ریال',()=>this.setState({showWallet:true})),
-                {size:12},
-                this.cartAndWalletCard_layout(getSvg(28,{width:30,height:30}),'سبد خرید',Object.keys(cart).length,'کالا',()=>SetState({cartZIndex:10}))
-            ]
-        }
-    }
-    cartAndWalletCard_layout(icon,title,value,unit,onClick){
-        return {
-            flex:1,className:'box',
-            attrs:{onClick},
-            column:[
-                {size:12},
-                {html:icon,align:'vh',size:40},
-                {html:title,className:'color605E5C size14 bold',align:'h'},
                 {
-                    align:'h',
-                    row:[
-                        {html:value,className:'color323130 size16 bold',align:'vh'},
-                        {size:4},
-                        {html:unit,className:'colorA19F9D size12',align:'vh'}
-                    ]
+                    style:{overflow:'visible'},flex:1,
+                    html:(
+                        <Card
+                            type='card1' title='کیف پول' value={functions.splitPrice(wallet)} unit='ریال'
+                            icon={getSvg(29,{width:30,height:30})} onClick={()=>this.setState({showWallet:true})}
+                        />
+                    )
                 },
-                {size:12}
-            ]
-        }
-    }
-    orderCard_layout(icon,title,count,onClick){
-        return {
-            flex:1,className:'box',
-            attrs:{onClick},
-            row:[
-                {size:60,html:icon,align:'vh'},
+                {size:12},
                 {
-                    flex:1,
-                    column:[
-                        {flex:1},
-                        {html:title,className:'color605E5C size14 bold'},
-                        {
-                            row:[
-                                {html:count,className:'color323130 size14 bold'},
-                                {size:4},
-                                {html:'سفارش',className:'colorA19F9D size12'}
-                            ]
-                        },
-                        {flex:1}
-                    ]
-                },
+                    style:{overflow:'visible'},flex:1,
+                    html:(
+                        <Card
+                            type='card1' title='سبد خرید' value={Object.keys(cart).length} unit='کالا'
+                            icon={getSvg(28,{width:30,height:30})} onClick={()=>SetState({cartZIndex:10})}
+                        />
+                    )
+                }
             ]
         }
     }
-    
     preOrders_layout(){
         let {SetState} = this.context;
         let {preOrders} = this.state;
@@ -153,9 +125,25 @@ export default class Home extends Component {
                     size:72,
                     style:{overflow:'visible'},
                     row: [
-                        this.orderCard_layout(getSvg('paperRocket'),'در حال بررسی',preOrders.waitOfVisitor,()=>SetState({ordersHistoryZIndex:10})),
+                        {
+                            flex:1,style:{overflow:'visible'},
+                            html:(
+                                <Card
+                                    type='card2' icon={getSvg('paperRocket')} title='در حال بررسی' value={preOrders.waitOfVisitor}
+                                    unit='سفارش' onClick={()=>SetState({ordersHistoryZIndex:10})}
+                                />
+                            )
+                        },
                         {size:12},
-                        this.orderCard_layout(getSvg('pending'),'در انتظار پرداخت',preOrders.waitOfPey,()=>SetState({ordersHistoryZIndex:10}))
+                        {
+                            flex:1,style:{overflow:'visible'},
+                            html:(
+                                <Card
+                                    type='card2' icon={getSvg('pending')} title='در انتظار پرداخت' value={preOrders.waitOfPey}
+                                    unit='سفارش' onClick={()=>SetState({ordersHistoryZIndex:10})}
+                                />
+                            )
+                        }
                     ]
                 },
             ]
@@ -337,8 +325,10 @@ export default class Home extends Component {
     }
 }
 class Call extends Component{
+    static contextType = appContext
     render(){
         let {onClose} = this.props;
+        let {b1Info} = this.context;
         return (
             <RVD
                 layout={{
@@ -349,9 +339,29 @@ class Call extends Component{
                             size:48,
                             row:[
                                 {size:12},
+                                {html:<a style={{height:48}} href={`tel:${b1Info.slpphone}`}>{getSvg('tamasbavizitor')}</a>,align:'vh'},
+                                {size:12},
+                                {
+                                    column:[
+                                        {html:'تماس با ویزیتور',align:'v',style:{color:'#fff'},className:'size14'},
+                                        {html:b1Info.slpphone,align:'v',style:{color:'#fff'},className:'size12'}
+                                    ]
+                                }
+                            ]
+                        },
+                        {size:12},
+                        {
+                            size:48,
+                            row:[
+                                {size:12},
                                 {html:<a style={{height:48}} href="tel:02175116">{getSvg('tamasbavizitor')}</a>,align:'vh'},
                                 {size:12},
-                                {html:'تماس با پشتیبانی',align:'v',style:{color:'#fff'}}
+                                {
+                                    column:[
+                                        {html:'تماس با پشتیبانی',align:'v',style:{color:'#fff'},className:'size14'},
+                                        {html:'02175116',align:'v',style:{color:'#fff'},className:'size12'}
+                                    ]
+                                }
                             ]
                         },
                         {size:12},
@@ -393,3 +403,4 @@ class Help extends Component{
         )
     }
 }
+

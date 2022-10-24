@@ -222,7 +222,7 @@ export default class Main extends Component {
         return null;
     });
     let {userInfo} = this.props;
-    return {...data,storeName:userInfo.storeName};
+    return {...data,storeName:userInfo.storeName,slpphone:'09123534314'};
   }
   showMessage(message){
     alert(message)

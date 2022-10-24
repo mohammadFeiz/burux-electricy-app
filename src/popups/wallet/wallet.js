@@ -5,8 +5,11 @@ import getSvg from "../../utils/getSvg";
 import functions from "../../functions";
 import GAH from 'gah-datepicker';
 import appContext from "../../app-context";
+import Form from "../../components/form/form";
 import noItemSrc from './../../images/not-found.png';
+import AIOButton from './../../components/aio-button/aio-button';
 import $ from 'jquery';
+import { render } from "@testing-library/react";
 export default class Wallet extends Component{
     static contextType = appContext
     constructor(props){
@@ -89,9 +92,9 @@ export default class Wallet extends Component{
                 {
                     row:[
                         {flex:1},
-                        {html:this.headerButton_layout(getSvg('arrowTopRight'),'برداشت')},
+                        {html:this.headerButton_layout(getSvg('arrowTopRight'),'برداشت','bardasht')},
                         {size:24},
-                        {html:this.headerButton_layout(getSvg('arrowDown'),'واریز')},
+                        {html:this.headerButton_layout(getSvg('arrowDown'),'واریز','variz')},
                         {flex:1}
                     ]
                 },
@@ -102,24 +105,35 @@ export default class Wallet extends Component{
             ]
         }
     }
-    headerButton_layout(icon,text){
+    headerButton_layout(icon,text,type){
         return (
-            <RVD
-                layout={{
-                    style:{
-                        background:'#3980a7',
-                        borderRadius:'12px',
-                        width:108,
-                        border:'1px solid rgba(217,217,217,0.3)',
-                        boxShadow:'inset 0 0 5px #aad3ff94'
-                    },
-                    column:[
-                        {size:6},
-                        {html:icon,align:'h'},
-                        {size:3},
-                        {html:text,align:'h',className:'size14 colorFFF'},
-                        {size:6}
-                    ]
+            <AIOButton
+                type='button' caret={false}
+                position='bottom'
+                style={{background:'none',padding:0}}
+                text={
+                    <RVD
+                        layout={{
+                            style:{
+                                background:'#3980a7',
+                                borderRadius:'12px',
+                                width:108,
+                                border:'1px solid rgba(217,217,217,0.3)',
+                                boxShadow:'inset 0 0 5px #aad3ff94'
+                            },
+                            column:[
+                                {size:6},
+                                {html:icon,align:'h'},
+                                {size:3},
+                                {html:text,align:'h',className:'size14 colorFFF'},
+                                {size:6}
+                            ]
+                        }}
+                    />
+                }
+                popOver={()=>{
+                    if(type === 'bardasht'){return <BardashtPopup/>}
+                    if(type === 'variz'){return <VarizPopup/>}
                 }}
             />
         )
@@ -253,6 +267,84 @@ export default class Wallet extends Component{
                         this.body_layout()
                     ]
                 }}
+            />
+        )
+    }
+}
+
+
+class BardashtPopup extends Component{
+    constructor(props){
+        super(props);
+        this.state = {model:{amount:''},mojoodi:1234567,edit:false}
+    }
+    onSubmit(){
+
+    }
+    render(){
+        let {model,mojoodi,edit} = this.state;
+        return (
+            <Form
+                rtl={true} lang={'fa'}
+                affixAttrs={{style:{height:36,background:'#fff',color:'#333'}}}
+                model={model}
+                footerAttrs={{style:{background:'#fff'}}}
+                rowStyle={{marginBottom:12}}
+                bodyStyle={{background:'#fff',padding:12,paddingBottom:36}}
+                onChange={(model)=>this.setState({model})}
+                header={{title:'افزایش موجودی کیف پول',style:{background:'#fff'}}}
+                inputs={[
+                    {type:'html',html:()=><span className="size12 bold" style={{height:36}}>مبلغ انتخابی حداکثر تا # ساعت به حساب شما واریز میشود</span>},
+                    {type:'text',field:'model.carBankNumber',label:'شماره کارت'},
+                    {type:'text',field:'model.sehba',label:'شماره شبا'},
+                    {type:'number',field:'model.amount',affix:'تومان',label:'مبلغ برداشت',validations:[['required'],['<=',mojoodi]]},
+                    {
+                        type:'html',
+                        html:()=>(
+                            <RVD 
+                                layout={{
+                                    style:{height:48,flex:'none'},gap:6,
+                                    row:[
+                                        {html:'موجودی:',className:'size14 color605E5C bold',align:'v'},
+                                        {html:functions.splitPrice(mojoodi),className:'size14 color0094D4 bold',align:'v'},
+                                        {html:'تومان',className:'size14 color0094D4 bold',align:'v'}
+                                    ]
+                                }}
+                            />
+                        )
+                    }
+                ]}
+                onSubmit={()=>this.onSubmit()}
+                submitText='برداشت'
+            />
+        )
+    }
+}
+class VarizPopup extends Component{
+    constructor(props){
+        super(props);
+        this.state = {model:{amount:''}}
+    }
+    onSubmit(){
+
+    }
+    render(){
+        let {model} = this.state;
+        return (
+            <Form
+                rtl={true}
+                affixAttrs={{style:{height:36,background:'#fff',color:'#333'}}}
+                model={model}
+                footerAttrs={{style:{background:'#fff'}}}
+                rowStyle={{marginBottom:0}}
+                bodyStyle={{background:'#fff'}}
+                onChange={(model)=>this.setState({model})}
+                header={{title:'افزایش موجودی کیف پول',style:{background:'#fff'}}}
+                inputs={[
+                    {type:'number',affix:'تومان',inputStyle:{direction:'rtl'}}
+                ]}
+                onSubmit={()=>this.onSubmit()}
+                submitText='پرداخت'
             />
         )
     }

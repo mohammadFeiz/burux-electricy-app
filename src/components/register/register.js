@@ -119,10 +119,10 @@ export default class Register extends Component{
                         {label:'نام',type:'text',field:'model.firstName',rowKey:'1',validations:[['required']]},
                         {type:'html',html:()=>'',rowKey:'1',rowWidth:12},
                         {label:'نام خانوادگی',type:'text',field:'model.lastName',rowKey:'1',validations:[['required']]},
-                        {label:'ایمیل',type:'text',field:'model.email',validations:[['required']]},
-                        {label:'تلفن همراه',type:'text',field:'model.mobile',rowKey:'3',validations:[['required']],disabled:true},
+                        {label:'ایمیل',type:'text',field:'model.email'},
+                        {label:'تلفن همراه',type:'text',field:'model.mobile',rowKey:'3',disabled:true},
                         {type:'html',html:()=>'',rowKey:'3',rowWidth:12},
-                        {label:'تلفن ثابت',type:'text',field:'model.landlineNumber',rowKey:'3',validations:[['required']]},
+                        {label:'تلفن ثابت',type:'text',field:'model.landlineNumber',rowKey:'3'},
                         {label:'نام فروشگاه',type:'text',field:'model.storeName',validations:[['required']]},
                         {label:'ثبت موقعیت جغرافیایی',type:'html',html:()=>{
                             let {showMap,model} = this.state;
@@ -143,9 +143,9 @@ export default class Register extends Component{
                         {type:'html',html:()=>'',rowKey:'2',rowWidth:12},
                         {label:'شهر',type:'text',field:'model.city',rowKey:'2',validations:[['required']]},
                         {label:'آدرس',type:'textarea',field:'model.address',validations:[['required']]},
-                        {label:'شماره شبا',type:'text',field:'model.sheba'},
-                        {label:'شماره کارت بانکی',type:'number',field:'model.cardBankNumber'},
-                        {label:'نام دارنده کارت بانکی',type:'text',field:'model.cardBankName'},
+                        // {label:'شماره شبا',type:'text',field:'model.sheba'},
+                        // {label:'شماره کارت بانکی',type:'number',field:'model.cardBankNumber'},
+                        // {label:'نام دارنده کارت بانکی',type:'text',field:'model.cardBankName'},
                         
                     ]}
                 />

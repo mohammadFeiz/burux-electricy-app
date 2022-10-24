@@ -8,11 +8,12 @@ import functions from '../../functions';
 import {Icon} from '@mdi/react';
 import {mdiAccountCircle} from '@mdi/js';
 import AIOButton from './../../components/aio-button/aio-button';
-import './index.css';
 import SabteGarantiJadid from '../../components/garanti/sabte-garanti-jadid/sabte-garanti-jadid';
 import Popup from '../../components/popup/popup';
 import Register from '../../components/register/register';
 import logo3 from './../../images/logo3.png';
+import Card from '../../components/card/card';
+import './index.css';
 export default class MyBurux extends Component{
     static contextType = appContext;
     constructor(props){
@@ -38,22 +39,6 @@ export default class MyBurux extends Component{
             ]
         }
     }
-    getPanel({text1,text2,text3,className,onClick}){
-        let size = 24;
-        let space = 10;
-        let column = [{size:space}];
-        if(text1){
-            column.push({size,align:'vh',html:text1,className:'colorA19F9D size12'})
-        }
-        if(text2){
-            column.push({size,align:'vh',html:text2,className:'color605E5C size14 bold'})
-        }
-        if(text3){
-            column.push({size,align:'vh',html:text3,className:'color0094D4 size14 bold'})
-        }
-        column.push({size:space})
-        return {flex:1,className,attrs:{onClick},column}
-    }
     parts_layout(){
         let {theme} = this.context;
         let {parts} = this.state;
@@ -63,7 +48,16 @@ export default class MyBurux extends Component{
         }
     }
     getContent(){
-        let {totalGuaranteeItems,wallet,userInfo} = this.context;
+        let {totalGuaranteeItems,wallet,userInfo,b1Info} = this.context;
+        let slpname,slpcode;
+        try{
+            slpname = b1Info.customer.slpname || 'تایین نشده';
+            slpcode = b1Info.customer.slpcode || 'تایین نشده';
+        }
+        catch{
+            slpname = 'تایین نشده';
+            slpcode = 'تایین نشده';
+        }
         return {
             scroll:'v',flex:1,className:'my-burux-page main-bg',
             column:[
@@ -89,42 +83,51 @@ export default class MyBurux extends Component{
                 },
                 {size:6},
                 {
-                    className:'box margin-0-12',gap:1,
-                    column:[
-                        {
-                            gap:1,
-                            row:[
-                                this.getPanel({text1:'کد مشتری',text2:userInfo.cardCode}),
-                                this.getPanel({text1:'نام فروشگاه',text2:userInfo.storeName})
-                            ]
-                        },
-                        this.getPanel({text3:'مشاهده کامل اطلاعات کاربری',onClick:()=>this.setState({showProfile:true})})
-                    ]
+                    className:'margin-0-12',style:{overflow:'visible'},
+                    html:(
+                        <Card
+                            type='card3' footer='مشاهده کامل اطلاعات کاربری'
+                            rows={[
+                                [['کد مشتری',userInfo.cardCode],['نام فروشگاه',userInfo.storeName]],
+                                [['نام ویزیتور',slpname],['کد ویزیتور',slpcode]],
+                                
+                            ]}
+                            onClick={()=>this.setState({showProfile:true})}
+                        />
+                    )
                 },
                 {size:16},
                 {
                     style:{overflow:'visible'},
                     className:'margin-0-12',
                     row:[
-                        this.getPanel({
-                            text1:'کیف پول',text2:functions.splitPrice(wallet) + ' ریال',text3:'افزایش موجودی',
-                            className:'box'
-                        }),
-                        {size:12},
-                        this.getPanel({
-                            text1:'کالا های گارانتی شده',text2:totalGuaranteeItems + ' عدد',
-                            text3:(
-                                <AIOButton 
-                                    type='button'
-                                    caret={false}
-                                    style={{background:'none',color:'inherit',fontWeight:'inherit',fontSize:'inherit'}}
-                                    position='bottom'
-                                    text='درخواست گارانتی جدید'
-                                    popOver={()=><SabteGarantiJadid close={false}/>}
+                        {
+                            flex:1,style:{overflow:'visible'},
+                            html:(
+                                <Card
+                                    type='card3' footer='افزایش موجودی'
+                                    rows={[[['کیف پول',functions.splitPrice(wallet) + ' ریال']]]}
+                                    
                                 />
-                            ),
-                            className:'box',
-                        })
+                            )
+                        },
+                        {size:12},
+                        {
+                            flex:1,style:{overflow:'visible'},
+                            html:(
+                                <Card
+                                    type='card3'
+                                    rows={[[['کالا های گارانتی شده',totalGuaranteeItems + ' عدد']]]}
+                                    footer={
+                                        <AIOButton 
+                                            type='button' caret={false} position='bottom' text='درخواست گارانتی جدید'
+                                            style={{background:'none',color:'inherit',fontWeight:'inherit',fontSize:'inherit'}}
+                                            popOver={()=><SabteGarantiJadid close={false}/>}
+                                        />        
+                                    }
+                                />
+                            )
+                        }
                     ]
                 },
                 {size:16},

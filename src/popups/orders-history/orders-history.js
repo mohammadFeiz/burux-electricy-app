@@ -13,13 +13,7 @@ export default class OrdersHistory extends Component {
       this.state = {activeTabId:false,tabs:[],error:false};
     }
     async componentDidMount() {
-      $(this.dom.current).animate({
-        height: '100%',
-        width: '100%',
-        left:'0%',
-        top:'0%',
-        opacity:1
-    }, 300);
+      $(this.dom.current).animate({height: '100%',width: '100%',left:'0%',top:'0%',opacity:1}, 300);
       let {services} = this.context;
       let res = await services({type:"ordersHistory"});
       console.log('res.data',res)

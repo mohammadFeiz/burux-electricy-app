@@ -80,7 +80,7 @@ class OTPLogin extends Component{
     //اگر کد وارد شده اشتباه بود باید فالس ریترن شود 
     //let res = await Axios.post('url',code)
     //return false    
-    if(this.userId != undefined){
+    if(this.userId !== undefined){
         const smsValidationResult=await Axios.get(`${this.apiBaseUrl}/Users/SecondStep?userId=${this.userId}&code=${code}`);
         console.log(smsValidationResult)
       debugger;
@@ -199,7 +199,7 @@ class OTPLogin extends Component{
               )
             },
             {
-              size:12,html:error,size:24,align:'v',className:'padding-0-12 colorD83B01 size12 bold',style:{marginBottom:12}
+              html:error,size:24,align:'v',className:'padding-0-12 colorD83B01 size12 bold',style:{marginBottom:12}
             },
             {
               className:'padding-0-12',

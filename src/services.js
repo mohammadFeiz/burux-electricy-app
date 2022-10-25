@@ -382,7 +382,7 @@ export default function services(getState,token,userCardCode) {
             src = included.filter((m) => m.id === imgId)[0].attributes.original_url;
           }
           catch { src = ""; }
-          return { name: o.attributes.name, price: o.attributes.price, unit: "", src: `http://shopback.bpilot.ir${src}`, discountPercent: 0, discountPrice: 0 };
+          return { name: o.attributes.name, price: o.attributes.price, unit: "", src: `https://shopback.miarze.com${src}`, discountPercent: 0, discountPrice: 0 };
         });
       },
       async register({baseUrl,parameter}){
@@ -574,7 +574,7 @@ export default function services(getState,token,userCardCode) {
           if (imgData !== undefined && imgData != null) {
             const taxonImage = included.find(x => x.type === "taxon_image" && x.id === imgData.id)
             if (taxonImage !== undefined && taxonImage != null) {
-              src = "http://shopback.bpilot.ir" + taxonImage.attributes.original_url;
+              src = "https://shopback.miarze.com" + taxonImage.attributes.original_url;
             }
           }
 
@@ -667,7 +667,7 @@ export default function services(getState,token,userCardCode) {
             const defaultVariantSku=defaultVariant.attributes.sku;
             const itemFromB1=b1Result.find(x=>x.itemCode===defaultVariantSku);
             const srcs=defaultVariantImages.map(x=>{
-              return "http://shopback.bpilot.ir" + x.attributes.original_url;
+              return "https://shopback.miarze.com" + x.attributes.original_url;
             });
 
             if(itemFromB1==undefined) continue;
@@ -721,7 +721,7 @@ export default function services(getState,token,userCardCode) {
             id = id.toString();
             let { attributes } = include_srcs[id];
             let { original_url } = attributes;
-            srcs.push("http://shopback.bpilot.ir" + original_url)
+            srcs.push("https://shopback.miarze.com" + original_url)
           }
           let variants = [];
           let defaultVariant;
@@ -846,7 +846,7 @@ export default function services(getState,token,userCardCode) {
           const variantImagesId = variant.relationships.images.data.map(x=>x.id);
           const variantImages=included.filter(x=>x.type==="image" && variantImagesId.includes(x.id));
           const srcs=variantImages.map(x=>{
-            return "http://shopback.bpilot.ir" + x.attributes.original_url;
+            return "https://shopback.miarze.com" + x.attributes.original_url;
           });
 
           let price=fixPrice([{itemCode : varSku, itemQty : 1}])[0];
@@ -904,7 +904,7 @@ export default function services(getState,token,userCardCode) {
           if (imgData !== undefined && imgData != null) {
             const taxonImage = included.find(x => x.type === "taxon_image" && x.id === imgData.id)
             if (taxonImage !== undefined && taxonImage != null) {
-              src = "http://shopback.bpilot.ir" + taxonImage.attributes.original_url;
+              src = "https://shopback.miarze.com" + taxonImage.attributes.original_url;
             }
           }
 
@@ -931,7 +931,6 @@ export default function services(getState,token,userCardCode) {
         await Axios.get(`${baseUrl}/BOne/RefreshCentralInvetoryProducts`);
       },
       async getTaxonProducts({ baseUrl, parameter = {} }) {
-        debugger
         let loadType=parameter.type;
         let res = await Axios.post(`${baseUrl}/Spree/Products`,
           {

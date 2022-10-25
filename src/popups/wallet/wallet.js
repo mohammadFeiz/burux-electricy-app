@@ -1,5 +1,4 @@
 import React,{Component,createRef} from "react";
-import Header from "../../components/header/header";
 import RVD from "react-virtual-dom";
 import getSvg from "../../utils/getSvg";
 import functions from "../../functions";
@@ -9,7 +8,7 @@ import Form from "../../components/form/form";
 import noItemSrc from './../../images/not-found.png';
 import AIOButton from './../../components/aio-button/aio-button';
 import $ from 'jquery';
-import { render } from "@testing-library/react";
+import './index.css';
 export default class Wallet extends Component{
     static contextType = appContext
     constructor(props){
@@ -65,40 +64,38 @@ export default class Wallet extends Component{
         return {
             className:'blue-gradient',
             column:[
-                {
-                    className:'blue-gradient-point1'
-                },
-                {
-                    className:'blue-gradient-point2'
-                },
+                {className:'blue-gradient-point1'},
+                {className:'blue-gradient-point2'},
                 {
                     size:60,
                     row:[
-                        {size:60,html:getSvg('chevronLeft',{flip:true,fill:'#fff'}),align:'vh',attrs:{onClick:()=>this.onClose()}}
+                        {size:60,html:getSvg('chevronLeft',{flip:true,fill:'#fff'}),align:'vh',attrs:{onClick:()=>this.onClose()}},
+                        {html:'مدیریت کیف پول',align:'v',className:'colorFFF'}
                     ]
                 },
-                {html:'تراز حساب',className:'size12 colorC7E7F4',align:'h'},
                 {
                     size:72,
                     row:[
                         {flex:1},
-                        {html:functions.splitPrice(wallet),className:'colorFFF size36 bold',align:'v'},
+                        {html:'تراز حساب',className:'size12 colorC7E7F4',align:'v'},
+                        {size:12},
+                        {html:functions.splitPrice(wallet),className:'colorFFF size30 bold',align:'v'},
                         {size:6},
                         {html:'تومان',className:'size14 colorFFF',align:'v'},
                         {flex:1}
                     ]
                 },
-                {size:36},
+                {size:12},
                 {
                     row:[
                         {flex:1},
                         {html:this.headerButton_layout(getSvg('arrowTopRight'),'برداشت','bardasht')},
                         {size:24},
-                        {html:this.headerButton_layout(getSvg('arrowDown'),'واریز','variz')},
+                        {html:this.headerButton_layout(getSvg('arrowDown'),'شارژ حساب','variz')},
                         {flex:1}
                     ]
                 },
-                {size:24},
+                {size:12},
                 {size:36,html:(
                     <div style={{height:48,width:'100%',background:'#fff',borderRadius:'24px 24px 0 0'}}></div>
                 )}
@@ -114,13 +111,7 @@ export default class Wallet extends Component{
                 text={
                     <RVD
                         layout={{
-                            style:{
-                                background:'#3980a7',
-                                borderRadius:'12px',
-                                width:108,
-                                border:'1px solid rgba(217,217,217,0.3)',
-                                boxShadow:'inset 0 0 5px #aad3ff94'
-                            },
+                            className:'wallet-button',
                             column:[
                                 {size:6},
                                 {html:icon,align:'h'},
@@ -131,8 +122,8 @@ export default class Wallet extends Component{
                         }}
                     />
                 }
-                popOver={()=>{
-                    if(type === 'bardasht'){return <BardashtPopup/>}
+                popOver={({toggle})=>{
+                    if(type === 'bardasht'){return <BardashtPopup onClose={()=>toggle()}/>}
                     if(type === 'variz'){return <VarizPopup/>}
                 }}
             />
@@ -144,7 +135,6 @@ export default class Wallet extends Component{
             style:{background:'#fff'},
             column:[
                 this.filter_layout(),
-                {size:12},
                 this.cards_layout(),
                 this.noItem_layout()
             ]
@@ -157,7 +147,7 @@ export default class Wallet extends Component{
         let fromStyle = fromDate === false?{color:'#605E5C'}:{border:'1px solid #605E5C',color:'#fff',background:'#605E5C'}
         let toStyle = toDate === false?{color:'#605E5C'}:{border:'1px solid #605E5C',color:'#fff',background:'#605E5C'}
         return {
-            size:48,align:'v',
+            size:36,align:'v',
             row:[
                 {flex:1},
                 {html:'از تاریخ : ',className:'size12 color323130',align:'v'},
@@ -274,15 +264,34 @@ export default class Wallet extends Component{
 
 
 class BardashtPopup extends Component{
+    static contextType = appContext;
     constructor(props){
         super(props);
-        this.state = {model:{amount:''},mojoodi:1234567,edit:false}
+        this.state = {model:{amount:'',shomare_cart:'',shomare_sheba:''},mojoodi:1234567,edit:false}
     }
-    onSubmit(){
-
+    async onSubmit(){
+        let {services,showMessage} = this.context;
+        let {onClose} = this.props;
+        let {model} = this.state;
+        let res = await services({type:'bardasht_az_kife_pool',parameter:model})
+        if(typeof res === 'string'){showMessage(res); onClose()}
+        else if(res === true){
+            onClose()
+        } 
+    }
+    async componentDidMount(){
+        let {services,showMessage} = this.context;
+        let {onClose} = this.props;
+        let {model} = this.state;
+        let res = await services({type:'daryafte_ettelaate_banki_kife_pool'})
+        if(typeof res === 'string'){showMessage(res); onClose()}
+        else{
+            model = {...model,...res}
+            this.setState({model})
+        }
     }
     render(){
-        let {model,mojoodi,edit} = this.state;
+        let {model,mojoodi} = this.state;
         return (
             <Form
                 rtl={true} lang={'fa'}
@@ -292,11 +301,11 @@ class BardashtPopup extends Component{
                 rowStyle={{marginBottom:12}}
                 bodyStyle={{background:'#fff',padding:12,paddingBottom:36}}
                 onChange={(model)=>this.setState({model})}
-                header={{title:'افزایش موجودی کیف پول',style:{background:'#fff'}}}
+                header={{title:'برداشت از کیف پول',style:{background:'#fff'}}}
                 inputs={[
                     {type:'html',html:()=><span className="size12 bold" style={{height:36}}>مبلغ انتخابی حداکثر تا # ساعت به حساب شما واریز میشود</span>},
-                    {type:'text',field:'model.carBankNumber',label:'شماره کارت'},
-                    {type:'text',field:'model.sehba',label:'شماره شبا'},
+                    {type:'text',field:'model.shomare_cart',label:'شماره کارت',validations:[['required']]},
+                    {type:'text',field:'model.shomare_sheba',label:'شماره شبا',validations:[['required']]},
                     {type:'number',field:'model.amount',affix:'تومان',label:'مبلغ برداشت',validations:[['required'],['<=',mojoodi]]},
                     {
                         type:'html',
@@ -321,18 +330,26 @@ class BardashtPopup extends Component{
     }
 }
 class VarizPopup extends Component{
+    static contextType = appContext;
     constructor(props){
         super(props);
         this.state = {model:{amount:''}}
     }
-    onSubmit(){
-
+    async onSubmit(){
+        let {services,showMessage} = this.context;
+        let {onClose} = this.props;
+        let {model} = this.state;
+        let res = await services({type:'variz_be_kife_pool',parameter:model})
+        if(typeof res === 'string'){showMessage(res); onClose()}
+        else if(res === true){
+            onClose()
+        }
     }
     render(){
         let {model} = this.state;
         return (
             <Form
-                rtl={true}
+                rtl={true} lang='fa'
                 affixAttrs={{style:{height:36,background:'#fff',color:'#333'}}}
                 model={model}
                 footerAttrs={{style:{background:'#fff'}}}
@@ -341,7 +358,7 @@ class VarizPopup extends Component{
                 onChange={(model)=>this.setState({model})}
                 header={{title:'افزایش موجودی کیف پول',style:{background:'#fff'}}}
                 inputs={[
-                    {type:'number',affix:'تومان',inputStyle:{direction:'rtl'}}
+                    {type:'number',field:'model.amount',affix:'تومان',label:'مبلغ افزایش موجودی',validations:[['required'],['>=',10000]]}
                 ]}
                 onSubmit={()=>this.onSubmit()}
                 submitText='پرداخت'

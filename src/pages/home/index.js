@@ -118,12 +118,11 @@ export default class Home extends Component {
         let {SetState} = this.context;
         let {preOrders} = this.state;
         return {
-            className:'padding-0-12',
+            className:'padding-0-12',style:{overflow:'visible'},
             column:[
                 {html: "پیش سفارشات",className: "size14 color323130 bold padding-0-12",size: 48,align: "v"},
                 {
-                    size:72,
-                    style:{overflow:'visible'},
+                    size:72,style:{overflow:'visible'},
                     row: [
                         {
                             flex:1,style:{overflow:'visible'},

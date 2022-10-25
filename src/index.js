@@ -21,7 +21,6 @@ class OTPLogin extends Component{
       phoneValue = ''; 
     }
     else{
-      console.log(storage)
       storage = JSON.parse(storage);
       
       if(storage.recodeIn === false || new Date().getTime() >= storage.recodeIn){

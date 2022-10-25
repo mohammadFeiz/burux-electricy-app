@@ -1001,6 +1001,22 @@ export default function services(getState,token,userCardCode) {
         const included = res.data.data.included;
 
         return res;
+      },
+      async daryafte_ettelaate_banki_kife_pool(){
+        //در صورت خطا
+        //return 'خطایی رخ داد'
+        return {
+          shomare_sheba:'12345467',
+          shomare_cart:'556677889900'
+        }
+      },
+      async bardasht_az_kife_pool({parameter}){
+        let {shomare_sheba,shomare_cart,amount} = parameter;
+        //در صورت موفقیت
+        return true
+        //در صورت خطا
+        //return false
+
       }
     }
   }

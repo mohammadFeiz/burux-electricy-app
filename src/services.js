@@ -561,7 +561,6 @@ export default function services(getState,token,userCardCode) {
         });
       },
       async getCategories(obj) {
-
         let { baseUrl } = obj;
         let res = await Axios.get(`${baseUrl}/Spree/GetAllCategoriesbyIds?ids=10820,10179,10180,10550`);
         let dataResult = res.data.data.data;
@@ -586,7 +585,7 @@ export default function services(getState,token,userCardCode) {
         return categories;
       },
       async getCategoryItems({ parameter, baseUrl }, category = parameter.category) {
-        return await this.getTaxonProducts({ baseUrl, parameter: { Taxons: category.id.toString() } })
+        return getState().updateProductPrice(await this.getTaxonProducts({ baseUrl, parameter: { Taxons: category.id.toString() } }),'services => recommendeds')
       },
       async families() {
         return [
@@ -665,6 +664,11 @@ export default function services(getState,token,userCardCode) {
             const defaultVariant=included.find(x=>x.type==="variant" && x.id===defaultVariantId);
             const defaultVariantImages=included.filter(x=>x.type==="image" && defaultVariantImagesId.includes(x.id));
             const defaultVariantSku=defaultVariant.attributes.sku;
+            if(!defaultVariantSku){
+              console.error('there is an item without sku');
+              console.error('items is:',item)
+              continue
+            }
             const itemFromB1=b1Result.find(x=>x.itemCode===defaultVariantSku);
             const srcs=defaultVariantImages.map(x=>{
               return "https://shopback.miarze.com" + x.attributes.original_url;
@@ -687,6 +691,11 @@ export default function services(getState,token,userCardCode) {
         var finalResult = [];
         for (let product of products) {
           let { relationships } = product;
+          if (!relationships.variants.data || !relationships.variants.data.length) {
+            console.error(`product width id = ${product.id} has not any varinat`)
+            console.log('spree item is', product);
+            continue;
+          }
           let optionTypes = [];
           for (let i = 0; i < relationships.option_types.data.length; i++) {
             let { id } = relationships.option_types.data[i];
@@ -706,6 +715,7 @@ export default function services(getState,token,userCardCode) {
             }
             optionTypes.push({ id, name: attributes.name, items })
           }
+          if(!optionTypes.length){continue}
           let details = [];
           for (let i = 0; i < relationships.product_properties.data.length; i++) {
             let detail = relationships.product_properties.data[i];
@@ -727,10 +737,7 @@ export default function services(getState,token,userCardCode) {
           let defaultVariant;
           let inStock = 0;
           let defaultVariantId = product.relationships.default_variant.data.id
-          if (!relationships.variants.data || !relationships.variants.data.length) {
-            console.error(`product width id = ${product.id} has not any varinat`)
-            console.log('spree item is', product)
-          }
+          
           for (let i = 0; i < relationships.variants.data.length; i++) {
             let { id } = relationships.variants.data[i];
             id = id.toString();
@@ -747,7 +754,8 @@ export default function services(getState,token,userCardCode) {
           }
           else {
             console.error(`product width id = ${product.id} has not default variant`)
-            console.log('spree item is', product)
+            console.log('spree item is', product);
+            continue;
           }
           finalResult.push({
             inStock, details, optionTypes, variants, srcs, name: product.attributes.name, defaultVariant,

@@ -268,6 +268,10 @@ export default class Main extends Component {
     let updateProductPrice = (list,caller)=>{
       if(list === false){return false}
       return list.map((o)=>{
+        if(!o.defaultVariant){
+          console.error(`updateProductPrice error`);
+          console.error('object is',o);
+        }
         let a=[{itemCode:o.defaultVariant.code,itemQty:1}];
         let obj = fixPrice(a,caller)[0]
         let newObj = {...o,...obj};

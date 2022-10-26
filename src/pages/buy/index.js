@@ -100,7 +100,7 @@ export default class Buy extends Component {
     let {SetState} = this.context;
     let {categories} = this.state;
     return {
-      flex: 1,className:'box gap-no-color padding-12',scroll:'v',gap: 24,childsProps:{flex:1},
+      flex: 1,className:'box gap-no-color padding-12',scroll:'v',gap: 24,
       column:categories.map((o)=>{
         return {
           attrs:{onClick:()=>SetState({categoryZIndex:10,category:{products:o.products,name:o.name}})},

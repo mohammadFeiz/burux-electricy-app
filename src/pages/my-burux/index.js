@@ -23,29 +23,25 @@ export default class MyBurux extends Component{
             user:'محمد شریف فیض',
             customerCode:'c19428',shopName:'فروشگاه الکتریکی تهران',visitorName:'علی محمدی',nationalCode:'0386481784',
             parts:[
-                {text:'پیگیری سفارش خرید',icon:13,onClick:()=>{
+                {after:getSvg('chevronLeft'),text:'پیگیری سفارش خرید',icon:getSvg(13),onClick:()=>{
                     let {SetState} = this.context;
                     SetState({ordersHistoryZIndex:10})
                 }},
-                {text:'جایزه ها',icon:15,onClick:()=>{}},
-                {text:'حساب ها',icon:14,onClick:()=>{}},
-                {text:'جزییات درخواست های گارانتی',icon:14,onClick:async ()=>{
+                {after:getSvg('chevronLeft'),text:'جایزه ها',icon:getSvg(15),onClick:()=>{}},
+                {after:getSvg('chevronLeft'),text:'حساب ها',icon:getSvg(14),onClick:()=>{}},
+                {after:getSvg('chevronLeft'),text:'جزییات درخواست های گارانتی',icon:getSvg(14),onClick:async ()=>{
                     let {SetState,services} = this.context;
                     let {items,total} = await services({type:'guaranteeItems'});
                     SetState({guaranteeItems:items,totalGuaranteeItems:total,joziate_darkhasthaye_garanti_popup_zIndex:10}) 
                 }},
-                {text:'قوانین و مقررات',icon:16,onClick:()=>{}},
-                {text:'خروج از حساب کاربری',icon:17,onClick:()=>this.context.logout(),color:'#A4262C'},
+                {after:getSvg('chevronLeft'),text:'قوانین و مقررات',icon:getSvg(16),onClick:()=>{}},
+                {after:getSvg('chevronLeft'),text:'خروج از حساب کاربری',icon:getSvg(17),onClick:()=>this.context.logout(),style:{color:'#A4262C'}},
             ]
         }
     }
     parts_layout(){
-        let {theme} = this.context;
         let {parts} = this.state;
-        return {
-            className:'margin-0-12' + (theme === false?' box':''),gap:theme === false?1:6,
-            column:parts.map(({text,icon,color,onClick},i)=>{return {html:<Part {...{text,icon,color,onClick}}/>,className:'part' + i}})
-        }
+        return {className:'margin-0-12',style:{overflow:'visible'},html:<Card type='card4' items={parts}/>}
     }
     getContent(){
         let {totalGuaranteeItems,wallet,userInfo,b1Info} = this.context;
@@ -199,34 +195,4 @@ export default class MyBurux extends Component{
         </>)
     }
 }
-class Part extends Component{
-    static contextType = appContext;
-    getStyle(){
-        let {theme} = this.context;
-        let style = {height:60}
-        if(theme === 'theme-1'){
-            style.borderRadius = 48;
-            style.height = 48;
-            style.margin = '0 6px';
-        }
-        return style;
-    }
-    render(){
-        let {theme} = this.context;
-        let {text,icon,color,onClick} = this.props;
-        return (
-            <RVD
-                layout={{
-                    attrs:{onClick:()=>onClick()},
-                    style:this.getStyle(),
-                    className:theme === 'theme-1'?'theme-1-light-bg':'',
-                    row:[
-                        {size:60,html:getSvg(icon),align:'vh'},
-                        {flex:1,html:text,align:'v',className:'color605E5C size14 bold',style:{color}},
-                        {size:40,html:getSvg('chevronLeft'),align:'vh',style:{color}}
-                    ]
-                }}
-            />
-        )
-    }
-}
+

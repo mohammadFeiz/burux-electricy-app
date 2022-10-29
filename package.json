@@ -13,6 +13,8 @@
     "@testing-library/user-event": "^13.5.0",
     "aio-button": "^5.2.0",
     "aio-form-react": "^4.0.4",
+    "aio-loading": "^1.0.0",
+    "aio-storage": "^1.0.1",
     "aio-table": "^7.0.0",
     "axios": "^0.26.1",
     "gah-datepicker": "^4.0.5",

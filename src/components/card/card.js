@@ -6,6 +6,7 @@ export default class Card extends Component{
         if(type === 'card1'){return <Card1 {...this.props}/>}
         if(type === 'card2'){return <Card2 {...this.props}/>} 
         if(type === 'card3'){return <Card3 {...this.props}/>} 
+        if(type === 'card4'){return <Card4 {...this.props}/>} 
     }
 }
 class Card1 extends Component{
@@ -104,6 +105,36 @@ class Card3 extends Component{
                         this.rows_layout(rows),
                         {style:{background:'#fff',borderRadius:'0 0 12px 12px'},show:!!footer,size:40,align:'vh',html:footer,className:'color0094D4 size12 bold',attrs:{onClick}}
                     ]
+                }}
+            />
+        )
+    }
+}
+
+class Card4 extends Component{
+    item_layout({onClick,icon,text,subtext,after,style}){
+        return {
+            attrs:{onClick:()=>onClick()},
+            size:60,style:{background:'#fff',color:'#605E5C',...style},
+            row:[
+                {size:60,html:icon,align:'vh'},
+                {flex:1,column:[
+                    {flex:1},
+                    {html:text,align:'v',className:'size14 bold'},
+                    {show:!!subtext,html:subtext,align:'v',className:'size12'}, 
+                    {flex:1}
+                ]},
+                {show:!!after,size:40,html:()=>after,align:'vh'}
+            ]
+        }
+    }
+    render(){
+        let {items = []} = this.props;
+        return (
+            <RVD 
+                layout={{
+                    gap:1,style:{borderRadius:12,boxShadow:'0px 2px 8px 0px rgb(153 153 153 / 21%)',background:'#ddd'},
+                    column:items.map((o)=>this.item_layout(o))
                 }}
             />
         )

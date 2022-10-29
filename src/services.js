@@ -1009,7 +1009,7 @@ export default function services(getState,token,userCardCode) {
 
         return res;
       },
-      async daryafte_ettelaate_banki_kife_pool(){
+      async daryafte_ettelaate_banki_kife_pool({baseUrl}){
 
         let res = await Axios.get(`${baseUrl}/CreditCard`);
 
@@ -1033,7 +1033,7 @@ export default function services(getState,token,userCardCode) {
         //   shomare_cart:'556677889900'
         // }
       },
-      async bardasht_az_kife_pool({parameter}){
+      async bardasht_az_kife_pool({parameter,baseUrl}){
         let {shomare_sheba,shomare_cart,amount} = parameter;
 
         let res = await Axios.post(`${baseUrl}/WithdrawRequest`,

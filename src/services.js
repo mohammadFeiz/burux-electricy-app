@@ -1010,17 +1010,42 @@ export default function services(getState,token,userCardCode) {
         return res;
       },
       async daryafte_ettelaate_banki_kife_pool(){
+
+        let res = await Axios.get(`${baseUrl}/CreditCard`);
+
+      if(!res.data.isSuccess){
+        return res.data.message;
+      }
+
+      const firstItem=res.data.data[0];
+
+      if(firstItem===undefined || firstItem == null) return "شماره کارت تعریف نشده است!";
+
+      return {
+          shomare_sheba:firstItem.shebaNumber,
+          shomare_cart:firstItem.cardNumber
+        };
+
         //در صورت خطا
         //return 'خطایی رخ داد'
-        return {
-          shomare_sheba:'12345467',
-          shomare_cart:'556677889900'
-        }
+        // return {
+        //   shomare_sheba:'12345467',
+        //   shomare_cart:'556677889900'
+        // }
       },
       async bardasht_az_kife_pool({parameter}){
         let {shomare_sheba,shomare_cart,amount} = parameter;
+
+        let res = await Axios.post(`${baseUrl}/WithdrawRequest`,
+        {
+          "cardNumber": shomare_cart,
+          "shebaNumber": shomare_sheba,
+          "amount": amount
+        }
+      );
+
         //در صورت موفقیت
-        return true
+        return res.data.isSuccess;
         //در صورت خطا
         //return false
 

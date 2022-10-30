@@ -22,6 +22,7 @@ export default class Wallet extends Component{
             fromDate:false,
             toDate:false,
             items:[],
+            cards:[],
             showSetting:true
         }
     }
@@ -59,10 +60,16 @@ export default class Wallet extends Component{
             top:'0%',
             opacity:1
         }, 300);
-        let {services} = this.context;
+        let {services,showMessage} = this.context;
         let {fromDate}=this.state;
         let items = await services({type:'walletItems',parameter:fromDate,loading:false});
-        this.setState({items})
+        let cards = []; 
+        let res = await services({type:'daryafte_ettelaate_banki_kife_pool'})
+        if(typeof res === 'string'){showMessage(res);}
+        else{
+            cards = res;
+        }
+        this.setState({items,cards})
     }
     header_layout(){
         let {wallet} = this.context;
@@ -252,7 +259,7 @@ export default class Wallet extends Component{
         }
     }
     render(){
-        let {showSetting} = this.state;
+        let {showSetting,cards} = this.state;
         return (
             <>
                 <RVD
@@ -267,7 +274,7 @@ export default class Wallet extends Component{
                     }}
                 />
                 {
-                    showSetting && <WalletSetting onClose={()=>this.setState({showSetting:false})}/>
+                    showSetting && <WalletSetting cards={cards} onChange={(cards)=>this.setState({cards})} onClose={()=>this.setState({showSetting:false})}/>
                 }
             </>
         )
@@ -275,30 +282,16 @@ export default class Wallet extends Component{
 }
 
 class WalletSetting extends Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            cards:[
-                
-            ]
-        }
-    }
+    static contextType = appContext;
     header_layout(){
         let {onClose} = this.props;
         return {
             html:<Header title='تنظیمات کیف پول' onClose={()=>onClose()}/>
         }
     }
-    async componentDidMount(){
-        let {services,showMessage} = this.context;
-        let res = await services({type:'daryafte_ettelaate_banki_kife_pool'})
-        if(typeof res === 'string'){showMessage(res);}
-        else{
-            this.setState({cards:res})
-        }
-    }
+    
     cards_layout(){
-        let {cards} = this.state;
+        let {cards,onChange} = this.props;
         return {
             column:[
                 {
@@ -315,7 +308,7 @@ class WalletSetting extends Component{
                                     popOver={({toggle})=>{
                                         return (
                                             <AddCard
-                                                onAdd={(model)=>this.setState({cards:[...cards,model]})}
+                                                onAdd={(model)=>onChange([...cards,model])}
                                                 onClose={()=>toggle()}
                                             />
                                         )
@@ -327,7 +320,7 @@ class WalletSetting extends Component{
                 },
                 {
                     gap:12,
-                    column:cards.map(({number,name})=>{
+                    column:cards.map(({number,name,id})=>{
                         return {
                             size:60,className:'box margin-0-12',
                             row:[
@@ -341,7 +334,19 @@ class WalletSetting extends Component{
                                         {flex:1}
                                     ]
                                 },
-                                {size:48,html:<Icon path={mdiClose} size={0.8}/>,align:'vh'}
+                                {
+                                    size:48,html:<Icon path={mdiClose} size={0.8}/>,align:'vh',
+                                    attrs:{
+                                        onClick:async ()=>{
+                                            let {services,showMessage} = this.context;
+                                            let res = await services({type:'hazfe_cart_kife_pool',parameter:id})
+                                            if(typeof res === 'string'){showMessage(res);}
+                                            else if(res === true){
+                                             onChange(cards.filter((o)=>o.id !== id))
+                                            } 
+                                        }
+                                    }
+                                }
                             ]
                         }
                     })

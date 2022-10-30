@@ -1033,6 +1033,12 @@ export default function services(getState,token,userCardCode) {
 
         return true;
       },
+      async hazfe_cart_kife_pool({parameter,baseUrl}){
+        let id = parameter;
+        //در صورت خطا
+        //return 'خطایی رخ داد'
+        return true;
+      },
       async bardasht_az_kife_pool({parameter,baseUrl}){
         let {amount,cardId} = parameter;
 

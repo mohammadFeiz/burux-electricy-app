@@ -1057,8 +1057,12 @@ export default function services(getState,token,userCardCode) {
         //در صورت خطا
         //return false
 
+      },
+      async variz_be_kife_pool({parameter}){
+
       }
     }
+    
   }
   return Service({
     services: fn(),

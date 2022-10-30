@@ -7,6 +7,10 @@ import appContext from "../../app-context";
 import Form from "../../components/form/form";
 import noItemSrc from './../../images/not-found.png';
 import AIOButton from './../../components/aio-button/aio-button';
+import {Icon} from '@mdi/react';
+import {mdiCog,mdiClose} from '@mdi/js';
+import Popup from './../../components/popup/popup';
+import Header from './../../components/header/header';
 import $ from 'jquery';
 import './index.css';
 export default class Wallet extends Component{
@@ -17,7 +21,8 @@ export default class Wallet extends Component{
         this.state = {
             fromDate:false,
             toDate:false,
-            items:[]
+            items:[],
+            showSetting:true
         }
     }
     onClose(){
@@ -67,10 +72,11 @@ export default class Wallet extends Component{
                 {className:'blue-gradient-point1'},
                 {className:'blue-gradient-point2'},
                 {
-                    size:60,
+                    size:60,className:'colorFFF',
                     row:[
                         {size:60,html:getSvg('chevronLeft',{flip:true,fill:'#fff'}),align:'vh',attrs:{onClick:()=>this.onClose()}},
-                        {html:'مدیریت کیف پول',align:'v',className:'colorFFF'}
+                        {flex:1,html:'مدیریت کیف پول',align:'v'},
+                        {size:60,align:'vh',html:<Icon path={mdiCog} size={0.8}/>}
                     ]
                 },
                 {
@@ -246,23 +252,112 @@ export default class Wallet extends Component{
         }
     }
     render(){
+        let {showSetting} = this.state;
         return (
-            <RVD
-                layout={{
-                    className:'main-bg fixed',
-                    attrs:{ref:this.dom},
-                    style:{left:'50%',top:'100%',height:'0%',width:'0%',opacity:0},
-                    column:[
-                        this.header_layout(),
-                        this.body_layout()
-                    ]
-                }}
-            />
+            <>
+                <RVD
+                    layout={{
+                        className:'main-bg fixed',
+                        attrs:{ref:this.dom},
+                        style:{left:'50%',top:'100%',height:'0%',width:'0%',opacity:0},
+                        column:[
+                            this.header_layout(),
+                            this.body_layout()
+                        ]
+                    }}
+                />
+                {
+                    showSetting && <WalletSetting onClose={()=>this.setState({showSetting:false})}/>
+                }
+            </>
         )
     }
 }
 
-
+class WalletSetting extends Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            cards:[
+                
+            ]
+        }
+    }
+    header_layout(){
+        let {onClose} = this.props;
+        return {
+            html:<Header title='تنظیمات کیف پول' onClose={()=>onClose()}/>
+        }
+    }
+    cards_layout(){
+        let {cards} = this.state;
+        return {
+            column:[
+                {
+                    size:48,className:'margin-0-12',
+                    row:[
+                        {flex:1,html:'کارت ها',align:'v'},
+                        {
+                            html:(
+                                <AIOButton
+                                    type='button' style={{background:'none'}} caret={false}
+                                    className='color0094D4 size12 bold'
+                                    text='افزودن کارت جدید'
+                                    position='bottom'
+                                    popOver={({toggle})=>{
+                                        return (
+                                            <AddCard
+                                                onAdd={(model)=>this.setState({cards:[...cards,model]})}
+                                                onClose={()=>toggle()}
+                                            />
+                                        )
+                                    }}
+                                />
+                            ),align:'v'
+                        }
+                    ]
+                },
+                {
+                    gap:12,
+                    column:cards.map(({number,name})=>{
+                        return {
+                            size:60,className:'box margin-0-12',
+                            row:[
+                                {size:12},
+                                {
+                                    flex:1,
+                                    column:[
+                                        {flex:1},
+                                        {html:number,className:'size14'},
+                                        {html:name,className:'size12 bold color605E5C'},
+                                        {flex:1}
+                                    ]
+                                },
+                                {size:48,html:<Icon path={mdiClose} size={0.8}/>,align:'vh'}
+                            ]
+                        }
+                    })
+                }
+            ]
+        }
+    }
+    render(){
+        return (
+            <Popup>
+                <RVD
+                    layout={{
+                        className:'main-bg fixed',
+                        
+                        column:[
+                            this.header_layout(),
+                            this.cards_layout()
+                        ]
+                    }}
+                />
+            </Popup> 
+        )
+    }
+}
 class BardashtPopup extends Component{
     static contextType = appContext;
     constructor(props){
@@ -325,6 +420,44 @@ class BardashtPopup extends Component{
                 ]}
                 onSubmit={()=>this.onSubmit()}
                 submitText='برداشت'
+            />
+        )
+    }
+}
+class AddCard extends Component{
+    static contextType = appContext;
+    constructor(props){
+        super(props);
+        this.state = {model:{name:'',number:''}}
+    }
+    async onSubmit(){
+        // let {services,showMessage} = this.context;
+        let {onClose,onAdd} = this.props;
+        let {model} = this.state;
+        // let res = await services({type:'afzoozane_cart_kife_pool',parameter:model})
+        // if(typeof res === 'string'){showMessage(res); onClose()}
+        // else if(res === true){
+            onAdd(model);
+            onClose()
+        //} 
+    }
+    render(){
+        let {model} = this.state;
+        return (
+            <Form
+                rtl={true} lang={'fa'}
+                model={model}
+                footerAttrs={{style:{background:'#fff'}}}
+                rowStyle={{marginBottom:12}}
+                bodyStyle={{background:'#fff',padding:12,paddingBottom:36}}
+                onChange={(model)=>this.setState({model})}
+                header={{title:'افزودن کارت',style:{background:'#fff'}}}
+                inputs={[
+                    {type:'text',field:'model.number',label:'شماره کارت',validations:[['required']]},
+                    {type:'text',field:'model.name',label:'نام دارنده کارت',validations:[['required']]}
+                ]}
+                onSubmit={()=>this.onSubmit()}
+                submitText='افزودن'
             />
         )
     }

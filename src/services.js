@@ -1011,23 +1011,34 @@ export default function services(getState,token,userCardCode) {
       },
       async daryafte_ettelaate_banki_kife_pool({baseUrl}){
 
+      const res = await Axios.get(`${baseUrl}/CreditCard`);
+
+      if(!res.data.isSuccess) return res.data.message;
+
         //در صورت خطا
         //return 'خطایی رخ داد'
-        return [
-          {name:'علی احمدی',number:'12345678912345'},
-          {name:'علی احمدی',number:'12345678912345'},
-        ]
+        return res.data.data.map(x=>{
+          return {name:x.cardTitle,number:x.cardNumber,id:x.id};
+        })
       },
-      async afzoozane_cart_kife_pool({name,number}){
-        return true
+      async afzoozane_cart_kife_pool({parameter,baseUrl}){
+        let {name,number}=parameter;
+        
+        const res = await Axios.post(`${baseUrl}/CreditCard`,{
+          "cardNumber": number,
+          "cardTitle": name
+        });
+
+        if(!res.data.isSuccess) return res.data.message;
+
+        return true;
       },
       async bardasht_az_kife_pool({parameter,baseUrl}){
-        let {shomare_sheba,shomare_cart,amount} = parameter;
+        let {amount,cardId} = parameter;
 
         let res = await Axios.post(`${baseUrl}/WithdrawRequest`,
         {
-          "cardNumber": shomare_cart,
-          "shebaNumber": shomare_sheba,
+          "creditCardId": cardId,
           "amount": amount
         }
       );

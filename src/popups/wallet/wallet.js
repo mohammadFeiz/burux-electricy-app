@@ -23,7 +23,7 @@ export default class Wallet extends Component{
             toDate:false,
             items:[],
             cards:[],
-            showSetting:true
+            showSetting:false
         }
     }
     onClose(){
@@ -83,7 +83,7 @@ export default class Wallet extends Component{
                     row:[
                         {size:60,html:getSvg('chevronLeft',{flip:true,fill:'#fff'}),align:'vh',attrs:{onClick:()=>this.onClose()}},
                         {flex:1,html:'مدیریت کیف پول',align:'v'},
-                        {size:60,align:'vh',html:<Icon path={mdiCog} size={0.8}/>}
+                        {size:60,align:'vh',html:<Icon path={mdiCog} size={0.8}/>,attrs:{onClick:()=>this.setState({showSetting:true})}}
                     ]
                 },
                 {
@@ -116,6 +116,7 @@ export default class Wallet extends Component{
         }
     }
     headerButton_layout(icon,text,type){
+        let {cards} = this.state;
         return (
             <AIOButton
                 type='button' caret={false}
@@ -136,7 +137,7 @@ export default class Wallet extends Component{
                     />
                 }
                 popOver={({toggle})=>{
-                    if(type === 'bardasht'){return <BardashtPopup onClose={()=>toggle()}/>}
+                    if(type === 'bardasht'){return <BardashtPopup onClose={()=>toggle()} cards={cards}/>}
                     if(type === 'variz'){return <VarizPopup/>}
                 }}
             />
@@ -375,7 +376,7 @@ class BardashtPopup extends Component{
     static contextType = appContext;
     constructor(props){
         super(props);
-        this.state = {model:{amount:''},mojoodi:1234567,edit:false}
+        this.state = {model:{amount:'',card:false},mojoodi:1234567,edit:false}
     }
     async onSubmit(){
         let {services,showMessage} = this.context;
@@ -389,11 +390,13 @@ class BardashtPopup extends Component{
     }
     render(){
         let {model,mojoodi} = this.state;
+        let {cards} = this.props;
         return (
             <Form
                 rtl={true} lang={'fa'}
                 affixAttrs={{style:{height:36,background:'#fff',color:'#333'}}}
                 model={model}
+                data={{cards}}
                 footerAttrs={{style:{background:'#fff'}}}
                 rowStyle={{marginBottom:12}}
                 bodyStyle={{background:'#fff',padding:12,paddingBottom:36}}
@@ -401,6 +404,7 @@ class BardashtPopup extends Component{
                 header={{title:'برداشت از کیف پول',style:{background:'#fff'}}}
                 inputs={[
                     {type:'html',html:()=><span className="size12 bold" style={{height:36}}>مبلغ انتخابی حداکثر تا # ساعت به حساب شما واریز میشود</span>},
+                    {type:'select',options:cards,optionValue:'option.id',optionSubtext:'option.name',optionText:'option.number',field:'model.card',label:'انتخاب کارت'},
                     {type:'number',field:'model.amount',affix:'تومان',label:'مبلغ برداشت',validations:[['required'],['<=',mojoodi]]},
                     {
                         type:'html',

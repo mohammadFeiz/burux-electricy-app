@@ -1035,8 +1035,11 @@ export default function services(getState,token,userCardCode) {
       },
       async hazfe_cart_kife_pool({parameter,baseUrl}){
         let id = parameter;
-        //در صورت خطا
-        //return 'خطایی رخ داد'
+
+        const res = await Axios.get(`${baseUrl}/CreditCard/DeleteCard?id=${id}`);
+
+        if(!res.data.isSuccess) return res.data.message;
+
         return true;
       },
       async bardasht_az_kife_pool({parameter,baseUrl}){

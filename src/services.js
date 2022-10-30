@@ -1043,11 +1043,11 @@ export default function services(getState,token,userCardCode) {
         return true;
       },
       async bardasht_az_kife_pool({parameter,baseUrl}){
-        let {amount,cardId} = parameter;
+        let {amount,card} = parameter;
 
         let res = await Axios.post(`${baseUrl}/WithdrawRequest`,
         {
-          "creditCardId": cardId,
+          "creditCardId": card,
           "amount": amount
         }
       );

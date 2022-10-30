@@ -289,6 +289,14 @@ class WalletSetting extends Component{
             html:<Header title='تنظیمات کیف پول' onClose={()=>onClose()}/>
         }
     }
+    async componentDidMount(){
+        let {services,showMessage} = this.context;
+        let res = await services({type:'daryafte_ettelaate_banki_kife_pool'})
+        if(typeof res === 'string'){showMessage(res);}
+        else{
+            this.setState({cards:res})
+        }
+    }
     cards_layout(){
         let {cards} = this.state;
         return {
@@ -362,7 +370,7 @@ class BardashtPopup extends Component{
     static contextType = appContext;
     constructor(props){
         super(props);
-        this.state = {model:{amount:'',shomare_cart:'',shomare_sheba:''},mojoodi:1234567,edit:false}
+        this.state = {model:{amount:''},mojoodi:1234567,edit:false}
     }
     async onSubmit(){
         let {services,showMessage} = this.context;
@@ -373,17 +381,6 @@ class BardashtPopup extends Component{
         else if(res === true){
             onClose()
         } 
-    }
-    async componentDidMount(){
-        let {services,showMessage} = this.context;
-        let {onClose} = this.props;
-        let {model} = this.state;
-        let res = await services({type:'daryafte_ettelaate_banki_kife_pool'})
-        if(typeof res === 'string'){showMessage(res); onClose()}
-        else{
-            model = {...model,...res}
-            this.setState({model})
-        }
     }
     render(){
         let {model,mojoodi} = this.state;
@@ -399,8 +396,6 @@ class BardashtPopup extends Component{
                 header={{title:'برداشت از کیف پول',style:{background:'#fff'}}}
                 inputs={[
                     {type:'html',html:()=><span className="size12 bold" style={{height:36}}>مبلغ انتخابی حداکثر تا # ساعت به حساب شما واریز میشود</span>},
-                    {type:'text',field:'model.shomare_cart',label:'شماره کارت',validations:[['required']]},
-                    {type:'text',field:'model.shomare_sheba',label:'شماره شبا',validations:[['required']]},
                     {type:'number',field:'model.amount',affix:'تومان',label:'مبلغ برداشت',validations:[['required'],['<=',mojoodi]]},
                     {
                         type:'html',
@@ -431,15 +426,15 @@ class AddCard extends Component{
         this.state = {model:{name:'',number:''}}
     }
     async onSubmit(){
-        // let {services,showMessage} = this.context;
+        let {services,showMessage} = this.context;
         let {onClose,onAdd} = this.props;
         let {model} = this.state;
-        // let res = await services({type:'afzoozane_cart_kife_pool',parameter:model})
-        // if(typeof res === 'string'){showMessage(res); onClose()}
-        // else if(res === true){
+        let res = await services({type:'afzoozane_cart_kife_pool',parameter:model})
+        if(typeof res === 'string'){showMessage(res); onClose()}
+        else if(res === true){
             onAdd(model);
             onClose()
-        //} 
+        } 
     }
     render(){
         let {model} = this.state;

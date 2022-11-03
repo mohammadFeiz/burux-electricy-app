@@ -104,7 +104,12 @@ export default class ProductCard extends Component{
         let {product,count = 1} = this.props;
         let {FinalPrice,inStock} = product;
         if(!inStock || !FinalPrice){return false}
-        return {row:[{flex:1},{html:this.splitPrice(FinalPrice * count) + ' ریال',className:'size12 color404040 bold theme-1-colorEEE padding-0-12'}]}
+        return {
+            row:[
+                {flex:1},
+                {html:this.splitPrice(FinalPrice) + ' ریال',className:'size12 color404040 bold theme-1-colorEEE padding-0-12'}
+            ]
+        }
     }
     async onClick(){
         let {SetState,services} = this.context;

@@ -585,7 +585,8 @@ export default function services(getState,token,userCardCode) {
         return categories;
       },
       async getCategoryItems({ parameter, baseUrl }, category = parameter.category) {
-        return getState().updateProductPrice(await this.getTaxonProducts({ baseUrl, parameter: { Taxons: category.id.toString() } }),'services => recommendeds')
+
+        return getState().updateProductPrice(await this.getTaxonProducts({ baseUrl, parameter: { Taxons: category.id.toString() } },'msf'),'services => recommendeds')
       },
       async families() {
         return [

@@ -236,7 +236,7 @@ export default class Main extends Component {
     this.getCampaignsData();
     if(bazargah.active){this.getBazargahOrders();}
     //let testedChance = await services({type:"get_tested_chance"});
-    let pricing = new Pricing('https://b1api.burux.com/api/BRXIntLayer/GetCalcData', userCardCode, 10 * 60 * 1000)
+    let pricing = new Pricing('https://b1api.burux.com/api/BRXIntLayer/GetCalcData', userCardCode,12 * 60 * 60 * 1000)
     let istarted = pricing.startservice().then((value) => { return value; });
     let fixPrice = (items,caller)=>{
       if(developerMode){
@@ -266,6 +266,7 @@ export default class Main extends Component {
       return list
     }
     let updateProductPrice = (list,caller)=>{
+      if(caller === 'msf'){debugger}
       if(list === false){return false}
       return list.map((o)=>{
         if(!o.defaultVariant){

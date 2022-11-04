@@ -19,7 +19,7 @@ export default class Wallet extends Component{
         super(props);
         this.dom = createRef();
         this.state = {
-            fromDate:false,
+            fromDate:'',
             toDate:false,
             items:[],
             cards:[],
@@ -158,7 +158,7 @@ export default class Wallet extends Component{
         let {services}=this.context;
         let {fromDate,toDate} = this.state;
         let style = {borderRadius:24,width:100,height:24,border:'1px solid #605E5C'}
-        let fromStyle = fromDate === false?{color:'#605E5C'}:{border:'1px solid #605E5C',color:'#fff',background:'#605E5C'}
+        let fromStyle = !fromDate?{color:'#605E5C'}:{border:'1px solid #605E5C',color:'#fff',background:'#605E5C'}
         let toStyle = toDate === false?{color:'#605E5C'}:{border:'1px solid #605E5C',color:'#fff',background:'#605E5C'}
         return {
             size:36,align:'v',
@@ -169,18 +169,18 @@ export default class Wallet extends Component{
                 {
                     html:(
                         <GAH
-                            value={fromDate}
+                            value={fromDate || false}
                             style={{...style,...fromStyle}}
                             calendarType='jalali'
-                            onChange={async (obj)=>{
-                                this.setState({fromDate:obj.dateString});
-                                let items = await services({type:'walletItems',parameter:obj});
+                            onChange={async ({gregorian,dateString})=>{
+                                this.setState({fromDate:dateString});
+                                let items = await services({type:'walletItems',parameter:`${gregorian[0]}/${gregorian[1]}/${gregorian[2]}`});
                                 this.setState({items});
                             }}
                             theme={['#0d436e','#fff']}
                             onClear={async ()=>{
-                                this.setState({fromDate:false});
-                                let items = await services({type:'walletItems',parameter:false});
+                                this.setState({fromDate:''});
+                                let items = await services({type:'walletItems',parameter:''});
                                 this.setState({items});
                             }}
                         />

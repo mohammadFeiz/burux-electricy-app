@@ -15,7 +15,7 @@ export default class Billboard extends Component{
             let src = {'10181':HomeSlide1}[id];
             return (
                 <img src={src} style={{height:size}} width='100%' onClick={async ()=>{
-                    let products = await services({type:'getCampaignProducts',parameter:{campaign},cache:120,cacheName:'campaign' + id});
+                    let products = await services({type:'getCampaignProducts',parameter:campaign,cache:120,cacheName:'campaign' + id});
                     SetState({categoryZIndex:10,category:{products,name,src}})
                 }}/>
             )

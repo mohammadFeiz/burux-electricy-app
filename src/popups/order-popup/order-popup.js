@@ -46,7 +46,7 @@ export default class OrderPopup extends Component {
     }
     async getDetails(){
       let {services,order} = this.context;
-      let details = await services({type:'orderProducts',parameter:{order}})
+      let details = await services({type:'orderProducts',parameter:order})
       this.setState({details})
     }
     render() {

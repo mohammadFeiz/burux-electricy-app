@@ -3,6 +3,7 @@ import RVD from 'react-virtual-dom';
 import ProductCount from '../product-count';
 import NoSrc from './../../images/no-src.png';
 import appContext from '../../app-context';
+import AIOButton from '../aio-button/aio-button';
 //props
 //1 - product {name = '',variants = [{id}],price = 0,discountPrice = 0,discountPercent = 0,inStock = false,srcs = ['...']}
 //3 - details = [[title = '',value = '']]
@@ -13,6 +14,7 @@ import appContext from '../../app-context';
 //9 - type = 'horizontal' || 'vertical'
 export default class ProductCard extends Component{
     static contextType = appContext;
+    debuggerMode = true;
     isInCart(){
         let {cart} = this.context;
         let {product} = this.props;
@@ -58,7 +60,20 @@ export default class ProductCard extends Component{
     name_layout(){
         let {product} = this.props;
         let {name} = product;
-        return {html:name,className:'size14 color575756 bold theme-1-colorDDD',style:{whiteSpace:'normal'}}
+        return {html:this.debuggerMode?(
+            <AIOButton
+                type='button' style={{background:'none',fontSize:'inherit',color:'inherit',fontFamily:'inherit',fontWeight:'inherit'}} caret={false}
+                text={name}
+                hover={true}
+                popOver={()=>{
+                    return (
+                        <pre style={{width:'100vw',height:500,overflowY:'auto',direction:'ltr'}}>
+                           {JSON.stringify(product,null,4)} 
+                        </pre>
+                    )
+                }}
+            />
+        ):name,className:'size14 color575756 bold theme-1-colorDDD',style:{whiteSpace:'normal'}}
     }
     discount_layout(){
         let {product,count = 1} = this.props;
@@ -101,7 +116,7 @@ export default class ProductCard extends Component{
         return {flex:1,align:'v',html:'موجود در سبد خرید شما',className:'colorD83B01 bold size10 padding-0-12'}
     }
     price_layout(){
-        let {product,count = 1} = this.props;
+        let {product} = this.props;
         let {FinalPrice,inStock} = product;
         if(!inStock || !FinalPrice){return false}
         return {
@@ -112,10 +127,10 @@ export default class ProductCard extends Component{
         }
     }
     async onClick(){
+        if(this.debuggerMode){return }
         let {SetState,services} = this.context;
         let {product,parentZIndex = 1} = this.props;
-        let parameter = {id:product.id,code:product.defaultVariant.code,product}
-        product = await services({type:'getProductFullDetail',parameter})
+        product = await services({type:'getProductFullDetail',parameter:{id:product.id,code:product.defaultVariant.code,product}})
         SetState({productZIndex:parentZIndex * 10,product})
     }
     horizontal_layout(){
@@ -182,7 +197,6 @@ export default class ProductCard extends Component{
     }
     render(){
         let {type} = this.props;
-        console.log(type)
         return this[type +'_layout']()
     }
 }

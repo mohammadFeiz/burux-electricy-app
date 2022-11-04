@@ -43,28 +43,28 @@ export default class Buy extends Component {
     
   }
   async getCategories() {
-    let {services} = this.context;
-    let categories = await services({type:"getCategories"});
+    let {kharidApis} = this.context;
+    let categories = await kharidApis({type:"getCategories"});
     this.setState({ categories });
   }
   async getFamilies() {
-    let {services} = this.context;
-    let families = await services({type:'families'});
+    let {kharidApis} = this.context;
+    let families = await kharidApis({type:'families'});
     this.setState({ families });
   }
   async get_recommendeds() {
-    let {services} = this.context;
-    let recommendeds = await services({type:'recommendeds'});
+    let {kharidApis} = this.context;
+    let recommendeds = await kharidApis({type:'recommendeds'});
     this.setState({ recommendeds });
   }
   async get_lastOrders() {
-    let {services} = this.context;
-    let lastOrders = await services({type:"lastOrders"});
+    let {kharidApis} = this.context;
+    let lastOrders = await kharidApis({type:"lastOrders"});
     this.setState({ lastOrders });
   }
   async get_bestSellings() {
-    let {services,getPrice} = this.context;
-    let bestSellings = await services({type:'bestSellings'});
+    let {kharidApis} = this.context;
+    let bestSellings = await kharidApis({type:'bestSellings'});
     this.setState({ bestSellings });
   }
   //dont set async for parallel data fetching
@@ -131,7 +131,7 @@ export default class Buy extends Component {
     }
   }
   sliders(){
-    let {SetState,services} = this.context;
+    let {SetState} = this.context;
     let sliders = [['bestSellings','پر فروش ترین محصولات'],['lastOrders','آخرین سفارشات شما'],['recommendeds','پیشنهاد سفارش']]
     return {
       gap:12,className:'margin-0-12',

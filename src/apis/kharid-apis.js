@@ -1,61 +1,10 @@
 import Axios from "axios";
-import bulb10w from './images/10w-bulb.png';
-import nosrc from './images/no-src.png';
-import AIODate from 'aio-date';
-export default function apis({getState,token,getDateAndTime,showAlert}) {
+import bulb10w from './../images/10w-bulb.png';
+import nosrc from './../images/no-src.png';
+export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
   let baseUrl = 'https://retailerapp.bbeta.ir/api/v1';
   let {userCardCode} = getState();
   return {
-    async guaranteeItems() {
-      let res = await Axios.post(`${baseUrl}/Guarantee/GetAllGuarantees`, { CardCode: userCardCode });
-      if(res.status === 401){return false}
-      if (res.data && res.data.isSuccess && res.data.data) {
-        let items = res.data.data.Items;
-        items = items.map((o) => {
-          let {date,time} = getDateAndTime(o.CreateTime);
-          return { ...o,CreateTime:date,_time:time, Details: o.Details.map((d) => { return { ...d } }) }
-        })
-        return {items,total:res.data.data.TotalItems}
-      }
-      else { return {items:[],total:0}; }
-      // return [];
-    },
-    async kalahaye_mojoode_garanti() {
-      let res = await Axios.get(`${baseUrl}/Guarantee/GetAllProducts`);
-      if (!res || !res.data || !res.data.isSuccess || !res.data.data) {
-        console.error('Guarantee/GetAllProducts data error')
-      }
-      else if (!res.data.data.length) {
-        console.error('Guarantee/GetAllProducts list is empty')
-      }
-      return res.data && res.data.isSuccess && res.data.data ? res.data.data : [];
-    },
-    async sabte_kalahaye_garanti(items) {
-      let res = await Axios.post(`${baseUrl}/Guarantee`, { CardCode: userCardCode, Items: items });
-      return !!res.data && !!res.data.isSuccess
-    },
-    async get_all_awards() {
-      let res = await Axios.get(`${baseUrl}/Awards`);
-      return res.data && res.data.isSuccess ? res.data.data : [];
-    },
-    async get_tested_chance() {
-      let today = AIODate.getToday("jalali"), date = [1401, 1, 1];
-      return (`${today[0]},${today[1]},${today[2]}` === `${date[0]},${date[1]},${date[2]}`);
-    },
-    async save_catched_chance({award,result}) {
-      let res = await Axios.post(`${baseUrl}/UserAwards`, { UserId: 1, AwardId: award.id, Win: result });
-      return res.data.isSuccess;
-    },
-    async get_user_awards() {
-      let res = await Axios.get(`${baseUrl}/UserAwards`);
-      if (res.data && res.data.isSuccess) {
-        return res.data.data.map((o) => {
-          let {date,time} = getDateAndTime(o.createdDate);
-          return { title: o.award.title, subtitle: o.award.shortDescription, date,_time:time, used: o.usedDate !== null, code: o.id };
-        });
-      }
-      else { return []; }
-    },
     async peygiriye_sefareshe_kharid() {
       let res = await Axios.post(`${baseUrl}/BOne/GetAllOrders`, {
         "FieldName": "cardcode",
@@ -310,23 +259,23 @@ export default function apis({getState,token,getDateAndTime,showAlert}) {
     async getCampaignProducts(campaign) {
       let { id } = campaign;
       let res = await this.getTaxonProducts({ Taxons: id, loadType:0 })
-      return getState().updateProductPrice(res.map((o) => { return { ...o, campaign } }),'services => getCampaignProducts')
+      return getState().updateProductPrice(res.map((o) => { return { ...o, campaign } }),'kharidApis => getCampaignProducts')
     },
     async lastOrders() {
       const taxonProductsList=await this.getTaxonProducts({Taxons:'10179', loadType:0});
-      return getState().updateProductPrice(taxonProductsList,'services => lastOrders');
+      return getState().updateProductPrice(taxonProductsList,'kharidApis => lastOrders');
     },
     async recommendeds() {
-      return getState().updateProductPrice(await this.getTaxonProducts({Taxons:'10550', loadType:0}),'services => recommendeds')
+      return getState().updateProductPrice(await this.getTaxonProducts({Taxons:'10550', loadType:0}),'kharidApis => recommendeds')
     },
     async bestSellings(){
-      return getState().updateProductPrice(await this.getTaxonProducts({Taxons:'10178', loadType:0}),'services => bestSellings')
+      return getState().updateProductPrice(await this.getTaxonProducts({Taxons:'10178', loadType:0}),'kharidApis => bestSellings')
     },
     async preOrders() {
       let preOrders = { waitOfVisitor: 0, waitOfPey: 0 };
       let res = await Axios.post(`${baseUrl}/Visit/PreOrderStat`, { CardCode: userCardCode });
       if (!res || !res.data || !res.data.data) {
-        console.error('services.preOrders Error!!!')
+        console.error('kharidApis.preOrders Error!!!')
         return preOrders;
       }
       let result = res.data.data;
@@ -348,158 +297,6 @@ export default function apis({getState,token,getDateAndTime,showAlert}) {
         }
         catch { src = ""; }
         return { name: o.attributes.name, price: o.attributes.price, unit: "", src: `https://shopback.miarze.com${src}`, discountPercent: 0, discountPrice: 0 };
-      });
-    },
-    async bazargah_orders({type}){
-      let time = getState().bazargah[{'wait_to_get':'forsate_akhze_sefareshe_bazargah','wait_to_send':'forsate_ersale_sefareshe_bazargah'}[type]];
-      let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?time=${time}&distance=100&status=${{'wait_to_get':'1','wait_to_send':'2'}[type]}`); // 1 for pending
-      //let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?time=100000&cardCode=${userCardCode}&distance=100&status=${{'wait_to_get':'1','wait_to_send':'2'}[type]}`); // 1 for pending
-      let data = [];
-      try{data = res.data.data || [];}
-      catch{data = []}
-      let result = data.map((order)=>this.bazargahItem({order,time,type}));
-      result = result.filter((order)=>order !== false)
-      return result
-    },
-    bazargahItem({order,type}){
-      let bulbSrc = bulb10w;
-      let distance = 0;
-      let orderItems=[];
-      try{
-        distance = +order.distance.toFixed(2);
-        orderItems=order.orderItems.map(i=>{    
-          let src=i.imagesUrl != null && i.imagesUrl != undefined ? i.imagesUrl.split(",")[0]:bulbSrc;
-          return {name:i.productName,detail:`${i.options} - ${i.quantity}`,src:src, id:i.id};
-        })
-      }
-      catch{
-        distance = 0;
-        orderItems=[];
-      }
-      let passedTime = AIODate().getPassedTime(order.orderDate).minutes;
-      let forsat = {'wait_to_get':'forsate_akhze_sefareshe_bazargah','wait_to_send':'forsate_ersale_sefareshe_bazargah'}[type];
-      let totalTime = getState().bazargah[forsat];
-      if(passedTime > totalTime){return false}
-      return {
-        type,
-        sendStatus:{
-          itemsChecked:order.providedData !== null && order.providedData.itemsChecked ? order.providedData.itemsChecked : {},//{'0':true,'1':false}
-          delivererId:order.providedData !== null && order.providedData.delivererId ? order.providedData.delivererId : {},
-        },
-        "amount":order.finalAmount,
-        distance,
-        "benefit":110000,
-        'deliveredCode':order.deliveredCode,
-        "totalTime":totalTime,
-        "address": order.billAddress,
-        "items":orderItems,
-        "cityId": null,
-        "provinceId": null,
-        "buyerId": order.buyerId,
-        "receiverId": order.receiverId,
-        "buyerName": order.buyerName,
-        "receiverName": order.receiverName,
-        "buyerNumber": order.buyerNumber,
-        "receiverNumber": order.receiverNumber,
-        "orderId": order.orderId,
-        "vendorId": order.vendorId,
-        "shippingAddress": order.shippingAddress,
-        "zipCode": order.zipCode,
-        "optionalAddress": order.optionalAddress,
-        "city":order.city,
-        "province": order.province,
-        "longitude": order.longitude,
-        "latitude": order.latitude,
-        "orderDate": type === 'wait_to_send'?order.acceptedDate:order.orderDate,
-        "id": order.id,
-        "createdDate": getDateAndTime(order.createdDate).date,
-        "modifiedDate": null,
-        "isDeleted": order.isDeleted
-      }
-    },
-    async bazargah_activity(active){
-      let res = await Axios.get(`${baseUrl}/Users/ActivateBazargah?isBazargahActive=${active}`);
-      let result = false;
-      try{
-        result = res.data.isSuccess || false
-      }
-      catch{result = false}
-
-      return res.data.data.isBazargahActive;  
-    },
-    async taghire_vaziate_ersale_sefareshe_bazargah({orderId,sendStatus}){
-      let result = await Axios.get(`${baseUrl}/OS/OrderItemStatus?orderId=${orderId}&data=${JSON.stringify(sendStatus)}`);
-
-      // sendStatus:{
-      //   itemsChecked:{},//{'0':true,'1':false}
-      //   delivererId:'0',
-      // }
-      
-      //if(!res){return false}
-
-      return result.data.isSuccess;
-
-    },
-    async get_deliverers(){
-
-      let result = await Axios.get(`${baseUrl}/Deliverer`);
-      if(!result.data.isSuccess) return;
-      return result.data.data.map(x=>{
-        return {name:x.fullName,id:x.id,mobile:x.phoneNumber};
-      });
-
-      // return [
-      //   {name:'عباس حسنی',id:'0',mobile:'09123434568'},
-      //   {name:'علی عنایتی',id:'1',mobile:'09125345646'},
-      //   {name:'دانیال کاوه',id:'2',mobile:'09126456345'},
-      //   {name:'محمد احمدی',id:'3',mobile:'09123345435'}
-      // ] 
-    },
-    async add_deliverer({mobile,name}){
-      let result = await Axios.post(`${baseUrl}/Deliverer`,{
-        phoneNumber:mobile,
-        fullName:name
-      });
-
-      return result.data.isSuccess;
-    },
-    async taide_code_tahvil({dynamicCode,staticCode,orderId}){
-      let result = await Axios.get(`${baseUrl}/OS/DeliveredCodeValidation?code=${staticCode+dynamicCode}&id=${orderId}`);
-      console.log(result);
-      if(!result.data.isSuccess) return false;
-      return result.data.data;
-    },
-    async akhze_sefareshe_bazargah({orderId}){
-      let res = await Axios.post(`${baseUrl}/OS/AddNewOrder`, {
-        cardCode :userCardCode,
-        orderId
-      });
-
-      return res.data.isSuccess;
-    },
-    async walletItems(gregorianDate){
-      let res = await Axios.post(`${baseUrl}/BOne/UserTransaction`, {
-        "requests": [
-          {
-            "cardCode": userCardCode,
-            "startDate": gregorianDate,
-            // "transactionReqNo" : 1
-          }
-        ]
-      });
-
-      var result=res.data.data.results[0].lineDetails;
-      let titleDic= {
-        IncomingPayment:"واریز به کیف پول",
-        OutgoingPayment:"برداشت از کیف پول"
-      }
-      let typeDic= {
-        IncomingPayment:"in",
-        OutgoingPayment:"out"
-      }
-      return result.map((x)=>{
-        let {date,time} = getDateAndTime(x.date);
-        return {title:titleDic[x.realtedDoc.docType] ,date,_time:time,type:typeDic[x.realtedDoc.docType] ,amount:x.sum}
       });
     },
     async getCategories() {
@@ -527,7 +324,7 @@ export default function apis({getState,token,getDateAndTime,showAlert}) {
     },
     async getCategoryItems(category) {
       let items = await this.getTaxonProducts({ Taxons: category.id.toString() });
-      return getState().updateProductPrice(items,'services => getCategoryItems')
+      return getState().updateProductPrice(items,'kharidApis => getCategoryItems')
     },
     async families() {
       return [
@@ -838,17 +635,6 @@ export default function apis({getState,token,getDateAndTime,showAlert}) {
       console.log(product);
       return product;
     },
-    async getGuaranteesImages(itemCodes) {
-      let res = await Axios.get(`${baseUrl}/Guarantee/GetGuaranteesImages?ids=${itemCodes.toString()}`); // itemCodes => itemCode of products, seprtaed by comma
-      try{
-        return res.data.data || []
-      }
-      catch{
-        return []
-      }
-      //response
-      // var res=[{"ItemCode":"3254","ImagesUrl":"http://link.com"}]
-    },
     async refreshB1Rules() {
       await Axios.get(`${baseUrl}/BOne/RefreshRules`);
     },
@@ -924,58 +710,6 @@ export default function apis({getState,token,getDateAndTime,showAlert}) {
       const included = res.data.data.included;
 
       return res;
-    },
-    async daryafte_ettelaate_banki_kife_pool(){
-
-    const res = await Axios.get(`${baseUrl}/CreditCard`);
-
-    if(!res.data.isSuccess) return res.data.message;
-
-      //در صورت خطا
-      //return 'خطایی رخ داد'
-      return res.data.data.map(x=>{
-        return {name:x.cardTitle,number:x.cardNumber,id:x.id};
-      })
-    },
-    async afzoozane_cart_kife_pool(parameter){
-      let {name,number}=parameter;
-      
-      const res = await Axios.post(`${baseUrl}/CreditCard`,{
-        "cardNumber": number,
-        "cardTitle": name
-      });
-
-      if(!res.data.isSuccess) return res.data.message;
-
-      return true;
-    },
-    async hazfe_cart_kife_pool(parameter){
-      let id = parameter;
-
-      const res = await Axios.get(`${baseUrl}/CreditCard/DeleteCard?id=${id}`);
-
-      if(!res.data.isSuccess) return res.data.message;
-
-      return true;
-    },
-    async bardasht_az_kife_pool(parameter){
-      let {amount,card} = parameter;
-
-      let res = await Axios.post(`${baseUrl}/WithdrawRequest`,
-      {
-        "creditCardId": card,
-        "amount": amount
-      }
-    );
-
-      //در صورت موفقیت
-      return res.data.isSuccess;
-      //در صورت خطا
-      //return false
-
-    },
-    async variz_be_kife_pool(parameter){
-
     }
   }
 }

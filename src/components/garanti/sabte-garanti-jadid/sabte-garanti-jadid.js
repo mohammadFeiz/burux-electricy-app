@@ -6,8 +6,8 @@ import './index.css';
 export default class SabteGarantiJadid extends Component {
     static contextType = appContext;
     async continueWithoutSubmit(){
-        let { SetState, services } = this.context;
-        let res = await services({ type: "sabte_kalahaye_garanti" });
+        let { SetState, guarantiApis } = this.context;
+        let res = await guarantiApis({ type: "sabte_kala" });
         if (!res) { alert("error"); return; }
         SetState({
             guaranteePopupSuccessText: "درخواست گارانتی شما با موفقیت اعلام شد",

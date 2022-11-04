@@ -14,8 +14,8 @@ export default class OrdersHistory extends Component {
     }
     async componentDidMount() {
       $(this.dom.current).animate({height: '100%',width: '100%',left:'0%',top:'0%',opacity:1}, 300);
-      let {services} = this.context;
-      let res = await services({type:"ordersHistory"});
+      let {kharidApis} = this.context;
+      let res = await kharidApis({type:"ordersHistory"});
       console.log('res.data',res)
       if(typeof res === 'string'){
         this.setState({error:res});
@@ -62,8 +62,8 @@ export default class OrdersHistory extends Component {
       }
     }
     async getDetails(o){
-      let { SetState,services } = this.context;
-      let res = await services({type:"joziatepeygiriyesefareshekharid", parameter:o});
+      let { SetState,kharidApis } = this.context;
+      let res = await kharidApis({type:"joziatepeygiriyesefareshekharid", parameter:o});
       SetState({popup: {mode: "joziate-sefareshe-kharid",order: res}})
     }
     orders_layout(){

@@ -169,7 +169,7 @@ export default class Bazargah extends Component{
         }
     }
     renderInHome(){
-        let {bazargah,SetState,services} = this.context;
+        let {bazargah,SetState} = this.context;
         if(!bazargah.active || !bazargah.wait_to_get){return false}
         return (
             <RVD
@@ -288,28 +288,20 @@ class JoziateSefaresheBazargah extends Component{
         this.state = {sendStep:0,sendStatus:props.sendStatus,deliverers:[],code0:'',code1:'',code2:'',staticCode:props.deliveredCode}
     }
     async get_deliverers(){
-        let {services} = this.context;
-        let deliverers = await services({type:'get_deliverers'});
-        this.setState({deliverers})
-    }
-    async add_deliverer(name,mobile){
-        let {services} = this.context;
-        let deliverer = await services({type:'add_deliverers',parameter:{name,mobile}});
-        if(!deliverer){return}
-        let {deliverers} = this.state;
-        deliverers.push(deliverer)
+        let {bazargahApis} = this.context;
+        let deliverers = await bazargahApis({type:'get_deliverers'});
         this.setState({deliverers})
     }
     async componentDidMount(){
         this.get_deliverers();
     }
     async changeSendStatus(key,value){
-        let {services} = this.context;
+        let {bazargahApis} = this.context;
         let {orderId} = this.props;
         let {sendStatus} = this.state;
         sendStatus = JSON.parse(JSON.stringify(sendStatus));
         sendStatus[key] = value;
-        let res = await services({type:'taghire_vaziate_ersale_sefareshe_bazargah',parameter:{orderId,sendStatus}})
+        let res = await bazargahApis({type:'taghire_vaziate_ersale_sefaresh',parameter:{orderId,sendStatus}})
         if(!res){
             alert('تغییرات موفقیت آمیز نبود')
         }
@@ -331,9 +323,9 @@ class JoziateSefaresheBazargah extends Component{
     async onSubmit(){
         let {type} = this.props;
         if(type === 'wait_to_get'){
-            let {services} = this.context;
+            let {bazargahApis} = this.context;
             let {orderId} = this.props;
-            let res = await services({type:'akhze_sefareshe_bazargah',parameter:{orderId}})
+            let res = await bazargahApis({type:'akhze_sefaresh',parameter:{orderId}})
             let {showMessage} = this.context;
             if(res){showMessage('سفارش با موفقیت اخذ شد'); this.props.onClose()}
             else{showMessage('اخذ سفارش با خطا روبرو شد')}   
@@ -808,8 +800,8 @@ class JoziateSefaresheBazargah extends Component{
                             className='button-2 margin-0-12' disabled={disabled} style={{height:36}}
                             onClick={async ()=>{
                                 if(disabled){return}
-                                let {services,showMessage} = this.context;
-                                let res = await services({type:'taide_code_tahvil',parameter:{staticCode,orderId:this.props.orderId,dynamicCode:`${code0}${code1}${code2}`}})
+                                let {bazargahApis,showMessage} = this.context;
+                                let res = await bazargahApis({type:'taide_code_tahvil',parameter:{staticCode,orderId:this.props.orderId,dynamicCode:`${code0}${code1}${code2}`}})
                                 if(res){
                                     showMessage('کالا تحویل شد.');
                                     this.context.SetState({activeBottomMenu:"a"})
@@ -958,8 +950,8 @@ class AddDeliverer extends Component{
                 header={{title:'افزودن پیک جدید',className:'bold'}}
                 onChange={(model)=>this.setState({model})}
                 onSubmit={async ()=>{
-                    let {services,showMessage} = this.context;
-                    let res = await services({type:'add_deliverer',parameter:model});
+                    let {bazargahApis,showMessage} = this.context;
+                    let res = await bazargahApis({type:'add_deliverer',parameter:model});
                     if(res){
                         showMessage('افزودن پیک با موفقیت انجام شد')
                         onSuccess({...model})

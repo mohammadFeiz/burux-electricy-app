@@ -13,7 +13,7 @@ export default class FamilyCard extends Component{
         if(title === 'پنلی توکار'){return PaneliSrc}   
     }
     render(){
-        let {SetState,services} = this.context;
+        let {SetState,kharidApis} = this.context;
         let {src,title,id,style,zIndex = 1} = this.props;
         return (
             <RVD
@@ -25,7 +25,7 @@ export default class FamilyCard extends Component{
                             categoryZIndex:zIndex * 10,
                             category:{
                                 name:'خانواده ی ' + title,
-                                products:await services({type:'familyProducts',parameter:{id},cache:12 * 60,cacheName:`products-of-family-with-id-${id}`}) 
+                                products:await kharidApis({type:'familyProducts',parameter:{id},cache:12 * 60,cacheName:`products-of-family-with-id-${id}`}) 
                             }
                         })
                     }},

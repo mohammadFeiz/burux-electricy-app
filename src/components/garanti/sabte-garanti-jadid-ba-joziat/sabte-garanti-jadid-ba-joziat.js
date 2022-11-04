@@ -41,11 +41,11 @@ export default class SabteGarantiJadidBaJoziat extends Component {
         };
     }
     async onSubmit() {
-        let { services, SetState } = this.context;
+        let { guarantiApis, SetState } = this.context;
         let { items } = this.state;
-        let res = await services({ type: "sabte_kalahaye_garanti", parameter: items });
+        let res = await guarantiApis({ type: "sabte_kala", parameter: items });
         if (res) {
-            let {items,total} = await services({ type: "guaranteeItems" });
+            let {items,total} = await guarantiApis({ type: "items" });
             SetState({
                 guaranteeItems:items,
                 totalGuaranteeItems:total,

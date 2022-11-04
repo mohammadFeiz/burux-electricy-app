@@ -128,9 +128,9 @@ export default class ProductCard extends Component{
     }
     async onClick(){
         if(this.debuggerMode){return }
-        let {SetState,services} = this.context;
+        let {SetState,kharidApis} = this.context;
         let {product,parentZIndex = 1} = this.props;
-        product = await services({type:'getProductFullDetail',parameter:{id:product.id,code:product.defaultVariant.code,product}})
+        product = await kharidApis({type:'getProductFullDetail',parameter:{id:product.id,code:product.defaultVariant.code,product}})
         SetState({productZIndex:parentZIndex * 10,product})
     }
     horizontal_layout(){

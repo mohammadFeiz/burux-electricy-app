@@ -45,8 +45,8 @@ export default class OrderPopup extends Component {
       await this.getDetails()  
     }
     async getDetails(){
-      let {services,order} = this.context;
-      let details = await services({type:'orderProducts',parameter:order})
+      let {kharidApis,order} = this.context;
+      let details = await kharidApis({type:'orderProducts',parameter:order})
       this.setState({details})
     }
     render() {

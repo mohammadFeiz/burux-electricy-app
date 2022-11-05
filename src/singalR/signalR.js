@@ -17,12 +17,12 @@ export default function SignalR(getState) {
     let $$={
         start(){
             connection.on("BazargahOrder", async (order)=> {
-                let {services,SetState,bazargah,showMessage,userInfo} = getState();                
+                let {SetState,bazargah,showMessage,userInfo,bazargahApis} = getState();                
                 let type;
                 if(order.status === 'Pending' || order.status===1){type = 'wait_to_get'}
                 else if(order.status === 'Taken'  || order.status===2){type = 'wait_to_send'}
                 else {return}
-                order = await services({type:'bazargahItem',parameter:{order,type}})
+                order = await bazargahApis({type:'bazargahItem',parameter:{order,type}})
                 if(order === false){return;}
                 if(type === 'wait_to_get'){
                     bazargah.wait_to_get = bazargah.wait_to_get || [];

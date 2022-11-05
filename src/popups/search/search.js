@@ -18,14 +18,14 @@ export default class Search extends Component {
       };
     }
     async search(){
-      let {services} = this.context;
+      let {kharidApis} = this.context;
       let {searchValue} = this.state;
       if(searchValue === ''){
         this.setState({result:[]})
         return 
       }
       this.setState({loading:true})
-      let res = await services({type:"getTaxonProducts", parameter:{Name:searchValue},loading:false});
+      let res = await kharidApis({type:"getTaxonProducts", parameter:{Name:searchValue},loading:false});
       this.setState({loading:false})
       console.log(res)
       this.setState({ result: res });

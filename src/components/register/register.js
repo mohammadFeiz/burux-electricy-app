@@ -119,10 +119,10 @@ export default class Register extends Component{
                         {label:'نام',type:'text',field:'model.firstName',rowKey:'1',validations:[['required']]},
                         {type:'html',html:()=>'',rowKey:'1',rowWidth:12},
                         {label:'نام خانوادگی',type:'text',field:'model.lastName',rowKey:'1',validations:[['required']]},
-                        // {label:'ایمیل',type:'text',field:'model.email'},
-                        {label:'تلفن همراه',type:'text',field:'model.mobile',rowKey:'3',disabled:true},
+                        {label:'ایمیل',type:'text',field:'model.email'},
+                        {label:'تلفن همراه',type:'number',field:'model.mobile',rowKey:'3',disabled:false},
                         {type:'html',html:()=>'',rowKey:'3',rowWidth:12},
-                        {label:'تلفن ثابت',type:'text',field:'model.landlineNumber',rowKey:'3'},
+                        {label:'تلفن ثابت',type:'number',field:'model.landlineNumber',rowKey:'3'},
                         {label:'نام فروشگاه',type:'text',field:'model.storeName',validations:[['required']]},
                         {label:'ثبت موقعیت جغرافیایی',type:'html',html:()=>{
                             let {showMap,model} = this.state;
@@ -183,7 +183,8 @@ export default class Register extends Component{
                                     this.subtext_layout(),
                                     {size:24},
                                     this.form_layout(),
-                                    this.footer_layout()       
+                                    this.footer_layout(),
+                                    {size:300}       
                                 ]
                             }
                         ]

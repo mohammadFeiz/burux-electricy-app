@@ -28,12 +28,12 @@ export default class Awards extends Component {
 
   }
   async getUserAwards(){
-    let {services} = this.context;
-    return await services({type:'get_user_awards'});
+    let {gardooneApis} = this.context;
+    return await gardooneApis({type:'get_user_awards'});
   }
   async componentDidMount(){
-    let {services} = this.context;
-    let awards = await services({type:'get_all_awards'});
+    let {gardooneApis} = this.context;
+    let awards = await gardooneApis({type:'get_all_awards'});
     let userAwards = await this.getUserAwards();
     this.mounted = true;
     this.setState({userAwards,awards:awards.map((o)=>{
@@ -41,10 +41,10 @@ export default class Awards extends Component {
     })})
   }
   async getChanceResult(result,index){
-    let {services} = this.context;
+    let {gardooneApis} = this.context;
     this.setState({chanceResult:result?'winner':'looser',chanceIndex:index});
     let {awards} = this.state;
-    let res = await services({type:'save_catched_chance',parameter:{award:awards[index],result}});
+    let res = await gardooneApis({type:'save_catched_chance',parameter:{award:awards[index],result}});
     if(res){
       let userAwards = await this.getUserAwards();
       this.setState({userAwards})

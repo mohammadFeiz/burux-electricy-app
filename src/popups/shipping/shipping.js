@@ -141,13 +141,13 @@ export default class Shipping extends Component{
       return {html:<Header title='ادامه فرایند خرید' onClose={()=>SetState({shippingZIndex:0})}/>}
     }
     sendToVisitor_layout(){
-      let {shipping,SetState,services,cart} = this.context;
+      let {shipping,SetState,kharidApis,cart} = this.context;
       let {cartItems} = shipping;
       return {
         className:'padding-12',
         column:[
           {size:36,align:'vh',className:'color605E5C size14 bold',html:<button className="button-2" onClick={async ()=>{
-            let res = await services({type:"sendToVisitor"})
+            let res = await kharidApis({type:"sendToVisitor"})
             if(res){
               let variantIds = cartItems.map((o)=>o.variant.id)
               let newCart = {};

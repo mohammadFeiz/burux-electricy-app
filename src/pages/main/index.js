@@ -7,10 +7,8 @@ import MyBurux from "./../my-burux/index";
 import Buy from "./../buy/index";
 import appContext from "../../app-context";
 import SideMenu from "../../components/sidemenu";
-import bulbSrc from './../../images/10w-bulb.png';
 import splashSrc from './../../images/logo444.png';
 import Loading from "../../components/loading";
-import Services from "./../../services";
 import layout from "../../layout";
 import dateCalculator from "../../utils/date-calculator";
 import Search from "./../../popups/search/search";
@@ -24,13 +22,18 @@ import Popup from "../../components/popup/popup";
 import OrderPopup from "../../popups/order-popup/order-popup";
 import "./index.css";
 import Bazargah from "../bazargah/bazargah";
+import AIOService from 'aio-service';
+import kharidApis from "../../apis/kharid-apis";
+import bazargahApis from './../../apis/bazargah-apis';
+import walletApis from './../../apis/wallet-apis';
+import gardooneApis from './../../apis/gardoone-apis';
+import guarantiApis from './../../apis/guaranti-apis';
 import dotsloading from './../../images/simple_loading.gif';
 import SabteGarantiJadid from "../../components/garanti/sabte-garanti-jadid/sabte-garanti-jadid";
 import SabteGarantiJadidBaJoziat from "../../components/garanti/sabte-garanti-jadid-ba-joziat/sabte-garanti-jadid-ba-joziat";
 import PayameSabteGaranti from "../../components/garanti/payame-sabte-garanti/payame-sabte-garanti";
 import Register from "../../components/register/register";
 import SignalR from '../../singalR/signalR';
-import logo2 from './../../images/logo2.png';
 export default class Main extends Component {
   constructor(props) {
     super(props);
@@ -65,8 +68,8 @@ export default class Main extends Component {
     this.state = {
       bazargah:{
         setActivity:async (state)=>{
-          let {services,bazargah} = this.state;
-          let res = await services({type:'bazargah_activity',parameter:state})
+          let {bazargahApis,bazargah} = this.state;
+          let res = await bazargahApis({type:'activity',parameter:state})
           this.setState({bazargah:{...bazargah,active:res}})
         },
         // active:this.props.userInfo.isBazargahActive,
@@ -84,7 +87,6 @@ export default class Main extends Component {
       buruxlogod:this.getBuruxLogoD(),
       splashScreen:true,
       showRegister:false,
-      services:Services(()=>this.state,this.props.token,userCardCode),
       theme,
       wallet:0,
       campaigns:[],
@@ -124,6 +126,12 @@ export default class Main extends Component {
       peygiriyeSefaresheKharid_tab:undefined,
       buy_view:undefined,//temporary state
     };
+    let {token} = this.props;
+    this.state.kharidApis = AIOService({token,getState:()=>this.state,apis:kharidApis});
+    this.state.bazargahApis = AIOService({token,getState:()=>this.state,apis:bazargahApis});
+    this.state.walletApis = AIOService({token,getState:()=>this.state,apis:walletApis});
+    this.state.gardooneApis = AIOService({token,getState:()=>this.state,apis:gardooneApis});
+    this.state.guarantiApis = AIOService({token,getState:()=>this.state,apis:guarantiApis});
   }
   getBuruxLogoD(){
     let a = 'M37.5266 10.6935C37.3382 10.1355 37.1425 9.50643 36.9377 8.95436C36.8208 8.64937 36.7316 8.40412 36.6164 8.07318C36.5178 7.76728 36.3922 7.47043 36.3207 7.17256H36.2145C36.116 7.538 33.4992 9.75168 33.4992 9.93384C33.4992 10.0998 33.7849 10.8345 33.857 11.052L34.6236 13.2635C34.8997 14.1719 35.1782 15.5421 34.0527 15.9274C33.8733 15.988 33.5788 16.0153 33.4187 16.0062C31.9889 15.902 29.8276 16.1803 29.0525 15.7529C28.6955 15.5512 28.4877 15.3337 28.2733 14.9933C28.0692 14.66 27.9435 14.3369 27.855 13.8923C27.7664 13.4638 27.6506 13.1407 27.6506 12.5814V2.52438H23.999V13.2804C23.999 13.8741 23.8627 14.4688 23.6111 14.801C22.9621 15.6821 21.2022 15.6821 20.5414 14.826C20.2899 14.5032 20.1298 13.9452 20.1298 13.394V2.52438H16.2631V12.4141C16.2631 13.4112 16.4232 13.647 16.1112 14.486C15.6648 15.6821 13.5927 15.7701 12.8611 14.826C12.6109 14.5032 12.4509 13.9452 12.4509 13.394V2.52438H8.5314V18.3654C8.5314 21.3189 5.78647 20.8195 5.14399 20.1127C4.87676 19.8146 4.66469 19.2293 4.66469 18.6896V2.52438H0.851059V18.8545C0.851059 19.597 1.09055 20.4884 1.31444 21.0464C1.58167 21.7028 1.9408 22.2185 2.41183 22.6723C4.94093 25.1458 12.1188 24.8389 12.1188 18.6369C13.6121 18.976 15.111 19.0653 16.5929 18.5749C17.0305 18.4363 17.8613 18.0422 18.0852 17.7191C18.7111 18.1202 18.9196 18.4181 20.1597 18.724C21.5202 19.0598 22.9476 19.0104 24.2779 18.5704C25.1317 18.2897 25.0282 18.206 25.6585 17.876C25.9258 18.0504 26.1233 18.2518 26.4172 18.4262C28.0247 19.4125 30.5783 19.1777 32.6143 19.1777C34.8739 19.1777 37.7141 18.8201 38.3377 16.3466C38.9033 14.1456 38.2045 12.6861 37.5266 10.6935ZM47.4743 13.4204C47.4743 14.4503 46.6174 15.2891 45.5641 15.2891C44.5178 15.2891 43.6603 14.4503 43.6603 13.4204V6.70037C43.6603 5.67734 44.5178 4.83971 45.5641 4.83971C46.6174 4.83971 47.4743 5.67734 47.4743 6.70037V13.4204ZM48.447 2.12332C47.6179 1.7992 47.0289 1.77387 46.0378 1.66834C45.7786 1.64198 45.0453 1.73936 44.7687 1.77386C44.3488 1.81732 43.9463 1.92295 43.6075 2.03499C41.821 2.61149 40.7239 4.10671 40.3845 5.9053C40.302 6.32589 40.2409 6.71758 40.2409 7.17256V13.3425C40.2409 15.5 41.1782 17.6058 43.2494 18.4511C44.3762 18.9166 45.6797 18.9842 46.9301 18.8545C47.1889 18.8283 47.4118 18.7571 47.644 18.7412C47.644 22.4729 46.1968 21.9309 42.0631 21.9309V24.4205C46.3137 24.4205 50.7082 25.1286 51.3951 20.4093C51.6363 18.7412 51.5204 16.1458 51.5107 14.2579L51.5634 7.39158C51.5634';
@@ -166,7 +174,7 @@ export default class Main extends Component {
   }
   async getGuaranteeImages(items){
     if(!items.length){return}
-    let {services,images} = this.state;
+    let {guarantiApis,images} = this.state;
     let itemCodes = [];
     for(let i = 0; i < items.length; i++){
       let {Details = []} = items[i];
@@ -175,24 +183,24 @@ export default class Main extends Component {
         if(images[Code]){continue}
         if(itemCodes.indexOf(Code) !== -1){continue}
         itemCodes.push(Code);
-      } 
+      }
     }
-    let res = await services({type:'getGuaranteesImages',parameter:itemCodes.toString(),loading:false});
+    let res = await guarantiApis({type:'getImages',parameter:itemCodes,loading:false});
     for(let i = 0; i < res.length; i++){
       images[res.ItemCode] = res.ImagesUrl;
     }
     this.setState({images})
   }
   async getGuaranteeItems(){
-    let {services} = this.state;
-    let res = await services({type:"guaranteeItems",loading:false});
+    let {guarantiApis} = this.state;
+    let res = await guarantiApis({type:"items",loading:false});
     if(res === false){
       this.props.logout();
       return;
     }
     let {items,total} = res
     //this.getGuaranteeImages(items);
-    let guaranteeExistItems = await services({type:"kalahaye_mojoode_garanti",loading:false});
+    let guaranteeExistItems = await guarantiApis({type:"kalahaye_mojood",loading:false});
     this.setState({
       guaranteeItems:items,
       totalGuaranteeItems:total,
@@ -200,14 +208,14 @@ export default class Main extends Component {
     });
   }
   async getCampaignsData() {
-    let {services} = this.state;
-    let campaigns = await services({type:"getCampaigns",cache:120,loading:false});
+    let {kharidApis} = this.state;
+    let campaigns = await kharidApis({type:"getCampaigns",cache:120,loading:false});
     this.setState({ campaigns});
   }
   async getBazargahOrders(){
-    let {services,bazargah} = this.state;
-    bazargah.wait_to_get = await services({type:'bazargah_orders',parameter:{type:'wait_to_get'},loading:false});
-    bazargah.wait_to_send = await services({type:'bazargah_orders',parameter:{type:'wait_to_send'},loading:false});
+    let {bazargah,bazargahApis} = this.state;
+    bazargah.wait_to_get = await bazargahApis({type:'orders',parameter:{type:'wait_to_get'},loading:false});
+    bazargah.wait_to_send = await bazargahApis({type:'orders',parameter:{type:'wait_to_send'},loading:false});
     this.setState({bazargah})
   }
   async getB1Info(cardCode) {
@@ -235,8 +243,8 @@ export default class Main extends Component {
     this.getGuaranteeItems()
     this.getCampaignsData();
     if(bazargah.active){this.getBazargahOrders();}
-    //let testedChance = await services({type:"get_tested_chance"});
-    let pricing = new Pricing('https://b1api.burux.com/api/BRXIntLayer/GetCalcData', userCardCode, 10 * 60 * 1000)
+    //let testedChance = await gardooneApis({type:"get_tested_chance"});
+    let pricing = new Pricing('https://b1api.burux.com/api/BRXIntLayer/GetCalcData', userCardCode,12 * 60 * 60 * 1000)
     let istarted = pricing.startservice().then((value) => { return value; });
     let fixPrice = (items,caller)=>{
       if(developerMode){
@@ -272,9 +280,23 @@ export default class Main extends Component {
           console.error(`updateProductPrice error`);
           console.error('object is',o);
         }
-        let a=[{itemCode:o.defaultVariant.code,itemQty:1}];
-        let obj = fixPrice(a,caller)[0]
-        let newObj = {...o,...obj};
+        let a = o.variants.map((res)=>{
+          return {
+            itemCode:res.code,itemQty:1
+          }
+        })
+        let array = fixPrice(a,caller);
+        let result;
+        for(let i = 0; i < array.length; i++){
+          let obj = array[i];
+          if(!result){result = obj}
+          else{
+            if(obj.FinalPrice && obj.FinalPrice < result.FinalPrice ){
+              result = obj;
+            }
+          }
+        }
+        let newObj = {...o,...result};
         return newObj
       })
     }
@@ -384,47 +406,6 @@ class Message extends Component{
   }
 }
 class Splash extends Component{
-  state = {step:0}
-  constructor(props){
-    super(props);
-    this.state = {step:0}
-    this.colors = new RColor().between('#2d5193','#7aa5f5',60)
-    this.colors1 = new RColor().between('#0094D4','#fff',40)
-    
-    this.gradientInterval = setInterval(()=>{
-      let {step} = this.state;
-      if(step >= 170){
-        clearInterval(this.gradientInterval);
-        return;
-      }
-      this.setState({step:step + 1})
-    },30)
-  }
-  getGradient(){
-    let {step} = this.state;
-    let range = 30;
-    let c = step < range * 2?0:step - range * 2;
-    let a = step < range?0:step - range;
-    let b = step > 100?100:step;
-    let white = '#0666f8';
-    let blue = '#0d2d6a';
-    if(step > 130){
-      let color = this.colors1[step - 131];
-      white = color;
-      blue = color;
-    }
-    return (
-      <defs>
-        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" style={{stopColor:blue,stopOpacity:1}} />
-          <stop offset={`${c}%`} style={{stopColor:blue,stopOpacity:1}} />
-          <stop offset={`${a}%`} style={{stopColor:white,stopOpacity:1}} />
-          <stop offset={`${b}%`} style={{stopColor:white,stopOpacity:1}} />
-          <stop offset="100%" style={{stopColor:blue,stopOpacity:1}} />
-        </linearGradient>
-      </defs>
-    )
-  }
   render(){
     return (
       <RVD
@@ -445,88 +426,4 @@ class Splash extends Component{
       />
     )
   }
-}
-function RColor(log){
-  let a = {
-    number_to_hex(c) {c = c.toString(16); return c.length == 1 ? "0" + c : c;},
-    getType(c){
-      if(Array.isArray(c)){return 'array'}
-      return c.indexOf('rgb') !== -1?'rgb':'hex';
-    },
-    between(c1,c2,count){
-      var [r1,g1,b1] = this.to_array(c1);
-      var [r2,g2,b2] = this.to_array(c2);
-      var rDelta = (r2 - r1) / (count - 1);
-      var gDelta = (g2 - g1) / (count - 1);
-      var bDelta = (b2 - b1) / (count - 1);
-      var colors = [];
-      for(var i = 0; i < count; i++){
-        let color = `rgb(${Math.round(r1 + rDelta * i)},${Math.round(g1 + gDelta * i)},${Math.round(b1 + bDelta * i)})`;
-        colors.push(color)
-      }
-      return colors;
-    },
-    to_dark(c,percent){
-      let [r,g,b] = this.to_array(c);
-      r = Math.round(r - (r * (percent / 100)))
-      g = Math.round(g - (g * (percent / 100)))
-      b = Math.round(b - (b * (percent / 100)))
-      return this['to_' + this.getType(c)]([r,g,b])
-    },
-    to_light(c,percent){
-      let [r,g,b] = this.to_array(c);
-      r = Math.round((255 - r) + ((255 - r) * (percent / 100)))
-      g = Math.round((255 - g) + ((255 - g) * (percent / 100)))
-      b = Math.round((255 - b) + ((255 - b) * (percent / 100)))
-      return this['to_' + this.getType(c)]([r,g,b])
-    },
-    log(color){
-      console.log(`%c ${color}`, 'background: '+color+'; color: #000');
-    },
-    getRandom(from,to){return from + Math.round(Math.random() * (to - from))},
-    reverse(c){return this['to_' + this.getType(c)](this.to_array(c).map((o)=>255 - o))},
-    random(obj = {}){
-      let {
-        type = 'hex',
-        r = this.getRandom(0,255), 
-        g = this.getRandom(0,255),
-        b = this.getRandom(0,255)
-      } = obj;
-      if(Array.isArray(r)){r = this.getRandom(r[0],r[1])}
-      if(Array.isArray(g)){g = this.getRandom(g[0],g[1])}
-      if(Array.isArray(b)){b = this.getRandom(b[0],b[1])}
-      return this['to_' + type]([r,g,b])
-    },
-    to_array(c){
-      if(Array.isArray(c)){return c}
-      if(c.indexOf('rgb(') === 0){
-        return c.slice(c.indexOf('(') + 1,c.indexOf(')')).split(',').map((o)=>+o);
-      }
-      c = c.substr(1);
-      let values = c.split(''),r,g,b;
-      if (c.length === 3) {
-          r = parseInt(values[0] + values[0], 16);
-          g = parseInt(values[1] + values[1], 16);
-          b = parseInt(values[2] + values[2], 16);
-      } 
-      else if (c.length === 6) {
-          r = parseInt(values[0] + values[1], 16);
-          g = parseInt(values[2] + values[3], 16);
-          b = parseInt(values[4] + values[5], 16);
-      } 
-      return [r,g,b];
-    },
-    to_hex(c){return `#${this.to_array(c).map((o)=>this.number_to_hex(o)).toString()}`;}, 
-    to_rgb(c){return `rgb(${this.to_array(c).toString()})`;}
-  };
-  return {
-    to_hex:a.to_hex.bind(a),
-    to_rgb:a.to_rgb.bind(a),
-    to_array:a.to_array.bind(a),
-    number_to_hex:a.number_to_hex.bind(a),
-    reverse:a.reverse.bind(a),
-    log:a.log.bind(a),
-    random:a.random.bind(a),
-    between:a.between.bind(a)
-  };
 }

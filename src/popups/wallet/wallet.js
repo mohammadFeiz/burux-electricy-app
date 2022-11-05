@@ -19,7 +19,7 @@ export default class Wallet extends Component{
         super(props);
         this.dom = createRef();
         this.state = {
-            fromDate:false,
+            fromDate:'',
             toDate:false,
             items:[],
             cards:[],
@@ -60,11 +60,11 @@ export default class Wallet extends Component{
             top:'0%',
             opacity:1
         }, 300);
-        let {services,showMessage} = this.context;
+        let {walletApis,showMessage} = this.context;
         let {fromDate}=this.state;
-        let items = await services({type:'walletItems',parameter:fromDate,loading:false});
+        let items = await walletApis({type:'items',parameter:fromDate,loading:false});
         let cards = []; 
-        let res = await services({type:'daryafte_ettelaate_banki_kife_pool'})
+        let res = await walletApis({type:'ettelaate_banki'})
         if(typeof res === 'string'){showMessage(res);}
         else{
             cards = res;
@@ -155,10 +155,10 @@ export default class Wallet extends Component{
         }
     }
     filter_layout(){
-        let {services}=this.context;
+        let {walletApis}=this.context;
         let {fromDate,toDate} = this.state;
         let style = {borderRadius:24,width:100,height:24,border:'1px solid #605E5C'}
-        let fromStyle = fromDate === false?{color:'#605E5C'}:{border:'1px solid #605E5C',color:'#fff',background:'#605E5C'}
+        let fromStyle = !fromDate?{color:'#605E5C'}:{border:'1px solid #605E5C',color:'#fff',background:'#605E5C'}
         let toStyle = toDate === false?{color:'#605E5C'}:{border:'1px solid #605E5C',color:'#fff',background:'#605E5C'}
         return {
             size:36,align:'v',
@@ -169,18 +169,18 @@ export default class Wallet extends Component{
                 {
                     html:(
                         <GAH
-                            value={fromDate}
+                            value={fromDate || false}
                             style={{...style,...fromStyle}}
                             calendarType='jalali'
-                            onChange={async (obj)=>{
-                                this.setState({fromDate:obj.dateString});
-                                let items = await services({type:'walletItems',parameter:obj});
+                            onChange={async ({gregorian,dateString})=>{
+                                this.setState({fromDate:dateString});
+                                let items = await walletApis({type:'items',parameter:`${gregorian[0]}/${gregorian[1]}/${gregorian[2]}`});
                                 this.setState({items});
                             }}
                             theme={['#0d436e','#fff']}
                             onClear={async ()=>{
-                                this.setState({fromDate:false});
-                                let items = await services({type:'walletItems',parameter:false});
+                                this.setState({fromDate:''});
+                                let items = await walletApis({type:'items',parameter:''});
                                 this.setState({items});
                             }}
                         />
@@ -339,8 +339,8 @@ class WalletSetting extends Component{
                                     size:48,html:<Icon path={mdiClose} size={0.8}/>,align:'vh',
                                     attrs:{
                                         onClick:async ()=>{
-                                            let {services,showMessage} = this.context;
-                                            let res = await services({type:'hazfe_cart_kife_pool',parameter:id})
+                                            let {walletApis,showMessage} = this.context;
+                                            let res = await walletApis({type:'hazfe_cart',parameter:id})
                                             if(typeof res === 'string'){showMessage(res);}
                                             else if(res === true){
                                              onChange(cards.filter((o)=>o.id !== id))
@@ -379,10 +379,10 @@ class BardashtPopup extends Component{
         this.state = {model:{amount:'',card:false},mojoodi:1234567,edit:false}
     }
     async onSubmit(){
-        let {services,showMessage} = this.context;
+        let {walletApis,showMessage} = this.context;
         let {onClose} = this.props;
         let {model} = this.state;
-        let res = await services({type:'bardasht_az_kife_pool',parameter:model})
+        let res = await walletApis({type:'bardasht',parameter:model})
         if(typeof res === 'string'){showMessage(res); onClose()}
         else if(res === true){
             onClose()
@@ -435,10 +435,10 @@ class AddCard extends Component{
         this.state = {model:{name:'',number:''}}
     }
     async onSubmit(){
-        let {services,showMessage} = this.context;
+        let {walletApis,showMessage} = this.context;
         let {onClose,onAdd} = this.props;
         let {model} = this.state;
-        let res = await services({type:'afzoozane_cart_kife_pool',parameter:model})
+        let res = await walletApis({type:'afzoozane_cart',parameter:model})
         if(typeof res === 'string'){showMessage(res); onClose()}
         else if(res === true){
             onAdd(model);
@@ -473,10 +473,10 @@ class VarizPopup extends Component{
         this.state = {model:{amount:''}}
     }
     async onSubmit(){
-        let {services,showMessage} = this.context;
+        let {walletApis,showMessage} = this.context;
         let {onClose} = this.props;
         let {model} = this.state;
-        let res = await services({type:'variz_be_kife_pool',parameter:model})
+        let res = await walletApis({type:'variz',parameter:model})
         if(typeof res === 'string'){showMessage(res); onClose()}
         else if(res === true){
             onClose()

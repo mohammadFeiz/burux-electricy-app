@@ -378,7 +378,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
         code,
         discountPercent,
         isDefault: defaultVariantId === id
-      }
+      };
     },
     sortIncluded(spreeResult) {
       let sorted = { include_optionTypes: {}, include_details: {}, include_srcs: {}, meta_optionTypes: {}, include_variants: {} }
@@ -486,10 +486,12 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
         let inStock = 0;
         let defaultVariantId = product.relationships.default_variant.data.id
         
+        
         for (let i = 0; i < relationships.variants.data.length; i++) {
           let { id } = relationships.variants.data[i];
           id = id.toString();
-          let variant = this.getProductVariant(include_variants[id], include_srcs, b1Result, optionTypes, defaultVariantId,product)
+          // let variant = this.getProductVariant(include_variants[id], include_srcs, b1Result, optionTypes, defaultVariantId,product)
+          let variant = this.getProductVariant(relationships.variants.data[i], include_srcs, b1Result, optionTypes, defaultVariantId,product)
           if(variant === false){continue}
           if (variant.isDefault) { defaultVariant = variant }
           inStock += variant.inStock;

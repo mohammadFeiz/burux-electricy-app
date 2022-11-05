@@ -119,7 +119,7 @@ export default class Register extends Component{
                         {label:'نام',type:'text',field:'model.firstName',rowKey:'1',validations:[['required']]},
                         {type:'html',html:()=>'',rowKey:'1',rowWidth:12},
                         {label:'نام خانوادگی',type:'text',field:'model.lastName',rowKey:'1',validations:[['required']]},
-                        {label:'ایمیل',type:'text',field:'model.email'},
+                        // {label:'ایمیل',type:'text',field:'model.email'},
                         {label:'تلفن همراه',type:'text',field:'model.mobile',rowKey:'3',disabled:true},
                         {type:'html',html:()=>'',rowKey:'3',rowWidth:12},
                         {label:'تلفن ثابت',type:'text',field:'model.landlineNumber',rowKey:'3'},

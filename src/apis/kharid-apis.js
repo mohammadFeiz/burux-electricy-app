@@ -262,14 +262,15 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       return getState().updateProductPrice(res.map((o) => { return { ...o, campaign } }),'kharidApis => getCampaignProducts')
     },
     async lastOrders() {
-      const taxonProductsList=await this.getTaxonProducts({Taxons:'10179', loadType:0});
+      const taxonProductsList=await this.getTaxonProducts({Taxons:'10179'});
       return getState().updateProductPrice(taxonProductsList,'kharidApis => lastOrders');
     },
     async recommendeds() {
-      return getState().updateProductPrice(await this.getTaxonProducts({Taxons:'10550', loadType:0}),'kharidApis => recommendeds')
+      let res = await this.getTaxonProducts({Taxons:'10550'})
+      return getState().updateProductPrice(res,'kharidApis => recommendeds')
     },
     async bestSellings(){
-      return getState().updateProductPrice(await this.getTaxonProducts({Taxons:'10178', loadType:0}),'kharidApis => bestSellings')
+      return getState().updateProductPrice(await this.getTaxonProducts({Taxons:'10178'}),'kharidApis => bestSellings')
     },
     async preOrders() {
       let preOrders = { waitOfVisitor: 0, waitOfPey: 0 };
@@ -300,10 +301,9 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       });
     },
     async getCategories() {
-
       let res = await Axios.get(`${baseUrl}/Spree/GetAllCategoriesbyIds?ids=10820,10179,10180,10550`);
       let dataResult = res.data.data.data;
-      debugger;
+      ;
       let included = res.data.data.included;
       let categories = dataResult.map((o) => {
 
@@ -356,7 +356,8 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       return result;
     },
     getProductVariant(include_variant, include_srcs, b1Result, optionTypes, defaultVariantId,product) {
-      let { id, attributes, relationships } = include_variant;
+      try{
+        let { id, attributes, relationships } = include_variant;
       let srcs = relationships.images.data.map(({ id }) => include_srcs[id.toString()].attributes.original_url)
       const b1_item = b1Result.find((i) => i.itemCode === attributes.sku);
       if(!b1_item){
@@ -381,6 +382,35 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
         discountPercent,
         isDefault: defaultVariantId === id
       };
+      }
+      catch(e){
+        debugger;
+        let { id, attributes, relationships } = include_variant;
+      let srcs = relationships.images.data.map(({ id }) => include_srcs[id.toString()].attributes.original_url)
+      const b1_item = b1Result.find((i) => i.itemCode === attributes.sku);
+      if(!b1_item){
+        return false
+      }
+      let price, discountPrice, discountPercent, inStock;
+      try { price = b1_item.finalPrice } catch { price = 0 }
+      try { discountPercent = b1_item.pymntDscnt } catch { discountPrice = 0 }
+      try { inStock = b1_item.onHand.qty } catch { inStock = 0 }
+      try { discountPrice = Math.round(b1_item.price * discountPercent / 100) } catch { discountPrice = 0 }
+      let optionValues = this.getVariantOptionValues(relationships.option_values.data, optionTypes)
+      let code = '';
+      if(b1_item && b1_item.itemCode){code = b1_item.itemCode}
+      else {
+        console.error(`missing itemCode`)
+        console.error('product is : ' ,product);
+        console.error('b1_item is :', b1_item);
+      }
+      return {
+        id, optionValues, discountPrice, price, inStock, srcs,
+        code,
+        discountPercent,
+        isDefault: defaultVariantId === id
+      };
+      }
     },
     sortIncluded(spreeResult) {
       let sorted = { include_optionTypes: {}, include_details: {}, include_srcs: {}, meta_optionTypes: {}, include_variants: {} }
@@ -487,12 +517,10 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
         let defaultVariant;
         let inStock = 0;
         let defaultVariantId = product.relationships.default_variant.data.id
-        
         for (let i = 0; i < relationships.variants.data.length; i++) {
           let { id } = relationships.variants.data[i];
           id = id.toString();
-          // let variant = this.getProductVariant(include_variants[id], include_srcs, b1Result, optionTypes, defaultVariantId,product)
-          let variant = this.getProductVariant(relationships.variants.data[i], include_srcs, b1Result, optionTypes, defaultVariantId,product)
+          let variant = this.getProductVariant(include_variants[id], include_srcs, b1Result, optionTypes, defaultVariantId,product)
           if(variant === false){continue}
           if (variant.isDefault) { defaultVariant = variant }
           inStock += variant.inStock;
@@ -641,7 +669,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
     async refreshB1CentralInvetoryProducts() {
       await Axios.get(`${baseUrl}/BOne/RefreshCentralInvetoryProducts`);
     },
-    async getTaxonProducts({ loadType,Taxons,Name }) {
+    async getTaxonProducts({ loadType,Taxons,Name,msf }) {
       let res = await Axios.post(`${baseUrl}/Spree/Products`,
         {
           CardCode: userCardCode,
@@ -697,7 +725,9 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
           // }
         };
       });
-      return this.getMappedAllProducts({ spreeResult: spreeData, b1Result: b1Data, loadType });
+      let a = this.getMappedAllProducts({ spreeResult: spreeData, b1Result: b1Data, loadType });
+      if(msf){debugger;}
+      return a
     },
     async getProductsWithCalculation(skusId) {
       let res = await Axios.post(`${baseUrl}/BOne/GetItemsByItemCode`,

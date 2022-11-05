@@ -358,11 +358,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       let srcs = relationships.images.data.map(({ id }) => include_srcs[id.toString()].attributes.original_url)
       const b1_item = b1Result.find((i) => i.itemCode === attributes.sku);
       if(!b1_item){
-        console.error('cannot find b1_item');
-        console.error('product is : ',product); 
-        console.error('b1Result is : ',b1Result);     
-        console.error('variant.attributes.sku is : ',attributes.sku || 'undefined');
-        
+        return false
       }
       let price, discountPrice, discountPercent, inStock;
       try { price = b1_item.finalPrice } catch { price = 0 }
@@ -494,6 +490,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
           let { id } = relationships.variants.data[i];
           id = id.toString();
           let variant = this.getProductVariant(include_variants[id], include_srcs, b1Result, optionTypes, defaultVariantId,product)
+          if(variant === false){continue}
           if (variant.isDefault) { defaultVariant = variant }
           inStock += variant.inStock;
           variants.push(variant)

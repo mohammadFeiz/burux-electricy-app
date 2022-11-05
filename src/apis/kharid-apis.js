@@ -300,8 +300,10 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       });
     },
     async getCategories() {
+
       let res = await Axios.get(`${baseUrl}/Spree/GetAllCategoriesbyIds?ids=10820,10179,10180,10550`);
       let dataResult = res.data.data.data;
+      debugger;
       let included = res.data.data.included;
       let categories = dataResult.map((o) => {
 
@@ -315,7 +317,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
           }
         }
 
-        return { name: o.id === "10178" ? "همه محصولات" : o.attributes.name, id: o.id, src: src };
+        return { name: o.attributes.name, id: o.id, src: src };
       });
       for (let i = 0; i < categories.length; i++) {
         categories[i].products = await this.getCategoryItems(categories[i]);
@@ -485,7 +487,6 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
         let defaultVariant;
         let inStock = 0;
         let defaultVariantId = product.relationships.default_variant.data.id
-        
         
         for (let i = 0; i < relationships.variants.data.length; i++) {
           let { id } = relationships.variants.data[i];

@@ -183,7 +183,8 @@ export default class ProductCard extends Component{
                     attrs:{onClick:()=>this.onClick()},
                     column:[
                         {size:140,align:'vh',html:<img src={srcs[0] || NoSrc} width={'100%'} style={{width:'calc(100% - 24px)',height:'100%',borderRadius:8}} alt=''/>,style:{padding:6,paddingBottom:0}},
-                        {html:name,className:'size12 padding-6-12 color575756 bold theme-1-colorDDD',style:{whiteSpace:'normal'}},
+                        //{html:name,className:'size12 padding-6-12 color575756 bold theme-1-colorDDD',style:{whiteSpace:'normal'}},
+                        this.name_layout(),
                         {flex:1},
                         this.isInCart_layout(),
                         this.discount_layout(),

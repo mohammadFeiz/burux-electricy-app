@@ -356,7 +356,6 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       return result;
     },
     getProductVariant(include_variant, include_srcs, b1Result, optionTypes, defaultVariantId,product) {
-      try{
         let { id, attributes, relationships } = include_variant;
       let srcs = relationships.images.data.map(({ id }) => include_srcs[id.toString()].attributes.original_url)
       const b1_item = b1Result.find((i) => i.itemCode === attributes.sku);
@@ -382,35 +381,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
         discountPercent,
         isDefault: defaultVariantId === id
       };
-      }
-      catch(e){
-        debugger;
-        let { id, attributes, relationships } = include_variant;
-      let srcs = relationships.images.data.map(({ id }) => include_srcs[id.toString()].attributes.original_url)
-      const b1_item = b1Result.find((i) => i.itemCode === attributes.sku);
-      if(!b1_item){
-        return false
-      }
-      let price, discountPrice, discountPercent, inStock;
-      try { price = b1_item.finalPrice } catch { price = 0 }
-      try { discountPercent = b1_item.pymntDscnt } catch { discountPrice = 0 }
-      try { inStock = b1_item.onHand.qty } catch { inStock = 0 }
-      try { discountPrice = Math.round(b1_item.price * discountPercent / 100) } catch { discountPrice = 0 }
-      let optionValues = this.getVariantOptionValues(relationships.option_values.data, optionTypes)
-      let code = '';
-      if(b1_item && b1_item.itemCode){code = b1_item.itemCode}
-      else {
-        console.error(`missing itemCode`)
-        console.error('product is : ' ,product);
-        console.error('b1_item is :', b1_item);
-      }
-      return {
-        id, optionValues, discountPrice, price, inStock, srcs,
-        code,
-        discountPercent,
-        isDefault: defaultVariantId === id
-      };
-      }
+   
     },
     sortIncluded(spreeResult) {
       let sorted = { include_optionTypes: {}, include_details: {}, include_srcs: {}, meta_optionTypes: {}, include_variants: {} }
@@ -516,7 +487,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
         let variants = [];
         let defaultVariant;
         let inStock = 0;
-        let defaultVariantId = product.relationships.default_variant.data.id
+        let defaultVariantId = product.relationships.default_variant.data.id;
         for (let i = 0; i < relationships.variants.data.length; i++) {
           let { id } = relationships.variants.data[i];
           id = id.toString();
@@ -535,6 +506,11 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
         else {
           console.error(`product width id = ${product.id} has not default variant`)
           console.log('spree item is', product);
+          console.log('relationships.variants.data is', relationships.variants.data);
+          console.log('defaultVariant is', defaultVariant);
+          console.log('defaultVariantId is', defaultVariantId);
+          console.log('include_variants is', include_variants);
+          
           continue;
         }
         finalResult.push({

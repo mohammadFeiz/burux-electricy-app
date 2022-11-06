@@ -111,14 +111,14 @@ export default class Product extends Component {
     }
     body_layout() {
         let { product } = this.context;
-        let { name, ItemCode, optionTypes, details, srcs } = product;
-        let { srcIndex } = this.state;
+        let { name, optionTypes, details, srcs } = product;
+        let { srcIndex,selectedVariant } = this.state;
         return {
             flex: 1,
             scroll: "v",
             gap: 12,
             column: [
-                this.image_layout(name, ItemCode, srcs[srcIndex]),
+                this.image_layout(name, selectedVariant.code, srcs[srcIndex]),
                 this.options_layout(),
                 this.optionTypes_layout(optionTypes),
                 this.details_layout(details),
@@ -126,7 +126,7 @@ export default class Product extends Component {
             ],
         };
     }
-    image_layout(name, ItemCode, src) {
+    image_layout(name, code, src) {
         let { product } = this.context, { srcIndex } = this.state;
         return {
             size: 346, className: "box margin-0-12",
@@ -143,7 +143,7 @@ export default class Product extends Component {
                 },
                 { size: 12 },
                 { size: 36, html: name, className: "size16 color323130 bold padding-0-12" },
-                { size: 36, html: "کد کالا : " + (ItemCode || ""), className: "size14 color605E5C padding-0-12" },
+                { size: 36, html: "کد کالا : " + (code || ""), className: "size14 color605E5C padding-0-12" },
                 { size: 12 },
             ],
         };

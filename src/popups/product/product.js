@@ -70,19 +70,22 @@ export default class Product extends Component {
     }
     changeOptionType(obj) {
         let { optionValues } = this.state;
-        let key = Object.keys(obj)[0]
-        let newSelected;
-        if(obj[key] === optionValues[key]){
-            newSelected = {...optionValues,[key]:undefined};
+        let keys = Object.keys(obj)
+        for (let i = 0; i < keys.length; i++){
+            let key = keys[i];
+            let newSelected;
+            // if(obj[key] === optionValues[key]){
+            //     newSelected = {...optionValues,[key]:undefined};
+            // }
+            // else{
+                newSelected = { ...optionValues, ...obj };
+            //}
+            let variant = this.getVariantBySelected(newSelected);
+            this.setState({
+                optionValues: newSelected,
+                selectedVariant: variant
+            });
         }
-        else{
-            newSelected = { ...optionValues, ...obj };
-        }
-        let variant = this.getVariantBySelected(newSelected);
-        this.setState({
-            optionValues: newSelected,
-            selectedVariant: variant
-        });
     }
     getInStock() {
         let { selectedVariant } = this.state;

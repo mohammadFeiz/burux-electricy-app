@@ -306,16 +306,21 @@ in product by id = ${this.context.product.id} there is an optionType by id = ${i
                     row: [
                         { flex: 1 },
                         { html: <del>{functions.splitPrice(selectedVariant.Price)}</del>, className: "colorA19F9D" },
-                        { size: 6 },
+                        { size: 3 },
+                        {
+                            html: "%" + selectedVariant.B1Dscnt,show:!!selectedVariant.B1Dscnt,
+                            style: { background: "#FDB913", color: "#fff", borderRadius: 8, padding: "0 3px" },
+                        },
+                        { size: 3 },
                         {
                             html: "%" + selectedVariant.CmpgnDscnt,show:!!selectedVariant.CmpgnDscnt,
                             style: { background: "#FDB913", color: "#fff", borderRadius: 8, padding: "0 3px" },
                         },
-                        { size: 6 },
+                        { size: 3 },
                         {
                             html: "%" + selectedVariant.PymntDscnt,show:!!selectedVariant.PymntDscnt,
                             style: { background: "#ff4335", color: "#fff", borderRadius: 8, padding: "0 3px" },
-                        },
+                        }
                     ],
                 },
                 {

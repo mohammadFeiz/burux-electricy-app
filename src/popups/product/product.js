@@ -155,7 +155,7 @@ export default class Product extends Component {
         let { product } = this.context;
         if (product.optionTypes.length < 2) { return false }
         return {
-            className: 'box margin-0-12',
+            className: 'box margin-0-12',hide_xs:true,
             column: [
                 {
                     align: 'v', className: 'padding-12',

@@ -23,7 +23,7 @@ export default class Tabs extends Component{
         let {tabs = []} = this.props;
         if(!tabs.length){return null}
         return (
-            <RVD layout={{gap: 12,scroll:'v',style:{height:36},className: 'tabs-container padding-0-24 bgFFF',row: tabs.map((o)=>this.tab_layout({...o}))}}/>
+            <RVD layout={{gap: 12,scroll:'h',style:{height:36},className: 'tabs-container padding-0-24 bgFFF',row: tabs.map((o)=>this.tab_layout({...o}))}}/>
         )
     }
 }

@@ -246,6 +246,25 @@ export default class Main extends Component {
     //let testedChance = await gardooneApis({type:"get_tested_chance"});
     let pricing = new Pricing('https://b1api.burux.com/api/BRXIntLayer/GetCalcData', userCardCode,12 * 60 * 60 * 1000)
     let istarted = pricing.startservice().then((value) => { return value; });
+    let getFactorDetails = (items)=>{
+      let {userInfo,b1Info} = this.state;
+      debugger;
+      let config = {
+        
+          "CardCode": userInfo.cardCode,
+          "CardGroupCode":b1Info.customer.groupCode,
+          "MarketingLines": items,
+          "DeliverAddress": userInfo.address,
+          "marketingdetails": {
+            "SlpCode": userInfo.slpcode
+          },
+
+        
+      }
+      debugger;
+      let res = pricing.autoCalcDoc(config)
+      return res
+    }
     let fixPrice = (items,caller)=>{
       if(developerMode){
         if(!caller){
@@ -304,7 +323,8 @@ export default class Main extends Component {
       userInfo:{...b1Info.customer,storeName:b1Info.storeName},
       b1Info,
       fixPrice,
-      updateProductPrice,
+      pricing,
+      updateProductPrice,getFactorDetails,
       wallet:b1Info.customer.ballance
       //testedChance
     });

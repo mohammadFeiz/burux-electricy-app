@@ -98,7 +98,8 @@ export default class Buy extends Component {
   }
   tab2(){
     let {SetState} = this.context;
-    let {categories} = this.state;
+    let {categories = []} = this.state;
+    if(!typeof categories.map === 'function'){debugger;}
     return {
       flex: 1,className:'box gap-no-color padding-12',scroll:'v',gap: 24,
       column:categories.map((o)=>{

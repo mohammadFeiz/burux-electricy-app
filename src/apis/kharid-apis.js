@@ -520,38 +520,9 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       }
       return finalResult;
     },
-    async sendToVisitor() {
-      let { userInfo, cart = {} } = getState();
-      let variants = Object.keys(cart).map((id) => cart[id])
-      let res = await Axios.post(`${baseUrl}/BOne/AddNewOrder`, {
-        "marketdoc": {
-          "docsource": 0,
-          "approvalstatus": 0,
-          "doctype": 23,
-          "cardcode": userInfo.cardCode,
-          "marketinglines": variants.map((i) => {
-            return { itemcode: i.variant.code, itemqty: i.count }
-          }),
-          "deliveraddress": userInfo.address,
-          "marketingdetails": {
-            "invtype": 1,
-            "settletype": 1,
-            "paymenttime": 2,
-            "slpcode": userInfo.slpcode,
-            "deliverytype": 13,
-            "payduedate": 1
-          },
-          "paymentdetails": {
-            "realpayerinfo": ""
-          },
-          "comment": "",
-          "documenttotal": 0.0,
-          "relatedteam": 1
-        }
-
-      });
-
-      try { return res.data.data[0].docNum }
+    async sendToVisitor(factorDetails) {
+      let res = await Axios.post(`${baseUrl}/BOne/AddNewOrder`, factorDetails);
+      try { return res.data.data[0].docEntry }
       catch { return false }
     },
     async getProductFullDetail({id,code,product}){

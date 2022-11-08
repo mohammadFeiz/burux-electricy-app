@@ -367,14 +367,15 @@ class OTPLogin extends Component{
       <RVD
         layout={{
           style:{position:'fixed',left:0,top:0,width:'100%',height:'100%',background:'#eff8fc'},
+          scroll:'v',
           column:[
             {size:48},
             this.header_layout(),
-            {flex:1},
+            {size:48},
             this.interPhone_layout(),
             this.interCode_layout(),
             this.error_layout(),
-            {flex:3}
+            {size:300}
           ]
         }}
       />

@@ -99,10 +99,11 @@ export default class Shipping extends Component{
       let {shipping} = this.context;
       let {total,totalDiscount} = shipping;
       return {
-        className:'box padding-12 margin-0-12',
+        className:'padding-0-12 bgFFF',
+        style:{paddingTop:12,borderRadius:'16px 16px 0 0'},
         column:[
           {
-            size:36,childsProps:{align:'v'},
+            size:28,childsProps:{align:'v'},
             row:[
               {html:'قیمت کالاها:',className:'color605E5C size14'},
               {flex:1},
@@ -110,7 +111,7 @@ export default class Shipping extends Component{
             ]
           },
           {
-            size:36,childsProps:{align:'v'},
+            size:28,childsProps:{align:'v'},
             row:[
               {html:'تخفیف:',className:'colorFDB913 size14'},
               {flex:1},
@@ -118,7 +119,7 @@ export default class Shipping extends Component{
             ]
           },
           {
-            size:36,childsProps:{align:'v'},
+            size:28,childsProps:{align:'v'},
             row:[
               {html:'تخفیف پرداخت آنلاین:',className:'color00B5A5 size14'},
               {flex:1},
@@ -126,7 +127,7 @@ export default class Shipping extends Component{
             ]
           },
           {
-            size:36,childsProps:{align:'v'},
+            size:28,childsProps:{align:'v'},
             row:[
               {html:'مبلغ قابل پرداخت:',className:'color323130 bold size16'},
               {flex:1},
@@ -141,13 +142,16 @@ export default class Shipping extends Component{
       return {html:<Header title='ادامه فرایند خرید' onClose={()=>SetState({shippingZIndex:0})}/>}
     }
     sendToVisitor_layout(){
-      let {shipping,SetState,kharidApis,cart} = this.context;
+      let {shipping,SetState,kharidApis,cart,getFactorDetails} = this.context;
       let {cartItems} = shipping;
       return {
         className:'padding-12',
         column:[
           {size:36,align:'vh',className:'color605E5C size14 bold',html:<button className="button-2" onClick={async ()=>{
-            let res = await kharidApis({type:"sendToVisitor"})
+            let factorDetails = getFactorDetails(cartItems.map((o)=>{
+              return { itemcode: o.variant.code, itemqty: o.count }
+            }))
+            let res = await kharidApis({type:"sendToVisitor",parameter:factorDetails})
             if(res){
               let variantIds = cartItems.map((o)=>o.variant.id)
               let newCart = {};
@@ -187,10 +191,9 @@ export default class Shipping extends Component{
                   {size:12},
                   this.products_layout(),
                   {size:12},
-                  this.amount_layout(),
                 ],
               },
-              {size:12},
+              this.amount_layout(),
               this.sendToVisitor_layout()
             ]
           }}

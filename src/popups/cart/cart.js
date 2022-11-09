@@ -135,6 +135,7 @@ export default class Cart extends Component{
       if(!this.tab){return false}
       debugger;
       let {SetState,cartZIndex} = this.context;
+      let total = this.tab.factorDetails.MarketingLines[0].PriceAfterVat;
       return {
         size: 72,className: "main-bg padding-0-12",
         row: [
@@ -143,7 +144,7 @@ export default class Cart extends Component{
             column: [
               { flex: 1 },
               {align: "v",html: "مبلغ قابل پرداخت",className: "color5757656 size12"},
-              {align: "v",html: this.splitPrice(this.tab.total) + " ریال",className: "color323130 size16"},
+              {align: "v",html: this.splitPrice(total) + " ریال",className: "color323130 size16"},
               { flex: 1 },
             ],
           },

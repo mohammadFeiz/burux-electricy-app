@@ -97,7 +97,10 @@ export default class Shipping extends Component{
     }
     amount_layout(){
       let {shipping} = this.context;
-      let {total,totalDiscount} = shipping;
+      let {totalDiscount,factorDetails} = shipping;
+      let total = factorDetails.MarketingLines[0].PriceAfterVat;
+      total = total - (total * factorDetails.marketingdetails.DocumentDiscountPercent / 100)
+      
       return {
         className:'padding-0-12 bgFFF',
         style:{paddingTop:12,borderRadius:'16px 16px 0 0'},

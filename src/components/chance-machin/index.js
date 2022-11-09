@@ -9,20 +9,10 @@ export default class ChanceMachin extends Component {
         super(props);
         this.dom = createRef();
         this.state = { index: 0,clicked:false }
-        setInterval(() => {
-            let { index } = this.state;
-            index++;
-            if (index > 1) { index = 0 }
-            this.setState({ index })
-        }, 1000)
     }
     componentDidMount() {
-        setInterval(() => {
-            let dom = $(this.dom.current);
-            if (dom.hasClass('changed-bg')) { dom.removeClass('changed-bg'); }
-            else { dom.addClass('changed-bg'); }
-        }, 500)
         this.getItems();
+        this.setState({});
     }
     getSrc() {
         let { index } = this.state;
@@ -87,7 +77,7 @@ export default class ChanceMachin extends Component {
         
     }
     render() {
-        let {decay = 5,stop = 2,width = 86,size = 60,text = 'شانس خودت رو امتحان کن',showIndex} = this.props;
+        let {decay = 5,stop = 2,width = 96,size = 72,text = 'شانس خودت رو امتحان کن',showIndex} = this.props;
         let {clicked} = this.state;
         let setting = {width,size,editable: false,decay,stop,showIndex}
         return (
@@ -102,3 +92,6 @@ export default class ChanceMachin extends Component {
         )
     }
 } 
+
+
+

@@ -12,8 +12,8 @@ export default class Awards extends Component {
   constructor(props) {
     super(props);
     this.iconDictionary = {
-      '1':1,//
-      '2':1,'3':2,'4':8,'5':5,'6':4,'7':3,'8':7,'9':6
+      '1':'aw1',//
+      '2':'aw2','3':'aw3','4':'aw4','5':'aw5','6':'aw1','7':'aw2','8':'aw3','9':'aw4'
     }
     this.state = {
       chanceResult:false,//false, winner or looser
@@ -61,6 +61,7 @@ export default class Awards extends Component {
         layout={{
           className: 'award-page',
           column: [
+            {html:<AnimeBG/>},
             {
               size: 96, align: 'v',className: 'award-page-header' ,
               row: [
@@ -82,7 +83,7 @@ export default class Awards extends Component {
               ), 
               style: { padding: '0 24px' }, align: 'h'
             },
-            { size: 24 },
+            { flex: 1 },
             { size: 48, html: 'جایزه ها', align: 'vh',style: { fontSize: 24 } },
             {html:<AwardsPreview awards={awards} onClick={()=>this.setState({showUserAwards:true})}/>},
             { size: 36 }
@@ -314,3 +315,26 @@ class UserAwards extends Component{
 }
 
 
+
+
+class AnimeBG extends Component{
+  render(){
+      return (
+          <div className='anime-bg-container'>
+          <div className='anime-bg-1'>
+              <div className='anime-bg-item-1'></div>
+          </div>
+          <div className='anime-bg-2'>
+              <div className='anime-bg-item-2'></div>
+          </div>
+          <div className='anime-bg-3'>
+              <div className='anime-bg-item-3'></div>
+          </div>
+          <div className='anime-bg-4'>
+              <div className='anime-bg-item-4'></div>    
+          </div>
+          <div className='anime-bg-gloss'></div>
+          </div>
+      )
+  }
+}

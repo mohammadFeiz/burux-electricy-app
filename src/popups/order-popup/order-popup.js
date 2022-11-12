@@ -57,7 +57,6 @@ export default class OrderPopup extends Component {
         phone,paymentMethod,products = []
       } = details;
       let {mainDocNum,date,total} = order;
-      debugger;
       return (
         <div className={"popup-container" + (theme?' ' + theme:'')}>
           <RVD

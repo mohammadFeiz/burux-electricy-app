@@ -172,12 +172,23 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
         "isDraft": order.mainDocisDraft
       });
       let result = res.data.data.results;
+      
+      
+      
+      //let Skus = [];
       const products = result.marketingLines.map((i) => {
+        //Skus.push(i.itemCode)
         return {
           name: i.itemName, discountPrice: i.priceAfterVat, dicountPercent: i.discountPercent, price: i.price, count: i.itemQty, src: bulb10w,
           details: [['رنگ نور', 'آفتابی'], ['واحد', 'شعله']]
         };
       })
+      
+      
+      
+      // let srcs = await Axios.post(`${baseUrl}/Spree/Products`, { Skus, Include: "images" });
+      // let included = res.data.data.included;
+      // debugger;
       
 
       
@@ -202,18 +213,22 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
         "DocType": order.docType,
         "isDraft": order.isDraft
       });
+      
       let result = res.data.data.results;
 
       let total = 0, basePrice = 0, visitorName, paymentMethod;
       let { marketingLines = [], marketingdetails = {}, paymentdetails = {} } = result;
       visitorName = marketingdetails.slpName;
       paymentMethod = paymentdetails.paymentTermName || '';
-
       for (let i = 0; i < marketingLines.length; i++) {
         let { priceAfterVat = 0, price = 0 } = result.marketingLines[i];
         total += priceAfterVat;
         basePrice += price;
       }
+
+
+      
+
       let {date,time} = getDateAndTime(result.docTime);
       result = {
         number: order,//
@@ -241,7 +256,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
           };
         }),
       };
-
+      debugger;
       return result;
     },
     async userInfo() {

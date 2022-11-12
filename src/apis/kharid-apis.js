@@ -178,6 +178,9 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
           details: [['رنگ نور', 'آفتابی'], ['واحد', 'شعله']]
         };
       })
+      
+
+      
       return {
         products,
         paymentMethod: result.paymentdetails.paymentTermName,

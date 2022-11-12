@@ -83,7 +83,7 @@ export default class ProductCard extends Component{
             childsAttrs:{align:'v'},gap:4,className:'padding-0-12',
             row:[
                 {flex:1},
-                {html:<del>{this.splitPrice(Price * count)}</del>,className:'size14 colorA19F9D'},
+                {html:<del>{this.splitPrice(Price)}</del>,className:'size14 colorA19F9D'},
                 {
                     gap:3,
                     row:[

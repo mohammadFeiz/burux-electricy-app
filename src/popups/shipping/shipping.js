@@ -3,6 +3,7 @@ import RVD from 'react-virtual-dom';
 import Header from '../../components/header/header';
 import functions from '../../functions';
 import Popup from '../../components/popup/popup';
+import AIOButton from 'aio-button';
 import appContext from './../../app-context';
 export default class Shipping extends Component{
     static contextType = appContext;
@@ -16,7 +17,35 @@ export default class Shipping extends Component{
         customerGroup:'الکتریکی',
         address:'',
         phone:'09123534314',
-        orderNumber:false
+        orderNumber:false,
+        PayDueDate:'ByDelivery',
+        PayDueDate_options:[
+          {value:'ByDelivery',text:'نقد'},
+          {value:'By15Days',text:'چک 15 روزه'},
+          {value:'ByMonth',text:'چک 30 روزه'},
+          {value:'By45Days',text:'چک 45 روزه'},
+          {value:'By60Days',text:'چک 60 روزه'},
+        ],
+        PaymentTime:'ByOnlineOrder',
+        PaymentTime_options:[
+          {value:'ByOnlineOrder',text:'اینترنتی'},
+          {value:'ByOrder',text:'واریز قبل ارسال'},
+          {value:'ByDelivery',text:'واریز پای بار'},
+        ],
+        SettleType:'ByDelivery',
+        SettleType_options:[
+          {value:'ByDelivery',text:'نقد'},
+          {value:'Cheque',text:'چک'},
+
+        ],
+        DeliveryType:'BRXDistribution',
+        DeliveryType_options:[
+          {value:'BRXDistribution',text:'ماشین توزیع بروکس'},
+          {value:'RentalCar',text:'ماشین اجاره ای'},
+          {value:'Cargo',text:'باربری'},
+          {value:'HotDelivery',text:'پخش گرم'},
+          {value:'BySalesMan',text:'ارسال توسط ویزیتور'}
+        ]
       }
     }
     details_layout(){
@@ -67,6 +96,29 @@ export default class Shipping extends Component{
           {size:36,align:'v',className:'color605E5C size12 bold',html:'آدرس تحویل'},
           {
             className:'size14 color575756 bgF1F1F1 padding-12 round-6',html:address
+          }
+        ]
+      }
+    }
+
+    options_layout(key,title,cond = true){
+      let options = this.state[key + '_options']
+      let value = this.state[key];
+      if(!cond){return false}
+      return {
+        className:'box padding-12 margin-0-12',
+        column:[
+          {size:36,align:'v',className:'color605E5C size12 bold',html:title},
+          {
+            html:(
+              <AIOButton
+                type='radio'
+                optionStyle='{width:"100%"}'
+                options={options}
+                value={value}
+                onChange={(newValue)=>this.setState({[key]:newValue})}
+              />
+            )
           }
         ]
       }
@@ -172,7 +224,7 @@ export default class Shipping extends Component{
       }
     }
     render(){
-      let {orderNumber} = this.state;
+      let {orderNumber,PaymentTime} = this.state;
       let {shippingZIndex} = this.context;
       return (
         <>
@@ -191,6 +243,12 @@ export default class Shipping extends Component{
                   this.address_layout(),
                   {size:12},
                   this.phone_layout(),
+                  {size:12},
+                  this.options_layout('DeliveryType','نحوه ارسال'),
+                  {size:12},
+                  this.options_layout('PaymentTime','زمان پرداخت',),
+                  {size:12},
+                  this.options_layout('PayDueDate','مهلت تسویه',PaymentTime !== 'ByOnlineOrder'),
                   {size:12},
                   this.products_layout(),
                   {size:12},

@@ -193,7 +193,11 @@ class OTPLogin extends Component{
               className:'padding-0-12',
               html:(
                 <input 
-                  type='text' value={phoneValue} onChange={(e)=>this.changePhoneValue(e.target.value)} placeholder='09...'
+                  type='text' tabIndex={0} 
+                  onKeyDown={(e)=>{
+                    if(e.keyCode === 13){this.onInterPhone()}
+                  }} 
+                  value={phoneValue} onChange={(e)=>this.changePhoneValue(e)} placeholder='09...'
                   style={{height:40,background:'#eee',border:'1px solid #0094D4',borderRadius:6,width:'100%',direction:'ltr',padding:'0 12px',fontFamily:'inherit'}}
                 />
               )

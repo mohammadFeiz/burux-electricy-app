@@ -111,6 +111,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
           orders.push(
             {
               code: product.mainDocEntry,
+              mainDocNum:product.mainDocNum,
               mainDocisDraft: product.mainDocisDraft,
               mainDocType: product.mainDocType,
               date,_time:time,
@@ -164,7 +165,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
         HotDelivery: 11,
         HotSummer2022: 12,
       }
-
+        
       let res = await Axios.post(`${baseUrl}/BOne/GetDocument`, {
         "DocEntry": order.code,
         "DocType": docTypeDictionary[order.mainDocType],
@@ -673,7 +674,6 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
         };
       });
       let a = this.getMappedAllProducts({ spreeResult: spreeData, b1Result: b1Data, loadType });
-      if(msf){debugger;}
       return a
     },
     async getProductsWithCalculation(skusId) {

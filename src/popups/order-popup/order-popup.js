@@ -50,13 +50,14 @@ export default class OrderPopup extends Component {
       this.setState({details})
     }
     render() {
-      let { theme,order,SetState } = this.context;
+      let { theme,order,SetState,userInfo } = this.context;
       let {details} = this.state;
       let {
-        customerName,customerCode,customerGroup,campaignName,basePrice,visitorName,address,mobile,
+        customerName,customerCode,campaignName,basePrice,visitorName,address,mobile,
         phone,paymentMethod,products = []
       } = details;
-      let {code,date,total} = order;
+      let {mainDocNum,date,total} = order;
+      debugger;
       return (
         <div className={"popup-container" + (theme?' ' + theme:'')}>
           <RVD
@@ -74,14 +75,14 @@ export default class OrderPopup extends Component {
                       style: { padding: 12 },
                       gap: 12,
                       column: [
-                        this.getRow("پیش فاکتور", code),
+                        this.getRow("پیش فاکتور", mainDocNum),
                         this.getRow("تاریخ ثبت", date),
                         { size: 12 },
                         this.getRow(
                           "نام مشتری",
                           customerName + " - " + customerCode
                         ),
-                        this.getRow("گروه مشتری", customerGroup),
+                        this.getRow("گروه مشتری", userInfo.groupName),
                         this.getRow("نام کمپین", campaignName),
                         this.getRow("قیمت پایه", functions.splitPrice(basePrice)),
                         this.getRow("نام ویزیتور", visitorName),

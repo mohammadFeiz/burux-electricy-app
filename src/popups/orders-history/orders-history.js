@@ -134,13 +134,13 @@ export default class OrdersHistory extends Component {
     }
     header_layout(){
       let {order} = this.props;
-      let { code, date} = order;
+      let { mainDocNum, date} = order;
       return {
         align: "v",size: 36,
         row: [
           { html: "پیش سفارش:", className: "colorA19F9D size12" },
           { size: 4 },
-          { html: code, className: "color605E5C size14" },
+          { html: mainDocNum, className: "color605E5C size14" },
           { flex: 1 },
           { html: date, className: "colorA19F9D size12" },
         ],

@@ -95,7 +95,7 @@ export default class Shipping extends Component{
         column:[
           {size:36,align:'v',className:'color605E5C size12 bold',html:'آدرس تحویل'},
           {
-            className:'size14 color575756 bgF1F1F1 padding-12 round-6',html:address
+            className:'size14 color575756 bgF1F1F1 padding-12 round-6',html:address,size:72
           }
         ]
       }
@@ -140,10 +140,11 @@ export default class Shipping extends Component{
       let {cards} = shipping;
       return {
         className:'box padding-12 margin-0-12',
+        styke:{overflow:'visible'},
         column:[
-          {size:36,align:'v',className:'color605E5C size12 bold',html:'محصولات'},
+          {size:36,align:'v',className:'color605E5C size14 bold',html:'محصولات'},
           {
-            column:cards.map((card)=>{return {html:card,style:{overflow:'visible'}}})}
+            style:{overflow:'visible'},column:cards.map((card)=>{return {html:card,style:{overflow:'visible'}}})}
         ]
       }
     }

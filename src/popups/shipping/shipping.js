@@ -217,17 +217,16 @@ export default class Shipping extends Component{
                 }),
                 "DeliverAddress":address,
                 "marketingdetails":{
-                  SettleType,
-                  PaymentTime,
-                  DeliveryType,
-                  PayDueDate
-                },
-                SettleType,
-                PaymentTime,
-                DeliveryType,
-                PayDueDate
-                
-              }
+                  // SettleType,
+                  // PaymentTime,
+                  // DeliveryType,
+                  // PayDueDate
+                }
+              },
+              SettleType,
+              PaymentTime,
+              DeliveryType,
+              PayDueDate
             }
             let res = await kharidApis({type:"sendToVisitor",parameter:body})
             if(res){

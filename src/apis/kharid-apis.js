@@ -173,6 +173,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       let result = res.data.data.results;
             
       let Skus = [];
+      console.log(result)
       const products = result.marketingLines.map((i) => {
         Skus.push(i.itemCode)
         return {
@@ -181,7 +182,10 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
         };
       })
       
-      let srcs = await Axios.post(`${baseUrl}/Spree/Products`, { Skus:Skus.toString(), Include: "default_variant,images" });
+      let srcs = await Axios.post(`${baseUrl}/Spree/Products`, { 
+        Skus:Skus.toString(),
+        PerPage:250,
+        Include: "default_variant,images" });
       const included=srcs.data.data.included;
 
       for (const item of srcs.data.data.data) {
@@ -302,7 +306,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       return getState().updateProductPrice(res,'kharidApis => recommendeds')
     },
     async bestSellings(){
-      return getState().updateProductPrice(await this.getTaxonProducts({Taxons:'10178'}),'kharidApis => bestSellings')
+      return getState().updateProductPrice(await this.getTaxonProducts({Taxons:'10820'}),'kharidApis => bestSellings')
     },
     async preOrders() {
       let preOrders = { waitOfVisitor: 0, waitOfPey: 0 };
@@ -319,7 +323,10 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       return preOrders;
     },
     async search(searchValue) {
-      let res = await Axios.post(`${baseUrl}/Spree/Products`, { Name: searchValue, Include: "images" });
+      let res = await Axios.post(`${baseUrl}/Spree/Products`, { 
+        Name: searchValue,
+        PerPage:250,
+        Include: "images" });
       let result = res.data.data.data;
       let included = res.data.data.included;
       return result.map((o) => {
@@ -335,7 +342,6 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
     async getCategories() {
       let res = await Axios.get(`${baseUrl}/Spree/GetAllCategoriesbyIds?ids=10820,10179,10180,10550`);
       let dataResult = res.data.data.data;
-      ;
       let included = res.data.data.included;
       let categories = dataResult.map((o) => {
 
@@ -538,11 +544,6 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
         else {
           console.error(`product width id = ${product.id} has not default variant`)
           console.log('spree item is', product);
-          console.log('relationships.variants.data is', relationships.variants.data);
-          console.log('defaultVariant is', defaultVariant);
-          console.log('defaultVariantId is', defaultVariantId);
-          console.log('include_variants is', include_variants);
-          
           continue;
         }
         finalResult.push({
@@ -563,6 +564,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       let res = await Axios.post(`${baseUrl}/Spree/Products`,
             {
               Ids: id,
+              PerPage:250,
               Include: "variants,option_types,product_properties,images"
             }
           );
@@ -652,8 +654,8 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       let res = await Axios.post(`${baseUrl}/Spree/Products`,
         {
           CardCode: userCardCode,
-          //Taxons: "10179",
           Taxons,
+          PerPage:250,
           Name,
           Include: loadType === 0 ? "default_variant,images" : "variants,option_types,product_properties,taxons,images,default_variant"
         }
@@ -704,8 +706,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
           // }
         };
       });
-      let a = this.getMappedAllProducts({ spreeResult: spreeData, b1Result: b1Data, loadType });
-      return a
+      return this.getMappedAllProducts({ spreeResult: spreeData, b1Result: b1Data, loadType });
     },
     async getProductsWithCalculation(skusId) {
       let res = await Axios.post(`${baseUrl}/BOne/GetItemsByItemCode`,

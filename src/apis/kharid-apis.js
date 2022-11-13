@@ -124,7 +124,6 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
     },
     async orderProducts(order) {
       let { userInfo } = getState();
-      console.log(order);
 
       const docTypeDictionary = {
         Customer: 2,
@@ -173,8 +172,6 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       });
       let result = res.data.data.results;
       
-      debugger
-      
       let Skus = [];
       const products = result.marketingLines.map((i) => {
         Skus.push(i.itemCode)
@@ -186,12 +183,24 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       
       
       
-      let srcs = await Axios.post(`${baseUrl}/Spree/Products`, { Skus:Skus.toString(), Include: "images" });
-      let included = res.data.data.included;
-      debugger;
-      
+      let srcs = await Axios.post(`${baseUrl}/Spree/Products`, { Skus:Skus.toString(), Include: "default_variant,images" });
 
-      
+      const {b1Info} = getState();
+      const spreeData = srcs.data.data;
+      const b1Data = b1Info.itemPrices.map((i)=>{
+        const onHand=i.inventory.filter(x=>x.whsCode==="01");
+        return {
+          "itemCode": i.itemCode,
+          "price": 0,
+          "finalPrice": 0,
+          "b1Dscnt": 0,
+          "cmpgnDscnt": 0,
+          "pymntDscnt": 0,
+          "onHand":onHand.length ? onHand[0] : {},
+        };
+      });
+      let resi = this.getMappedAllProducts({ spreeResult: spreeData, b1Result: b1Data, loadType:0 });
+  
       return {
         products,
         paymentMethod: result.paymentdetails.paymentTermName,

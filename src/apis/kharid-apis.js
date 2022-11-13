@@ -178,7 +178,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
         Skus.push(i.itemCode)
         return {
           name: i.itemName,itemCode: i.itemCode, discountPrice: i.priceAfterVat, dicountPercent: i.discountPercent, price: i.price, count: i.itemQty, src: bulb10w,
-          details: [['رنگ نور', 'آفتابی'], ['واحد', 'شعله']]
+          details: []
         };
       })
       
@@ -206,7 +206,6 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
         let firstItem = products.find(x=>x.itemCode === defaultVariantSku);
         if(firstItem === null || firstItem === undefined) continue;
         firstItem.src=srcs[0];
-        firstItem.details=srcs[0];
       }
 
       return {

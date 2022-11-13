@@ -340,7 +340,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       });
     },
     async getCategories() {
-      let res = await Axios.get(`${baseUrl}/Spree/GetAllCategoriesbyIds?ids=10820,10179,10550`);
+      let res = await Axios.get(`${baseUrl}/Spree/GetAllCategoriesbyIds?ids=10820,10179,10928,10550`);
       let dataResult = res.data.data.data;
       let included = res.data.data.included;
       let categories = dataResult.map((o) => {

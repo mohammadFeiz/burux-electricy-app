@@ -176,28 +176,34 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       const products = result.marketingLines.map((i) => {
         Skus.push(i.itemCode)
         return {
-          name: i.itemName, discountPrice: i.priceAfterVat, dicountPercent: i.discountPercent, price: i.price, count: i.itemQty, src: bulb10w,
+          name: i.itemName,itemCode: i.itemCode, discountPrice: i.priceAfterVat, dicountPercent: i.discountPercent, price: i.price, count: i.itemQty, src: bulb10w,
           details: [['رنگ نور', 'آفتابی'], ['واحد', 'شعله']]
         };
       })
       
       let srcs = await Axios.post(`${baseUrl}/Spree/Products`, { Skus:Skus.toString(), Include: "default_variant,images" });
+      const included=srcs.data.data.included;
 
-      const {b1Info} = getState();
-      const spreeData = srcs.data.data;
-      const b1Data = b1Info.itemPrices.map((i)=>{
-        const onHand=i.inventory.filter(x=>x.whsCode==="01");
-        return {
-          "itemCode": i.itemCode,
-          "price": 0,
-          "finalPrice": 0,
-          "b1Dscnt": 0,
-          "cmpgnDscnt": 0,
-          "pymntDscnt": 0,
-          "onHand":onHand.length ? onHand[0] : {},
-        };
-      });
-      let resi = this.getMappedAllProducts({ spreeResult: spreeData, b1Result: b1Data, loadType:0 });
+      for (const item of srcs.data.data.data) {
+        
+        const defaultVariantId = item.relationships.default_variant.data.id;
+        const defaultVariantImagesId = item.relationships.images.data.map(x=>x.id);
+        const defaultVariant=included.find(x=>x.type==="variant" && x.id===defaultVariantId);
+        const defaultVariantImages=included.filter(x=>x.type==="image" && defaultVariantImagesId.includes(x.id));
+        const defaultVariantSku=defaultVariant.attributes.sku;
+        if(!defaultVariantSku){
+          console.error('there is an item without sku');
+          console.error('items is:',item)
+          continue
+        }
+        const srcs=defaultVariantImages.map(x=>{
+          return "https://shopback.miarze.com" + x.attributes.original_url;
+        });
+        let firstItem = products.find(x=>x.itemCode===defaultVariantSku);
+        if(firstItem==null || firstItem==undefined) continue;
+        firstItem.src=srcs[0];
+        firstItem.details=srcs[0];
+      }
 
       return {
         products,

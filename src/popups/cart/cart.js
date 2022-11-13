@@ -133,7 +133,6 @@ export default class Cart extends Component{
     }
     payment_layout(){
       if(!this.tab){return false}
-      debugger;
       let {SetState,cartZIndex} = this.context;
       let total = this.tab.factorDetails.MarketingLines[0].PriceAfterVat;
       return {

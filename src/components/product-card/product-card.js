@@ -130,7 +130,10 @@ export default class ProductCard extends Component{
         if(this.debuggerMode){return }
         let {SetState,kharidApis} = this.context;
         let {product,parentZIndex = 1} = this.props;
-        product = await kharidApis({type:'getProductFullDetail',parameter:{id:product.id,code:product.defaultVariant.code,product}})
+        if(!product.hasFullDetail){
+            product = await kharidApis({type:'getProductFullDetail',parameter:{id:product.id,code:product.defaultVariant.code,product}})
+            product.hasFullDetail = true;
+        }
         SetState({productZIndex:parentZIndex * 10,product})
     }
     horizontal_layout(){

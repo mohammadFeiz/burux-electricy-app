@@ -172,9 +172,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
         "isDraft": order.mainDocisDraft
       });
       let result = res.data.data.results;
-      
-      debugger
-      
+            
       let Skus = [];
       const products = result.marketingLines.map((i) => {
         Skus.push(i.itemCode)
@@ -184,14 +182,9 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
         };
       })
       
-      
-      
       let srcs = await Axios.post(`${baseUrl}/Spree/Products`, { Skus:Skus.toString(), Include: "images" });
       let included = res.data.data.included;
-      debugger;
-      
-
-      
+      debugger; 
       return {
         products,
         paymentMethod: result.paymentdetails.paymentTermName,

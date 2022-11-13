@@ -124,7 +124,6 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
     },
     async orderProducts(order) {
       let { userInfo } = getState();
-      console.log(order);
 
       const docTypeDictionary = {
         Customer: 2,

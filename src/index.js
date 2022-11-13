@@ -236,12 +236,12 @@ class OTPLogin extends Component {
       column: [
         {
           style: {
-            background: '#fff', margin: 12, padding: 12
+            background: 'rgba(255,255,255,0.2)', margin: 24, padding: 12,borderRadius:12
           },
           column: [
-            { html: 'ورود | ثبت نام', className: 'size20 color323130 bold padding-0-12' },
+            { html: 'ورود | ثبت نام', className: 'size20 colorFFF bold padding-0-12' },
             { size: 12 },
-            { html: 'شماره تلفن همراه خود را وارد کنید. پیامکی حاوی کد برای شما ارسال میشود', className: 'size14 color605E5C padding-0-12' },
+            { html: 'شماره تلفن همراه خود را وارد کنید. پیامکی حاوی کد برای شما ارسال میشود', className: 'size14 colorFFF padding-0-12' },
             { size: 24 },
             {
               className: 'padding-0-12',

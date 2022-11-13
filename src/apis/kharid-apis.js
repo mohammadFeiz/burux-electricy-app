@@ -198,7 +198,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
         };
       });
       let resi = this.getMappedAllProducts({ spreeResult: spreeData, b1Result: b1Data, loadType:0 });
-
+      debugger
       return {
         products,
         paymentMethod: result.paymentdetails.paymentTermName,

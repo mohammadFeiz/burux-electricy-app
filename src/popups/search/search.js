@@ -66,13 +66,6 @@ export default class Search extends Component {
                 {html:<Header zIndex={searchZIndex} title='جستجو در محصولات' onClose={()=>SetState({searchZIndex:0})} buttons={{cart:true}}/>},
                 {html:<SearchBox onChange={async (searchValue)=>await this.changeSearch(searchValue)}/>},
                 {size: 200,align: "vh",className: "size20 color323130 bold",show: false,html: "در میان ان کالا جستجو"},
-                {size: 48,align: "v",className: "size14 color323130 bold",html: "جستجو در خانواده ها",style: { padding: "0 24px" }},
-                {
-                  gap: 12,
-                  row: searchFamilies.map((o) => {
-                    return {size: 90,html: o.name,className: "color605E5C size14",align: "vh",style: {border: "1px solid #999",borderRadius: 24}};
-                  }),
-                },
                 {size: 48,align: "v",className: "size14 color323130 bold padding-0-24",html: "محصولات"},
                 { size: 24 },
                 this.result_layout()

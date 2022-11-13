@@ -96,7 +96,7 @@ export default class OrderPopup extends Component {
                     },
                     //this.getStatus(order.status),
                     {
-                      gap: 2,
+                      gap: 2,className:'margin-0-12',
                       column: products.map((o, i) => {
                         return this.context.layout("productCard2", {...o,isFirst: i === 0,isLast: i === products.length - 1})
                       })

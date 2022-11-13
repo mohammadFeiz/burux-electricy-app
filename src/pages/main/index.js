@@ -116,7 +116,12 @@ export default class Main extends Component {
         { text: "خانه", icon: 19, id: "a" },
         { text: "خرید", icon: 'buy', id: "b" },
         { text: "بازارگاه", icon: 20, id: "c" },
-        { text: "بروکس من", icon: 21, id: "d" },
+        { text: ()=>{
+          let {userInfo = {}} = this.state;
+          let {cardName = 'پروفایل'} = userInfo;
+          return 'سید محمد رضا پیرمرادی';
+          return cardName
+        }, icon: 21, id: "d" },
       ],
       guaranteeItems: [],
       totalGuaranteeItems:0,
@@ -331,6 +336,7 @@ export default class Main extends Component {
       className: "bottom-menu",
       row: bottomMenuItems.filter(({show = ()=>true})=>show()).map(({ text, icon, id }) => {
         let active = id === activeBottomMenu;
+        if(typeof text === 'function'){text = text()}
         return {
           flex: 1,
           attrs: { onClick: () => this.setState({ activeBottomMenu: id }) },

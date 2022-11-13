@@ -86,6 +86,7 @@ export default class MyBurux extends Component{
                             rows={[
                                 [['کد مشتری',userInfo.cardCode],['نام فروشگاه',userInfo.storeName]],
                                 [['نام ویزیتور',slpname],['کد ویزیتور',slpcode]],
+                                [['گروه مشتری',userInfo.groupName]]
                                 
                             ]}
                             onClick={()=>this.setState({showProfile:true})}

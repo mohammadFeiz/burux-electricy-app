@@ -79,8 +79,8 @@ export default class OrdersHistory extends Component {
       return {
         flex: 1,gap: 12,scroll:'v',
         column: orders.map((o) => {
-          return {html: (<OrderCard order={o}/>)};
-        })
+          return {style:{overflow:'visible'},html: (<OrderCard order={o}/>)};
+        }).concat({size:300})
       }
     }
     error_layout(){
@@ -108,7 +108,7 @@ export default class OrdersHistory extends Component {
                 this.error_layout(),
                 this.tabs_layout(),
                 { size: 12 },
-                this.orders_layout()
+                this.orders_layout(),
               ],
             }}
           />

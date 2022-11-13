@@ -187,20 +187,21 @@ export default class Home extends Component {
                     className:'box',
                     show:!!!guaranteeItems.length,
                     column:[
-                        {size:12},
+                        {size:24},
                         {
                             gap:1,column:[
                                 {html:<img src={blankGuarantee}/>,align:'vh'}
                             ]
                         },
+                        {size:12},
                         {
                             html:'با ثبت درخواست مرجوع کالاهای سوخته خود سریع تر ازهر زمان کالای خود را مرجوع کنید',
                             align:'vh',
                             className:'size14 color605E5C',
                             style:{textAlign:'center'}
                         },
-                        {size:12}
-
+                        {size:24},
+                        
                     ]
                 },
                 

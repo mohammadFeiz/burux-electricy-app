@@ -62,6 +62,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       const results = res.data.data.results;
       if(!Array.isArray(results)){return 'سفارشی تا کنون ثبت نشده است'}
       for (let order of results) {
+        if(order.mainDocNum === 24904){debugger;}
         let id = order.docStatus;
         if(id === 'PreOrder' ||id === 'CustomeApproved' ||id === 'VisitorApproved' ||id === 'SupervisorApproved' ||id === 'ManagerApproved'){
           tabsDictionary['darHaleBarresi'].push(order)
@@ -308,6 +309,8 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       return getState().updateProductPrice(await this.getTaxonProducts({Taxons:'10820'}),'kharidApis => bestSellings')
     },
     async preOrders() {
+      debugger
+
       let preOrders = { waitOfVisitor: 0, waitOfPey: 0 };
       let res = await Axios.post(`${baseUrl}/Visit/PreOrderStat`, { CardCode: userCardCode });
       if (!res || !res.data || !res.data.data) {
@@ -316,8 +319,8 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       }
       let result = res.data.data;
       for (let i = 0; i < result.length; i++) {
-        if (result[i].Status === 1) { preOrders.waitOfVisitor = result[i].Count; }
-        if (result[i].Status === 2) { preOrders.waitOfPey = result[i].Count; }
+        if (['PreOrder','CustomeApproved','VisitorApproved'].indexOf(result[i]).docStatus !== -1) { preOrders.waitOfVisitor++; }
+        if (result[i].docStatus === 'WaitingForPayment') { preOrders.waitOfPey++; }
       }
       return preOrders;
     },

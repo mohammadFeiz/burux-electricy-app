@@ -86,7 +86,7 @@ class OTPLogin extends Component {
         mode = 'inter-code'
       }
     }
-    this.state = { mode, phoneValue, codeValue: '4178', recodeIn, recode: false, recodeLimit: 1 * 1000 * 60, isAutenticated: false, registered: false }
+    this.state = { mode, phoneValue, codeValue: '', recodeIn, recode: false, recodeLimit: 1 * 1000 * 60, isAutenticated: false, registered: false }
     setInterval(() => {
       let { mode, recode, phoneValue } = this.state;
       if (mode !== 'inter-code' || recode) { return }
@@ -292,18 +292,18 @@ class OTPLogin extends Component {
     if (disabled) { disabledStyle = { background: '#ccc', border: '1px solid #ddd' } }
     return {
       style: {
-        background: '#fff', margin: 12, padding: 12
+        margin: 12, padding: 12
       },
 
       column: [
         {
           html: 'کد تایید را وارد کنید',
-          className: 'size20 color323130 bold padding-0-12'
+          className: 'size20 colorFFF bold padding-0-12'
         },
         { size: 12 },
         {
           html: `کد تایید برای شماره ${phoneValue} پیامک شد`,
-          className: 'size14 color605E5C padding-0-12'
+          className: 'size14 colorFFF padding-0-12'
         },
         { size: 24 },
         {
@@ -347,7 +347,7 @@ class OTPLogin extends Component {
         { size: 16 },
         {
           show: !!!recode, gap: 3,
-          className: 'padding-0-12 size12 color605E5C', align: 'h',
+          className: 'padding-0-12 size12 colorFFF', align: 'h',
           row: [
             { html: '', style: { direction: 'ltr' }, className: 'remaining-time-to-resend-code bold' },
             { html: 'مانده تا دریافت مجدد کد' }
@@ -356,7 +356,7 @@ class OTPLogin extends Component {
         {
           className: 'padding-0-12', show: !!recode, align: 'h',
           html: (
-            <button className='button-1' style={{ width: 'fit-content' }} onClick={() => this.onRecode()}>دریافت مجدد کد</button>
+            <button className='button-3' style={{ width: 'fit-content' }} onClick={() => this.onRecode()}>دریافت مجدد کد</button>
           )
         },
         { size: 12 },

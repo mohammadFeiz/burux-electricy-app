@@ -239,6 +239,7 @@ in product by id = ${this.context.product.id} there is an optionType by id = ${i
                     html: () => (
                         <div style={{ display: "grid", gridTemplateColumns: "auto auto", gridGap: 1, width: "100%", background: "#DADADA" }}>
                             {details.map((o, i) => {
+                                if(o[0] === undefined || o[1] === undefined){return null}
                                 let props = { className: "size12 color605E5C padding-6-12", style: { background: "#F4F4F4" } };
                                 return (<Fragment key={i}><div {...props}>{o[0]}</div><div {...props}>{o[1]}</div></Fragment>);
                             })}

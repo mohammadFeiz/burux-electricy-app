@@ -270,7 +270,18 @@ button{
     left:0;
     display:none;
     align-items: center;
-    background:rgba(0,0,0,.4)
+	display:flex;
+	align-items: center;
+	justify-content: center;
+  }
+  .loading-inner{
+	border-radius:12px;
+	height:72px;
+	width:72px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background:rgba(0,0,0,0.7);
   }
   @keyframes loadingScaleY {
     0%,

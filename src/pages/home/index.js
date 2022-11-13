@@ -117,6 +117,7 @@ export default class Home extends Component {
     preOrders_layout(){
         let {SetState} = this.context;
         let {preOrders} = this.state;
+        if(!preOrders){return false}
         return {
             className:'padding-0-12',style:{overflow:'visible'},
             column:[

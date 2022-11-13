@@ -221,7 +221,12 @@ export default class Shipping extends Component{
                   PaymentTime,
                   DeliveryType,
                   PayDueDate
-                }
+                },
+                SettleType,
+                PaymentTime,
+                DeliveryType,
+                PayDueDate
+                
               }
             }
             let res = await kharidApis({type:"sendToVisitor",parameter:body})

@@ -173,11 +173,11 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       });
       let result = res.data.data.results;
       
+      debugger
       
-      
-      //let Skus = [];
+      let Skus = [];
       const products = result.marketingLines.map((i) => {
-        //Skus.push(i.itemCode)
+        Skus.push(i.itemCode)
         return {
           name: i.itemName, discountPrice: i.priceAfterVat, dicountPercent: i.discountPercent, price: i.price, count: i.itemQty, src: bulb10w,
           details: [['رنگ نور', 'آفتابی'], ['واحد', 'شعله']]
@@ -186,9 +186,9 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       
       
       
-      // let srcs = await Axios.post(`${baseUrl}/Spree/Products`, { Skus, Include: "images" });
-      // let included = res.data.data.included;
-      // debugger;
+      let srcs = await Axios.post(`${baseUrl}/Spree/Products`, { Skus:Skus.toString(), Include: "images" });
+      let included = res.data.data.included;
+      debugger;
       
 
       

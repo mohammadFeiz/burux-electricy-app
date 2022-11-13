@@ -51,7 +51,7 @@ export default class OrderPopup extends Component {
     }
     render() {
       let { theme,order,SetState,userInfo } = this.context;
-      let {details} = this.state;
+      let {details = {}} = this.state;
       let {
         customerName,customerCode,campaignName,basePrice,visitorName,address,mobile,
         phone,paymentMethod,products = []

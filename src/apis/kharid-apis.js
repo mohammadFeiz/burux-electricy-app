@@ -553,8 +553,24 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       }
       return finalResult;
     },
-    async sendToVisitor(factorDetails) {
-      let res = await Axios.post(`${baseUrl}/BOne/AddNewOrder`, factorDetails);
+    // {
+    //   "marketdoc":{
+    //     "CardCode":userCardCode,
+    //     "CardGroupCode": b1Info.customer.groupCode,
+    //     "MarketingLines":cartItems.map((o)=>{
+    //       return { ItemCode: o.variant.code, ItemQty: o.count }
+    //     }),
+    //     "DeliverAddress":address,
+    //     "marketingdetails":{
+    //       SettleType,
+    //       PaymentTime,
+    //       DeliveryType,
+    //       PayDueDate
+    //     }
+    //   }
+    // }
+    async sendToVisitor(obj) {
+      let res = await Axios.post(`${baseUrl}/BOne/AddNewOrder`, obj);
       try { return res.data.data[0].docEntry }
       catch { return false }
     },

@@ -249,13 +249,13 @@ export default class Main extends Component {
     let getFactorDetails = (items)=>{
       let {userInfo,b1Info} = this.state;
       let config = {
-          "CardCode": userInfo.cardCode,
-          "CardGroupCode":b1Info.customer.groupCode,
-          "MarketingLines": items,
-          "DeliverAddress": userInfo.address,
-          "marketingdetails": {
-            "SlpCode": userInfo.slpcode
-          },
+        "CardCode": userInfo.cardCode,
+        "CardGroupCode":b1Info.customer.groupCode,
+        "MarketingLines": items,
+        "DeliverAddress": userInfo.address,
+        "marketingdetails": {
+          "SlpCode": userInfo.slpcode
+        }
       }
       let res = pricing.autoCalcDoc(config)
       return res

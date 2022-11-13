@@ -198,16 +198,33 @@ export default class Shipping extends Component{
       return {html:<Header title='ادامه فرایند خرید' onClose={()=>SetState({shippingZIndex:0})}/>}
     }
     sendToVisitor_layout(){
-      let {shipping,SetState,kharidApis,cart,getFactorDetails} = this.context;
+      let {shipping,SetState,kharidApis,cart,getFactorDetails,userCardCode,b1Info} = this.context;
+      let {address,SettleType,PaymentTime,DeliveryType,PayDueDate} = this.state;
       let {cartItems} = shipping;
       return {
         className:'padding-12',
         column:[
           {size:36,align:'vh',className:'color605E5C size14 bold',html:<button className="button-2" onClick={async ()=>{
             let factorDetails = getFactorDetails(cartItems.map((o)=>{
-              return { itemcode: o.variant.code, itemqty: o.count }
+              return { ItemCode: o.variant.code, ItemQty: o.count }
             }))
-            let res = await kharidApis({type:"sendToVisitor",parameter:factorDetails})
+            let body = {
+              "marketdoc":{
+                "CardCode":userCardCode,
+                "CardGroupCode": b1Info.customer.groupCode,
+                "MarketingLines":cartItems.map((o)=>{
+                  return { ItemCode: o.variant.code, ItemQty: o.count }
+                }),
+                "DeliverAddress":address,
+                "marketingdetails":{
+                  SettleType,
+                  PaymentTime,
+                  DeliveryType,
+                  PayDueDate
+                }
+              }
+            }
+            let res = await kharidApis({type:"sendToVisitor",parameter:body})
             if(res){
               let variantIds = cartItems.map((o)=>o.variant.id)
               let newCart = {};

@@ -48,7 +48,7 @@ export default class Search extends Component {
         return false
       }
       return {
-        flex: 1,
+        flex: 1,scroll:'v',
         column: result.map((o, i) => {
           return {html:<ProductCard isFirst={i === 0} isLast={i === result.length - 1} product={o} type='horizontal'/>}
         }),

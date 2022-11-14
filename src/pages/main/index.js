@@ -151,22 +151,29 @@ export default class Main extends Component {
   }
   
   changeCart(count,variantId){
-    let {cart,product} = this.state;
+    let {cart,product,kharidApis} = this.state;
     let newCart;
-    if(count === 0){
+    if(typeof count === 'object'){
+      newCart = {...count}
+    }
+    else{
+      if(count === 0){
         let res = {};
         for(let prop in cart){
           if(prop.toString() !== variantId.toString()){res[prop] = cart[prop]}
         }
         newCart = res;
-    }
-    else{
-      newCart = {...cart}
-      if(newCart[variantId] === undefined){
-        newCart[variantId] = {count,product,variant:product.variants.filter((o) => o.id === variantId)[0]}
       }
-      else{newCart[variantId].count = count;}
+      else{
+        newCart = {...cart}
+        if(newCart[variantId] === undefined){
+          newCart[variantId] = {count,product,variant:product.variants.filter((o) => o.id === variantId)[0]}
+        }
+        else{newCart[variantId].count = count;}
+      }
     }
+    clearTimeout(this.cartTimeout);
+    this.cartTimeout = setTimeout(async ()=>await kharidApis({type:'setCart',parameter:newCart}),2000)
     this.setState({cart:newCart});
   }
   getCartCountByVariantId(variantId) {
@@ -242,9 +249,9 @@ export default class Main extends Component {
   }
   async componentDidMount() {
     let developerMode = true
-    let {userCardCode,bazargah} = this.state;
+    let {userCardCode,bazargah,kharidApis} = this.state;
     let b1Info = await this.getB1Info(userCardCode);
-    this.getGuaranteeItems()
+    this.getGuaranteeItems();
     this.getCampaignsData();
     if(bazargah.active){this.getBazargahOrders();}
     //let testedChance = await gardooneApis({type:"get_tested_chance"});
@@ -318,9 +325,10 @@ export default class Main extends Component {
         return newObj
       })
     }
+    let cart = await kharidApis({type:'getCart'});
     this.setState({
       userInfo:{...b1Info.customer,storeName:b1Info.storeName},
-      b1Info,
+      b1Info,cart,
       fixPrice,
       pricing,
       updateProductPrice,getFactorDetails,

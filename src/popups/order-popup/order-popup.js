@@ -54,7 +54,7 @@ export default class OrderPopup extends Component {
       let {details = {}} = this.state;
       let {
         customerName,customerCode,campaignName,basePrice,visitorName,address,mobile,
-        phone,paymentMethod,products = []
+        phone,mohlate_tasvie,products = [],zamane_pardakht,nahve_ersal
       } = details;
       let {mainDocNum,date,total} = order;
       return (
@@ -90,8 +90,11 @@ export default class OrderPopup extends Component {
                         this.getRow("تلفن همراه", mobile),
                         this.getRow("تلفن ثابت", phone),
                         { size: 12 },
-                        this.getRow("مبلغ پرداختی کل", functions.splitPrice(total)),
-                        this.getRow("نحوه پرداخت", paymentMethod),
+                        this.getRow("نحوه ارسال", nahve_ersal),
+                        this.getRow("زمان پرداخت", zamane_pardakht),
+                        this.getRow("مهلت تسویه", mohlate_tasvie),
+                        this.getRow("مبلغ پرداختی کل", functions.splitPrice(total) + ' ریال'),
+                        
                       ],
                     },
                     //this.getStatus(order.status),

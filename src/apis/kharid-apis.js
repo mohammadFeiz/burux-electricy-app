@@ -57,14 +57,13 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
         WaitingForPayment:[],
         Delivered:[],
         Invoiced :[],
-        PartiallyDelivered:[]
+        PartiallyDelivered:[],
       };
       const results = res.data.data.results;
       if(!Array.isArray(results)){return 'سفارشی تا کنون ثبت نشده است'}
       for (let order of results) {
-        if(order.mainDocNum === 24904){debugger;}
         let id = order.docStatus;
-        if(id === 'PreOrder' ||id === 'CustomeApproved' ||id === 'VisitorApproved' ||id === 'SupervisorApproved' ||id === 'ManagerApproved'){
+        if(id === 'PreOrder' ||id === 'CustomerApproved' ||id === 'VisitorApproved' ||id === 'SupervisorApproved' ||id === 'ManagerApproved'){
           tabsDictionary['darHaleBarresi'].push(order)
         }
         else if(id === 'PaymentPassed' ||id === 'PaymentApproved'){
@@ -81,7 +80,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
           tabsDictionary[id].push(order)
         }
         else {
-          alert('unknown order')
+          alert('unknown order ' + id)
         }
       }
       const orderStatuses = {
@@ -201,16 +200,41 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
           console.error('items is:',item)
           continue
         }
-        const srcs=defaultVariantImages.map(x=>{
-          return "https://shopback.miarze.com" + x.attributes.original_url;
-        });
+        const srcs = defaultVariantImages.map(x => "https://shopback.miarze.com" + x.attributes.original_url);
         let firstItem = products.find(x=>x.itemCode === defaultVariantSku);
         if(firstItem === null || firstItem === undefined) continue;
         firstItem.src=srcs[0];
       }
 
+      //PayDueDate:'ByDelivery',
+      let dic1 = {
+        'ByDelivery':'نقد',
+        'By15Days':'چک 15 روزه',
+        'ByMonth':'چک 30 روزه',
+        'By45Days':'چک 45 روزه',
+        'By60Days':'چک 60 روزه'
+      }
+      //PaymentTime:'ByOnlineOrder'
+
+      let dic2 = {
+        'ByOnlineOrder':'اینترنتی',
+        'ByOrder':'واریز قبل ارسال',
+        'ByDelivery':'واریز پای بار'
+      }
+      //DeliveryType:'BRXDistribution'
+      let dic3 = {
+        'BRXDistribution':'ماشین توزیع بروکس',
+        'RentalCar':'ماشین اجاره ای',
+        'Cargo':'باربری',
+        'HotDelivery':'پخش گرم',
+        'BySalesMan':'ارسال توسط ویزیتور'
+      }
+
       return {
         products,
+        nahve_ersal:dic3[result.marketingdetails.deliveryType],
+        mohlate_tasvie:dic1[result.marketingdetails.payDueDate],
+        zamane_pardakht:dic2[result.marketingdetails.paymentTime],
         paymentMethod: result.paymentdetails.paymentTermName,
         visitorName: result.marketingdetails.slpName,
         customerName: result.cardName,
@@ -225,14 +249,8 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
     },
     async joziatepeygiriyesefareshekharid(order) {
       let { userInfo } = getState();
-      let res = await Axios.post(`${baseUrl}/BOne/GetDocument`, {
-        "docentry": order.docEntry,
-        "DocType": order.docType,
-        "isDraft": order.isDraft
-      });
-      
+      let res = await Axios.post(`${baseUrl}/BOne/GetDocument`, {"docentry": order.docEntry,"DocType": order.docType,"isDraft": order.isDraft}); 
       let result = res.data.data.results;
-
       let total = 0, basePrice = 0, visitorName, paymentMethod;
       let { marketingLines = [], marketingdetails = {}, paymentdetails = {} } = result;
       visitorName = marketingdetails.slpName;
@@ -242,10 +260,6 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
         total += priceAfterVat;
         basePrice += price;
       }
-
-
-      
-
       let {date,time} = getDateAndTime(result.docTime);
       result = {
         number: order,//
@@ -273,7 +287,6 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
           };
         }),
       };
-      debugger;
       return result;
     },
     async userInfo() {
@@ -309,12 +322,10 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       return getState().updateProductPrice(await this.getTaxonProducts({Taxons:'10820'}),'kharidApis => bestSellings')
     },
     async preOrders() {
-      debugger
-
       let preOrders = { waitOfVisitor: 0, waitOfPey: 0 };
       let res = await Axios.post(`${baseUrl}/Visit/PreOrderStat`, { CardCode: userCardCode });
       if (!res || !res.data || !res.data.data) {
-        console.error('kharidApis.preOrders Error!!!')
+        console.error('kharidApis.preOrders Error!!!');
         return preOrders;
       }
       let result = res.data.data;
@@ -325,12 +336,8 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       return preOrders;
     },
     async search(searchValue) {
-      let res = await Axios.post(`${baseUrl}/Spree/Products`, { 
-        Name: searchValue,
-        PerPage:250,
-        Include: "images" });
-      let result = res.data.data.data;
-      let included = res.data.data.included;
+      let res = await Axios.post(`${baseUrl}/Spree/Products`,{Name:searchValue,PerPage:250,Include:"images"});
+      let result = res.data.data.data,included = res.data.data.included;
       return result.map((o) => {
         let src;
         try {
@@ -346,7 +353,6 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       let dataResult = res.data.data.data;
       let included = res.data.data.included;
       let categories = dataResult.map((o) => {
-
         let src = nosrc;
         const imgData = o.relationships.image.data;
         // const imgIds = imgData.map((x) => x.id);
@@ -734,10 +740,23 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
           "ItemCode": skusId // should be an array
         }
       );
-
       const included = res.data.data.included;
-
       return res;
-    }
+    },
+    async getCart(){
+      let res = await Axios.get(`${baseUrl}/orderuidata`);
+      let result = '{}';
+      try{
+        result = res.data.data[0].jsonData || '{}';
+      }
+      catch{
+        result = '{}'
+      }
+      return JSON.parse(result)
+    },
+    async setCart(cart){
+      let res = await Axios.post(`${baseUrl}/orderuidata/updatejson`,{JsonData:JSON.stringify(cart)});
+    },
+
   }
 }

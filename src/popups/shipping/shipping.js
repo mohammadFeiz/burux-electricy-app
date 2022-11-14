@@ -198,7 +198,7 @@ export default class Shipping extends Component{
       return {html:<Header title='ادامه فرایند خرید' onClose={()=>SetState({shippingZIndex:0})}/>}
     }
     sendToVisitor_layout(){
-      let {shipping,SetState,kharidApis,cart,getFactorDetails,userCardCode,b1Info} = this.context;
+      let {shipping,SetState,kharidApis,cart,getFactorDetails,userCardCode,b1Info,changeCart} = this.context;
       let {address,SettleType,PaymentTime,DeliveryType,PayDueDate} = this.state;
       let {cartItems} = shipping;
       return {
@@ -237,7 +237,8 @@ export default class Shipping extends Component{
                   newCart[prop] = cart[prop]
                 }
               }
-              SetState({cart:newCart,cartZIndex:0,categoryZIndex:0,productZIndex:0})
+              SetState({cartZIndex:0,categoryZIndex:0,productZIndex:0})
+              changeCart(newCart)
               this.setState({orderNumber:res})
             }
           }}>ارسال برای ویزیتور</button>},

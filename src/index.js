@@ -136,7 +136,6 @@ class OTPLogin extends Component {
     if (this.userId !== undefined) {
       const smsValidationResult = await Axios.get(`${this.apiBaseUrl}/Users/SecondStep?userId=${this.userId}&code=${code}`);
       console.log(smsValidationResult)
-      debugger;
       if (smsValidationResult.data.isSuccess)
         return smsValidationResult.data.data;
       else

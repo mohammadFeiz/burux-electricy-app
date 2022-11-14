@@ -119,7 +119,6 @@ export default class Main extends Component {
         { text: ()=>{
           let {userInfo = {}} = this.state;
           let {cardName = 'پروفایل'} = userInfo;
-          return 'سید محمد رضا پیرمرادی';
           return cardName
         }, icon: 21, id: "d" },
       ],

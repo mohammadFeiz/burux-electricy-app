@@ -204,7 +204,7 @@ class OTPLogin extends Component {
   onRecode() {
     let { recodeLimit, phoneValue } = this.state;
     this.SMSToUser(phoneValue);
-    this.setState({ recode: false });
+    this.setState({ recode: false,codeValue:''});
     this.changeRecodeIn(new Date().getTime() + recodeLimit, phoneValue)
   }
   onChangePhone() {

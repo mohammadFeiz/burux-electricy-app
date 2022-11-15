@@ -22,7 +22,7 @@ import Popup from "../../components/popup/popup";
 import OrderPopup from "../../popups/order-popup/order-popup";
 import "./index.css";
 import Bazargah from "../bazargah/bazargah";
-import AIOService from 'aio-service';
+import AIOService from './../../aio-service/index';
 import kharidApis from "../../apis/kharid-apis";
 import bazargahApis from './../../apis/bazargah-apis';
 import walletApis from './../../apis/wallet-apis';

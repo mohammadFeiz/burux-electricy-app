@@ -23,9 +23,9 @@ export default class Billboard extends Component{
         // })
         let items = [];
         if(id === 'home'){
-            items.push(<img src={HomeSlide2} alt="" width='100%' style={{height:size}}/>)
-            items.push(<img src={Sookhte} alt="" width='100%' style={{height:size}}/>)
+            items.push(<img src={HomeSlide2} alt="" width='100%'/>)
+            items.push(<img src={Sookhte} alt="" width='100%'/>)
         }
-        return <ReactHtmlSlider items={items} />
+        return <div style={{width:'100%',maxWidth:600}}><ReactHtmlSlider items={items}/></div>
     }
 }

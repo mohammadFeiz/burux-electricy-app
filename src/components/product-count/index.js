@@ -23,6 +23,7 @@ export default class ProductCount extends Component{
         let {value} = this.state;
         this.change(value + dir)
         $(window).bind('touchend',$.proxy(this.touchEnd,this))
+        $(window).bind('mouseup',$.proxy(this.touchEnd,this))
         clearTimeout(this.timeout);
         clearInterval(this.interval);
         this.timeout = setTimeout(()=>{
@@ -49,9 +50,9 @@ export default class ProductCount extends Component{
                     style:{height:36},
                     attrs:{onClick:(e)=>e.stopPropagation()},
                     row: [
-                        {html: (<div onTouchStart={(e)=>this.touchStart(1)} className={'product-count-button' + (value >= max?' disabled':'')}>+</div>),show:onChange!== undefined},
+                        {html: (<div onMouseDown={(e)=>this.touchStart(1)} onTouchStart={(e)=>this.touchStart(1)} className={'product-count-button' + (value >= max?' disabled':'')}>+</div>),show:onChange!== undefined},
                         { flex: 1, html: value },
-                        {html: ()=>(<div onTouchStart={(e) =>this.touchStart(-1)} className='product-count-button'>-</div>),show:value > 1 && onChange!== undefined},
+                        {html: ()=>(<div onMouseDown={(e) =>this.touchStart(-1)} onTouchStart={(e) =>this.touchStart(-1)} className='product-count-button'>-</div>),show:value > 1 && onChange!== undefined},
                         {
                             html: ()=>(
                                 <div 

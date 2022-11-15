@@ -173,7 +173,6 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       let result = res.data.data.results;
             
       let Skus = [];
-      console.log(result)
       const products = result.marketingLines.map((i) => {
         Skus.push(i.itemCode)
         return {

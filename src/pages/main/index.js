@@ -22,7 +22,7 @@ import Popup from "../../components/popup/popup";
 import OrderPopup from "../../popups/order-popup/order-popup";
 import "./index.css";
 import Bazargah from "../bazargah/bazargah";
-import AIOService from 'aio-service';
+import AIOService from './../../aio-service/index';
 import kharidApis from "../../apis/kharid-apis";
 import bazargahApis from './../../apis/bazargah-apis';
 import walletApis from './../../apis/wallet-apis';
@@ -131,11 +131,12 @@ export default class Main extends Component {
       buy_view:undefined,//temporary state
     };
     let {token} = this.props;
-    this.state.kharidApis = AIOService({token,getState:()=>this.state,apis:kharidApis});
-    this.state.bazargahApis = AIOService({token,getState:()=>this.state,apis:bazargahApis});
-    this.state.walletApis = AIOService({token,getState:()=>this.state,apis:walletApis});
-    this.state.gardooneApis = AIOService({token,getState:()=>this.state,apis:gardooneApis});
-    this.state.guarantiApis = AIOService({token,getState:()=>this.state,apis:guarantiApis});
+    let log = true;
+    this.state.kharidApis = AIOService({token,getState:()=>this.state,apis:kharidApis,log});
+    this.state.bazargahApis = AIOService({token,getState:()=>this.state,apis:bazargahApis,log});
+    this.state.walletApis = AIOService({token,getState:()=>this.state,apis:walletApis,log});
+    this.state.gardooneApis = AIOService({token,getState:()=>this.state,apis:gardooneApis,log});
+    this.state.guarantiApis = AIOService({token,getState:()=>this.state,apis:guarantiApis,log});
   }
   getBuruxLogoD(){
     let a = 'M37.5266 10.6935C37.3382 10.1355 37.1425 9.50643 36.9377 8.95436C36.8208 8.64937 36.7316 8.40412 36.6164 8.07318C36.5178 7.76728 36.3922 7.47043 36.3207 7.17256H36.2145C36.116 7.538 33.4992 9.75168 33.4992 9.93384C33.4992 10.0998 33.7849 10.8345 33.857 11.052L34.6236 13.2635C34.8997 14.1719 35.1782 15.5421 34.0527 15.9274C33.8733 15.988 33.5788 16.0153 33.4187 16.0062C31.9889 15.902 29.8276 16.1803 29.0525 15.7529C28.6955 15.5512 28.4877 15.3337 28.2733 14.9933C28.0692 14.66 27.9435 14.3369 27.855 13.8923C27.7664 13.4638 27.6506 13.1407 27.6506 12.5814V2.52438H23.999V13.2804C23.999 13.8741 23.8627 14.4688 23.6111 14.801C22.9621 15.6821 21.2022 15.6821 20.5414 14.826C20.2899 14.5032 20.1298 13.9452 20.1298 13.394V2.52438H16.2631V12.4141C16.2631 13.4112 16.4232 13.647 16.1112 14.486C15.6648 15.6821 13.5927 15.7701 12.8611 14.826C12.6109 14.5032 12.4509 13.9452 12.4509 13.394V2.52438H8.5314V18.3654C8.5314 21.3189 5.78647 20.8195 5.14399 20.1127C4.87676 19.8146 4.66469 19.2293 4.66469 18.6896V2.52438H0.851059V18.8545C0.851059 19.597 1.09055 20.4884 1.31444 21.0464C1.58167 21.7028 1.9408 22.2185 2.41183 22.6723C4.94093 25.1458 12.1188 24.8389 12.1188 18.6369C13.6121 18.976 15.111 19.0653 16.5929 18.5749C17.0305 18.4363 17.8613 18.0422 18.0852 17.7191C18.7111 18.1202 18.9196 18.4181 20.1597 18.724C21.5202 19.0598 22.9476 19.0104 24.2779 18.5704C25.1317 18.2897 25.0282 18.206 25.6585 17.876C25.9258 18.0504 26.1233 18.2518 26.4172 18.4262C28.0247 19.4125 30.5783 19.1777 32.6143 19.1777C34.8739 19.1777 37.7141 18.8201 38.3377 16.3466C38.9033 14.1456 38.2045 12.6861 37.5266 10.6935ZM47.4743 13.4204C47.4743 14.4503 46.6174 15.2891 45.5641 15.2891C44.5178 15.2891 43.6603 14.4503 43.6603 13.4204V6.70037C43.6603 5.67734 44.5178 4.83971 45.5641 4.83971C46.6174 4.83971 47.4743 5.67734 47.4743 6.70037V13.4204ZM48.447 2.12332C47.6179 1.7992 47.0289 1.77387 46.0378 1.66834C45.7786 1.64198 45.0453 1.73936 44.7687 1.77386C44.3488 1.81732 43.9463 1.92295 43.6075 2.03499C41.821 2.61149 40.7239 4.10671 40.3845 5.9053C40.302 6.32589 40.2409 6.71758 40.2409 7.17256V13.3425C40.2409 15.5 41.1782 17.6058 43.2494 18.4511C44.3762 18.9166 45.6797 18.9842 46.9301 18.8545C47.1889 18.8283 47.4118 18.7571 47.644 18.7412C47.644 22.4729 46.1968 21.9309 42.0631 21.9309V24.4205C46.3137 24.4205 50.7082 25.1286 51.3951 20.4093C51.6363 18.7412 51.5204 16.1458 51.5107 14.2579L51.5634 7.39158C51.5634';
@@ -173,7 +174,7 @@ export default class Main extends Component {
       }
     }
     clearTimeout(this.cartTimeout);
-    this.cartTimeout = setTimeout(async ()=>await kharidApis({type:'setCart',parameter:newCart}),2000)
+    this.cartTimeout = setTimeout(async ()=>await kharidApis({type:'setCart',parameter:newCart,loading:false}),2000)
     this.setState({cart:newCart});
   }
   getCartCountByVariantId(variantId) {
@@ -325,7 +326,7 @@ export default class Main extends Component {
         return newObj
       })
     }
-    let cart = await kharidApis({type:'getCart'});
+    let cart = await kharidApis({type:'getCart',loading:false});
     this.setState({
       userInfo:{...b1Info.customer,storeName:b1Info.storeName},
       b1Info,cart,

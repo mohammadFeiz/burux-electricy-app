@@ -126,8 +126,6 @@ export default class Register extends Component{
                         {label:'نام فروشگاه',type:'text',field:'model.storeName',validations:[['required']]},
                         {label:'ثبت موقعیت جغرافیایی',type:'html',html:()=>{
                             let {showMap,model} = this.state;
-                            let {latitude,longitude} = model;
-                            console.log(latitude,longitude)
                             if(showMap){return ''}
                             return (
                                 <Map
@@ -211,7 +209,7 @@ class ShowMap extends Component{
     header_layout(){
         let {onClose} = this.props;
         return {
-            className:'box-shadow',size:60,style:{overflow:'visible',marginBottom:12},
+            className:'box-shadow',size:60,style:{overflow:'visible',marginBottom:12,background:'#fff'},
             row:[
                 {size:60,html:getSvg("chevronLeft", { flip: true }),align:'vh',attrs:{onClick:()=>onClose()}},
                 {flex:1,html:'انتخاب موقعیت فروشگاه',className:'size16 color605E5C',align:'v'}

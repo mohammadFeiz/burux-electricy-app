@@ -20,7 +20,6 @@ export default class ChanceMachin extends Component {
         return srcs[index];
     }
     change(type, index, Index) {
-        console.log(Index)
         this.result[type] = index;
         if (type === 2) {
             let {getResult} = this.props;

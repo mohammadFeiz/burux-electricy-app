@@ -135,7 +135,6 @@ class OTPLogin extends Component {
     //return false    
     if (this.userId !== undefined) {
       const smsValidationResult = await Axios.get(`${this.apiBaseUrl}/Users/SecondStep?userId=${this.userId}&code=${code}`);
-      console.log(smsValidationResult)
       if (smsValidationResult.data.isSuccess)
         return smsValidationResult.data.data;
       else
@@ -204,7 +203,7 @@ class OTPLogin extends Component {
   onRecode() {
     let { recodeLimit, phoneValue } = this.state;
     this.SMSToUser(phoneValue);
-    this.setState({ recode: false });
+    this.setState({ recode: false,codeValue:''});
     this.changeRecodeIn(new Date().getTime() + recodeLimit, phoneValue)
   }
   onChangePhone() {

@@ -322,7 +322,6 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
     },
     async preOrders() {
       let preOrders = { waitOfVisitor: 0, waitOfPey: 0 };
-      Axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
       let res = await Axios.post(`${baseUrl}/Visit/PreOrderStat`, { CardCode: userCardCode });
       if (!res || !res.data || !res.data.data) {
         console.error('kharidApis.preOrders Error!!!');

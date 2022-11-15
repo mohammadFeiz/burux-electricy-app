@@ -66,12 +66,12 @@ export default function services({getState,apis,token,validations = {},defaults 
   let reqInstance;
   if(token){reqInstance = Axios.create({headers: {Authorization : `Bearer ${token}`}})}
   else{reqInstance = Axios;}
-  return Service(apis({Axios:reqInstance,getState,getDateAndTime,arabicToFarsi,token,AIOServiceShowAlert}),validations,defaults,log)
+  return Service(apis({Axios:reqInstance,getState,getDateAndTime,arabicToFarsi,token,AIOServiceShowAlert}),validations,defaults,log,token)
 }
 
 
 
-function Service(services,validations,defaults,log) {
+function Service(services,validations,defaults,log,token) {
   function getFromCache(key, minutes) {
     if (minutes === true) { minutes = Infinity }
     let storage = localStorage.getItem(key);
@@ -85,6 +85,7 @@ function Service(services,validations,defaults,log) {
     localStorage.setItem(key, JSON.stringify({ time, data }))
   }
   return async ({ type, parameter, loading = true, cache, cacheName }) => {
+    Axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
     if (loading) {
       if(log){console.log(`apis().${type} call loading`)}
       $(".loading").css("display", "flex"); 
@@ -103,10 +104,10 @@ function Service(services,validations,defaults,log) {
     }
     if (!services[type]) {alert('services.' + type + ' is not define')}
     let result;
-    //try{
+    try{
       result = await services[type](parameter);
-    //}
-    //catch{result = defaults[type];} 
+    }
+    catch{result = defaults[type];} 
     $(".loading").css("display", "none");
     let validation = validations[type];
     if(validation){

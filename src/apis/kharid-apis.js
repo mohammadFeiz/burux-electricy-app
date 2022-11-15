@@ -311,15 +311,21 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       return getState().updateProductPrice(res.map((o) => { return { ...o, campaign } }),'kharidApis => getCampaignProducts')
     },
     async lastOrders() {
-      const taxonProductsList=await this.getTaxonProducts({Taxons:'10179'});
+      // const taxonProductsList=await this.getTaxonProducts({Taxons:'10179'});
+      // return getState().updateProductPrice(taxonProductsList,'kharidApis => lastOrders');
+      const taxonProductsList=await this.getProductsByTaxonId({Taxons:'10179'});
       return getState().updateProductPrice(taxonProductsList,'kharidApis => lastOrders');
     },
     async recommendeds() {
-      let res = await this.getTaxonProducts({Taxons:'10550'})
-      return getState().updateProductPrice(res,'kharidApis => recommendeds')
+      // let res = await this.getTaxonProducts({Taxons:'10550'});
+      // return getState().updateProductPrice(res,'kharidApis => recommendeds');
+      let res = await this.getProductsByTaxonId({Taxons:'10550'});
+      return getState().updateProductPrice(res,'kharidApis => recommendeds');
     },
     async bestSellings(){
-      return getState().updateProductPrice(await this.getTaxonProducts({Taxons:'10820'}),'kharidApis => bestSellings')
+      // return getState().updateProductPrice(await this.getTaxonProducts({Taxons:"10820"}),'kharidApis => bestSellings');
+      let res = await this.getProductsByTaxonId({Taxons:'10820'});
+      return getState().updateProductPrice(res,'kharidApis => bestSellings');
     },
     async preOrders() {
       let preOrders = { waitOfVisitor: 0, waitOfPey: 0 };
@@ -371,7 +377,10 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       return categories;
     },
     async getCategoryItems(category) {
-      let items = await this.getTaxonProducts({ Taxons: category.id.toString() });
+      // let items = await this.getTaxonProducts({ Taxons: category.id.toString() });
+      // return getState().updateProductPrice(items,'kharidApis => getCategoryItems')
+      
+      let items = await this.getProductsByTaxonId({ Taxons: category.id.toString() });
       return getState().updateProductPrice(items,'kharidApis => getCategoryItems')
     },
     async families() {
@@ -417,9 +426,9 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       let code = '';
       if(b1_item && b1_item.itemCode){code = b1_item.itemCode}
       else {
-        console.error(`missing itemCode`)
-        console.error('product is : ' ,product);
-        console.error('b1_item is :', b1_item);
+        // console.error(`missing itemCode`)
+        // console.error('product is : ' ,product);
+        // console.error('b1_item is :', b1_item);
       }
       return {
         id, optionValues, discountPrice, price, inStock, srcs,
@@ -452,7 +461,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
         
         const included=spreeResult.included;
         let finalResult =[];
-        
+
         for (const item of spreeResult.data) {
           
           const defaultVariantId = item.relationships.default_variant.data.id;
@@ -461,8 +470,8 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
           const defaultVariantImages=included.filter(x=>x.type==="image" && defaultVariantImagesId.includes(x.id));
           const defaultVariantSku=defaultVariant.attributes.sku;
           if(!defaultVariantSku){
-            console.error('there is an item without sku');
-            console.error('items is:',item)
+            // console.error('there is an item without sku');
+            // console.error('items is:',item)
             continue
           }
           const itemFromB1=b1Result.find(x=>x.itemCode===defaultVariantSku);
@@ -489,8 +498,8 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
         let { relationships } = product;
 
         if (!relationships.variants.data || !relationships.variants.data.length) {
-          console.error(`product width id = ${product.id} has not any varinat`)
-          console.log('spree item is', product);
+          // console.error(`product width id = ${product.id} has not any varinat`)
+          // console.log('spree item is', product);
           continue;
         }
         let optionTypes = [];
@@ -498,9 +507,9 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
           let { id } = relationships.option_types.data[i];
           id = id.toString();
           if (!meta_optionTypes[id]) {
-            console.error(`in product by id = ${product.id} in relationships.option_types.data[${i}] id is ${id}. but we cannot find this id in meta.filters.option_values`)
-            console.log('product is', product)
-            console.log('meta.filters.option_values is', meta_optionTypes)
+            // console.error(`in product by id = ${product.id} in relationships.option_types.data[${i}] id is ${id}. but we cannot find this id in meta.filters.option_values`)
+            // console.log('product is', product)
+            // console.log('meta.filters.option_values is', meta_optionTypes)
             continue;
           }
           let { option_values } = meta_optionTypes[id];
@@ -550,8 +559,8 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
           discountPercent = defaultVariant.discountPercent;
         }
         else {
-          console.error(`product width id = ${product.id} has not default variant`)
-          console.log('spree item is', product);
+          // console.error(`product width id = ${product.id} has not default variant`)
+          // console.log('spree item is', product);
           continue;
         }
         finalResult.push({
@@ -578,7 +587,6 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
     //   }
     // }
     async sendToVisitor(obj) {
-      console.log(obj)
       let res = await Axios.post(`${baseUrl}/BOne/AddNewOrder`, obj);
       try { return res.data.data[0].docEntry }
       catch { return false }
@@ -615,9 +623,9 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
         let { id } = relationships.option_types.data[i];
         id = id.toString();
         if (!meta_optionTypes[id]) {
-          console.error(`in product by id = ${product.id} in relationships.option_types.data[${i}] id is ${id}. but we cannot find this id in meta.filters.option_values`)
-          console.log('product is', product)
-          console.log('meta.filters.option_values is', meta_optionTypes)
+          // console.error(`in product by id = ${product.id} in relationships.option_types.data[${i}] id is ${id}. but we cannot find this id in meta.filters.option_values`)
+          // console.log('product is', product)
+          // console.log('meta.filters.option_values is', meta_optionTypes)
           continue;
         }
         let { option_values } = meta_optionTypes[id];
@@ -666,7 +674,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       product.details = details;
       product.variants = variants;
       product.optionTypes = optionTypes;
-      console.log(product);
+
       return product;
     },
     async refreshB1Rules() {
@@ -682,6 +690,8 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
           Taxons,
           PerPage:250,
           Name,
+          // ProductFields:"id,name,type,sku,slug,images,option_types,variants,default_variant,product_properties",
+          // VariantFields:"id,sku,type,option_values,images,option_types,product_properties",
           Include: loadType === 0 ? "default_variant,images" : "variants,option_types,product_properties,taxons,images,default_variant"
         }
       );
@@ -732,6 +742,95 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
         };
       });
       return this.getMappedAllProducts({ spreeResult: spreeData, b1Result: b1Data, loadType });
+    },
+    async getProductsByTaxonId({ Taxons }) {
+      let res = await Axios.post(`${baseUrl}/Spree/Products`,
+        {
+          CardCode: userCardCode,
+          Taxons,
+          PerPage:250,
+          ProductFields:"id,name,type,sku,slug,default_variant,images",
+          VariantFields:"id,sku,type,images",
+          Include: "default_variant,images"
+        }
+      );
+
+      if(res.data.data.status === 500){
+        return false
+      }
+
+      const {b1Info} = getState();
+      const spreeData = res.data.data;
+      const b1Data = b1Info.itemPrices.map((i)=>{
+        const onHand=i.inventory.filter(x=>x.whsCode==="01");
+        return {
+          "itemCode": i.itemCode,
+          "price": 0,
+          "finalPrice": 0,
+          "b1Dscnt": 0,
+          "cmpgnDscnt": 0,
+          "pymntDscnt": 0,
+          "onHand":onHand.length ? onHand[0] : {},
+          //   "onHand": {
+          //   "whsCode": "01",
+          //   "qty": 269.3,
+          //   "qtyLevel": 300,
+          //   "qtyLevRel": "Less"
+          // }
+        };
+      });
+
+      return this.getModifiedProducts({ spreeResult: spreeData, b1Result: b1Data });
+    },
+    getModifiedProducts({spreeResult , b1Result}){
+
+      let allProducts=[];
+      for (const product of spreeResult.data) {
+
+        // 11291 ,
+        //11909 ,
+        // 11922 ,
+        // 12314 ,
+        // 12395
+        if( product.id=="12395") continue;
+        
+        if(product.relationships.default_variant==undefined || product.relationships.default_variant.data==undefined) continue;
+
+        const productDefaultVariantId=product.relationships.default_variant.data.id;
+        const productDefaultVariant=spreeResult.included.find(x=>x.type==="variant" && x.id===productDefaultVariantId);
+        const productDefaultVariantSku=productDefaultVariant.attributes.sku;
+        const defaultVariantImagesId = product.relationships.images.data.map(x=>x.id);
+        const defaultVariantImages=spreeResult.included.filter(x=>x.type==="image" && defaultVariantImagesId.includes(x.id));
+
+        if(productDefaultVariantSku && productDefaultVariantId){
+          const itemFromB1=b1Result.find(x=>x.itemCode === productDefaultVariantSku);
+          const srcs=defaultVariantImages.map(x=>{
+            return "https://shopback.miarze.com" + x.attributes.original_url;
+          });
+  
+          if(itemFromB1 != undefined && itemFromB1) {
+            const defVariantFinalResult={
+              "id": productDefaultVariantId,
+              "discountPrice": 0,
+              "price": 0,
+              "inStock": itemFromB1.onHand.qty,
+              "srcs": [],
+              "code": productDefaultVariantSku,
+              "discountPercent": 0,
+              "isDefault": true
+            };
+            allProducts.push(
+              {
+                  inStock:itemFromB1.onHand.qty, details:[], optionTypes:[], variants:[defVariantFinalResult], srcs,
+                  name: product.attributes.name, defaultVariant:defVariantFinalResult,
+                  price:0, discountPrice:0, discountPercent:0, id: product.id
+                }
+            );
+          }
+        }
+      }
+
+      return allProducts;
     },
     async getProductsWithCalculation(skusId) {
       let res = await Axios.post(`${baseUrl}/BOne/GetItemsByItemCode`,

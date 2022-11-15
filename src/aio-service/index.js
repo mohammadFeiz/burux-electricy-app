@@ -45,7 +45,7 @@ function AIOServiceShowAlert(obj = {}){
       $('.' + dui).remove()
   }})
 }
-export default function services({getState,apis,token,validations = {},defaults = {}}) {
+export default function services({getState,apis,token,validations = {},defaults = {},log}) {
   function getDateAndTime(value){
     let dateCalculator = AIODate();
     let adate,atime;
@@ -64,15 +64,14 @@ export default function services({getState,apis,token,validations = {},defaults 
     catch{return value}
   }
   let reqInstance;
-  console.log(token)
   if(token){reqInstance = Axios.create({headers: {Authorization : `Bearer ${token}`}})}
   else{reqInstance = Axios;}
-  return Service(apis({Axios:reqInstance,getState,getDateAndTime,arabicToFarsi,token,AIOServiceShowAlert}),validations,defaults)
+  return Service(apis({Axios:reqInstance,getState,getDateAndTime,arabicToFarsi,token,AIOServiceShowAlert}),validations,defaults,log)
 }
 
 
 
-function Service(services,validations,defaults) {
+function Service(services,validations,defaults,log) {
   function getFromCache(key, minutes) {
     if (minutes === true) { minutes = Infinity }
     let storage = localStorage.getItem(key);
@@ -86,7 +85,10 @@ function Service(services,validations,defaults) {
     localStorage.setItem(key, JSON.stringify({ time, data }))
   }
   return async ({ type, parameter, loading = true, cache, cacheName }) => {
-    if (loading) {$(".loading").css("display", "flex"); }
+    if (loading) {
+      if(log){console.log(`apis().${type} call loading`)}
+      $(".loading").css("display", "flex"); 
+    }
     if (cache) {
       let a = getFromCache(cacheName ? 'storage-' + cacheName : 'storage-' + type, cache);
       if (a !== false) {

@@ -154,7 +154,6 @@ export default class MyBurux extends Component{
     render(){
         let {showProfile} = this.state;
         let {profile,SetState,userInfo} = this.context;
-        console.log(profile)
         let model = {
             firstName:profile.firstName,
             cardCode:profile.cardCode,

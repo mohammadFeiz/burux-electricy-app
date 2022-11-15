@@ -154,9 +154,17 @@ export default class Product extends Component {
     options_layout() {
         let { product } = this.context;
         if (product.optionTypes.length < 2) { return false }
+        let {selectedVariant} = this.state;
         return {
             className: 'box margin-0-12',hide_xs:true,
             column: [
+                {size:12},
+                {
+                    row:[
+                        {html:`(${this.options.length}) انتخاب اقلام موجود`,align:'v',className:'padding-0-12 color605E5C size14 bold',style:{direction:'ltr'}},
+                        {flex:1}
+                    ]
+                },
                 {
                     align: 'v', className: 'padding-12',
                     html: (
@@ -166,7 +174,7 @@ export default class Product extends Component {
                             popupAttrs={{ style: { maxHeight: 400 } }}
                             options={this.options}
                             popupWidth='fit'
-                            text='انتخاب اقلام موجود'
+                            value={selectedVariant.id}
                             optionStyle='{height:28,fontSize:12}'
                             onChange={(value, obj) => {
                                 this.changeOptionType(obj.option.variant.optionValues)

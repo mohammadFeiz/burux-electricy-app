@@ -270,7 +270,7 @@ button{
     left:0;
     display:none;
     align-items: center;
-	display:flex;
+	display:none;
 	align-items: center;
 	justify-content: center;
   }

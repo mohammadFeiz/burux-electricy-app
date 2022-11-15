@@ -173,7 +173,6 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       let result = res.data.data.results;
             
       let Skus = [];
-      console.log(result)
       const products = result.marketingLines.map((i) => {
         Skus.push(i.itemCode)
         return {
@@ -323,7 +322,6 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
     },
     async preOrders() {
       let preOrders = { waitOfVisitor: 0, waitOfPey: 0 };
-      console.log('axios',Axios)
       Axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
       let res = await Axios.post(`${baseUrl}/Visit/PreOrderStat`, { CardCode: userCardCode });
       if (!res || !res.data || !res.data.data) {
@@ -580,7 +578,6 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
     //   }
     // }
     async sendToVisitor(obj) {
-      console.log(obj)
       let res = await Axios.post(`${baseUrl}/BOne/AddNewOrder`, obj);
       try { return res.data.data[0].docEntry }
       catch { return false }

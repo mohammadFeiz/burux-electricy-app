@@ -126,8 +126,6 @@ export default class Register extends Component{
                         {label:'نام فروشگاه',type:'text',field:'model.storeName',validations:[['required']]},
                         {label:'ثبت موقعیت جغرافیایی',type:'html',html:()=>{
                             let {showMap,model} = this.state;
-                            let {latitude,longitude} = model;
-                            console.log(latitude,longitude)
                             if(showMap){return ''}
                             return (
                                 <Map

@@ -309,11 +309,11 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       let res = await this.getTaxonProducts({ Taxons: id, loadType:0 })
       return getState().updateProductPrice(res.map((o) => { return { ...o, campaign } }),'kharidApis => getCampaignProducts')
     },
-    async lastOrders() {
+    async newOrders() {
       // const taxonProductsList=await this.getTaxonProducts({Taxons:'10179'});
-      // return getState().updateProductPrice(taxonProductsList,'kharidApis => lastOrders');
+      // return getState().updateProductPrice(taxonProductsList,'kharidApis => newOrders');
       const taxonProductsList=await this.getProductsByTaxonId({Taxons:'10179'});
-      return getState().updateProductPrice(taxonProductsList,'kharidApis => lastOrders');
+      return getState().updateProductPrice(taxonProductsList,'kharidApis => newOrders');
     },
     async recommendeds() {
       // let res = await this.getTaxonProducts({Taxons:'10550'});

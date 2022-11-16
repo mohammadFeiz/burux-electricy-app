@@ -1,6 +1,8 @@
 import React,{Component} from 'react';
 import RVD from 'react-virtual-dom';
 import myBuruxHeaderSrc from './../../images/Burux-billboard-01.png';
+import headerSvg from './../../images/header-svg';
+import footerSvg from './../../images/footer-svg';
 import bill from './../../images/home-slide-4.jpg';
 import getSvg from './../../utils/getSvg';
 import appContext from '../../app-context';
@@ -58,8 +60,8 @@ export default class MyBurux extends Component{
             scroll:'v',flex:1,className:'my-burux-page main-bg',
             column:[
                 {
-                    className:'my-burux-header',size:151,
-                    html:(<img src={myBuruxHeaderSrc} alt='' style={{backgroundSize:'cover',width:'100%'}}/>)
+                    className:'my-burux-header',
+                    html:headerSvg()
                 },
                 {
                     size:100,style:{overflow:'visible'},
@@ -129,7 +131,7 @@ export default class MyBurux extends Component{
                 },
                 {size:16},
                 this.parts_layout(),
-                {size:120,html:<img src={logo3} width='120' height='120'/>,align:'vh'},
+                {size:120,html:footerSvg(),align:'vh'},
                 {html:(
                     <AIOButton position='bottom' className='color605E5C size14 bold' style={{width:90}} type='button' text='نسخه 3.0.1' popOver={()=>{
                         return (

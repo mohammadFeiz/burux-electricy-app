@@ -79,9 +79,10 @@ export default class Cart extends Component{
           }
           return <ProductCard {...props} showIsInCart={false}/>
         })
-        tab.factorDetails =  getFactorDetails(tab.cartItems.map((o)=>{
+        let items = tab.cartItems.map((o)=>{
           return { ItemCode: o.variant.code, ItemQty: o.count }
-        }))
+        })
+        tab.factorDetails =  getFactorDetails(items)
         this.tabs.push(tab);
       }
       if(tabsDictionary[this.state.activeTabId]){
@@ -134,7 +135,7 @@ export default class Cart extends Component{
     payment_layout(){
       if(!this.tab){return false}
       let {SetState,cartZIndex} = this.context;
-      let total = this.tab.factorDetails.MarketingLines[0].PriceAfterVat;
+      let total = this.tab.factorDetails.DocumentTotal;
       return {
         size: 72,className: "main-bg padding-0-12",
         row: [

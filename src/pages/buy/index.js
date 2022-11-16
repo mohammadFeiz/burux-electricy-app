@@ -57,10 +57,10 @@ export default class Buy extends Component {
     let recommendeds = await kharidApis({type:'recommendeds'});
     this.setState({ recommendeds });
   }
-  async get_lastOrders() {
+  async get_newOrders() {
     let {kharidApis} = this.context;
-    let lastOrders = await kharidApis({type:"lastOrders"});
-    this.setState({ lastOrders });
+    let newOrders = await kharidApis({type:"newOrders"});
+    this.setState({ newOrders });
   }
   async get_bestSellings() {
     let {kharidApis} = this.context;
@@ -69,7 +69,7 @@ export default class Buy extends Component {
   }
   //dont set async for parallel data fetching
   componentDidMount() {
-    this.get_lastOrders(10);
+    this.get_newOrders(10);
     this.getFamilies();
     this.get_recommendeds(10);
     this.get_bestSellings(10);
@@ -133,7 +133,7 @@ export default class Buy extends Component {
   }
   sliders(){
     let {SetState} = this.context;
-    let sliders = [['bestSellings','پر فروش ترین محصولات'],['lastOrders','آخرین سفارشات شما'],['recommendeds','پیشنهاد سفارش']]
+    let sliders = [['newOrders','جدید ترین محصولات'],['bestSellings','پر فروش ترین محصولات'],['recommendeds','پیشنهاد سفارش']]
     return {
       gap:12,className:'margin-0-12',
       column:sliders.map(([key,name])=>{

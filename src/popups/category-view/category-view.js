@@ -25,8 +25,9 @@ export default class CategoryView extends Component {
                             flex:1,scroll: "v",
                             column:[
                                 {show: !!src,style:{marginBottom:12},html: () => <img src={src} alt='' width='100%' />},
+                                {size:12},
                                 {
-                                    gap: 12,
+                                    gap: 1,
                                     column: products.map((product, i) => {
                                         let { searchValue } = this.state;
                                         if (searchValue && product.name.indexOf(searchValue) === -1) { return false; }

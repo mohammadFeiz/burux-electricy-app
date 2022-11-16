@@ -43,7 +43,6 @@ export default class Shipping extends Component{
           {value:'BRXDistribution',text:'ماشین توزیع بروکس'},
           {value:'RentalCar',text:'ماشین اجاره ای'},
           {value:'Cargo',text:'باربری'},
-          {value:'HotDelivery',text:'پخش گرم'},
           {value:'BySalesMan',text:'ارسال توسط ویزیتور'}
         ]
       }

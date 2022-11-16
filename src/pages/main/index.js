@@ -350,8 +350,8 @@ export default class Main extends Component {
           attrs: { onClick: () => this.setState({ activeBottomMenu: id }) },
           column: [
             { size: 12 },
-            {html: getSvg(icon, { fill: active ? "#0094D4" : "#605E5C" }),align: "vh"},
-            {html: text,align: "vh",style: { fontSize: 12, color: active ? "#0094D4" : "#6E6E6E" }}
+            {html: getSvg(icon, { fill: active ? "#3b55a5" : "#605E5C" }),align: "vh"},
+            {html: text,align: "vh",style: { fontSize: 12, color: active ? "#3b55a5" : "#6E6E6E" }}
           ],
         };
       }),

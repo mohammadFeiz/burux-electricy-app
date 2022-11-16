@@ -181,7 +181,7 @@ export default class Bazargah extends Component{
                             row:[
                                 {html: "بازارگاه",className: "size14 color323130 bold padding-0-12",size: 48,align: "v"},
                                 {size:6},
-                                {html:<div className='my-burux-badge'>{bazargah.wait_to_get.length}</div>,align:'vh'},
+                                {html:<div className='my-burux-badge bg0094D4'>{bazargah.wait_to_get.length}</div>,align:'vh'},
                                 {flex:1},
                                 {html:'مشاهده همه',align:'v',className:'color0094D4 size12 bold',show:!!bazargah.wait_to_get.length,attrs:{onClick:()=>SetState({activeBottomMenu:'c'})}}
                             ]

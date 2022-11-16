@@ -44,7 +44,7 @@ export default class Buy extends Component {
   }
   async getCategories() {
     let {kharidApis} = this.context;
-    let categories = await kharidApis({type:"getCategories"});
+    let categories = await kharidApis({type:"getCategories",cache:24 * 60});
     this.setState({ categories });
   }
   async getFamilies() {

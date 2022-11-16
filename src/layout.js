@@ -35,7 +35,7 @@ export default function layout(type,getState, parameters = {}) {
                         attrs: { onClick: () => onClick(o) },
                         row: [
                             { html: o.title, className: 'tab-title', align: 'v' },
-                            { show: badge !== undefined, html: badge, className: 'tab-badge' + (o.length !== 0 ? ' active' : ''), align: 'vh' }
+                            { show: badge !== undefined, html: badge, className: 'tab-badge' + (o.length !== 0 ? ' bg0094D4' : ''), align: 'vh' }
                         ]
                     }
                 })

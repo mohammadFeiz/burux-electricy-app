@@ -179,7 +179,10 @@ button{
 	color:#00B5A5;
 }
 .color0094D4{
-	color:#0094D4;
+	color:#3b55a5;
+}
+.bg0094D4{
+	background:#3b55a5;
 }
 .color006F9E{
 	color:#006F9E;
@@ -309,9 +312,6 @@ button{
 	left:0;
 	top:0;
 }
-.tab-badge.active{
-    background:dodgerblue;
-}
 .padding-0-12{
 	padding:0 12px;
 }
@@ -426,83 +426,11 @@ button{
 	color:#00B5A5;
 	border-radius:8px;
 }
-
-
-.theme-1 .theme-1-light-bg{
-	background: #313131;
-}
-.theme-1 .theme-1-dark-bg{
-	background: #242424 !important;
-}
-.theme-1 .main-bg{
-	background:#242424;
-}
-.theme-1 .header{
-	background:#313131;
-}
-.theme-1 .bottom-menu{
-	background:#313131;
-	border-top:1px solid var(--theme-1-border-color);
-}
-.theme-1 .box{
-	background:#313131;
-}
-.theme-1 .theme-1-colorFFF{
-	color:#fff;
-}
-.theme-1 .sidemenu-icon path{
-	fill:#fff !important;
-}
-.theme-1 .box:not(.gap-no-color) .r-layout-gap{
-	background:#3f4456;
-}
-.theme-1 .theme-1-bg3F4456{
-	background:#3f4456;
-}
-.theme-1 .theme-1-border3F4456{
-	border:1px solid #3f4456;
-}
-.theme-1 .theme-1-colorEEE{
-	color:#eee;
-}
-.theme-1 .theme-1-colorDDD{
-	color:#ddd;
-}
-.theme-1 .tab-badge{
-	background:#333847;
-}
 .aio-button-icon{
 	right: unset !important;
     left: 8px !important;
 }
-.theme-1 .button-1{
-	color:#0094D4;
-	border:2px solid #0094D4;
-	border-radius:4px;
-	background: #333847;
-	height:42px;
-	width:100%;
-	font-size:14px;
-	font-family: inherit;
-}
-.theme-1 .aio-table{
-	background:#333847;
-	color:#fff;
-	border:1px solid #3f4456;
-}
-.theme-1 .aio-table .aio-table-cell{
-	background:#3f4456 !important;
-}
-.theme-1 .aio-table .aio-table-title{
-	background:#3f4456 !important;
-	border-color:#333847 !important;
-}
-.theme-1 .tab-title{
-	color:#fff;
-}
-.theme-1 .tab.active .tab-title{
-	color:dodgerblue;
-}
+
 
 
 .splash-screen{
@@ -667,7 +595,6 @@ button{
 }
 
 .my-burux-badge{
-	background:dodgerblue;
 	color:#fff;
 	font-size:12px;
 	border-radius:12px;

@@ -24,14 +24,13 @@ export default class SideMenu extends Component {
     render() {
         let { items } = this.state;
         let { onClose, open } = this.props;
-        let {buruxlogod} = this.context;
         return (
             <>
                 <RVD
                     layout={{
                         className: 'sidemenu' + (open ? ' open' : ''),
                         column: [
-                            { size: 60, html: getSvg(23,{d:buruxlogod}),className: 'sidemenu-header', align: 'v' },
+                            { size: 60, html: getSvg('mybrxlogo'),className: 'sidemenu-header', align: 'v' },
                             {
                                 column: items.map(({ icon, text, onClick = () => { },style,className,fill = '#A19F9D' }) => {
                                     return {

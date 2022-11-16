@@ -31,7 +31,7 @@ export default class ProductCount extends Component{
             let {value} = this.state;
             let {min = 0} = this.props;
             this.change(value + dir,Math.max(min,1))
-          },100)
+          },50)
         },500)
       }
       touchEnd(){

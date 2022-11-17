@@ -1,5 +1,5 @@
 import Axios from "axios";
-import bulb10w from './../images/10w-bulb.png';
+import nosrcImage from './../images/no-src.png';
 import AIODate from 'aio-date';
 export default function apis({getState,token,getDateAndTime,showAlert}) {
   let baseUrl = 'https://retailerapp.bbeta.ir/api/v1';
@@ -17,7 +17,7 @@ export default function apis({getState,token,getDateAndTime,showAlert}) {
       return result
     },
     bazargahItem({order,type}){
-      let bulbSrc = bulb10w;
+      let bulbSrc = nosrcImage;
       let distance = 0;
       let orderItems=[];
       try{

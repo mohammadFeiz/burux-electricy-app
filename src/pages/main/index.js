@@ -251,6 +251,7 @@ export default class Main extends Component {
   async componentDidMount() {
     let developerMode = true
     let {userCardCode,bazargah,kharidApis} = this.state;
+    let kkk = kharidApis({type:'dargah',parameter:1200000})
     let b1Info = await this.getB1Info(userCardCode);
     this.getGuaranteeItems();
     this.getCampaignsData();
@@ -272,18 +273,20 @@ export default class Main extends Component {
       let res = pricing.autoCalcDoc(config)
       return res
     }
-    let fixPrice = (items,campaignId)=>{
-        let data = {
-          "CardGroupCode": b1Info.customer.groupCode,
-          "CardCode": this.state.userCardCode,
-          "marketingdetails": {
-              "priceList": b1Info.customer.priceListNum,
-              "slpcode": userCardCode,
-              "campaign":campaignId
-          },
-          "MarketingLines": items
-        }
-        let list = items.map(({itemCode})=>itemCode);
+    let fixPrice = (items,campaign)=>{
+      let data = {
+        "CardGroupCode": b1Info.customer.groupCode,
+        "CardCode": this.state.userCardCode,
+        "marketingdetails": {
+          "PriceList": campaign.PriceListNum,
+          "SlpCode": b1Info.customer.slpcode,
+          "Campaign":campaign.CampaignId
+        },
+        "MarketingLines": campaign.CampaignId === 14?items.map((o)=>{
+          return {...o,itemQty:30}
+        }):items
+      }
+      let list = items.map(({itemCode})=>itemCode);
         list = pricing.autoPriceList(list, data, null, null, null, null, null, "01");
         return list
     }

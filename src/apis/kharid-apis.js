@@ -1,5 +1,5 @@
 import Axios from "axios";
-import bulb10w from './../images/10w-bulb.png';
+import nosrcImage from './../images/no-src.png';
 import nosrc from './../images/no-src.png';
 export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
   let baseUrl = 'https://retailerapp.bbeta.ir/api/v1';
@@ -176,7 +176,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       const products = result.marketingLines.map((i) => {
         Skus.push(i.itemCode)
         return {
-          name: i.itemName,itemCode: i.itemCode, discountPrice: i.priceAfterVat, dicountPercent: i.discountPercent, price: i.price, count: i.itemQty, src: bulb10w,
+          name: i.itemName,itemCode: i.itemCode, discountPrice: i.priceAfterVat, dicountPercent: i.discountPercent, price: i.price, count: i.itemQty, src: nosrcImage,
           details: []
         };
       })
@@ -228,12 +228,12 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
         'HotDelivery':'پخش گرم',
         'BySalesMan':'ارسال توسط ویزیتور'
       }
-
+      let nahve_pardakht = dic2[result.marketingdetails.paymentTime];
       return {
         products,
         nahve_ersal:dic3[result.marketingdetails.deliveryType],
-        mohlate_tasvie:dic1[result.marketingdetails.payDueDate],
-        zamane_pardakht:dic2[result.marketingdetails.paymentTime],
+        mohlate_tasvie:result.marketingdetails.paymentTime === 'ByOnlineOrder'?undefined:dic1[result.marketingdetails.payDueDate],
+        nahve_pardakht,
         paymentMethod: result.paymentdetails.paymentTermName,
         visitorName: result.marketingdetails.slpName,
         customerName: result.cardName,
@@ -320,7 +320,6 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
         catch{
           campaignId = undefined;
         }
-        debugger;
         return { name: o.attributes.name, id: o.id, src: src,campaignId};
       });
 
@@ -881,6 +880,12 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
     async setCart(cart){
       let res = await Axios.post(`${baseUrl}/orderuidata/updatejson`,{JsonData:JSON.stringify(cart)});
     },
+    async dargah(price){
+      let res = await Axios.get(`${baseUrl}/payment/request?price=${price}`);
+      if(res.data.data.isSuccess){
+        window.open(res.data.data);
+      }
+    }
 
   }
 }

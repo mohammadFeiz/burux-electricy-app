@@ -308,13 +308,16 @@ in product by id = ${this.context.product.id} there is an optionType by id = ${i
         if (!selectedVariant || !selectedVariant.inStock || selectedVariant.inStock === null) {
             return { column: [{ flex: 1 }, { html: "ناموجود", className: "colorD83B01 bold size14" }, { flex: 1 }] };
         }
+        let { getCartCountByVariantId } = this.context;
+
+        let count = getCartCountByVariantId(selectedVariant.id);
         return {
             column: [
                 { flex: 1 },
                 {
                     row: [
                         { flex: 1 },
-                        { html: <del>{functions.splitPrice(selectedVariant.Price)}</del>, className: "colorA19F9D" },
+                        { html: <del>{functions.splitPrice(selectedVariant.Price * count)}</del>, className: "colorA19F9D" },
                         { size: 3 },
                         {
                             html: "%" + selectedVariant.B1Dscnt,show:!!selectedVariant.B1Dscnt,
@@ -335,7 +338,7 @@ in product by id = ${this.context.product.id} there is an optionType by id = ${i
                 {
                     row: [
                         { flex: 1 },
-                        { html: functions.splitPrice(selectedVariant.FinalPrice), className: "color323130 bold" },
+                        { html: functions.splitPrice(selectedVariant.FinalPrice * count), className: "color323130 bold" },
                         { size: 6 },
                         { html: "ریال", className: "color323130 bold" },
                     ],

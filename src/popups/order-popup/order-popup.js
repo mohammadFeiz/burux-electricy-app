@@ -6,7 +6,8 @@ import functions from "../../functions";
 export default class OrderPopup extends Component {
     static contextType = appContext;
     state = {details:{}}
-    getRow(key, value) {
+    getRow(key, value,show = true) {
+      if(!show){return false}
       return {
         align: "v",
         row: [
@@ -54,7 +55,7 @@ export default class OrderPopup extends Component {
       let {details = {}} = this.state;
       let {
         customerName,customerCode,campaignName,basePrice,visitorName,address,mobile,
-        phone,mohlate_tasvie,products = [],zamane_pardakht,nahve_ersal
+        phone,mohlate_tasvie,products = [],nahve_pardakht,nahve_ersal
       } = details;
       let {mainDocNum,date,total} = order;
       return (
@@ -91,8 +92,8 @@ export default class OrderPopup extends Component {
                         this.getRow("تلفن ثابت", phone),
                         { size: 12 },
                         this.getRow("نحوه ارسال", nahve_ersal),
-                        this.getRow("زمان پرداخت", zamane_pardakht),
-                        this.getRow("مهلت تسویه", mohlate_tasvie),
+                        this.getRow("نحوه پرداخت", nahve_pardakht),
+                        this.getRow("مهلت تسویه", mohlate_tasvie,!!mohlate_tasvie),
                         this.getRow("مبلغ پرداختی کل", functions.splitPrice(total) + ' ریال'),
                         
                       ],

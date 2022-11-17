@@ -14,13 +14,13 @@ export default class Billboard extends Component{
         let items = campaigns.map((campaign)=>{
             let {name,id,src} = campaign;
             return (
-                <img src={src} style={{height:size}} width='100%' onClick={async ()=>{
+                <img src={src} width='100%' onClick={async ()=>{
                     let products = await kharidApis({type:'getCampaignProducts',parameter:campaign,cacheName:'campaign' + id});
                     SetState({categoryZIndex:10,category:{products,name,src}})
                 }}/>
             )
         })
-        // let items = [];
+        //let items = [];
         if(id === 'home'){
             items.push(<img src={HomeSlide2} alt="" width='100%'/>)
             items.push(<img src={Sookhte} alt="" width='100%'/>)

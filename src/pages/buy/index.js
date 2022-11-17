@@ -117,7 +117,7 @@ export default class Buy extends Component {
     return {html:<Billboard id='buy'/>}
   }
   families(){
-    let {families} = this.state,{layout} = this.context;
+    let {families} = this.state;
     return {
       className: "box gap-no-color",style: { padding: 12 },show: families.length !== 0,
       column: [

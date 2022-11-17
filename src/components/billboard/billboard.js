@@ -11,17 +11,17 @@ export default class Billboard extends Component{
         let {campaigns,kharidApis,SetState} = this.context;
         let {id} = this.props;
         let size= 160;
-        // let items = campaigns.map((campaign)=>{
-        //     let {name,id} = campaign;
-        //     let src = {'10181':HomeSlide1}[id];
-        //     return (
-        //         <img src={src} style={{height:size}} width='100%' onClick={async ()=>{
-        //             let products = await kharidApis({type:'getCampaignProducts',parameter:campaign,cache:120,cacheName:'campaign' + id});
-        //             SetState({categoryZIndex:10,category:{products,name,src}})
-        //         }}/>
-        //     )
-        // })
-        let items = [];
+        let items = campaigns.map((campaign)=>{
+            let {name,id,src} = campaign;
+            return (
+                <img src={src} style={{height:size}} width='100%' onClick={async ()=>{
+                    debugger;
+                    let products = await kharidApis({type:'getCampaignProducts',parameter:campaign,cache:120,cacheName:'campaign' + id});
+                    SetState({categoryZIndex:10,category:{products,name,src}})
+                }}/>
+            )
+        })
+        // let items = [];
         if(id === 'home'){
             items.push(<img src={HomeSlide2} alt="" width='100%'/>)
             items.push(<img src={Sookhte} alt="" width='100%'/>)

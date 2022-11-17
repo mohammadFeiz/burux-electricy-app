@@ -300,13 +300,30 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       return res
     },
     async getCampaigns() {
-      let res = await Axios.get(`${baseUrl}/Spree/GetAllCampaigns`);
-      let result = res.data.data.data;
-      return result.map((o) => { return { name: o.attributes.name, id: o.id } });
+      let res = await Axios.get(`${baseUrl}/Spree/GetAllCampaigns?ids=10931,10930,10929`);
+      let dataResult = res.data.data.data;
+      let includedResult = res.data.data.included;
+
+      let campaigns = dataResult.map((o) => {
+        let src = nosrc;
+        const imgData = o.relationships.image.data;
+        if (imgData !== undefined && imgData != null) {
+          const taxonImage = includedResult.find(x => x.type === "taxon_image" && x.id === imgData.id)
+          if (taxonImage !== undefined && taxonImage != null) {
+            src = "https://shopback.miarze.com" + taxonImage.attributes.original_url;
+          }
+        }
+
+        return { name: o.attributes.name, id: o.id, src: src };
+      });
+
+      return campaigns;
     },
     async getCampaignProducts(campaign) {
       let { id } = campaign;
-      let res = await this.getTaxonProducts({ Taxons: id, loadType:0 })
+      // let res = await this.getTaxonProducts({ Taxons: id, loadType:0 })
+      // return getState().updateProductPrice(res.map((o) => { return { ...o, campaign } }),'kharidApis => getCampaignProducts')
+      let res = await this.getProductsByTaxonId({ Taxons: id})
       return getState().updateProductPrice(res.map((o) => { return { ...o, campaign } }),'kharidApis => getCampaignProducts')
     },
     async newOrders() {
@@ -354,7 +371,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       });
     },
     async getCategories() {
-      let res = await Axios.get(`${baseUrl}/Spree/GetAllCategoriesbyIds?ids=10179,10550,10820,10928,10180`);
+      let res = await Axios.get(`${baseUrl}/Spree/GetAllCategoriesbyIds?ids=10820,10179,10928,10550,10180`);
       let dataResult = res.data.data.data;
       let included = res.data.data.included;
       let categories = dataResult.map((o) => {

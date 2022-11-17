@@ -249,9 +249,7 @@ export default class Main extends Component {
     //this.setState({message:this.state.messages.concat(message)});
   }
   async componentDidMount() {
-    let developerMode = true
     let {userCardCode,bazargah,kharidApis} = this.state;
-    let kkk = kharidApis({type:'dargah',parameter:1200000})
     let b1Info = await this.getB1Info(userCardCode);
     this.getGuaranteeItems();
     this.getCampaignsData();

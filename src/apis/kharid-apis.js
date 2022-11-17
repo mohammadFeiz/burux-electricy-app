@@ -880,10 +880,12 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
     async setCart(cart){
       let res = await Axios.post(`${baseUrl}/orderuidata/updatejson`,{JsonData:JSON.stringify(cart)});
     },
-    async dargah(price){
-      let res = await Axios.get(`${baseUrl}/payment/request?price=${price}`);
-      if(res.data.data.isSuccess){
-        window.open(res.data.data);
+    async dargah({amount,url}){
+      let res = await Axios.get(`${baseUrl}/payment/request?price=${amount}`);
+      if(res.data.isSuccess){
+        debugger
+      
+        window.open(res.data.data,'',"width="+window.screen.availWidth+",height="+window.screen.availHeight);
       }
     }
 

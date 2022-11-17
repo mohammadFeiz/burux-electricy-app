@@ -221,7 +221,7 @@ export default class Main extends Component {
   }
   async getCampaignsData() {
     let {kharidApis} = this.state;
-    let campaigns = await kharidApis({type:"getCampaigns",cache:120,loading:false});
+    let campaigns = await kharidApis({type:"getCampaigns",loading:false});
     this.setState({ campaigns});
   }
   async getBazargahOrders(){

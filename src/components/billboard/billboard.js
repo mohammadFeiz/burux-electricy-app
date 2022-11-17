@@ -15,8 +15,7 @@ export default class Billboard extends Component{
             let {name,id,src} = campaign;
             return (
                 <img src={src} style={{height:size}} width='100%' onClick={async ()=>{
-                    debugger;
-                    let products = await kharidApis({type:'getCampaignProducts',parameter:campaign,cache:120,cacheName:'campaign' + id});
+                    let products = await kharidApis({type:'getCampaignProducts',parameter:campaign,cacheName:'campaign' + id});
                     SetState({categoryZIndex:10,category:{products,name,src}})
                 }}/>
             )

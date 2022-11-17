@@ -55,7 +55,7 @@ export default class Cart extends Component{
         let fixedItems = fixPrice(tab.cartItems.map(({product,count})=>{
           let itemCode = product.defaultVariant.code;
           return {itemCode,itemQty:count} 
-        }),'سبد خرید')
+        }))
         tab.cartItems = tab.cartItems.map((o,i)=>{
           return {...o,product:{...o.product,...fixedItems[i]}}
         })

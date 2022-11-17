@@ -272,59 +272,52 @@ export default class Main extends Component {
       let res = pricing.autoCalcDoc(config)
       return res
     }
-    let fixPrice = (items,caller)=>{
-      if(developerMode){
-        if(!caller){
-          console.error('fixPrice missing caller. items is ',items)
+    let fixPrice = (items,campaignId)=>{
+        let data = {
+          "CardGroupCode": b1Info.customer.groupCode,
+          "CardCode": this.state.userCardCode,
+          "marketingdetails": {
+              "priceList": b1Info.customer.priceListNum,
+              "slpcode": userCardCode,
+              "campaign":campaignId
+          },
+          "MarketingLines": items
         }
-        for(let i = 0; i < items.length; i++){
-          if(!items[i].itemCode){
-            console.error(caller + ' missing itemCode. item is ',items[i])
-          }
-          if(!items[i].itemQty){
-            console.error(caller + ' missing itemQty. item is ',items[i])
-          }
-        }
-      }
-      let data = {
-        "CardGroupCode": b1Info.customer.groupCode,
-        "CardCode": this.state.userCardCode,
-        "marketingdetails": {
-            "priceList": b1Info.customer.priceListNum,
-            "slpcode": userCardCode
-        },
-        "MarketingLines": items
-      }
-      let list = items.map(({itemCode})=>itemCode);
-      list = pricing.autoPriceList(list, data, null, null, null, null, null, "01");
-      return list
+        let list = items.map(({itemCode})=>itemCode);
+        list = pricing.autoPriceList(list, data, null, null, null, null, null, "01");
+        return list
     }
-    let updateProductPrice = (list,caller)=>{
-      if(list === false){return false}
+    let updateProductPrice = (list,campaignId)=>{
+        if(list === false){return false}
       return list.map((o)=>{
-        if(!o.defaultVariant){
-          console.error(`updateProductPrice error`);
-          console.error('object is',o);
-        }
-        let a = o.variants.map((res)=>{
-          return {
-            itemCode:res.code,itemQty:1
+        
+          if(!o.defaultVariant){
+            console.error(`updateProductPrice error`);
+            console.error('object is',o);
           }
-        })
-        let array = fixPrice(a,caller);
-        let result;
-        for(let i = 0; i < array.length; i++){
-          let obj = array[i];
-          if(!result){result = obj}
-          else{
-            if(obj.FinalPrice && obj.FinalPrice < result.FinalPrice ){
-              result = obj;
+          let a = o.variants.map((res)=>{
+            return {
+              itemCode:res.code,itemQty:1
+            }
+          })
+          let array = fixPrice(a,campaignId);
+          let result;
+          for(let i = 0; i < array.length; i++){
+            let obj = array[i];
+            if(!result){result = obj}
+            else{
+              if(obj.FinalPrice && obj.FinalPrice < result.FinalPrice ){
+                result = obj;
+              }
             }
           }
-        }
-        let newObj = {...o,...result};
-        return newObj
+          let newObj = {...o,...result};
+          return newObj
+        
+        
       })
+      
+ 
     }
     let cart = await kharidApis({type:'getCart',loading:false});
     this.setState({

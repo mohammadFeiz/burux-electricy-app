@@ -313,19 +313,25 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
             src = "https://shopback.miarze.com" + taxonImage.attributes.original_url;
           }
         }
-
-        return { name: o.attributes.name, id: o.id, src: src };
+        let campaignId;
+        try{
+          campaignId = JSON.parse(o.attributes.meta_description)
+        }
+        catch{
+          campaignId = undefined;
+        }
+        debugger;
+        return { name: o.attributes.name, id: o.id, src: src,campaignId};
       });
 
       return campaigns;
     },
     async getCampaignProducts(campaign) {
-      let { id } = campaign;
+      let { id,campaignId } = campaign;
       // let res = await this.getTaxonProducts({ Taxons: id, loadType:0 })
       // return getState().updateProductPrice(res.map((o) => { return { ...o, campaign } }),'kharidApis => getCampaignProducts')
       let res = await this.getProductsByTaxonId({ Taxons: id});
-     debugger;
-      const finalRes=getState().updateProductPrice(res,'kharidApis => getCampaignProducts');
+      const finalRes=getState().updateProductPrice(res,campaignId);
       console.log(finalRes);
       return finalRes.map((o) => { return { ...o, campaign } });
     },

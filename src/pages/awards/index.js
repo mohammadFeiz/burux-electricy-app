@@ -206,8 +206,8 @@ class AwardCard extends Component {
             {
               style: { padding: '8px 0' },
               column: [
-                { show: !!title, html: () => title, flex: 1,style: { fontSize: 16 } } ,
-                { show: !!subtitle, html: subtitle, flex: 1, align: 'v',style: { fontSize: 14, fontWeight: 'bold' } },
+                { show: !!title, html: () => title, flex: 1,style: { fontSize: 13,color:'#fff' } } ,
+                { show: !!subtitle, html: subtitle, flex: 1, align: 'v',style: { fontSize: 12, fontWeight: 'bold',color:'#fff' } },
 
               ]
             }

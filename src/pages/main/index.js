@@ -37,7 +37,17 @@ import SignalR from '../../singalR/signalR';
 export default class Main extends Component {
   constructor(props) {
     super(props);
+    let wrl = window.location.href;
+    let status = wrl.indexOf('status=');
+    if(status !== -1){
+      status = wrl.slice(status + 7,wrl.length)
+      if(status === '2'){
+        alert('خطا در پرداخت')
+        //window.location.href = wrl.slice(0,wrl.indexOf('/?status')) 
+        window.history.pushState(window.history.state, window.title, wrl.slice(0,wrl.indexOf('/?status')));
+      }
     
+    }
     let signalR=new SignalR(()=>this.state);
     signalR.start();
     setTimeout(()=>{

@@ -1,7 +1,7 @@
 import Axios from "axios";
 import nosrcImage from './../images/no-src.png';
 import nosrc from './../images/no-src.png';
-export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
+export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOServiceShowAlert}) {
   let baseUrl = 'https://retailerapp.bbeta.ir/api/v1';
   let {userCardCode} = getState();
   return {
@@ -881,11 +881,10 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert}) {
       let res = await Axios.post(`${baseUrl}/orderuidata/updatejson`,{JsonData:JSON.stringify(cart)});
     },
     async dargah({amount,url}){
-      let res = await Axios.get(`${baseUrl}/payment/request?price=${amount}`);
+      //AIOServiceShowAlert({type:'success',text:'text',subtext:'test'})
+      let res = await Axios.get(`${baseUrl}/payment/request?price=${amount}&cbu=${url}`);
       if(res.data.isSuccess){
-        debugger
-      
-        window.open(res.data.data,'',"width="+window.screen.availWidth+",height="+window.screen.availHeight);
+        window.location.href = res.data.data;
       }
     }
 

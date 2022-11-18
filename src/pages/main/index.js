@@ -46,6 +46,11 @@ export default class Main extends Component {
         //window.location.href = wrl.slice(0,wrl.indexOf('/?status')) 
         window.history.pushState(window.history.state, window.title, wrl.slice(0,wrl.indexOf('/?status')));
       }
+      if(status === '3'){
+        alert('پرداخت موفق')
+        //window.location.href = wrl.slice(0,wrl.indexOf('/?status')) 
+        window.history.pushState(window.history.state, window.title, wrl.slice(0,wrl.indexOf('/?status')));
+      }
     
     }
     let signalR=new SignalR(()=>this.state);

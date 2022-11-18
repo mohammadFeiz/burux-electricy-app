@@ -337,7 +337,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
     async newOrders() {
       // const taxonProductsList=await this.getTaxonProducts({Taxons:'10179'});
       // return getState().updateProductPrice(taxonProductsList,'kharidApis => newOrders');
-      const taxonProductsList=await this.getProductsByTaxonId({Taxons:'10179'});
+      const taxonProductsList=await this.getProductsByTaxonId({Taxons:'10932'});
       return getState().updateProductPrice(taxonProductsList,'kharidApis => newOrders');
     },
     async recommendeds() {

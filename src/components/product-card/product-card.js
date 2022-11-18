@@ -77,13 +77,13 @@ export default class ProductCard extends Component{
     }
     discount_layout(){
         let {product,count = 1} = this.props;
-        let {inStock,Price,B1Dscnt = 0,CmpgnDscnt = 0,PymntDscnt = 0} = product;
+        let {inStock,Price,B1Dscnt = 0,CmpgnDscnt = 0,PymntDscnt = 0,FinalPrice} = product;
         if(!Price || !inStock){return false}
         return {
             childsAttrs:{align:'v'},gap:4,className:'padding-0-12',
             row:[
                 {flex:1},
-                {html:<del>{this.splitPrice(Price)}</del>,className:'size14 colorA19F9D'},
+                {show:!!B1Dscnt || !!CmpgnDscnt || !!PymntDscnt,html:<del>{this.splitPrice(Price)}</del>,className:'size14 colorA19F9D'},
                 {
                     gap:3,
                     row:[

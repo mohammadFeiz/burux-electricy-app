@@ -286,18 +286,16 @@ export default class Main extends Component {
       let res = pricing.autoCalcDoc(config)
       return res
     }
-    let fixPrice = (items,campaign)=>{
+    let fixPrice = (items,campaign = {})=>{
       let data = {
         "CardGroupCode": b1Info.customer.groupCode,
         "CardCode": this.state.userCardCode,
         "marketingdetails": {
           "PriceList": campaign.PriceListNum,
           "SlpCode": b1Info.customer.slpcode,
-          "Campaign":campaign.CampaignId
+          "Campaign":campaign.CampaigId
         },
-        "MarketingLines": campaign.CampaignId === 14?items.map((o)=>{
-          return {...o,itemQty:30}
-        }):items
+        "MarketingLines": items
       }
       let list = items.map(({itemCode})=>itemCode);
         list = pricing.autoPriceList(list, data, null, null, null, null, null, "01");

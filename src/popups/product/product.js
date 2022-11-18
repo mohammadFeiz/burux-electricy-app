@@ -309,28 +309,29 @@ in product by id = ${this.context.product.id} there is an optionType by id = ${i
             return { column: [{ flex: 1 }, { html: "ناموجود", className: "colorD83B01 bold size14" }, { flex: 1 }] };
         }
         let { getCartCountByVariantId } = this.context;
-
-        let count = getCartCountByVariantId(selectedVariant.id);
+        //یا یک را اضافه می کنم چون اگه تعداد صفر بود قیمت واحد رو نشون بده
+        let count = getCartCountByVariantId(selectedVariant.id) || 1;
+        let {B1Dscnt,CmpgnDscnt,PymntDscnt} = selectedVariant;
         return {
             column: [
                 { flex: 1 },
                 {
                     row: [
                         { flex: 1 },
-                        { html: <del>{functions.splitPrice(selectedVariant.Price * count)}</del>, className: "colorA19F9D" },
+                        { show:!!B1Dscnt || !!CmpgnDscnt || !!PymntDscnt,html: ()=><del>{functions.splitPrice(selectedVariant.Price * count)}</del>, className: "colorA19F9D" },
                         { size: 3 },
                         {
-                            html: "%" + selectedVariant.B1Dscnt,show:!!selectedVariant.B1Dscnt,
+                            html: "%" + B1Dscnt,show:!!B1Dscnt,
                             style: { background: "#FDB913", color: "#fff", borderRadius: 8, padding: "0 3px" },
                         },
                         { size: 3 },
                         {
-                            html: "%" + selectedVariant.CmpgnDscnt,show:!!selectedVariant.CmpgnDscnt,
+                            html: "%" + CmpgnDscnt,show:!!CmpgnDscnt,
                             style: { background: "#FDB913", color: "#fff", borderRadius: 8, padding: "0 3px" },
                         },
                         { size: 3 },
                         {
-                            html: "%" + selectedVariant.PymntDscnt,show:!!selectedVariant.PymntDscnt,
+                            html: "%" + PymntDscnt,show:!!PymntDscnt,
                             style: { background: "#ff4335", color: "#fff", borderRadius: 8, padding: "0 3px" },
                         }
                     ],

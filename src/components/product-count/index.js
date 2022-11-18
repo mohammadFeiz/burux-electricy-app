@@ -16,14 +16,16 @@ export default class ProductCount extends Component{
         clearTimeout(this.changeTimeout);
         this.changeTimeout = setTimeout(()=>{
             onChange(value)
-        },600)
+        },500)
         
     }
-    touchStart(dir){
+    touchStart(dir,touch,isTouch){
+        if(touch && !isTouch){return}
+        if(!touch && isTouch){return}
         let {value} = this.state;
         this.change(value + dir)
-        $(window).bind('touchend',$.proxy(this.touchEnd,this))
-        $(window).bind('mouseup',$.proxy(this.touchEnd,this))
+        if(touch){$(window).bind('touchend',$.proxy(this.touchEnd,this))}
+        else{$(window).bind('mouseup',$.proxy(this.touchEnd,this))}
         clearTimeout(this.timeout);
         clearInterval(this.interval);
         this.timeout = setTimeout(()=>{
@@ -31,11 +33,12 @@ export default class ProductCount extends Component{
             let {value} = this.state;
             let {min = 0} = this.props;
             this.change(value + dir,Math.max(min,1))
-          },50)
-        },500)
+          },60)
+        },800)
       }
       touchEnd(){
         $(window).unbind('touchend',this.touchEnd)
+        $(window).unbind('mouseup',this.touchEnd)
         clearTimeout(this.timeout)
         clearInterval(this.interval) 
       }
@@ -43,6 +46,7 @@ export default class ProductCount extends Component{
         let {value,prevValue} = this.state;
         let {min = 0,onChange,max = Infinity} = this.props;
         if(this.props.value !== prevValue){setTimeout(()=>this.setState({value:this.props.value,prevValue:this.props.value}),0)}
+        let touch = 'ontouchstart' in document.documentElement;
         return (
             <RVD
                 layout={{
@@ -50,9 +54,9 @@ export default class ProductCount extends Component{
                     style:{height:36},
                     attrs:{onClick:(e)=>e.stopPropagation()},
                     row: [
-                        {html: (<div onMouseDown={(e)=>this.touchStart(1)} onTouchStart={(e)=>this.touchStart(1)} className={'product-count-button' + (value >= max?' disabled':'')}>+</div>),show:onChange!== undefined},
+                        {html: (<div onMouseDown={(e)=>this.touchStart(1,touch,false)} onTouchStart={(e)=>this.touchStart(1,touch,true)} className={'product-count-button' + (value >= max?' disabled':'')}>+</div>),show:onChange!== undefined},
                         { flex: 1, html: value },
-                        {html: ()=>(<div onMouseDown={(e) =>this.touchStart(-1)} onTouchStart={(e) =>this.touchStart(-1)} className='product-count-button'>-</div>),show:value > 1 && onChange!== undefined},
+                        {html: ()=>(<div onMouseDown={(e) =>this.touchStart(-1,touch,false)} onTouchStart={(e) =>this.touchStart(-1,touch,true)} className='product-count-button'>-</div>),show:value > 1 && onChange!== undefined},
                         {
                             html: ()=>(
                                 <div 

@@ -325,31 +325,79 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
 
       return campaigns;
     },
+    updateCampaignPrice(campaignId,obj){
+      if(campaignId === '10931'){
+        let price = {
+          '9190':3650000,
+          '9195':2605000,
+          '9191':3650000,
+          '9192':3650000,
+          '9194':3650000,
+          '3582':1385000,
+          '9193':2605000,
+        }[obj.ItemCode]
+        obj.Price = price;
+        obj.FinalPrice = price;
+        obj.price = price;
+        obj.PymntDscnt = 0;
+      }
+      if(campaignId === '10930'){
+        let price = {
+          '7702':699840,
+          '7572':589077,
+          '7562':550080,
+          '7732':1903125,
+          '7722':1450029,
+          '7712':1100064,
+          '8922':1450029,
+          '3182':6343779,
+          '4622':209470,
+          '4610':170750,
+          '8932':1803510,
+          '9191':4687500,
+          '9192':4687500,
+          '9193':3125000,
+          '9194':4687500,
+          'x1110':1119400,
+          'NNSR0013':593800,
+          'x1120':1545000,
+          '9195':3125000,
+          '9190':4687500,
+          'x1130':2499600,
+          '6240':500000,
+          'x1140':3466500,
+          '8912':833400,
+          'NNSR0012':539800,
+          '6250':802100,
+        }[obj.ItemCode]
+        obj.Price = price;
+        obj.FinalPrice = price;
+        obj.price = price;
+        obj.PymntDscnt = 0;
+      }
+      return obj
+    },
     async getCampaignProducts(campaign) {
       let { id,campaignId } = campaign;
-      // let res = await this.getTaxonProducts({ Taxons: id, loadType:0 })
-      // return getState().updateProductPrice(res.map((o) => { return { ...o, campaign } }),'kharidApis => getCampaignProducts')
       let res = await this.getProductsByTaxonId({ Taxons: id});
       const finalRes=getState().updateProductPrice(res,campaignId);
       console.log(finalRes);
-      return finalRes.map((o) => { return { ...o, campaign } });
+      return finalRes.map((o) => { 
+        let res = { ...o, campaign }
+        return this.updateCampaignPrice(id,res)
+      });
     },
     async newOrders() {
-      // const taxonProductsList=await this.getTaxonProducts({Taxons:'10179'});
-      // return getState().updateProductPrice(taxonProductsList,'kharidApis => newOrders');
       const taxonProductsList=await this.getProductsByTaxonId({Taxons:'10932'});
-      return getState().updateProductPrice(taxonProductsList,'kharidApis => newOrders');
+      return getState().updateProductPrice(taxonProductsList);
     },
     async recommendeds() {
-      // let res = await this.getTaxonProducts({Taxons:'10550'});
-      // return getState().updateProductPrice(res,'kharidApis => recommendeds');
       let res = await this.getProductsByTaxonId({Taxons:'10550'});
-      return getState().updateProductPrice(res,'kharidApis => recommendeds');
+      return getState().updateProductPrice(res);
     },
     async bestSellings(){
-      // return getState().updateProductPrice(await this.getTaxonProducts({Taxons:"10820"}),'kharidApis => bestSellings');
       let res = await this.getProductsByTaxonId({Taxons:'10820'});
-      return getState().updateProductPrice(res,'kharidApis => bestSellings');
+      return getState().updateProductPrice(res,);
     },
     async preOrders() {
       let preOrders = { waitOfVisitor: 0, waitOfPey: 0 };
@@ -674,6 +722,10 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
         });
 
         let price=fixPrice([{itemCode : varSku, itemQty : 1}])[0];
+        if(product.campaign){
+          debugger;
+          price = this.updateCampaignPrice(product.campaign.id,price)
+        }
         if(price==undefined) continue;
         variants.push({
           id:varId,

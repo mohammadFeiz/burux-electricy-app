@@ -223,7 +223,9 @@ export default class Shipping extends Component{
             row:[
               {html:'تخفیف پرداخت آنلاین:',className:'color00B5A5 size14'},
               {flex:1},
-              {html:functions.splitPrice(this.fix(mablaghe_takhfife_pardakhte_online)) + ' ریال',className:'color00B5A5 size14'}
+              {html:`(${darsade_takhfife_pardakhte_online} %)`,className:'color00B5A5 size14'},
+              {size:6},
+              {html:functions.splitPrice(this.fix(mablaghe_takhfife_pardakhte_online)) + ' ریال',className:'color00B5A5 size14'},
             ]
           },
           {

@@ -38,7 +38,7 @@ export default class MyBurux extends Component{
                     let {items,total} = await guarantiApis({type:'items'});
                     SetState({guaranteeItems:items,totalGuaranteeItems:total,joziate_darkhasthaye_garanti_popup_zIndex:10}) 
                 }},
-                {after:getSvg('chevronLeft'),text:'قوانین و مقررات',icon:getSvg(16),onClick:()=>{}},
+                //{after:getSvg('chevronLeft'),text:'قوانین و مقررات',icon:getSvg(16),onClick:()=>{}},
                 {after:getSvg('chevronLeft'),text:'خروج از حساب کاربری',icon:getSvg(17),onClick:()=>this.context.logout(),style:{color:'#A4262C'}},
             ]
         }

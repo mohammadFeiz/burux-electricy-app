@@ -221,7 +221,7 @@ export default class Shipping extends Component{
           {
             size:28,childsProps:{align:'v'},
             row:[
-              {html:'تخفیف پرداخت آنلاین:',className:'color00B5A5 size14'},
+              {html:'تخفیف نحوه پرداخت:',className:'color00B5A5 size14'},
               {flex:1},
               {html:`(${darsade_takhfife_pardakhte_online} %)`,className:'color00B5A5 size14'},
               {size:6},

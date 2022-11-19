@@ -263,15 +263,7 @@ class OTPLogin extends Component {
             }
           ]
         },
-        { size: 16 },
-        {
-          className: 'padding-0-12 colorFFF', gap: 3,
-          row: [
-            { html: 'ورود شما به معنای پذیرش', className: 'size14' },
-            { html: 'قوانین و مقررات', className: 'size14 bold' },
-            { html: 'بروکس است.', className: 'size14' },
-          ]
-        }
+        { size: 16 }
       ]
     }
   }

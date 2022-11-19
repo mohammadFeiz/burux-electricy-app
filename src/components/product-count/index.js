@@ -28,21 +28,21 @@ export default class ProductCount extends Component{
         this.change(value + dir)
         if(touch){$(window).bind('touchend',$.proxy(this.touchEnd,this))}
         else{$(window).bind('mouseup',$.proxy(this.touchEnd,this))}
-        clearTimeout(this.timeout);
-        clearInterval(this.interval);
-        this.timeout = setTimeout(()=>{
-          this.interval = setInterval(()=>{
-            let {value} = this.state;
-            let {min = 0} = this.props;
-            this.change(value + dir,Math.max(min,1))
-          },60)
-        },800)
+        // clearTimeout(this.timeout);
+        // clearInterval(this.interval);
+        // this.timeout = setTimeout(()=>{
+        //   this.interval = setInterval(()=>{
+        //     let {value} = this.state;
+        //     let {min = 0} = this.props;
+        //     this.change(value + dir,Math.max(min,1))
+        //   },60)
+        // },800)
       }
       touchEnd(){
         $(window).unbind('touchend',this.touchEnd)
         $(window).unbind('mouseup',this.touchEnd)
-        clearTimeout(this.timeout)
-        clearInterval(this.interval) 
+        // clearTimeout(this.timeout)
+        // clearInterval(this.interval) 
       }
     render(){
         let {value,prevValue} = this.state;

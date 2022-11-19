@@ -26,25 +26,61 @@ export default class Shipping extends Component{
           {value:'By45Days',text:'چک 45 روزه'},
           {value:'By60Days',text:'چک 60 روزه'},
         ],
+        PayDueDate_map:{
+          ByDelivery:1, // نقد --->*
+          By15Days:2, // *
+          ByMonth:3,// *
+          By45Days:4, // *
+          NotSet:5,
+          By60Days:6,//*
+          By75Days:7,
+          By3Months:8,
+          By3_5Months:9,
+          By4Months:10,
+          By4_5Months:11,
+          By5Months:12,
+          By5_5Months:13,
+          By6Months:14,
+        },
         PaymentTime:'ByOnlineOrder',
         PaymentTime_options:[
           {value:'ByOnlineOrder',text:'اینترنتی'},
           {value:'ByOrder',text:'واریز قبل ارسال'},
           {value:'ByDelivery',text:'واریز پای بار'},
         ],
+        PaymentTime_map:{
+            ByOrder:1,
+            ByDelivery:2,
+            ByGuarantee:3,
+            ByCredit:4,
+            ByOnlineOrder:5,
+            NotSet:6
+        },
         SettleType:'ByDelivery',
         SettleType_options:[
           {value:'ByDelivery',text:'نقد'},
           {value:'Cheque',text:'چک'},
 
         ],
+        SettleType_map:{
+          ByDelivery:1,
+          Cheque:2,
+        },
         DeliveryType:'BRXDistribution',
         DeliveryType_options:[
           {value:'BRXDistribution',text:'ماشین توزیع بروکس'},
           {value:'RentalCar',text:'ماشین اجاره ای'},
           {value:'Cargo',text:'باربری'},
           {value:'BySalesMan',text:'ارسال توسط ویزیتور'}
-        ]
+        ],
+        DeliveryType_map: {
+          BRXDistribution:11,//پخش بروکس--->*
+          RentalCar:12,//ماشین اجازه‌ای
+          Cargo:13,//باربری --->*
+          HotDelivery:14,//پخش گرم
+          BySalesMan:15,//پخش توسط ویزیتور
+          NotSet:16,
+        }
       }
     }
     details_layout(){
@@ -152,8 +188,18 @@ export default class Shipping extends Component{
       catch{return 0}
     }
     amount_layout(){
-      let {shipping} = this.context;
-      let {factorDetails} = shipping;
+      let {getFactorDetails,shipping} = this.context;
+      let {
+        PayDueDate_map,PayDueDate,
+        SettleType_map,SettleType,
+        DeliveryType_map,DeliveryType,
+        PaymentTime_map,PaymentTime,
+      } = this.state;
+      PayDueDate = PayDueDate_map[PayDueDate];
+      SettleType = SettleType_map[SettleType];
+      DeliveryType = DeliveryType_map[DeliveryType];
+      PaymentTime = PaymentTime_map[PaymentTime];
+      let factorDetails = getFactorDetails(shipping.items,{PayDueDate,PaymentTime,SettleType,DeliveryType})
       let discount = factorDetails.marketingdetails.DocumentDiscount;
       let darsade_takhfife_pardakhte_online = factorDetails.marketingdetails.DocumentDiscountPercent
       let mablaghe_ghabele_pardakht = factorDetails.DocumentTotal;

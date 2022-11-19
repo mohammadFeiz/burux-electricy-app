@@ -82,7 +82,8 @@ export default class Cart extends Component{
         let items = tab.cartItems.map((o)=>{
           return { ItemCode: o.variant.code, ItemQty: o.count }
         })
-        tab.factorDetails =  getFactorDetails(items)
+        tab.items = items;
+        tab.factorDetails =  getFactorDetails(items);
         this.tabs.push(tab);
       }
       if(tabsDictionary[this.state.activeTabId]){

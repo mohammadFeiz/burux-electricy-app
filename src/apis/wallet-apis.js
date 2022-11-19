@@ -77,8 +77,8 @@ export default function apis({getState,token,getDateAndTime,showAlert}) {
       //return false
 
     },
-    async variz(parameter){
-
+    async variz(model){
+      debugger;
     }
   }
 }

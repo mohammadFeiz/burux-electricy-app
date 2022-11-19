@@ -49,6 +49,8 @@ export default class ProductCard extends Component{
     }
     count_layout(){
         let {count,changeCount,max} = this.props;
+        let {shipping} = this.context;
+        if(shipping){return false}
         if(count === undefined){return false}
         return {size:30,html:()=><ProductCount value={count} onChange={(count)=>changeCount(count)} max={max}/>}
     }

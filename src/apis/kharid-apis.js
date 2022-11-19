@@ -2,7 +2,7 @@ import Axios from "axios";
 import nosrcImage from './../images/no-src.png';
 import nosrc from './../images/no-src.png';
 export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOServiceShowAlert}) {
-  let baseUrl = 'https://retailerapp.bbeta.ir/api/v1';
+  let baseUrl = `https://retailerapp.bbeta.ir/api/v1`;
   let {userCardCode} = getState();
   return {
     async peygiriye_sefareshe_kharid() {
@@ -939,8 +939,19 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
       }
     },
     async pardakhte_kharid({order}){
-      debugger;
+    
+      let res = await Axios.post(`${baseUrl}/payment/request`,{
+        "Price":order.total,
+        "IsDraft":order.mainDocisDraft,
+        "DocNum":order.mainDocNum,
+        "DocEntry":order.code,
+        "CallbackUrl":"https://uiretailerapp.bbeta.ir/"
+        // "CallbackUrl":"http://localhost:3000/"
+      });
+      
+      if(res.data.isSuccess){
+        window.location.href = res.data.data;
+      }
     }
-
   }
 }

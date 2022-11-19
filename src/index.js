@@ -351,6 +351,13 @@ class OTPLogin extends Component {
         },
         { size: 12 },
         {
+          className: 'padding-0-12', show: !!recode, align: 'h',
+          html: (
+            'در صورت عدم دریافت کد عدد 1234 را وارد کنید'
+          )
+        },
+        { size: 12 },
+        {
           attrs: { onClick: () => this.onChangePhone() },
           className: 'padding-0-12 size14 colorFFF bold',
           html: 'تغییر شماره تلفن'

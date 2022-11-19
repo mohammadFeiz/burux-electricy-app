@@ -119,7 +119,7 @@ export default class OrdersHistory extends Component {
 
   class OrderCard extends Component {
     static contextType = appContext;
-    unit = 'تومان';
+    unit = 'ریال';
     splitPrice(price){
       if(!price){return price}
       let str = price.toString(),dotIndex = str.indexOf('.');

@@ -261,7 +261,7 @@ export default class Home extends Component {
                         { size: 12 },
                         //this.score_layout(),
                         { 
-                            size: 72, 
+                            size: 72, show:false,
                             row: [
                                 { size: 12 },
                                 {

@@ -723,7 +723,6 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
 
         let price=fixPrice([{itemCode : varSku, itemQty : 1}])[0];
         if(product.campaign){
-          debugger;
           price = this.updateCampaignPrice(product.campaign.id,price)
         }
         if(price==undefined) continue;

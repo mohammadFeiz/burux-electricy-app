@@ -290,7 +290,7 @@ class OTPLogin extends Component {
     if (disabled) { disabledStyle = { background: '#ccc', border: '1px solid #ddd' } }
     return {
       style: {
-        margin: 12, padding: 12
+        margin: 12, padding: 12,background: 'rgba(255,255,255,0.2)'
       },
 
       column: [

@@ -13,17 +13,17 @@ export default class SideMenu extends Component {
                 { text: 'بازارگاه', icon: 35 },
                 { text: 'پیگیری سفارش خرید', icon: 13,onClick:()=>this.context.SetState({ordersHistoryZIndex:10})},
                 { text: 'درخواست گارانتی', icon: 32, onClick: () => this.context.SetState({ guaranteePopupZIndex: 10 }) },
-                { text: 'جایزه ها', icon: 15 },
+                //{ text: 'جایزه ها', icon: 15 },
                 //{ text: 'کیف پول', icon: 33 },
                 //{ text: 'تاریخچه سفارشات', icon: 34 },
                 { text: 'تماس با پشتیبانی', icon: 38 },
                 { text: 'خروج از حساب کاربری', icon: 17,className:'colorA4262C',fill:'#A4262c',onClick:()=>this.context.logout() },
-                { text: 'تست درگاه', icon: 17,fill:'#A4262c',onClick:()=>{
-                    let {kharidApis} = this.context;
-                    let amount = window.prompt('مبلغ را وارد کنید');
-                    let url = window.prompt('آدرس بازگشت را وارد کنید');
-                    kharidApis({type:'dargah',parameter:{amount,url}})
-                }},
+                // { text: 'تست درگاه', icon: 17,fill:'#A4262c',onClick:()=>{
+                //     let {kharidApis} = this.context;
+                //     let amount = window.prompt('مبلغ را وارد کنید');
+                //     let url = window.prompt('آدرس بازگشت را وارد کنید');
+                //     kharidApis({type:'dargah',parameter:{amount,url}})
+                // }},
                 
             ]
         }

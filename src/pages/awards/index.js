@@ -54,6 +54,7 @@ export default class Awards extends Component {
     if(!this.mounted){return null;}
     let { awards,chanceResult,chanceIndex,showUserAwards,userAwards } = this.state;
     let {onClose} = this.props;
+    let {SetState} = this.context;
     
     return (
       <>
@@ -124,7 +125,7 @@ export default class Awards extends Component {
                   html:<AwardCard {...awards[chanceIndex]} icon={getSvg(awards[chanceIndex].icon)}/> 
                 },
                 {
-                  html:<button>بازگشت به خانه</button>
+                  html:<button onClick={()=>onClose()}>بازگشت به خانه</button>
                 },
                 {
                   show:chanceResult === 'winner',

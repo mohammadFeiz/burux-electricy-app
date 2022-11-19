@@ -29,7 +29,7 @@ export default class MyBurux extends Component{
                     let {SetState} = this.context;
                     SetState({ordersHistoryZIndex:10})
                 }},
-                {after:getSvg('chevronLeft'),text:'جایزه ها',icon:getSvg(15),onClick:()=>{}},
+                //{after:getSvg('chevronLeft'),text:'جایزه ها',icon:getSvg(15),onClick:()=>{}},
                 {after:getSvg('chevronLeft'),text:'حساب ها',icon:getSvg(14),onClick:()=>{}},
                 {after:getSvg('chevronLeft'),text:'جزییات درخواست های گارانتی',icon:getSvg(14),onClick:async ()=>{
                     let {SetState,guarantiApis} = this.context;
@@ -104,7 +104,7 @@ export default class MyBurux extends Component{
                             flex:1,style:{overflow:'visible'},
                             html:(
                                 <Card
-                                    type='card3' footer='افزایش موجودی'
+                                    type='card3' footer='جزییات کیف پول'
                                     rows={[[['کیف پول',functions.splitPrice(wallet) + ' ریال']]]}
                                     
                                 />

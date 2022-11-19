@@ -154,23 +154,16 @@ export default class Shipping extends Component{
     amount_layout(){
       let {shipping} = this.context;
       let {factorDetails} = shipping;
-      let discount = this.fix(factorDetails.marketingdetails.DocumentDiscount);
-      let total = this.fix(factorDetails.DocumentTotal);
-      debugger;  
-      let onlineDiscountPercent = factorDetails.marketingdetails.DocumentDiscountPercent
-      let onlineDiscount = this.fix(total * onlineDiscountPercent / 100);
+      let discount = factorDetails.marketingdetails.DocumentDiscount;
+      let darsade_takhfife_pardakhte_online = factorDetails.marketingdetails.DocumentDiscountPercent
+      let mablaghe_ghabele_pardakht = factorDetails.DocumentTotal;
+      let mablaghe_takhfife_pardakhte_online = (mablaghe_ghabele_pardakht * darsade_takhfife_pardakhte_online) / 100;
+      mablaghe_ghabele_pardakht = mablaghe_ghabele_pardakht - mablaghe_takhfife_pardakhte_online;
+      
       return {
         className:'padding-0-12 bgFFF',
         style:{paddingTop:12,borderRadius:'16px 16px 0 0'},
         column:[
-          {
-            size:28,childsProps:{align:'v'},
-            row:[
-              {html:'قیمت کالاها:',className:'color605E5C size14'},
-              {flex:1},
-              {html:functions.splitPrice(total + discount) + ' ریال',className:'color605E5C size14'}
-            ]
-          },
           {
             size:28,childsProps:{align:'v'},
             row:[
@@ -184,7 +177,15 @@ export default class Shipping extends Component{
             row:[
               {html:'تخفیف پرداخت آنلاین:',className:'color00B5A5 size14'},
               {flex:1},
-              {html:functions.splitPrice(onlineDiscount) + ' ریال',className:'color00B5A5 size14'}
+              {html:functions.splitPrice(this.fix(mablaghe_takhfife_pardakhte_online)) + ' ریال',className:'color00B5A5 size14'}
+            ]
+          },
+          {
+            size:28,childsProps:{align:'v'},
+            row:[
+              {html:'قیمت کالاها:',className:'color605E5C size14'},
+              {flex:1},
+              {html:functions.splitPrice(this.fix(mablaghe_ghabele_pardakht + discount + mablaghe_takhfife_pardakhte_online)) + ' ریال',className:'color605E5C size14'}
             ]
           },
           {
@@ -192,7 +193,7 @@ export default class Shipping extends Component{
             row:[
               {html:'مبلغ قابل پرداخت:',className:'color323130 bold size16'},
               {flex:1},
-              {html:functions.splitPrice(total) + ' ریال',className:'color323130 bold size16'}
+              {html:functions.splitPrice(this.fix(mablaghe_ghabele_pardakht)) + ' ریال',className:'color323130 bold size16'}
             ]
           },
         ]

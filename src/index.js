@@ -351,7 +351,7 @@ class OTPLogin extends Component {
         },
         { size: 12 },
         {
-          className: 'padding-0-12', show: !!recode, align: 'h',
+          className: 'padding-0-12 size14 colorFFF bold', show: !!recode, align: 'h',
           html: (
             'در صورت عدم دریافت کد عدد 1234 را وارد کنید'
           )

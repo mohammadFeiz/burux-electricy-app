@@ -77,8 +77,15 @@ export default function apis({getState,token,getDateAndTime,showAlert}) {
       //return false
 
     },
-    async variz(model){
-      debugger;
+    async variz({amount}){
+      let res = await Axios.post(`${baseUrl}/payment/request`,{
+        "Price":amount,
+        "CallbackUrl":"https://bazar.miarze.com/"
+      });
+      
+      if(res.data.isSuccess){
+        window.location.href = res.data.data;
+      }
     }
   }
 }

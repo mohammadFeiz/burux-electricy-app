@@ -50,6 +50,10 @@ export default class OrderPopup extends Component {
       let details = await kharidApis({type:'orderProducts',parameter:order})
       this.setState({details})
     }
+    async pardakht(){
+      let {kharidApis,order} = this.context;
+      let res = await kharidApis({type:'pardakhte_kharid',parameter:{order}})
+    }
     render() {
       let { theme,order,SetState,userInfo } = this.context;
       let {details = {}} = this.state;
@@ -107,6 +111,13 @@ export default class OrderPopup extends Component {
                     },
                   ],
                 },
+                {
+                  show:order.tabId === 'WaitingForPayment' && nahve_pardakht === 'اینترنتی',className:'padding-12',html:(
+                    <button className="button-2" onClick={()=>this.pardakht()}>
+                      پرداخت
+                    </button>
+                  )
+                }
               ],
             }}
           />

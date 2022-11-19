@@ -147,12 +147,18 @@ export default class Shipping extends Component{
         ]
       }
     }
+    fix(value){
+      try{return +value.toFixed(0)}
+      catch{return 0}
+    }
     amount_layout(){
       let {shipping} = this.context;
-      let {totalDiscount,factorDetails} = shipping;
-      let total = factorDetails.MarketingLines[0].PriceAfterVat;
-      total = total - (total * factorDetails.marketingdetails.DocumentDiscountPercent / 100)
-      
+      let {factorDetails} = shipping;
+      let discount = this.fix(factorDetails.marketingdetails.DocumentDiscount);
+      let total = this.fix(factorDetails.DocumentTotal);
+      debugger;  
+      let onlineDiscountPercent = factorDetails.marketingdetails.DocumentDiscountPercent
+      let onlineDiscount = this.fix(total * onlineDiscountPercent / 100);
       return {
         className:'padding-0-12 bgFFF',
         style:{paddingTop:12,borderRadius:'16px 16px 0 0'},
@@ -162,7 +168,7 @@ export default class Shipping extends Component{
             row:[
               {html:'قیمت کالاها:',className:'color605E5C size14'},
               {flex:1},
-              {html:functions.splitPrice(total + totalDiscount) + ' ریال',className:'color605E5C size14'}
+              {html:functions.splitPrice(total + discount) + ' ریال',className:'color605E5C size14'}
             ]
           },
           {
@@ -170,7 +176,7 @@ export default class Shipping extends Component{
             row:[
               {html:'تخفیف:',className:'colorFDB913 size14'},
               {flex:1},
-              {html:functions.splitPrice(totalDiscount) + ' ریال',className:'colorFDB913 size14'}
+              {html:functions.splitPrice(discount) + ' ریال',className:'colorFDB913 size14'}
             ]
           },
           {
@@ -178,7 +184,7 @@ export default class Shipping extends Component{
             row:[
               {html:'تخفیف پرداخت آنلاین:',className:'color00B5A5 size14'},
               {flex:1},
-              {html:0 + ' ریال',className:'color00B5A5 size14'}
+              {html:functions.splitPrice(onlineDiscount) + ' ریال',className:'color00B5A5 size14'}
             ]
           },
           {

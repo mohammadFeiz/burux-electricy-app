@@ -268,7 +268,7 @@ class OTPLogin extends Component {
           className: 'padding-0-12 colorFFF', gap: 3,
           row: [
             { html: 'ورود شما به معنای پذیرش', className: 'size14' },
-            { html: 'قوانین و مقررات', className: 'size14 color0094D4 bold' },
+            { html: 'قوانین و مقررات', className: 'size14 bold' },
             { html: 'بروکس است.', className: 'size14' },
           ]
         }
@@ -360,7 +360,7 @@ class OTPLogin extends Component {
         { size: 12 },
         {
           attrs: { onClick: () => this.onChangePhone() },
-          className: 'padding-0-12 size14 color0094D4 bold',
+          className: 'padding-0-12 size14 colorFFF bold',
           html: 'تغییر شماره تلفن'
         }
       ]

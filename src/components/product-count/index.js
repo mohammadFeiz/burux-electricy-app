@@ -1,6 +1,7 @@
 import React,{Component} from 'react';
 import RVD from 'react-virtual-dom';
 import getSvg from '../../utils/getSvg';
+import AIOButton from '../aio-button/aio-button';
 import $ from 'jquery';
 import './index.css';
 export default class ProductCount extends Component{
@@ -9,12 +10,13 @@ export default class ProductCount extends Component{
         let {value} = this.props;
         this.state = {value,prevValue:value}
     }
-    change(value,min){
+    change(value,min = this.props.min || 0){
         let {onChange,max = Infinity} = this.props;
-        if(value < min || value > max){return}
+        if(value > max){return}
         this.setState({value});
         clearTimeout(this.changeTimeout);
         this.changeTimeout = setTimeout(()=>{
+            if(value < min){value = min}
             onChange(value)
         },500)
         
@@ -55,12 +57,38 @@ export default class ProductCount extends Component{
                     attrs:{onClick:(e)=>e.stopPropagation()},
                     row: [
                         {html: (<div onMouseDown={(e)=>this.touchStart(1,touch,false)} onTouchStart={(e)=>this.touchStart(1,touch,true)} className={'product-count-button' + (value >= max?' disabled':'')}>+</div>),show:onChange!== undefined},
-                        { flex: 1, html: value },
+                        { 
+                            flex: 1, show:!!value,
+                            html:(
+                                <AIOButton
+                                    type='button'
+                                    caret={false}
+                                    position='top'
+                                    text={value}
+                                    popOver={({toggle})=>{
+                                        return (
+                                            <CountPopup value={value}
+                                                onChange={(value)=>{
+                                                    value = +value;
+                                                    if(isNaN(value)){value = 0}
+                                                    this.change(value)
+                                                    toggle()
+                                                }}
+                                                onRemove={()=>{
+                                                    this.change(0);
+                                                    toggle()
+                                                }}
+                                            />
+                                        )
+                                    }}
+                                />
+                            )
+                        },
                         {html: ()=>(<div onMouseDown={(e) =>this.touchStart(-1,touch,false)} onTouchStart={(e) =>this.touchStart(-1,touch,true)} className='product-count-button'>-</div>),show:value > 1 && onChange!== undefined},
                         {
                             html: ()=>(
                                 <div 
-                                    onClick={(e)=>this.change(this.props.value - 1,min)} 
+                                    onClick={(e)=>this.change(0)} 
                                     className='product-count-button'
                                 >
                                     -
@@ -69,6 +97,72 @@ export default class ProductCount extends Component{
                             show:value === 1 && onChange!== undefined
                         },
                     ] 
+                }}
+            />
+        )
+    }
+}
+
+class CountPopup extends Component{
+    constructor(props){
+        super(props);
+        this.state = {value:props.value}
+    }
+    render(){
+        let {value} = this.state;
+        let {onRemove,onChange} = this.props;
+        return (
+            <RVD
+                layout={{
+                    style:{padding:12},
+                    column:[
+                        {html:'تعداد را وارد کنید',className:'size12 bold color605E5C'},
+                        {size:6},
+                        {
+                            gap:3,
+                            row:[
+                                {
+                                    flex:1,
+                                    html:(
+                                        <input 
+                                            type='number' value={value} min={0}
+                                            onChange={(e)=>{
+                                                let val = e.target.value;
+                                                this.setState({value:val});
+                                            }}
+                                            style={{width:'100%',border:'none',border:'1px solid lightblue',height:36,textAlign:'center',borderRadius:4}}
+                                        />
+                                    )
+                                },
+                                
+                                
+                            ]
+                        },
+                        {size:12},
+                        {
+                            row:[
+                                {
+                                    flex:1,
+                                    html:(
+                                        <button 
+                                            className='button-2' style={{background:'red',border:'none'}}
+                                            onClick={()=>onRemove()}
+                                        >حذف محصول</button>
+                                    )
+                                },
+                                {size:12},
+                                {
+                                    flex:1,
+                                    html:(
+                                        <button onClick={()=>onChange(value)} className='button-2'>
+                                                تایید
+                                        </button>
+                                    )
+                                },
+                            ]
+                        },
+                        {size:24}
+                    ]
                 }}
             />
         )

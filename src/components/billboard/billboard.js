@@ -22,7 +22,7 @@ export default class Billboard extends Component{
                     </linearGradient>
                     <linearGradient id="paint1_linear_4435_16099" x1="25.2604" y1="46" x2="25.2604" y2="8" gradientUnits="userSpaceOnUse">
                     <stop stop-color="white"/>
-                    <stop offset="1" stop-color="#D7D7D7" stop-opacity="0"/>
+                    <stop offset="1" stop-color="#D7D7D7" stopOpacity="0"/>
                     </linearGradient>
                     </defs>
                 </svg>
@@ -94,7 +94,7 @@ export default class Billboard extends Component{
                     column:[
                         {html:<ReactHtmlSlider items={items}/>},
                         {
-                            column:[
+                            show:id === 'buy',column:[
                                 {html:'جشنواره ها',className:'size14 bold padding-0-24',size:36,align:'v'},
                                 {
                                     row:campaigns.map((campaign,i)=>{

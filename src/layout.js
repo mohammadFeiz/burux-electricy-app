@@ -144,7 +144,7 @@ export default function layout(type,getState, parameters = {}) {
                         size:96,
                         column:[
                             {flex:1,html:<img src={src || NoSrc} width={'100%'} alt=''/>},
-                            {show:count !== undefined,size:24,html:()=><ProductCount value={count} onChange={changeCount} max={inStock}/>}
+                            {show:count !== undefined,size:24,html:()=>count}
                         ]
                     },
                     {

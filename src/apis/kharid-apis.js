@@ -938,6 +938,9 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
       if(res.data.isSuccess){
         window.location.href = res.data.data;
       }
+    },
+    async pardakhte_kharid({order}){
+      debugger;
     }
 
   }

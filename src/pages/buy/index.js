@@ -44,27 +44,27 @@ export default class Buy extends Component {
   }
   async getCategories() {
     let {kharidApis} = this.context;
-    let categories = await kharidApis({type:"getCategories"});
+    let categories = await kharidApis({type:"getCategories",cache:24 * 60});
     this.setState({ categories });
   }
   async getFamilies() {
     let {kharidApis} = this.context;
-    let families = await kharidApis({type:'families'});
+    let families = await kharidApis({type:'families',cache:24 * 60});
     this.setState({ families });
   }
   async get_recommendeds() {
     let {kharidApis} = this.context;
-    let recommendeds = await kharidApis({type:'recommendeds'});
+    let recommendeds = await kharidApis({type:'recommendeds',cache:24 * 60});
     this.setState({ recommendeds });
   }
   async get_newOrders() {
     let {kharidApis} = this.context;
-    let newOrders = await kharidApis({type:"newOrders"});
+    let newOrders = await kharidApis({type:"newOrders",cache:24 * 60});
     this.setState({ newOrders });
   }
   async get_bestSellings() {
     let {kharidApis} = this.context;
-    let bestSellings = await kharidApis({type:'bestSellings'});
+    let bestSellings = await kharidApis({type:'bestSellings',cache:24 * 60});
     this.setState({ bestSellings });
   }
   //dont set async for parallel data fetching

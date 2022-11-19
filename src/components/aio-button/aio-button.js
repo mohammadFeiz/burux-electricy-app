@@ -15,6 +15,12 @@ export default class AIOButtonInterface extends Component{
             props.animate = {bottom:0}
 
         }
+        else if (position === 'top'){
+            props.popupAttrs = {className:'top-popup',style:{top:-160}};
+            props.backColor = 'rgba(0,0,0,0.5)';
+            props.animate = {top:0}
+
+        }
         return (
             <AIOButton {...props}/>
         )

@@ -163,8 +163,8 @@ export default class ProductCard extends Component{
                                 this.title_layout(),
                                 this.name_layout(),
                                 {flex:1},
-                                this.discount_layout(),
                                 this.details_layout(),
+                                this.discount_layout(),
                                 this.notExist_layout(),
                                 {row:[this.isInCart_layout(),this.price_layout()]},
                                 {flex:1}

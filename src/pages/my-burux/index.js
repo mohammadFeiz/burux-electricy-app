@@ -15,6 +15,7 @@ import Popup from '../../components/popup/popup';
 import Register from '../../components/register/register';
 import logo3 from './../../images/logo3.png';
 import Card from '../../components/card/card';
+import Wallet from '../../popups/wallet/wallet';
 import './index.css';
 export default class MyBurux extends Component{
     static contextType = appContext;
@@ -22,6 +23,7 @@ export default class MyBurux extends Component{
         super(props);
         this.state = {
             showProfile:false,
+            showWallet:false,
             user:'محمد شریف فیض',
             customerCode:'c19428',shopName:'فروشگاه الکتریکی تهران',visitorName:'علی محمدی',nationalCode:'0386481784',
             parts:[
@@ -106,7 +108,7 @@ export default class MyBurux extends Component{
                                 <Card
                                     type='card3' footer='جزییات کیف پول'
                                     rows={[[['کیف پول',functions.splitPrice(wallet) + ' ریال']]]}
-                                    
+                                    onClick={()=>this.setState({showWallet:true})}
                                 />
                             )
                         },
@@ -154,7 +156,7 @@ export default class MyBurux extends Component{
         }
     }
     render(){
-        let {showProfile} = this.state;
+        let {showProfile,showWallet} = this.state;
         let {profile,SetState,userInfo} = this.context;
         let model = {
             firstName:profile.firstName,
@@ -191,6 +193,14 @@ export default class MyBurux extends Component{
                                 )
                             }}
                         />
+                    </Popup>
+                )
+            }
+            {
+                showWallet && 
+                (
+                    <Popup>
+                        <Wallet onClose={()=>this.setState({showWallet:false})}/>
                     </Popup>
                 )
             }

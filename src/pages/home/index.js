@@ -163,7 +163,7 @@ export default class Home extends Component {
                         {
                             html:(
                                 <AIOButton
-                                    text='ثبت گارانتی جدید'
+                                    text='ثبت درخواست جدید'
                                     caret={false}
                                     className='color0094D4 size12 bold'
                                     before={getSvg('plusBox')}

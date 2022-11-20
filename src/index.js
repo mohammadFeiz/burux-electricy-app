@@ -313,9 +313,9 @@ class OTPLogin extends Component {
                     if (isNaN(+value[value.length - 1])) { return }
                   }
                   if (value.toString().length > 4) { return }
-                  if (value.toString().length === 4) {
-                    this.tryAuto(value)
-                  }
+                  // if (value.toString().length === 4) {
+                  //   this.tryAuto(value)
+                  // }
                   this.setState({ codeValue: value })
                 }} maxLength={4} placeholder='- - - -'
 
@@ -328,7 +328,6 @@ class OTPLogin extends Component {
         },
         { size: 16 },
         {
-          show: false,
           className: 'padding-0-12',
           html: (
             <button className='button-2' style={disabledStyle} onClick={() => this.onInterCode()}>تایید</button>

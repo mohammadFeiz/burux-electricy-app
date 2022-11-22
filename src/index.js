@@ -6,6 +6,9 @@ import Register from './components/register/register';
 import reportWebVitals from './reportWebVitals';
 import './index.css';
 import RVD from 'react-virtual-dom';
+import {Icon} from '@mdi/react';
+import { mdiAlert } from '@mdi/js';
+import bazarMiarzeSrc from './images/bazar miarze.png';
 import $ from 'jquery';
 class Logo extends Component {
   render() {
@@ -110,9 +113,14 @@ class OTPLogin extends Component {
   //این تابع زمانی کال می شود که کاربر شماره را وارد کرد و تایید رو زد
   async SMSToUser(phoneNumber) {
     //فقط ترتیبی بده که پیامک برای کاربر ارسال شود و نیازی نیست اینجا چیزی ریترن شود یا استیت اپ تغییر کند
-
-    const sendSmsResult = await Axios.get(`${this.apiBaseUrl}/Users/FirstStep?phoneNumber=${phoneNumber}`);
-
+    let sendSmsResult;
+    try{
+      sendSmsResult = await Axios.get(`${this.apiBaseUrl}/Users/FirstStep?phoneNumber=${phoneNumber}`);
+    }
+    catch{
+      this.setState({pageError:{text:'سرویس دهنده در دسترس نمی باشد',subtext:'Users/FirstStep'}});
+      return;
+    }
     if (sendSmsResult.data.isSuccess) {
       let data = sendSmsResult.data.data;
 
@@ -387,7 +395,13 @@ class OTPLogin extends Component {
     if (!storage || storage === null) { this.setState({}); return; }
     storage = JSON.parse(storage);
     Axios.defaults.headers.common['Authorization'] = 'Bearer ' + storage.token;
-    let res = await Axios.post(`${this.apiBaseUrl}/BOne/GetCustomer`, { "DocCode": storage.userInfo.cardCode });
+    let res;
+    try{
+      res = await Axios.post(`${this.apiBaseUrl}/BOne/GetCustomer`, { "DocCode": storage.userInfo.cardCode });
+    }
+    catch{
+      this.setState({pageError:{text:'سرویس دهنده در دسترس نیست',subtext:'BOne/GetCustomer'}})
+    }
     if (res.status === 401) {
       this.setState({});
       return;
@@ -399,7 +413,7 @@ class OTPLogin extends Component {
   }
   render() {
     if (!this.mounted) { return null }
-    let { isAutenticated, userInfo, token, registered } = this.state;
+    let { isAutenticated, userInfo, token, registered ,pageError} = this.state;
     if (isAutenticated) {
       if (!registered) {
         return (
@@ -416,6 +430,24 @@ class OTPLogin extends Component {
       }
       localStorage.setItem('brxelctoken', JSON.stringify({ token, userInfo }));
       return <Main logout={() => this.logout()} token={token} userInfo={userInfo} />
+    }
+    if(pageError){
+      return (
+        <RVD
+          layout={{
+            className:'page-error',
+            column:[
+              {flex:1.5},
+              {html:<img src={bazarMiarzeSrc} alt={''} width={160}/>},
+              {flex:1},
+              {html:<Icon path={mdiAlert} size={4}/>},
+              {html:pageError.text},
+              {html:pageError.subtext},
+              {flex:1.5}
+            ]
+          }}
+        />
+      )
     }
     return (
       <RVD

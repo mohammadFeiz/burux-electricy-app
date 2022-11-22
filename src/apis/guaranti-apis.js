@@ -1,6 +1,6 @@
 import Axios from "axios";
 export default function apis({getState,token,getDateAndTime,showAlert}) {
-  let baseUrl = 'https://retailerapp.bbeta.ir/api/v1';
+  let baseUrl = 'https://apimy.burux.com/api/v1';
   let {userCardCode} = getState();
   return {
     async items() {

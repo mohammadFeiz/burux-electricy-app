@@ -2,7 +2,7 @@ import Axios from "axios";
 import nosrcImage from './../images/no-src.png';
 import nosrc from './../images/no-src.png';
 export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOServiceShowAlert}) {
-  let baseUrl = `https://retailerapp.bbeta.ir/api/v1`;
+  let baseUrl = `https://apimy.burux.com/api/v1`;
   let {userCardCode} = getState();
   return {
     async peygiriye_sefareshe_kharid() {

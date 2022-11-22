@@ -65,7 +65,7 @@ class Logo extends Component {
 class OTPLogin extends Component {
   constructor(props) {
     super(props);
-    this.apiBaseUrl = "https://retailerapp.bbeta.ir/api/v1";
+    this.apiBaseUrl = "https://apimy.burux.com/api/v1";
     let storage = localStorage.getItem('brxelcrecodein');
     let recodeIn, phoneValue, mode = 'inter-phone';
     if (!storage || storage === null) {
@@ -458,7 +458,7 @@ reportWebVitals();
 // class Login extends Component{
 //   constructor(props){
 //     super(props);
-//     this.apiBaseUrl="https://retailerapp.bbeta.ir/api/v1";
+//     this.apiBaseUrl="https://apimy.burux.com/api/v1";
 //     this.state = {isAutenticated:false,registered:false}
 //   }
 //   async onInterPhone(phoneNumber){  

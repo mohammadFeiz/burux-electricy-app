@@ -1,7 +1,7 @@
 import Axios from "axios";
 import AIODate from 'aio-date';
 export default function apis({getState,token,getDateAndTime,showAlert}) {
-  let baseUrl = 'https://retailerapp.bbeta.ir/api/v1';
+  let baseUrl = 'https://apimy.burux.com/api/v1';
   return {
     async get_all_awards() {
       let res = await Axios.get(`${baseUrl}/Awards`);

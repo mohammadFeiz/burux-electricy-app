@@ -140,7 +140,7 @@ export default class Wallet extends Component{
                 }
                 popOver={disabled?undefined:({toggle})=>{
                     if(type === 'bardasht'){
-                        if(wallet > 0){return <BardashtPopup onClose={()=>toggle()} cards={cards}/>}
+                        if(wallet > 0){return <BardashtPopup onClose={()=>toggle()} cards={cards} mojoodi={wallet}/>}
                     }
                     if(type === 'variz'){return <VarizPopup/>}
                 }}

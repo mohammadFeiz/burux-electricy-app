@@ -92,7 +92,8 @@ export default class Wallet extends Component{
                         {flex:1},
                         {html:'تراز حساب',className:'size12 colorC7E7F4',align:'v'},
                         {size:12},
-                        {html:functions.splitPrice(wallet),className:'colorFFF size30 bold',align:'v'},
+                        {row:[{html:' بدهکاری',align:'v'},{size:6}],show:wallet < 0,className:'colorA4262C size16 bold'},
+                        {html:wallet < 0?functions.splitPrice(-wallet):functions.splitPrice(wallet),className:`colorFFF ${wallet < 0?'size16':'size30'} bold`,align:'v'},
                         {size:6},
                         {html:'تومان',className:'size14 colorFFF',align:'v'},
                         {flex:1}
@@ -102,7 +103,7 @@ export default class Wallet extends Component{
                 {
                     row:[
                         {flex:1},
-                        {html:this.headerButton_layout(getSvg('arrowTopRight'),'برداشت','bardasht')},
+                        {html:this.headerButton_layout(getSvg('arrowTopRight'),'برداشت','bardasht',wallet <= 0)},
                         {size:24},
                         {html:this.headerButton_layout(getSvg('arrowDown'),'شارژ حساب','variz')},
                         {flex:1}
@@ -115,8 +116,9 @@ export default class Wallet extends Component{
             ]
         }
     }
-    headerButton_layout(icon,text,type){
+    headerButton_layout(icon,text,type,disabled){
         let {cards} = this.state;
+        let {wallet} = this.context;
         return (
             <AIOButton
                 type='button' caret={false}
@@ -125,7 +127,7 @@ export default class Wallet extends Component{
                 text={
                     <RVD
                         layout={{
-                            className:'wallet-button',
+                            className:'wallet-button' + (disabled?' disabled':''),
                             column:[
                                 {size:6},
                                 {html:icon,align:'h'},
@@ -136,8 +138,10 @@ export default class Wallet extends Component{
                         }}
                     />
                 }
-                popOver={({toggle})=>{
-                    if(type === 'bardasht'){return <BardashtPopup onClose={()=>toggle()} cards={cards}/>}
+                popOver={disabled?undefined:({toggle})=>{
+                    if(type === 'bardasht'){
+                        if(wallet > 0){return <BardashtPopup onClose={()=>toggle()} cards={cards}/>}
+                    }
                     if(type === 'variz'){return <VarizPopup/>}
                 }}
             />
@@ -376,7 +380,7 @@ class BardashtPopup extends Component{
     static contextType = appContext;
     constructor(props){
         super(props);
-        this.state = {model:{amount:'',card:false},mojoodi:1234567,edit:false}
+        this.state = {model:{amount:'',card:false},mojoodi:props.mojoodi,edit:false}
     }
     async onSubmit(){
         let {walletApis,showMessage} = this.context;

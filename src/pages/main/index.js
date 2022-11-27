@@ -345,7 +345,7 @@ export default class Main extends Component {
       fixPrice,
       pricing,
       updateProductPrice,getFactorDetails,
-      wallet:b1Info.customer.ballance
+      wallet:-b1Info.customer.ballance
       //testedChance
     });
   }

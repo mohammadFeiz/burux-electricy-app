@@ -48,7 +48,7 @@ export default class MyBurux extends Component{
         return {className:'margin-0-12',style:{overflow:'visible'},html:<Card type='card4' items={parts}/>}
     }
     getContent(){
-        let {totalGuaranteeItems,wallet,userInfo,b1Info} = this.context;
+        let {totalGuaranteeItems,wallet,userInfo,b1Info,userCardCode} = this.context;
         let slpname,slpcode;
         try{
             slpname = b1Info.customer.slpname || 'تایین نشده';
@@ -88,7 +88,7 @@ export default class MyBurux extends Component{
                         <Card
                             type='card3' footer='مشاهده کامل اطلاعات کاربری'
                             rows={[
-                                [['کد مشتری',userInfo.cardCode],['نام فروشگاه',userInfo.storeName]],
+                                [['کد مشتری',userCardCode],['نام فروشگاه',userInfo.storeName]],
                                 [['نام ویزیتور',slpname],['کد ویزیتور',slpcode]],
                                 [['گروه مشتری',userInfo.groupName]]
                                 
@@ -187,7 +187,7 @@ export default class MyBurux extends Component{
                                         mode='edit' model={model} 
                                         onClose={(model)=>{
                                             this.setState({showProfile:false});
-                                            SetState({userInfo:{...userInfo,storeName:model.storeName}})
+                                            SetState({userInfo:{...userInfo,storeName:model.storeName},profile:model})
                                         }}
                                     />
                                 )

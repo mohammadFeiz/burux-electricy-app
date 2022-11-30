@@ -1,35 +1,32 @@
 import React,{Component,createRef} from 'react';
 import RVD from 'react-virtual-dom';
 import storeSvg from '../../utils/svgs/store-svg';
-import Header from '../header/header';
 import Form from '../form/form';
 import Axios from 'axios';
-import mapSrc from './../../images/map.png';
 import Map from './../map/map';
 import getSvg from '../../utils/getSvg';
-import NeshanMap from '../neshan-map/neshan-map';
 import $ from 'jquery';
 
 export default class Register extends Component{
     constructor(props){
         super(props);
-        this.dom = createRef()
-        let model = {
-            "latitude": 35.699739,
-            "longitude": 51.338097,
-            "firstName": "",
-            "lastName": "",
-            "mobile": '',
-            "storeName": "",
-            "address": "",
-            "province": "",
-            "city": "",
-            "landlineNumber": '',
-            "email":""
-        };
-        model = {...model,...props.model}
+        this.dom = createRef();
+        let {model} = props;
+        let {
+            latitude = 35.699739,
+            cardCode = '',
+            longitude = 51.338097,
+            firstName = '',
+            lastName = '',
+            phoneNumber,//دیفالت ندارد و همیشه باید مقدارش ارسال بشه
+            storeName = '',
+            address = '',
+            userProvince = '',
+            userCity = '',
+            landlineNumber = ''
+        } = model;
         this.state = {
-            model,
+            model:{latitude,cardCode,longitude,firstName,lastName,phoneNumber,storeName,address,userProvince,userCity,landlineNumber},
             showMap:false
         }
     }
@@ -44,7 +41,7 @@ export default class Register extends Component{
         }, 300,()=>onClose());
     }
     header_layout(){
-        let {onClose,mode} = this.props;
+        let {mode} = this.props;
         return {
             className:'box-shadow',size:60,style:{overflow:'visible',marginBottom:12,background:'#fff'},
             row:[
@@ -64,40 +61,24 @@ export default class Register extends Component{
         if(mode === 'edit'){return false}
         return {html:'بیش از 8000 فروشگاه در سطح کشور عضو این خانواده هستند',align:'vh',className:'size14 color605E5C'}
     }
-    async register(){
+    async onSubmit(){
         let {model} = this.state;
-        let res = await Axios.post(`https://apimy.burux.com/api/v1/Users/NewUser`, model);
+        let {mode} = this.props;
+        debugger;
+        let url = {
+            'register':`https://apimy.burux.com/api/v1/Users/NewUser`,
+            'edit':`https://apimy.burux.com/api/v1/Users/UpdateUser`
+        }[mode];
+        let res = await Axios.post(url, model);
         let result = false;
         try{result = res.data.isSuccess || false}
         catch{result = false}
         if(result){
-            let {onSuccess} = this.props;
-            onSuccess(res.data.data)
+            let {onSubmit} = this.props;
+            onSubmit(res.data.data);
+            this.onClose();
         }
         else{alert('خطا در برقراری ارتباط')}
-    }
-    async edit(){
-        let {model} = this.state;
-        let res = await Axios.post(`https://apimy.burux.com/api/v1/Users/UpdateUser`, model);
-        let result = false;
-        try{result = res.data.isSuccess || false}
-        catch{result = false}
-        if(result){
-            let {onClose} = this.props;
-            onClose(model)
-        }
-        else{alert('خطا در برقراری ارتباط')}
-    }
-    footer_layout(){
-        return false
-        let {onInter} = this.props;
-        return {
-            size:48,align:'h',gap:12,
-            row:[
-                {html:'حساب دارید؟',className:'size12 color605E5C',align:'v'},
-                {html:'ورود به حساب کاربری',className:'size12 color0094D4 bold',align:'v',attrs:{onClick:()=>onInter()}}
-            ]
-        }
     }
     form_layout(){
         let {model} = this.state;
@@ -110,8 +91,8 @@ export default class Register extends Component{
                     bodyStyle={{background:'#fff'}}
                     inputStyle={{height:30,background:'#f5f5f5',border:'none'}}
                     labelAttrs={{className:'size14 color605E5C'}}
-                    onSubmit={()=>mode === 'edit'?this.edit():this.register()}
-                    submitText={mode === 'edit'?'ثبت':'ایجاد حساب کاربری'}
+                    onSubmit={()=>this.onSubmit()}
+                    submitText={mode === 'edit'?'ثبت حساب کاربری':'ایجاد حساب کاربری'}
                     footerAttrs={{className:'main-bg padding-0-24'}}
                     onChange={(model)=>this.setState({model})}
                     inputs={[
@@ -120,7 +101,7 @@ export default class Register extends Component{
                         {type:'html',html:()=>'',rowKey:'1',rowWidth:12},
                         {label:'نام خانوادگی',type:'text',field:'model.lastName',rowKey:'1',validations:[['required']]},
                         {label:'ایمیل',type:'text',field:'model.email'},
-                        {label:'تلفن همراه',type:'number',field:'model.mobile',rowKey:'3',disabled:false},
+                        {label:'تلفن همراه',type:'number',field:'model.phoneNumber',rowKey:'3',disabled:false},
                         {type:'html',html:()=>'',rowKey:'3',rowWidth:12},
                         {label:'تلفن ثابت',type:'number',field:'model.landlineNumber',rowKey:'3'},
                         {label:'نام فروشگاه',type:'text',field:'model.storeName',validations:[['required']]},
@@ -137,9 +118,9 @@ export default class Register extends Component{
                                 />
                             )
                         }},
-                        {label:'استان',type:'text',field:'model.province',rowKey:'2',validations:[['required']]},
+                        {label:'استان',type:'text',field:'model.userProvince',rowKey:'2',validations:[['required']]},
                         {type:'html',html:()=>'',rowKey:'2',rowWidth:12},
-                        {label:'شهر',type:'text',field:'model.city',rowKey:'2',validations:[['required']]},
+                        {label:'شهر',type:'text',field:'model.userCity',rowKey:'2',validations:[['required']]},
                         {label:'آدرس',type:'textarea',field:'model.address',validations:[['required']]},
                         // {label:'شماره شبا',type:'text',field:'model.sheba'},
                         // {label:'شماره کارت بانکی',type:'number',field:'model.cardBankNumber'},
@@ -181,7 +162,6 @@ export default class Register extends Component{
                                     this.subtext_layout(),
                                     {size:24},
                                     this.form_layout(),
-                                    this.footer_layout(),
                                     {size:300}       
                                 ]
                             }
@@ -236,7 +216,7 @@ class ShowMap extends Component{
             size:72,style:{position:'absolute',bottom:12,left:12,width:'calc(100% - 24px)',overflow:'visible',zIndex:100000000000},
             className:'box-shadow',align:'vh',
             column:[
-                {html:`Latitude:${latitude.toFixed(6)} - Lonitude:${longitude.toFixed(6)}`,style:{width:'100%',background:'rgba(255,255,255,.8)',fontSize:12,borderRadius:5},align:'h',className:'color0094D4'},
+                {html:`latitude:${latitude.toFixed(6)} - Lonitude:${longitude.toFixed(6)}`,style:{width:'100%',background:'rgba(255,255,255,.8)',fontSize:12,borderRadius:5},align:'h',className:'color0094D4'},
                 {size:6},
                 {html:<button onClick={()=>onChange(latitude,longitude)} className='button-2 box-shadow'>تایید موقعیت</button>,style:{background:'orange',width:'100%'}},
             ]

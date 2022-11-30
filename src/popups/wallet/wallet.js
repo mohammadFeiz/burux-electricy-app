@@ -39,7 +39,7 @@ export default class Wallet extends Component{
     svg_in(){
         return (
             <svg width="46" height="46" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="46" height="46" rx="23" fill="#5FD255" fill-opacity="0.2"/>
+                <rect width="46" height="46" rx="23" fill="#5FD255" fillOpacity="0.2"/>
                 <path d="M29.8664 23.8371C30.0526 23.6332 30.0382 23.3169 29.8342 23.1307C29.6303 22.9446 29.314 22.959 29.1278 23.1629L23.4971 29.3307V15.5C23.4971 15.2239 23.2733 15 22.9971 15C22.721 15 22.4971 15.2239 22.4971 15.5V29.3279L16.869 23.1629C16.6828 22.959 16.3666 22.9446 16.1627 23.1307C15.9587 23.3169 15.9443 23.6332 16.1305 23.8371L22.4445 30.7535C22.5723 30.8934 22.7398 30.9732 22.913 30.993C22.9403 30.9976 22.9684 31 22.9971 31C23.024 31 23.0504 30.9979 23.0761 30.9938C23.252 30.9756 23.4227 30.8955 23.5523 30.7535L29.8664 23.8371Z" fill="#107C10"/>
             </svg>
         )
@@ -72,7 +72,7 @@ export default class Wallet extends Component{
         this.setState({items,cards})
     }
     header_layout(){
-        let {wallet} = this.context;
+        let {userInfo} = this.context;
         return {
             className:'blue-gradient',
             column:[
@@ -92,8 +92,8 @@ export default class Wallet extends Component{
                         {flex:1},
                         {html:'تراز حساب',className:'size12 colorC7E7F4',align:'v'},
                         {size:12},
-                        {row:[{html:' بدهکاری',align:'v'},{size:6}],show:wallet < 0,className:'colorA4262C size16 bold'},
-                        {html:wallet < 0?functions.splitPrice(-wallet):functions.splitPrice(wallet),className:`colorFFF ${wallet < 0?'size16':'size30'} bold`,align:'v'},
+                        {row:[{html:' بدهکاری',align:'v'},{size:6}],show:userInfo.ballance < 0,className:'colorA4262C size16 bold'},
+                        {html:userInfo.ballance < 0?functions.splitPrice(-userInfo.ballance):functions.splitPrice(userInfo.ballance),className:`colorFFF ${userInfo.ballance < 0?'size16':'size30'} bold`,align:'v'},
                         {size:6},
                         {html:'تومان',className:'size14 colorFFF',align:'v'},
                         {flex:1}
@@ -103,7 +103,7 @@ export default class Wallet extends Component{
                 {
                     row:[
                         {flex:1},
-                        {html:this.headerButton_layout(getSvg('arrowTopRight'),'برداشت','bardasht',wallet <= 0)},
+                        {html:this.headerButton_layout(getSvg('arrowTopRight'),'برداشت','bardasht',userInfo.ballance <= 0)},
                         {size:24},
                         {html:this.headerButton_layout(getSvg('arrowDown'),'شارژ حساب','variz')},
                         {flex:1}
@@ -118,7 +118,7 @@ export default class Wallet extends Component{
     }
     headerButton_layout(icon,text,type,disabled){
         let {cards} = this.state;
-        let {wallet} = this.context;
+        let {userInfo} = this.context;
         return (
             <AIOButton
                 type='button' caret={false}
@@ -140,7 +140,7 @@ export default class Wallet extends Component{
                 }
                 popOver={disabled?undefined:({toggle})=>{
                     if(type === 'bardasht'){
-                        if(wallet > 0){return <BardashtPopup onClose={()=>toggle()} cards={cards} mojoodi={wallet}/>}
+                        if(userInfo.ballance > 0){return <BardashtPopup onClose={()=>toggle()} cards={cards} mojoodi={userInfo.ballance}/>}
                     }
                     if(type === 'variz'){return <VarizPopup/>}
                 }}

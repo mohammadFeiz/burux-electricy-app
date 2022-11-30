@@ -642,22 +642,6 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
       }
       return finalResult;
     },
-    // {
-    //   "marketdoc":{
-    //     "CardCode":userCardCode,
-    //     "CardGroupCode": b1Info.customer.groupCode,
-    //     "MarketingLines":cartItems.map((o)=>{
-    //       return { ItemCode: o.variant.code, ItemQty: o.count }
-    //     }),
-    //     "DeliverAddress":address,
-    //     "marketingdetails":{
-    //       SettleType,
-    //       PaymentTime,
-    //       DeliveryType,
-    //       PayDueDate
-    //     }
-    //   }
-    // }
     async sendToVisitor(obj) {
       let res = await Axios.post(`${baseUrl}/BOne/AddNewOrder`, obj);
       try { return res.data.data[0].docEntry }
@@ -795,10 +779,10 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
       //     "ItemCode": skusId // should be an array
       //   });
 
-      const {b1Info} = getState();
+      const {userInfo} = getState();
       const spreeData = res.data.data;
       // const b1Data = b1Res.data.data;
-      const b1Data = b1Info.itemPrices.map((i)=>{
+      const b1Data = userInfo.itemPrices.map((i)=>{
         const onHand=i.inventory.filter(x=>x.whsCode==="01");
         return {
           "itemCode": i.itemCode,
@@ -834,9 +818,9 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
         return false
       }
 
-      const {b1Info} = getState();
+      const {userInfo} = getState();
       const spreeData = res.data.data;
-      const b1Data = b1Info.itemPrices.map((i)=>{
+      const b1Data = userInfo.itemPrices.map((i)=>{
         const onHand=i.inventory.filter(x=>x.whsCode==="01");
         return {
           "itemCode": i.itemCode,

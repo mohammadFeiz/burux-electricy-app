@@ -101,9 +101,7 @@ export default class Main extends Component {
       messages:[],
       buruxlogod:this.getBuruxLogoD(),
       splashScreen:true,
-      showRegister:false,
       theme,
-      wallet:0,
       campaigns:[],
       testedChance: true,
       sidemenuOpen: false,
@@ -245,8 +243,10 @@ export default class Main extends Component {
     bazargah.wait_to_send = await bazargahApis({type:'orders',parameter:{type:'wait_to_send'},loading:false});
     this.setState({bazargah})
   }
-  async getB1Info(cardCode) {
-    const data = await fetch(`https://b1api.burux.com/api/BRXIntLayer/GetCalcData/${cardCode}`, {
+  async getUserInfo(){
+    let {userCardCode} = this.state;
+    let {userInfo} = this.props;
+    const b1Info = await fetch(`https://b1api.burux.com/api/BRXIntLayer/GetCalcData/${userCardCode}`, {
         mode: 'cors',headers: {'Access-Control-Allow-Origin': '*'}
     }).then((response) => {
         return response.json();
@@ -256,8 +256,21 @@ export default class Main extends Component {
         console.log(error);
         return null;
     });
-    let {userInfo} = this.props;
-    return {...data,storeName:userInfo.storeName,slpphone:'09123534314'};
+    let {customer = {}} = b1Info;
+    debugger;
+    return {
+      ...userInfo,
+      cardName:customer.cardName,
+      cardCode:userCardCode,
+      itemPrices:b1Info.itemPrices,
+      slpphone:b1Info.slpphone,
+      slpcode:customer.slpcode,
+      slpname:customer.slpname,
+      groupCode:customer.groupCode,
+      ballance:-customer.ballance,
+      slpphone:'09123534314'
+
+    }
   }
   showMessage(message){
     alert(message)
@@ -265,7 +278,6 @@ export default class Main extends Component {
   }
   async componentDidMount() {
     let {userCardCode,bazargah,kharidApis} = this.state;
-    let b1Info = await this.getB1Info(userCardCode);
     this.getGuaranteeItems();
     this.getCampaignsData();
     if(bazargah.active){this.getBazargahOrders();}
@@ -274,10 +286,10 @@ export default class Main extends Component {
     let istarted = pricing.startservice().then((value) => { return value; });
     let getFactorDetails = (items,obj = {})=>{
       let {SettleType,PaymentTime,PayDueDate,DeliveryType} = obj;
-      let {userInfo,b1Info} = this.state;
+      let {userInfo} = this.state;
       let config = {
         "CardCode": userInfo.cardCode,
-        "CardGroupCode":b1Info.customer.groupCode,
+        "CardGroupCode":userInfo.groupCode,
         "MarketingLines": items,
         "DeliverAddress": userInfo.address,
         "marketingdetails": {
@@ -292,12 +304,13 @@ export default class Main extends Component {
       return res
     }
     let fixPrice = (items,campaign = {})=>{
+      let {userInfo,userCardCode} = this.state;
       let data = {
-        "CardGroupCode": b1Info.customer.groupCode,
-        "CardCode": this.state.userCardCode,
+        "CardGroupCode": userInfo.groupCode,
+        "CardCode": userCardCode,
         "marketingdetails": {
           "PriceList": campaign.PriceListNum,
-          "SlpCode": b1Info.customer.slpcode,
+          "SlpCode": userInfo.slpcode,
           "Campaign":campaign.CampaigId
         },
         "MarketingLines": items
@@ -340,13 +353,11 @@ export default class Main extends Component {
     }
     let cart = await kharidApis({type:'getCart',loading:false});
     this.setState({
-      userInfo:{...b1Info.customer,storeName:b1Info.storeName},
-      b1Info,cart,
+      userInfo:await this.getUserInfo(),
+      cart,
       fixPrice,
       pricing,
-      updateProductPrice,getFactorDetails,
-      wallet:-b1Info.customer.ballance
-      //testedChance
+      updateProductPrice,getFactorDetails
     });
   }
   getBottomMenu() {
@@ -392,7 +403,7 @@ export default class Main extends Component {
       layout:(type,parameters)=>layout(type,()=>this.state,parameters)
     };
     let { 
-      sidemenuOpen, theme,orderZIndex,buruxlogod,splashScreen,showRegister,
+      sidemenuOpen, theme,orderZIndex,buruxlogod,splashScreen,
       cartZIndex,shippingZIndex,searchZIndex,productZIndex,categoryZIndex,
       guaranteePopupSuccessZIndex,guaranteePopupSubmitZIndex,guaranteePopupZIndex,ordersHistoryZIndex,
       joziate_darkhasthaye_garanti_popup_zIndex,messages
@@ -423,7 +434,6 @@ export default class Main extends Component {
           onClose={() => this.setState({ sidemenuOpen: false })}
           open={sidemenuOpen}
         />
-        {!splashScreen && showRegister && <Popup><Register onClose={()=>this.setState({showRegister:false})}/></Popup>}
         <Loading />
         {splashScreen && <Splash d={buruxlogod}/>}
       </appContext.Provider>

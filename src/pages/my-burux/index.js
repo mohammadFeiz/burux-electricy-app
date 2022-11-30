@@ -48,11 +48,11 @@ export default class MyBurux extends Component{
         return {className:'margin-0-12',style:{overflow:'visible'},html:<Card type='card4' items={parts}/>}
     }
     getContent(){
-        let {totalGuaranteeItems,wallet,userInfo,b1Info,userCardCode} = this.context;
+        let {totalGuaranteeItems,userInfo} = this.context;
         let slpname,slpcode;
         try{
-            slpname = b1Info.customer.slpname || 'تایین نشده';
-            slpcode = b1Info.customer.slpcode || 'تایین نشده';
+            slpname = userInfo.slpname || 'تایین نشده';
+            slpcode = userInfo.slpcode || 'تایین نشده';
         }
         catch{
             slpname = 'تایین نشده';
@@ -88,7 +88,7 @@ export default class MyBurux extends Component{
                         <Card
                             type='card3' footer='مشاهده کامل اطلاعات کاربری'
                             rows={[
-                                [['کد مشتری',userCardCode],['نام فروشگاه',userInfo.storeName]],
+                                [['کد مشتری',userInfo.cardCode],['نام فروشگاه',userInfo.storeName]],
                                 [['نام ویزیتور',slpname],['کد ویزیتور',slpcode]],
                                 [['گروه مشتری',userInfo.groupName]]
                                 
@@ -107,7 +107,7 @@ export default class MyBurux extends Component{
                             html:(
                                 <Card
                                     type='card3' footer='جزییات کیف پول'
-                                    rows={[[['کیف پول',functions.splitPrice(wallet) + ' ریال']]]}
+                                    rows={[[['کیف پول',functions.splitPrice(userInfo.ballance) + ' ریال']]]}
                                     onClick={()=>this.setState({showWallet:true})}
                                 />
                             )
@@ -157,22 +157,7 @@ export default class MyBurux extends Component{
     }
     render(){
         let {showProfile,showWallet} = this.state;
-        let {profile,SetState,userInfo} = this.context;
-        let model = {
-            firstName:profile.firstName,
-            cardCode:profile.cardCode,
-            lastName:profile.lastName,
-            mobile:profile.phoneNumber,
-            storeName:profile.storeName,
-            address:profile.address,
-            province:profile.userProvince,
-            city:profile.userCity,
-            landlineNumber:profile.landline,
-            email:profile.email,
-            latitude:+profile.latitude,
-            longitude:+profile.longitude,
-            userId:profile.id
-        }
+        let {profile,userInfo,SetState} = this.context;
         return (<>
             <RVD layout={this.getContent()}/>
             {
@@ -183,12 +168,9 @@ export default class MyBurux extends Component{
                             layout={{
                                 className:'fixed',
                                 html:(
-                                    <Register 
-                                        mode='edit' model={model} 
-                                        onClose={(model)=>{
-                                            this.setState({showProfile:false});
-                                            SetState({userInfo:{...userInfo,storeName:model.storeName},profile:model})
-                                        }}
+                                    <Register mode='edit' model={{...profile}} 
+                                        onClose={()=>this.setState({showProfile:false})}
+                                        onSubmit={(model)=>SetState({userInfo:{...userInfo,...model},profile:{...profile,...model}})}
                                     />
                                 )
                             }}

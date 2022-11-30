@@ -132,21 +132,10 @@ class OTPLogin extends Component {
 
   //این تابع زمانی کال می شود که کاربر کد پیامک شده را وارد کرد و تایید رو زد
   async SendCodeToServer(code) {
-
-    //اگر کد وارد شده صحیح بود باید اطلاعات کاربر در قالب یک آبجکت ریترن شود
-    //let res = await Axios.post('url',code)
-    //let userInfo = {...}
-    //return userInfo
-
-    //اگر کد وارد شده اشتباه بود باید فالس ریترن شود 
-    //let res = await Axios.post('url',code)
-    //return false    
     if (this.userId !== undefined) {
       const smsValidationResult = await Axios.get(`${this.apiBaseUrl}/Users/SecondStep?userId=${this.userId}&code=${code}`);
-      if (smsValidationResult.data.isSuccess)
-        return smsValidationResult.data.data;
-      else
-        alert(smsValidationResult.data.message);
+      if (smsValidationResult.data.isSuccess){return smsValidationResult.data.data;}
+      else {alert(smsValidationResult.data.message);}
     }
 
   }
@@ -418,13 +407,10 @@ class OTPLogin extends Component {
       if (!registered) {
         return (
           <Register
-            model={{ mobile: userInfo.phoneNumber }}
-            onClose={() => {
-              this.setState({ isAutenticated: false })
-            }}
-            onSuccess={(userInfo) => {
-              this.setState({ userInfo, registered: true })
-            }}
+            mode='register'
+            model={{PhoneNumber:userInfo.phoneNumber}}
+            onClose={()=>this.setState({ isAutenticated: false })}
+            onSubmit={(userInfo)=>this.setState({ userInfo, registered: true })}
           />
         )
       }
@@ -470,132 +456,6 @@ class OTPLogin extends Component {
 }
 ReactDOM.render(<OTPLogin />, document.getElementById('root'));
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
-
-
-// import React,{Component} from 'react';
-// import Axios from 'axios';
-// import ReactDOM from 'react-dom';
-// import Main from './pages/main';
-// import Register from './components/register/register';
-// import reportWebVitals from './reportWebVitals';
-// import logo1 from './images/logo1.png';
-// import RVD from 'react-virtual-dom';
-// import OTPLogin from './otp-login/otp-login';
-// import './index.css';
-
-// class Login extends Component{
-//   constructor(props){
-//     super(props);
-//     this.apiBaseUrl="https://apimy.burux.com/api/v1";
-//     this.state = {isAutenticated:false,registered:false}
-//   }
-//   async onInterPhone(phoneNumber){  
-//     const sendSmsResult=await Axios.get(`${this.apiBaseUrl}/Users/FirstStep?phoneNumber=${phoneNumber}`);
-//     if(sendSmsResult.data.isSuccess){
-//       let data=sendSmsResult.data.data;
-//       this.userId=data.id;
-//       this.setState({registered:data.alreadyRegistered});
-//       return true
-//     }
-//     else{
-//       return 'خطا'
-//     }
-
-//   }
-//   async onInterCode(code){
-//     if(!this.userId){return;}
-//     let res = await Axios.get(`${this.apiBaseUrl}/Users/SecondStep?userId=${this.userId}&code=${code}`);
-//     if(res.data.isSuccess){
-//       res = res.data.data;
-//       let token = res.accessToken.access_token;
-//       this.setState({isAutenticated:true,userInfo:res,token});
-//     }
-//     else{
-//       return res.data.message;
-//     }
-//   }
-//   logout(){
-//     localStorage.clear('brxelctoken');
-//     this.setState({isAutenticated:false})
-//   }
-//   async componentDidMount(){
-//     this.mounted = true;
-//     let storage = localStorage.getItem('brxelctoken');
-//     if(!storage || storage === null){this.setState({}); return;}
-//     storage = JSON.parse(storage);
-//     Axios.defaults.headers.common['Authorization'] = 'Bearer ' + storage.token;
-//     let res = await Axios.post(`${this.apiBaseUrl}/BOne/GetCustomer`, { "DocCode": storage.userInfo.cardCode });
-//     if(res.status === 401){
-//       this.setState({});
-//       return;
-//     }
-//     this.setState({isAutenticated:true,userInfo:storage.userInfo,token:storage.token,registered:true})
-//   }
-//   render(){
-//     if(!this.mounted){return null}
-//     let {isAutenticated,userInfo,token,registered} = this.state;
-//     if(isAutenticated){
-//       if(!registered){
-//         return (
-//           <Register
-//             model={{mobile:userInfo.phoneNumber}}
-//             onClose={()=>{
-//               this.setState({isAutenticated:false})
-//             }}
-//             onSuccess={(userInfo)=>{
-//               this.setState({userInfo,registered:true})
-//             }}
-//           />
-//         )
-//       }
-//       localStorage.setItem('brxelctoken',JSON.stringify({token,userInfo}));
-//       return <Main logout={()=>this.logout()} token={token} userInfo={userInfo}/>
-//     }
-//     return (
-//       <OTPLogin
-//         header={<img src={logo1} alt='' width='210' height='210' style={{borderRadius:24}}/>}
-//         footer={(
-//           <RVD
-//             layout={{
-//               className:'padding-0-12',gap:3,
-//               row:[
-//                 {html:'ورود شما به معنای پذیرش',className:'size14 color605E5C'},
-//                 {html:'قوانین و مقررات',className:'size14 color0094D4 bold'},
-//                 {html:'بروکس است.',className:'size14 color605E5C'},
-//               ]
-//             }}
-//           />
-//         )}
-//         timeLimit={60000}
-//         onInterPhone={this.onInterPhone.bind(this)}
-//         onInterCode={this.onInterCode.bind(this)}
-//       />
-//     )
-//   }
-// }
-
-
-
-
-
-
-
-// ReactDOM.render(
-//     <Login />
-//   ,
-//   document.getElementById('root')
-// );
-
-// // If you want to start measuring performance in your app, pass a function
-// // to log results (for example: reportWebVitals(console.log))
-// // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-// reportWebVitals();
-
-
-
 
 

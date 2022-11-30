@@ -87,7 +87,7 @@ export default class Home extends Component {
         return { html: <Billboard id='home'/>,align:'h' }
     }
     cartAndWallet_layout(){
-        let {wallet,cart,SetState} = this.context;
+        let {userInfo,cart,SetState} = this.context;
         return {
             style:{overflow:'visible'},
             className:'padding-0-12',
@@ -96,7 +96,7 @@ export default class Home extends Component {
                     style:{overflow:'visible'},flex:1,
                     html:(
                         <Card
-                            type='card1' title='کیف پول' value={functions.splitPrice(Math.max(wallet,0))} unit='ریال'
+                            type='card1' title='کیف پول' value={functions.splitPrice(Math.max(userInfo.ballance,0))} unit='ریال'
                             icon={getSvg(29,{width:30,height:30})} onClick={()=>this.setState({showWallet:true})}
                         />
                     )
@@ -329,7 +329,7 @@ class Call extends Component{
     static contextType = appContext
     render(){
         let {onClose} = this.props;
-        let {b1Info} = this.context;
+        let {userInfo} = this.context;
         return (
             <RVD
                 layout={{
@@ -340,12 +340,12 @@ class Call extends Component{
                             size:48,
                             row:[
                                 {size:12},
-                                {html:<a style={{height:48}} href={`tel:${b1Info.slpphone}`}>{getSvg('tamasbavizitor')}</a>,align:'vh'},
+                                {html:<a style={{height:48}} href={`tel:${userInfo.slpphone}`}>{getSvg('tamasbavizitor')}</a>,align:'vh'},
                                 {size:12},
                                 {
                                     column:[
                                         {html:'تماس با ویزیتور',align:'v',style:{color:'#fff'},className:'size14'},
-                                        {html:b1Info.slpphone,align:'v',style:{color:'#fff'},className:'size12'}
+                                        {html:userInfo.slpphone,align:'v',style:{color:'#fff'},className:'size12'}
                                     ]
                                 }
                             ]

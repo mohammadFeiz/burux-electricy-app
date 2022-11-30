@@ -252,7 +252,7 @@ export default class Shipping extends Component{
       return {html:<Header title='ادامه فرایند خرید' onClose={()=>SetState({shippingZIndex:0})}/>}
     }
     sendToVisitor_layout(){
-      let {shipping,SetState,kharidApis,cart,getFactorDetails,userCardCode,b1Info,changeCart} = this.context;
+      let {shipping,SetState,kharidApis,cart,getFactorDetails,userCardCode,userInfo,changeCart} = this.context;
       let {address,SettleType,PaymentTime,DeliveryType,PayDueDate} = this.state;
       let {cartItems} = shipping;
       return {
@@ -265,7 +265,7 @@ export default class Shipping extends Component{
             let body = {
               "marketdoc":{
                 "CardCode":userCardCode,
-                "CardGroupCode": b1Info.customer.groupCode,
+                "CardGroupCode": userInfo.groupCode,
                 "MarketingLines":cartItems.map((o)=>{
                   return { ItemCode: o.variant.code, ItemQty: o.count }
                 }),

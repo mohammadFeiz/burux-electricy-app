@@ -5,6 +5,8 @@ import Form from '../form/form';
 import Axios from 'axios';
 import Map from './../map/map';
 import getSvg from '../../utils/getSvg';
+import allCities from './cities';
+import provinces from './provinces';
 import $ from 'jquery';
 
 export default class Register extends Component{
@@ -25,7 +27,9 @@ export default class Register extends Component{
             userCity = '',
             landlineNumber = ''
         } = model;
+        this.cities = allCities.filter(({province})=>province === userProvince)
         this.state = {
+            prevProvince:userProvince,
             model:{latitude,cardCode,longitude,firstName,lastName,phoneNumber,storeName,address,userProvince,userCity,landlineNumber},
             showMap:false
         }
@@ -118,9 +122,9 @@ export default class Register extends Component{
                                 />
                             )
                         }},
-                        {label:'استان',type:'text',field:'model.userProvince',rowKey:'2',validations:[['required']]},
+                        {label:'استان',type:'select',field:'model.userProvince',rowKey:'2',options:provinces,optionText:'option',optionValue:'option',validations:[['required']]},
                         {type:'html',html:()=>'',rowKey:'2',rowWidth:12},
-                        {label:'شهر',type:'text',field:'model.userCity',rowKey:'2',validations:[['required']]},
+                        {label:'شهر',type:'select',field:'model.userCity',options:this.cities,optionValue:'option.text',rowKey:'2',validations:[['required']]},
                         {label:'آدرس',type:'textarea',field:'model.address',validations:[['required']]},
                         // {label:'شماره شبا',type:'text',field:'model.sheba'},
                         // {label:'شماره کارت بانکی',type:'number',field:'model.cardBankNumber'},
@@ -141,7 +145,14 @@ export default class Register extends Component{
         }, 300);
     }
     render(){
-        let {showMap,model} = this.state;
+        let {showMap,model,prevProvince} = this.state;
+        if(prevProvince !== model.userProvince){
+            setTimeout(()=>{
+                this.cities = allCities.filter(({province})=>province === model.userProvince);
+                model.userCity = '';
+                this.setState({prevProvince:model.userProvince,model});
+            },0)
+        }
         return (
             <>
                 <RVD

@@ -114,7 +114,7 @@ class CountPopup extends Component{
         return (
             <RVD
                 layout={{
-                    style:{padding:12},
+                    style:{padding:12,background:'#fff',flex:'none',height:'fit-content'},
                     column:[
                         {html:'تعداد را وارد کنید',className:'size12 bold color605E5C'},
                         {size:6},

@@ -494,6 +494,7 @@ class VarizPopup extends Component{
                 affixAttrs={{style:{height:36,background:'#fff',color:'#333'}}}
                 model={model}
                 footerAttrs={{style:{background:'#fff'}}}
+                style={{flex:'none'}}
                 rowStyle={{marginBottom:0}}
                 bodyStyle={{background:'#fff'}}
                 onChange={(model)=>this.setState({model})}

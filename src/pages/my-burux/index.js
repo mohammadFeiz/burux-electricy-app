@@ -170,7 +170,10 @@ export default class MyBurux extends Component{
                                 html:(
                                     <Register mode='edit' model={{...profile}} 
                                         onClose={()=>this.setState({showProfile:false})}
-                                        onSubmit={(model)=>SetState({userInfo:{...userInfo,...model},profile:{...profile,...model}})}
+                                        onSubmit={(model)=>{
+                                            debugger;
+                                            SetState({userInfo:{...userInfo,...model},profile:{...profile,...model}})
+                                        }}
                                     />
                                 )
                             }}

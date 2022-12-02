@@ -25,12 +25,12 @@ export default class Register extends Component{
             address = '',
             userProvince = '',
             userCity = '',
-            landlineNumber = ''
+            landline = ''
         } = model;
         this.cities = allCities.filter(({province})=>province === userProvince)
         this.state = {
             prevProvince:userProvince,
-            model:{latitude,cardCode,longitude,firstName,lastName,phoneNumber,storeName,address,userProvince,userCity,landlineNumber},
+            model:{latitude,cardCode,longitude,firstName,lastName,phoneNumber,storeName,address,userProvince,userCity,landline},
             showMap:false
         }
     }
@@ -68,11 +68,11 @@ export default class Register extends Component{
     async onSubmit(){
         let {model} = this.state;
         let {mode} = this.props;
-        debugger;
         let url = {
             'register':`https://apimy.burux.com/api/v1/Users/NewUser`,
             'edit':`https://apimy.burux.com/api/v1/Users/UpdateUser`
         }[mode];
+        model.landlineNumber = model.landline
         let res = await Axios.post(url, model);
         let result = false;
         try{result = res.data.isSuccess || false}
@@ -83,6 +83,9 @@ export default class Register extends Component{
             this.onClose();
         }
         else{alert('خطا در برقراری ارتباط')}
+    }
+    change(model){
+        this.setState({model})
     }
     form_layout(){
         let {model} = this.state;
@@ -98,16 +101,15 @@ export default class Register extends Component{
                     onSubmit={()=>this.onSubmit()}
                     submitText={mode === 'edit'?'ثبت حساب کاربری':'ایجاد حساب کاربری'}
                     footerAttrs={{className:'main-bg padding-0-24'}}
-                    onChange={(model)=>this.setState({model})}
+                    onChange={(model)=>this.change(model)}
                     inputs={[
                         {label:'کد مشتری',type:'text',field:'model.cardCode',disabled:true,show:mode === 'edit'},
                         {label:'نام',type:'text',field:'model.firstName',rowKey:'1',validations:[['required']]},
                         {type:'html',html:()=>'',rowKey:'1',rowWidth:12},
                         {label:'نام خانوادگی',type:'text',field:'model.lastName',rowKey:'1',validations:[['required']]},
-                        {label:'ایمیل',type:'text',field:'model.email'},
-                        {label:'تلفن همراه',type:'number',field:'model.phoneNumber',rowKey:'3',disabled:false},
+                        {label:'تلفن همراه',type:'text',field:'model.phoneNumber',rowKey:'3',disabled:false},
                         {type:'html',html:()=>'',rowKey:'3',rowWidth:12},
-                        {label:'تلفن ثابت',type:'number',field:'model.landlineNumber',rowKey:'3'},
+                        {label:'تلفن ثابت',type:'text',field:'model.landline',rowKey:'3'},
                         {label:'نام فروشگاه',type:'text',field:'model.storeName',validations:[['required']]},
                         {label:'ثبت موقعیت جغرافیایی',type:'html',html:()=>{
                             let {showMap,model} = this.state;

@@ -3,7 +3,7 @@ import getSvg from './../../utils/getSvg';
 import ChanceMachin from './../../components/chance-machin/index';
 import { Icon } from '@mdi/react';
 import appContext from '../../app-context';
-import RVD from 'react-virtual-dom';
+import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
 import AIOButton from 'aio-button';
 import { mdiClose, mdiChevronRight, mdiChevronLeft } from '@mdi/js';
 import './index.css';

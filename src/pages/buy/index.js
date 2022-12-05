@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import RVD from "react-virtual-dom";
+import RVD from "./../../npm/react-virtual-dom/react-virtual-dom";
 import appContext from "../../app-context";
 import Tabs from "../../components/tabs/tabs";
 import CategorySlider from "../../components/category-slider/category-slider";

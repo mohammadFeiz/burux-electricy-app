@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import RVD from 'react-virtual-dom';
+import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
 import Header from '../../components/header/header';
 import functions from '../../functions';
 import Popup from '../../components/popup/popup';
@@ -252,7 +252,7 @@ export default class Shipping extends Component{
       return {html:<Header title='ادامه فرایند خرید' onClose={()=>SetState({shippingZIndex:0})}/>}
     }
     sendToVisitor_layout(){
-      let {shipping,SetState,kharidApis,cart,getFactorDetails,userCardCode,userInfo,changeCart} = this.context;
+      let {shipping,SetState,kharidApis,cart,getFactorDetails,userInfo,changeCart} = this.context;
       let {address,SettleType,PaymentTime,DeliveryType,PayDueDate} = this.state;
       let {cartItems} = shipping;
       return {
@@ -264,7 +264,7 @@ export default class Shipping extends Component{
             }))
             let body = {
               "marketdoc":{
-                "CardCode":userCardCode,
+                "CardCode":userInfo.cardCode,
                 "CardGroupCode": userInfo.groupCode,
                 "MarketingLines":cartItems.map((o)=>{
                   return { ItemCode: o.variant.code, ItemQty: o.count }

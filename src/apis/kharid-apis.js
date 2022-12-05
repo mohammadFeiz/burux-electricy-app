@@ -3,12 +3,12 @@ import nosrcImage from './../images/no-src.png';
 import nosrc from './../images/no-src.png';
 export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOServiceShowAlert}) {
   let baseUrl = `https://apimy.burux.com/api/v1`;
-  let {userCardCode} = getState();
+  let {userInfo} = getState();
   return {
     async peygiriye_sefareshe_kharid() {
       let res = await Axios.post(`${baseUrl}/BOne/GetAllOrders`, {
         "FieldName": "cardcode",
-        "FieldValue": userCardCode,
+        "FieldValue": userInfo.cardCode,
         "StartDate": "2022-06-19",
         "QtyInPage": 1000,
         "PageNo": 1
@@ -34,7 +34,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
     async ordersHistory() {
       let res = await Axios.post(`${baseUrl}/BOne/GetOrders`, {
         "FieldName": "cardcode",
-        "FieldValue": userCardCode,
+        "FieldValue": userInfo.cardCode,
         // "StartDate":"2022-06-01",
         "StartDate": "2022-06-01",
         "QtyInPage": 1000,
@@ -289,7 +289,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
       return result;
     },
     async userInfo() {
-      let res = await Axios.post(`${baseUrl}/BOne/GetCustomer`, { "DocCode": userCardCode });
+      let res = await Axios.post(`${baseUrl}/BOne/GetCustomer`, { "DocCode": userInfo.cardCode });
 
       if(res.status===401){
         return false;
@@ -401,7 +401,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
     },
     async preOrders() {
       let preOrders = { waitOfVisitor: 0, waitOfPey: 0 };
-      let res = await Axios.post(`${baseUrl}/Visit/PreOrderStat`, { CardCode: userCardCode });
+      let res = await Axios.post(`${baseUrl}/Visit/PreOrderStat`, { CardCode: userInfo.cardCode });
       if (!res || !res.data || !res.data.data) {
         console.error('kharidApis.preOrders Error!!!');
         return preOrders;
@@ -745,7 +745,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
     async getTaxonProducts({ loadType,Taxons,Name,msf }) {
       let res = await Axios.post(`${baseUrl}/Spree/Products`,
         {
-          CardCode: userCardCode,
+          CardCode: userInfo.cardCode,
           Taxons,
           PerPage:250,
           Name,
@@ -775,7 +775,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
 
       // let b1Res = await Axios.post(`${baseUrl}/BOne/GetB1PriceList`,
       //   {
-      //     "CardCode": userCardCode,
+      //     "CardCode": userInfo.cardCode,
       //     "ItemCode": skusId // should be an array
       //   });
 
@@ -805,7 +805,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
     async getProductsByTaxonId({ Taxons }) {
       let res = await Axios.post(`${baseUrl}/Spree/Products`,
         {
-          CardCode: userCardCode,
+          CardCode: userInfo.cardCode,
           Taxons,
           PerPage:250,
           ProductFields:"id,name,type,sku,slug,default_variant,images",
@@ -894,7 +894,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
     async getProductsWithCalculation(skusId) {
       let res = await Axios.post(`${baseUrl}/BOne/GetItemsByItemCode`,
         {
-          "CardCode": userCardCode,
+          "CardCode": userInfo.cardCode,
           "ItemCode": skusId // should be an array
         }
       );

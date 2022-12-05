@@ -2,9 +2,8 @@ import React,{Component} from 'react';
 import appContext from './../../app-context';
 import Header from './../../components/header/header';
 import SearchBox from './../../components/search-box/index';
-import LampSrc from './../../images/lamp.png';
 import ProductCard from './../../components/product-card/product-card';
-import RVD from 'react-virtual-dom';
+import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
 export default class Search extends Component {
     static contextType = appContext;
     constructor(props) {

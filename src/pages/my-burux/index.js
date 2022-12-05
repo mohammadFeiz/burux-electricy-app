@@ -1,9 +1,7 @@
 import React,{Component} from 'react';
-import RVD from 'react-virtual-dom';
-import myBuruxHeaderSrc from './../../images/Burux-billboard-01.png';
+import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
 import headerSvg from './../../images/header-svg';
 import footerSvg from './../../images/footer-svg';
-import bill from './../../images/home-slide-4.jpg';
 import getSvg from './../../utils/getSvg';
 import appContext from '../../app-context';
 import functions from '../../functions';
@@ -13,7 +11,6 @@ import AIOButton from './../../components/aio-button/aio-button';
 import SabteGarantiJadid from '../../components/garanti/sabte-garanti-jadid/sabte-garanti-jadid';
 import Popup from '../../components/popup/popup';
 import Register from '../../components/register/register';
-import logo3 from './../../images/logo3.png';
 import Card from '../../components/card/card';
 import Wallet from '../../popups/wallet/wallet';
 import './index.css';
@@ -157,7 +154,7 @@ export default class MyBurux extends Component{
     }
     render(){
         let {showProfile,showWallet} = this.state;
-        let {profile,userInfo,SetState} = this.context;
+        let {userInfo,SetState} = this.context;
         return (<>
             <RVD layout={this.getContent()}/>
             {
@@ -168,11 +165,11 @@ export default class MyBurux extends Component{
                             layout={{
                                 className:'fixed',
                                 html:(
-                                    <Register mode='edit' model={{...profile}} 
+                                    <Register mode='edit' model={{...userInfo}} 
                                         onClose={()=>this.setState({showProfile:false})}
-                                        onSubmit={(model)=>{
+                                        onSubmit={(userInfo)=>{
                                             debugger;
-                                            SetState({userInfo:{...userInfo,...model},profile:{...profile,...model}})
+                                            SetState({userInfo})
                                         }}
                                     />
                                 )

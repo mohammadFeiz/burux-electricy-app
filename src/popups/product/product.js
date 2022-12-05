@@ -2,7 +2,7 @@ import React, { Component,Fragment } from 'react';
 import AIOButton from './../../components/aio-button/aio-button';
 import ProductCount from './../../components/product-count/index';
 import Header from './../../components/header/header';
-import RVD from 'react-virtual-dom';
+import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
 import appContext from './../../app-context';
 import getSvg from './../../utils/getSvg';
 import { mdiChevronLeft } from '@mdi/js';

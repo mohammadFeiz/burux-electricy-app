@@ -155,12 +155,11 @@ export default class App extends Component {
     this.moved = false;
     this.move(this.deltaY,this.so.newTop)
   }
-  move(deltaY,startTop){ 
+  move(deltaY,startTop = this.getTop()){ 
     var {items,onChange = ()=>{},decay = 8,stop = 3} = this.props;
     if(decay < 0){decay = 0}
     if(decay > 9){decay = 9}
     decay = parseFloat(`1.00${decay}`)
-    if(startTop === undefined){startTop = this.getTop()}
     this.interval = setInterval(()=>{
       startTop += deltaY; 
       let index = this.getIndexByTop(startTop);
@@ -184,12 +183,6 @@ export default class App extends Component {
   componentDidMount(){
     this.setBoldStyle(this.activeIndex);
   }
-  mouseLeave(e){
-    //if(this.getClient(e).y < 0){
-      //this.mouseUp();
-    //}
-    
-  }
   render(){
     var items = this.getItems();
     return (
@@ -199,7 +192,6 @@ export default class App extends Component {
           style={this.getContainerStyle()} 
           onMouseDown={(e)=>this.mouseDown(e)} 
           onTouchStart={(e)=>this.mouseDown(e)}
-          onMouseLeave={(e)=>this.mouseLeave(e)}
         >{items}</div>
       </div>
     );  

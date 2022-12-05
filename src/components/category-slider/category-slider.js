@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import RVD from 'react-virtual-dom';
+import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
 import ProductCard from '../product-card/product-card';
 import appContext from '../../app-context';
 //props
@@ -35,7 +35,7 @@ export default class CategorySlider extends Component{
                 <RVD
                   layout={{
                       style:{height:256,width:140,borderRadius:12,opacity:0.5},
-                      className:'theme-1-dark-bg theme-1-border3F4456 content-loading',
+                      className:'content-loading',
                       column:[
                           {size:128,align:'vh',html:<div style={{width:'100%',height:'100%',borderRadius:8,background:'#fff'}}></div>,style:{padding:6,paddingBottom:0}},
                           {size:12},

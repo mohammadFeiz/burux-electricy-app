@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import RVD from 'react-virtual-dom';
+import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
 import getSvg from '../../utils/getSvg';
 import './index.css';
 export default class SearchBox extends Component{
@@ -17,7 +17,7 @@ export default class SearchBox extends Component{
         },800)
     }
     render(){
-        let { onClick=()=>{},onChange} = this.props; 
+        let { onClick=()=>{}} = this.props; 
         let {value} = this.state;
         return (
             <RVD
@@ -29,7 +29,6 @@ export default class SearchBox extends Component{
                             flex: 1, html: (
                                 <input
                                     type='text' value={value} 
-                                    className='theme-1-colorFFF'
                                     placeholder='کالای مد نظر خود را جستجو کنید'
                                     onChange={(e)=>this.change(e)}
                                     onClick={(e) => onClick()}

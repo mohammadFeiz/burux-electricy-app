@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import RVD from "react-virtual-dom";
+import RVD from "./../../../npm/react-virtual-dom/react-virtual-dom";
 import getSvg from "./../../../utils/getSvg";
 import appContext from "./../../../app-context";
 import './index.css';
@@ -32,12 +32,12 @@ export default class SabteGarantiJadid extends Component {
         }
     }
     title_layout(){
-        return {size: 60, html: "درخواست جمع آوری کالاهای گارانتی", className: "size16 bold color323130 theme-1-colorFFF", align: "vh"}
+        return {size: 60, html: "درخواست جمع آوری کالاهای گارانتی", className: "size16 bold color323130", align: "vh"}
     }
     subtitle_layout(){
         return {
             html: "با وارد کردن جزئیات کالاهای گارانتی، درخواست شما در اولین فرصت طی 72 ساعت آینده توسط ویزیتور بررسی میگردد.در غیر این صورت درخواست شما در ویزیت بعدی بررسی میگردد",
-            className: "size14 color605E5C theme-1-colorDDD",
+            className: "size14 color605E5C",
         }
     }
     continueWithoutSubmit_layout(){
@@ -51,7 +51,7 @@ export default class SabteGarantiJadid extends Component {
         return (
             <RVD
                 layout={{
-                    className: "sabte-garanti-jadid theme-1-dark-bg",
+                    className: "sabte-garanti-jadid",
                     column: [
                         this.header_layout(),
                         this.title_layout(),

@@ -4,10 +4,9 @@ import './index.css';
 export default class Popup extends Component{
     static contextType = appContext;
     render(){
-        let {theme} = this.context;
         let {style} = this.props;
         return (
-            <div className={"popup-container" + (theme?' ' + theme:'')} style={style}>
+            <div className={"popup-container"} style={style}>
                 {this.props.children}
             </div>
         )

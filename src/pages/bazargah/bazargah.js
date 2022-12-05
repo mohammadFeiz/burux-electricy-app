@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import RVD from 'react-virtual-dom';
+import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
 import BazargahSVG from './../../utils/svgs/bazargah-svg';
 import bazargahNoItemSrc from './../../images/bazargah-no-items.png';
 import appContext from '../../app-context';

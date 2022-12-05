@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import RVD from "react-virtual-dom";
+import RVD from "./../../npm/react-virtual-dom/react-virtual-dom";
 import appContext from "../../app-context";
 import getSvg from "../../utils/getSvg";
 import Gems_SVG from './../../utils/svgs/gems-svg';
@@ -21,7 +21,7 @@ export default class Header extends Component{
             <RVD
                 layout={{
                     style:{height:60,overflow:'visible',marginBottom:12},
-                    className:'box-shadow bgFFF theme-1-light-bg',
+                    className:'box-shadow bgFFF',
                     row:[
                         {show:buttons.gap === true,size:12},
                         {show:buttons.sidemenu === true,size: 60,html: getSvg(22),attrs: { onClick: () => SetState({ sidemenuOpen: true }) },align:'vh'},

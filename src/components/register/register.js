@@ -1,5 +1,5 @@
 import React,{Component,createRef} from 'react';
-import RVD from 'react-virtual-dom';
+import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
 import storeSvg from '../../utils/svgs/store-svg';
 import Form from '../form/form';
 import Axios from 'axios';
@@ -15,17 +15,9 @@ export default class Register extends Component{
         this.dom = createRef();
         let {model} = props;
         let {
-            latitude = 35.699739,
-            cardCode = '',
-            longitude = 51.338097,
-            firstName = '',
-            lastName = '',
+            latitude = 35.699739,longitude = 51.338097,cardCode = '',firstName = '',lastName = '',
             phoneNumber,//دیفالت ندارد و همیشه باید مقدارش ارسال بشه
-            storeName = '',
-            address = '',
-            userProvince = '',
-            userCity = '',
-            landline = ''
+            storeName = '',address = '',userProvince = '',userCity = '',landline = ''
         } = model;
         this.cities = allCities.filter(({province})=>province === userProvince)
         this.state = {

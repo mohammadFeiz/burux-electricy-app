@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import RVD from 'react-virtual-dom';
+import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
 import NoSrc from './../../images/no-src.png';
 import GeneralSrc from './../../images/general.png';
 import GiantSrc from './../../images/giant.png';
@@ -19,7 +19,7 @@ export default class FamilyCard extends Component{
             <RVD
                 layout={{
                     style:{height:180,width:140,borderRadius:12,fontSize:14,...style},
-                    className:'bgFFF bold borderDDD theme-1-dark-bg theme-1-border3F4456',
+                    className:'bgFFF bold borderDDD',
                     attrs:{onClick:async ()=>{
                         SetState({
                             categoryZIndex:zIndex * 10,
@@ -31,7 +31,7 @@ export default class FamilyCard extends Component{
                     }},
                     column:[
                         {size:128,align:'vh',html:<img src={this.getSrc(title) || NoSrc} width={'100%'} style={{width:'100%',height:'100%'}} alt=''/>,style:{padding:6,paddingBottom:0}},
-                        {align:'vh',html:title,className:'size12 padding-6-12 color575756 bold theme-1-colorDDD',style:{whiteSpace:'normal'}},
+                        {align:'vh',html:title,className:'size12 padding-6-12 color575756 bold',style:{whiteSpace:'normal'}},
                         {flex:1},
                         {size:12}
                     ]

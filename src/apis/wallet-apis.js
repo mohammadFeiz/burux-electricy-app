@@ -1,13 +1,13 @@
 import Axios from "axios";
 export default function apis({getState,token,getDateAndTime,showAlert}) {
   let baseUrl = 'https://apimy.burux.com/api/v1';
-  let {userCardCode} = getState();
+  let {userInfo} = getState();
   return {
     async items(gregorianDate){
       let res = await Axios.post(`${baseUrl}/BOne/UserTransaction`, {
         "requests": [
           {
-            "cardCode": userCardCode,
+            "cardCode": userInfo.cardCode,
             "startDate": gregorianDate,
             // "transactionReqNo" : 1
           }

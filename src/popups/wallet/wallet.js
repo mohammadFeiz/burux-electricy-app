@@ -1,5 +1,5 @@
 import React,{Component,createRef} from "react";
-import RVD from "react-virtual-dom";
+import RVD from "./../../npm/react-virtual-dom/react-virtual-dom";
 import getSvg from "../../utils/getSvg";
 import functions from "../../functions";
 import GAH from 'gah-datepicker';

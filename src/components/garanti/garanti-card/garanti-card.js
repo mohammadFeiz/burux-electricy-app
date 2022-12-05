@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import RVD from 'react-virtual-dom';
+import RVD from './../../../npm/react-virtual-dom/react-virtual-dom';
 import bulb10w from './../../../images/no-src.png';
 import appContext from '../../../app-context';
 export default class GarantiCard extends Component{

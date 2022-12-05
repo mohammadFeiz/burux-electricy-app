@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import RVD from 'react-virtual-dom';
+import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
 import ProductCount from '../product-count';
 import NoSrc from './../../images/no-src.png';
 import appContext from '../../app-context';
@@ -75,7 +75,7 @@ export default class ProductCard extends Component{
                     )
                 }}
             />
-        ):name,className:'size14 color575756 bold theme-1-colorDDD',style:{whiteSpace:'normal'}}
+        ):name,className:'size14 color575756 bold',style:{whiteSpace:'normal'}}
     }
     discount_layout(){
         let {product,count = 1} = this.props;
@@ -124,7 +124,7 @@ export default class ProductCard extends Component{
         return {
             row:[
                 {flex:1},
-                {html:this.splitPrice(FinalPrice) + ' ریال',className:'size12 color404040 bold theme-1-colorEEE padding-0-12'}
+                {html:this.splitPrice(FinalPrice) + ' ریال',className:'size12 color404040 bold padding-0-12'}
             ]
         }
     }
@@ -184,11 +184,11 @@ export default class ProductCard extends Component{
             <RVD
                 layout={{
                     style:{height:270,width:180,borderRadius:12,fontSize:14,...style},
-                    className:'bgFFF borderDDD theme-1-dark-bg theme-1-border3F4456',
+                    className:'bgFFF borderDDD',
                     attrs:{onClick:()=>this.onClick()},
                     column:[
                         {size:140,align:'vh',html:<img src={srcs[0] || NoSrc} width={'100%'} style={{width:'calc(100% - 24px)',height:'100%',borderRadius:8}} alt=''/>,style:{padding:6,paddingBottom:0}},
-                        {html:name,className:'size12 padding-6-12 color575756 bold theme-1-colorDDD',style:{whiteSpace:'normal'}},
+                        {html:name,className:'size12 padding-6-12 color575756 bold',style:{whiteSpace:'normal'}},
                         //this.name_layout(),
                         {flex:1},
                         this.isInCart_layout(),

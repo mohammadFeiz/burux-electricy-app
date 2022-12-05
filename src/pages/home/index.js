@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import RVD from 'react-virtual-dom';
+import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
 import getSvg from './../../utils/getSvg';
 import appContext from '../../app-context';
 import functions from '../../functions';
@@ -45,8 +45,6 @@ export default class Home extends Component {
     }
     
     box_layout(icon,title,value,color){
-        let {theme} = this.context;
-        if(theme === 'theme-1'){return this.box_layout_theme1(icon,title,value,color)}
         return {
             flex:1,
             className:'box',
@@ -61,25 +59,6 @@ export default class Home extends Component {
                 { size: 12 },
                 { html: value, className: 'color605E5C bold size14',align:'h' },
                 {size:12}
-            ]
-        }
-    }
-    box_layout_theme1(icon,title,value,color){
-        return {
-            flex:1,
-            className:'box',
-            row:[
-                {size:60,html:getSvg(icon,{width:24,height:24,fill:'#fff'}),align:'vh',style:{background:color,borderRadius:'0 12px 12px 0'}},
-                {size:12},
-                {
-                    column: [
-                        {size:12},
-                        {html: title, align: 'v',className: 'color605E5C bold size12'},
-                        { size: 1 },
-                        { html: value, className: 'color605E5C bold size12',align:'v' },
-                        {size:12}
-                    ]
-                }   
             ]
         }
     }
@@ -215,10 +194,8 @@ export default class Home extends Component {
         }
     }
     score_layout(){
-        let {theme} = this.context;
         return {
             className:'box',
-            style:{background:theme === 'theme-1'?'#e1780d':undefined},
             row: [
                 { size: 12 },
                 {

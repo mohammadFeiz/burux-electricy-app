@@ -1,6 +1,6 @@
 import React,{Component,createRef} from 'react';
 import appContext from './../../app-context';
-import RVD from 'react-virtual-dom';
+import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
 import Tabs from './../../components/tabs/tabs';
 import ProductCard from './../../components/product-card/product-card';
 import Header from './../../components/header/header';

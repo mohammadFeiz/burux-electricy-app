@@ -1,10 +1,10 @@
 import Axios from "axios";
 export default function apis({getState,token,getDateAndTime,showAlert}) {
   let baseUrl = 'https://apimy.burux.com/api/v1';
-  let {userCardCode} = getState();
+  let {userInfo} = getState();
   return {
     async items() {
-      let res = await Axios.post(`${baseUrl}/Guarantee/GetAllGuarantees`, { CardCode: userCardCode });
+      let res = await Axios.post(`${baseUrl}/Guarantee/GetAllGuarantees`, { CardCode: userInfo.cardCode });
       if(res.status === 401){return false}
       if (res.data && res.data.isSuccess && res.data.data) {
         let items = res.data.data.Items;
@@ -29,7 +29,7 @@ export default function apis({getState,token,getDateAndTime,showAlert}) {
       return res.data && res.data.isSuccess && res.data.data ? res.data.data : [];
     },
     async sabte_kala(items) {
-      let res = await Axios.post(`${baseUrl}/Guarantee`, { CardCode: userCardCode, Items: items });
+      let res = await Axios.post(`${baseUrl}/Guarantee`, { CardCode: userInfo.cardCode, Items: items });
       return !!res.data && !!res.data.isSuccess
     },
     async getImages(itemCodes) {

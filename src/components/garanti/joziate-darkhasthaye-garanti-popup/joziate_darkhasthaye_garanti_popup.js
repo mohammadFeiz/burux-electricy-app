@@ -1,7 +1,7 @@
 import React,{Component,createRef} from 'react';
 import GarantiCard from './../garanti-card/garanti-card';
 import Header from './../../header/header';
-import RVD from 'react-virtual-dom';
+import RVD from './../../../npm/react-virtual-dom/react-virtual-dom';
 import appContext from './../../../app-context';
 import SearchBox from '../../search-box';
 import $ from 'jquery';
@@ -111,7 +111,7 @@ export default class Joziate_Darkhasthaye_Garanti_Popup extends Component{
         });
     }
     render(){
-        let {guaranteeItems,theme,joziate_darkhasthaye_garanti_popup_zIndex:zIndex} = this.context;
+        let {guaranteeItems,joziate_darkhasthaye_garanti_popup_zIndex:zIndex} = this.context;
         let {searchValue,sorts} = this.state;
         return (
             <RVD

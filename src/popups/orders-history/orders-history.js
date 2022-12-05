@@ -1,5 +1,5 @@
 import React, { Component,createRef } from "react";
-import RVD from "react-virtual-dom";
+import RVD from "./../../npm/react-virtual-dom/react-virtual-dom";
 import appContext from "../../app-context";
 import Header from "../../components/header/header";
 import Tabs from "../../components/tabs/tabs";
@@ -96,7 +96,6 @@ export default class OrdersHistory extends Component {
       }
     }
     render() {
-      let { theme } = this.context;
       return (
           <RVD
             layout={{

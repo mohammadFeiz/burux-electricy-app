@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import RVD from 'react-virtual-dom';
+import RVD from './../../../npm/react-virtual-dom/react-virtual-dom';
 import dateCalculator from './../../../utils/date-calculator';
 import getSvg from './../../../utils/getSvg';
 import appContext from './../../../app-context';
@@ -32,12 +32,12 @@ export default class PayameSabteGaranti extends Component {
     }
     subtext_layout(){
         let { guaranteePopupSuccessSubtext: subtext } = this.context;
-        return {html: subtext,className: "size14 color605E5C theme-1-colorDDD",align: "h"}
+        return {html: subtext,className: "size14 color605E5C",align: "h"}
     }
     time_layout(){
         let today = this.today;
         return {
-            size: 60,className: "size16 bold color605E5C theme-1-colorDDD",align: "vh",
+            size: 60,className: "size16 bold color605E5C",align: "vh",
             html: `ثبت درخواست در ${`${today[3]}:${today[4]} ${today[0]}/${today[1]}/${today[2]}`}`
         }
     }
@@ -50,7 +50,7 @@ export default class PayameSabteGaranti extends Component {
         return (
             <RVD
                 layout={{
-                    className: "padding-24 bgFFF theme-1-dark-bg round-24 box-shadow",
+                    className: "padding-24 bgFFF round-24 box-shadow",
                     style: { width: '100%', height: '100%', zIndex, boxSizing: 'border-box' },
                     column: [
                         this.header_layout(),

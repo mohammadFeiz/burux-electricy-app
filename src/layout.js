@@ -81,7 +81,7 @@ export default function layout(type,getState, parameters = {}) {
             let {name,style = {},inStock,onClick = ()=>{},src = NoSrc,discountPrice,discountPercent,price} = $$.getProductCardParameters();
             return {
                 size:168,style:{borderRadius:12,fontSize:14,...style},
-                className:'bgFFF borderDDD theme-1-dark-bg theme-1-border3F4456',
+                className:'bgFFF borderDDD',
                 attrs:{onClick:()=>onClick()},
                 column:[
                     {html:<img src={src} alt='' height='100%'/>,align:'vh',size:136},
@@ -151,7 +151,7 @@ export default function layout(type,getState, parameters = {}) {
                         flex:1,gap:6,
                         column:[
                             {show:campaign !== undefined,html:()=>campaign.name,className:'size10',style:{color:'rgb(253, 185, 19)'}},
-                            {html:name,className:'size14 color575756 bold theme-1-colorDDD'},
+                            {html:name,className:'size14 color575756 bold'},
                             {
                                 childsAttrs:{align:'v'},gap:4,show:!!discountPercent && inStock !== 0,
                                 row:[
@@ -188,7 +188,7 @@ export default function layout(type,getState, parameters = {}) {
                                 childsAttrs:{align:'v'},show:!!price && inStock !== 0,
                                 row:[
                                     {flex:1,html:$$.isInBasket()?'موجود در سبد خرید شما':'',className:'colorD83B01 bold size10'},
-                                    {html:functions.splitPrice(price) + ' ریال',className:'size12 color404040 bold theme-1-colorEEE'}
+                                    {html:functions.splitPrice(price) + ' ریال',className:'size12 color404040 bold'}
                                 ],
                                 
                             }

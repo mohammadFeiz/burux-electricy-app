@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import RVD from "react-virtual-dom";
+import RVD from "./../../npm/react-virtual-dom/react-virtual-dom";
 import appContext from "../../app-context";
 import Header from './../../components/header/header';
 import functions from "../../functions";
@@ -12,7 +12,7 @@ export default class OrderPopup extends Component {
         align: "v",
         row: [
           { size: 110, html: key + " : ", className: "size12 colorA19F9D" },
-          { flex: 1, html: value, className: "size12 theme-1-colorFFF" },
+          { flex: 1, html: value, className: "size12" },
         ],
       };
     }
@@ -55,7 +55,7 @@ export default class OrderPopup extends Component {
       let res = await kharidApis({type:'pardakhte_kharid',parameter:{order}})
     }
     render() {
-      let { theme,order,SetState,userInfo } = this.context;
+      let { order,SetState,userInfo } = this.context;
       let {details = {}} = this.state;
       let {
         customerName,customerCode,campaignName,basePrice,visitorName,address,mobile,
@@ -63,7 +63,7 @@ export default class OrderPopup extends Component {
       } = details;
       let {mainDocNum,date,total} = order;
       return (
-        <div className={"popup-container" + (theme?' ' + theme:'')}>
+        <div className={"popup-container"}>
           <RVD
             layout={{
               className: "popup main-bg",

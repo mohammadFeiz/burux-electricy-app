@@ -1,0 +1,61 @@
+.otp-login{
+    position:fixed;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:#3B55A5; 
+}
+.otp-code{
+    color:#666;
+}
+.otp-login-text1{
+    font-size:20px;
+    color:#fff;
+    font-weight: bold;
+    padding:0 12px;
+}
+.otp-login-text2{
+    font-size:14px;
+    color:#FFF;
+    padding:0 12px;
+}
+.otp-login-text3{
+    padding:0 12px;
+    font-size:12px;
+    color:#FFF;
+}
+.otp-login-error{
+    padding:0 12px;
+    color:#D83B01;
+    font-size:12px;
+    font-weight:bold;
+}
+.otp-login-form{
+    background:rgba(255,255,255,0.2);
+    margin:24px;
+    padding:12px;
+    border-radius:12px;
+}
+.otp-login-phone-input{
+    height:36px;
+    background:#eee;
+    outline:none;
+    border:none;
+    border-radius:6px; 
+    width:100%;
+    direction:ltr;
+    padding:0 12px;
+    font-Family:inherit; 
+}
+.otp-login-submit{
+    height:36px;
+    width:100%;
+    border-radius:6px;
+    background:dodgerblue;
+    border:none;
+    color:#fff;
+}
+.otp-login-submit:disabled{
+    background:#ccc !important;
+}

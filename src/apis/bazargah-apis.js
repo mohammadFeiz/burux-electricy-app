@@ -3,12 +3,12 @@ import nosrcImage from './../images/no-src.png';
 import AIODate from 'aio-date';
 export default function apis({getState,token,getDateAndTime,showAlert}) {
   let baseUrl = 'https://apimy.burux.com/api/v1';
-  let {userCardCode} = getState();
+  let {userInfo} = getState();
   return {
     async orders({type}){
       let time = getState().bazargah[{'wait_to_get':'forsate_akhze_sefareshe_bazargah','wait_to_send':'forsate_ersale_sefareshe_bazargah'}[type]];
       let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?time=${time}&distance=100&status=${{'wait_to_get':'1','wait_to_send':'2'}[type]}`); // 1 for pending
-      //let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?time=100000&cardCode=${userCardCode}&distance=100&status=${{'wait_to_get':'1','wait_to_send':'2'}[type]}`); // 1 for pending
+      //let res = await Axios.get(`${baseUrl}/OS/GetWithDistance?time=100000&cardCode=${userInfo.cardCode}&distance=100&status=${{'wait_to_get':'1','wait_to_send':'2'}[type]}`); // 1 for pending
       let data = [];
       try{data = res.data.data || [];}
       catch{data = []}
@@ -125,7 +125,7 @@ export default function apis({getState,token,getDateAndTime,showAlert}) {
     },
     async akhze_sefaresh({orderId}){
       let res = await Axios.post(`${baseUrl}/OS/AddNewOrder`, {
-        cardCode :userCardCode,
+        cardCode :userInfo.cardCode,
         orderId
       });
 

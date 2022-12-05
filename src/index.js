@@ -58,10 +58,14 @@ class App extends Component {
   }
   async onInterPassword(number,password){
     //if error return error message
-    
-    //let token = /////
-    //let userInfo = //////
-    //this.setState({ isAutenticated: true, userInfo, token });
+    const loginResult = await Axios.get(`${this.apiBaseUrl}/Users/Login?phoneNumber=${number}&password=${password}`);
+    if (loginResult.data.isSuccess){
+      const userInfo = loginResult.data.data;
+      const token = userInfo.accessToken.access_token;
+      this.setState({ isAutenticated: true, userInfo, token });
+    }
+    else
+      return loginResult.data.message;
   }
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////

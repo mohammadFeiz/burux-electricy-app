@@ -92,6 +92,7 @@ export default class Main extends Component {
       testedChance: true,
       sidemenuOpen: false,
       userInfo:props.userInfo,
+      updateUserInfo:props.updateUserInfo,
       allProducts:[],
       cart: {},//{variantId:{count,product,variant}}
       cartZIndex:0,

@@ -154,7 +154,7 @@ export default class MyBurux extends Component{
     }
     render(){
         let {showProfile,showWallet} = this.state;
-        let {userInfo,SetState} = this.context;
+        let {userInfo,updateUserInfo} = this.context;
         return (<>
             <RVD layout={this.getContent()}/>
             {
@@ -168,8 +168,7 @@ export default class MyBurux extends Component{
                                     <Register mode='edit' model={{...userInfo}} 
                                         onClose={()=>this.setState({showProfile:false})}
                                         onSubmit={(userInfo)=>{
-                                            debugger;
-                                            SetState({userInfo})
+                                            updateUserInfo(userInfo)
                                         }}
                                     />
                                 )

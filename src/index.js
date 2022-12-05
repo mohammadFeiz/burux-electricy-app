@@ -56,6 +56,13 @@ class App extends Component {
       else {return smsValidationResult.data.message;}
     }
   }
+  async onInterPassword(number,password){
+    //if error return error message
+    
+    //let token = /////
+    //let userInfo = //////
+    //this.setState({ isAutenticated: true, userInfo, token });
+  }
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -89,6 +96,12 @@ class App extends Component {
     this.interByStorage();
     
   }
+  updateUserInfo(obj){
+    let {token,userInfo} = this.state;
+    let newUserInfo = {...userInfo,...obj};
+    this.setState({userInfo:newUserInfo});
+    localStorage.setItem('brxelctoken', JSON.stringify({ token, userInfo:newUserInfo }));
+  }
   async getUserInfo(userInfo){
     const b1Info = await fetch(`https://b1api.burux.com/api/BRXIntLayer/GetCalcData/${userInfo.cardCode}`, {
         mode: 'cors',headers: {'Access-Control-Allow-Origin': '*'}
@@ -104,6 +117,7 @@ class App extends Component {
     return {
       ...userInfo,
       cardCode:userInfo.cardCode,
+      groupName:customer.groupName,
       cardName:customer.cardName,
       itemPrices:b1Info.itemPrices,
       slpphone:b1Info.slpphone,
@@ -129,7 +143,7 @@ class App extends Component {
         )
       }
       localStorage.setItem('brxelctoken', JSON.stringify({ token, userInfo }));
-      return <Main logout={() => this.logout()} token={token} userInfo={userInfo} />
+      return <Main logout={() => this.logout()} token={token} userInfo={userInfo} updateUserInfo={this.updateUserInfo.bind(this)}/>
     }
     if(pageError){
       return (
@@ -151,10 +165,11 @@ class App extends Component {
     }
     return (
       <OTPLogin
-        time={60}
+        time={30}
         header={<img src={logo} width={240} height={240}/>}
         onInterNumber={(number)=>this.onInterNumber(number)}
         onInterCode={(code)=>this.onInterCode(code)}
+        onInterPassword={(number,password)=>this.onInterPassword(number,password)}
       />
     )
   }

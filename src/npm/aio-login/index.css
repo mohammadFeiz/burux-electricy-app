@@ -9,6 +9,22 @@
 .otp-code{
     color:#666;
 }
+.otp-login-or{
+    font-size:14px;
+    color:#DDD;
+}
+.otp-login-password{
+    width:100%;
+    background: none;
+    border: 0;
+    color: #fff;
+    cursor: pointer;
+    font-family: inherit;
+    height: 36px;
+    user-select: none;
+    -webkit-user-select: none;
+    font-size: 14px;
+}
 .otp-login-text1{
     font-size:20px;
     color:#fff;
@@ -36,6 +52,7 @@
     margin:24px;
     padding:12px;
     border-radius:12px;
+    max-width:300px;
 }
 .otp-login-phone-input{
     height:36px;

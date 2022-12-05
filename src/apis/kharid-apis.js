@@ -5,32 +5,6 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
   let baseUrl = `https://apimy.burux.com/api/v1`;
   let {userInfo} = getState();
   return {
-    async peygiriye_sefareshe_kharid() {
-      let res = await Axios.post(`${baseUrl}/BOne/GetAllOrders`, {
-        "FieldName": "cardcode",
-        "FieldValue": userInfo.cardCode,
-        "StartDate": "2022-06-19",
-        "QtyInPage": 1000,
-        "PageNo": 1
-      })
-      let result = res.data.data.results;
-      let dict = {};
-      for (let i = 0; i < result.length; i++) {
-        let o = result[i];
-        if (!dict[o.orderState]) {
-          dict[o.orderState] = [];
-        }
-        for (let j = 0; j < o.documents.length; j++) {
-          let item = o.documents[j];
-          let {date,time} = getDateAndTime(item.docTime)
-          dict[o.docStatus].push({
-            docType: item.docType, isDraft: item.isDraft, docEntry: item.docEntry, date,_time:time, total: item.documentTotal
-          });
-        }
-      }
-      return dict
-      //return {visitorWait,factored,inProcess,inShopTrack,delivered,canceled,rejected};
-    },
     async ordersHistory() {
       let res = await Axios.post(`${baseUrl}/BOne/GetOrders`, {
         "FieldName": "cardcode",
@@ -40,87 +14,82 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
         "QtyInPage": 1000,
         "PageNo": 1
       });
-
-      // const results= res.data.data.results.map((x)=>x.orderState);
-      let tabsDictionary = {
-        darHaleBarresi: [],
-        pardakhtShode: [],
-        amadesaziJahateHaml: [],
-        tasvieShode: [],
-        Returned: [],
-        Canselled: [],
-        Rejected: [],
-        NotSet:[],
-        PendingPreOrder:[],
-        Registered:[],
-        SalesApproved:[],
-        WaitingForPayment:[],
-        Delivered:[],
-        Invoiced :[],
-        PartiallyDelivered:[],
-      };
-      const results = res.data.data.results;
+      let results = res.data.data.results;
+      results = [
+        {docStatus:'Returned',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+        {docStatus:'Cancelled',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+        {docStatus:'Rejected',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+        {docStatus:'NotSet',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+        {docStatus:'PendingPreOrder',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+        {docStatus:'PreOrder',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+        {docStatus:'CustomerApproved',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+        {docStatus:'VisitorApproved',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+        {docStatus:'SuperVisorApproved',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+        {docStatus:'ManagerApproved',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+        {docStatus:'Registered',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+        {docStatus:'SalesApproved',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+        {docStatus:'WaitingForPayment',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+        {docStatus:'PaymentPassed',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+        {docStatus:'PaymentApproved',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+        {docStatus:'WarhousePicked',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+        {docStatus:'DeliveryPacked',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+        {docStatus:'Delivered',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+        {docStatus:'Invoiced',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+        {docStatus:'PartiallyDelivered',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+        {docStatus:'Settlled',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+        {docStatus:'SettledWithBadDept',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+      ]
       if(!Array.isArray(results)){return 'سفارشی تا کنون ثبت نشده است'}
-      for (let order of results) {
-        let id = order.docStatus;
-        if(id === 'PreOrder' ||id === 'CustomerApproved' ||id === 'VisitorApproved' ||id === 'SupervisorApproved' ||id === 'ManagerApproved'){
-          tabsDictionary['darHaleBarresi'].push(order)
-        }
-        else if(id === 'PaymentPassed' ||id === 'PaymentApproved'){
-          tabsDictionary['pardakhtShode'].push(order)
-        }
-        else if(id === 'WarhousePicked' ||id === 'DeliveryPacked'){
-          tabsDictionary['amadesaziJahateHaml'].push(order)
-        }
-        else if(id === 'Settlled' ||id === 'SettledWithBadDept'){
-          tabsDictionary['tasvieShode'].push(order)
-        }
-        
-        else if (tabsDictionary[id]) {
-          tabsDictionary[id].push(order)
-        }
-        else {
-          alert('unknown order ' + id)
-        }
+      let tabs = [
+        {text:'در حال بررسی',orders:[]},
+        {text:'در حال پردازش',orders:[]},
+        {text:'در انتظار پرداخت',orders:[]},
+        {text:'تحویل شده',orders:[]},
+        {text:'لغو شده',orders:[]},
+        {text:'مرجوع شده',orders:[]},
+        {text:'نا مشخص',orders:[]}
+      ]
+      let statuses = {
+        Returned:[-390,'مرجوع شده'],
+        Cancelled:[-290,'لغو شده'],
+        Rejected:[-190,'در حال بررسی'],
+        NotSet:[0,'نا مشخص'],
+        PendingPreOrder:[100,'در حال بررسی'],
+        PreOrder:[120,'در حال بررسی'],
+        CustomerApproved:[130,'در حال بررسی'],
+        VisitorApproved:[140,'در حال بررسی'],
+        SuperVisorApproved:[150,'در حال بررسی'],
+        ManagerApproved:[160,'در حال بررسی'],
+        Registered:[190,'در حال پردازش'],
+        SalesApproved:[210,'در حال پردازش'],
+        WaitingForPayment:[220,'در انتظار پرداخت'],
+        PaymentPassed:[230,'در حال پردازش'],
+        PaymentApproved:[290,'در حال پردازش'],
+        WarhousePicked:[350,'در حال پردازش'],
+        DeliveryPacked:[370,'در حال پردازش'],
+        Delivered:[390,'تحویل شده'],
+        Invoiced:[490,'در حال پردازش'],
+        PartiallyDelivered:[380,'در حال پردازش'],
+        Settlled:[590,'نا مشخص'],
+        SettledWithBadDept:[580,'نا مشخص'],
       }
-      const orderStatuses = {
-        //Registered :"ثبت نام اولیه صورت گرفت منتظر تماس پشتیبان خود باشید",
-        darHaleBarresi: "در حال بررسی",//
-        pardakhtShode:'پرداخت شده',
-        amadesaziJahateHaml:'آماده سازی جهت حمل',
-        tasvieShode:'تسویه شده',
-        Returned:'مرجوع شده',
-        Canselled:'لغو شده',
-        Rejected:'رد شده',
-        NotSet:'نا مشخص',
-        PendingPreOrder:'ارسال شده برای ویزیتور',
-        Registered:'سفارش ثبت شده',
-        SalesApproved:'تایید واحد مالی',
-        WaitingForPayment :'در انتظار پرداخت',
-        Delivered :'تحویل شده',
-        Invoiced :'فاکتور شده',
-        PartiallyDelivered :'بخشی از سفارش تحویل شده'
+      
+      for (let i = 0; i < results.length; i++){
+        let order = results[i];
+        let {date,time} = getDateAndTime(order.mainDocDate);
+        let tab = tabs.find(({text})=>text === statuses[order.docStatus][1]);
+        tab.orders.push({
+          code: order.mainDocEntry,
+          docStatus:order.docStatus,
+          mainDocNum:order.mainDocNum,
+          mainDocisDraft: order.mainDocisDraft,
+          mainDocType: order.mainDocType,
+          date,
+          _time:time,
+          total: order.mainDocTotal, 
+        })
       }
-
-      let tabs = [];
-      let orders = [];
-      for (let id in tabsDictionary) {
-        tabs.push({ id, name: orderStatuses[id] });
-        for (let product of tabsDictionary[id]) {
-          let {date,time} = getDateAndTime(product.mainDocDate);
-          orders.push(
-            {
-              code: product.mainDocEntry,
-              mainDocNum:product.mainDocNum,
-              mainDocisDraft: product.mainDocisDraft,
-              mainDocType: product.mainDocType,
-              date,_time:time,
-              total: product.mainDocTotal, tabId: id
-            }
-          )
-        }
-      }
-      return { tabs, orders };
+      return tabs;
     },
     async orderProducts(order) {
       let { userInfo } = getState();

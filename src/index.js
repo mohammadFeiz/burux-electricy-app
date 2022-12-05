@@ -6,11 +6,13 @@ import Register from './components/register/register';
 import reportWebVitals from './reportWebVitals';
 import './index.css';
 import RVD from './npm/react-virtual-dom/react-virtual-dom';
+import Loading from './components/loading/index';
 import {Icon} from '@mdi/react';
 import { mdiAlert } from '@mdi/js';
 import logo from './images/logo1.png';
 import bazarMiarzeSrc from './images/bazar miarze.png';
 import {OTPLogin} from './npm/aio-login/aio-login';
+import $ from 'jquery';
 
 class App extends Component {
   constructor(props) {
@@ -79,8 +81,10 @@ class App extends Component {
     storage = JSON.parse(storage);
     Axios.defaults.headers.common['Authorization'] = 'Bearer ' + storage.token;
     let res;
+    $('.loading').css({display:'flex'});
     try{
       res = await Axios.post(`${this.apiBaseUrl}/BOne/GetCustomer`, { "DocCode": storage.userInfo.cardCode });
+      //$('.loading').css({display:'none'});
     }
     catch{
       this.setState({pageError:{text:'سرویس دهنده در دسترس نیست',subtext:'BOne/GetCustomer'}})
@@ -129,8 +133,8 @@ class App extends Component {
     }
   }
   render() {
-    if (!this.mounted) { return null }
-    let { isAutenticated, userInfo, token, registered ,pageError} = this.state;
+    if (!this.mounted) { return <Loading/> }
+    let { isAutenticated, userInfo, token, registered ,pageError,loading} = this.state;
     if (isAutenticated) {
       if (!registered) {
         return (
@@ -143,10 +147,17 @@ class App extends Component {
         )
       }
       localStorage.setItem('brxelctoken', JSON.stringify({ token, userInfo }));
-      return <Main logout={() => this.logout()} token={token} userInfo={userInfo} updateUserInfo={this.updateUserInfo.bind(this)}/>
+      return (
+        <>
+        <Main logout={() => this.logout()} token={token} userInfo={userInfo} updateUserInfo={this.updateUserInfo.bind(this)}/>
+        <Loading/>
+      </>
+        
+      )
     }
     if(pageError){
       return (
+        <>
         <RVD
           layout={{
             className:'page-error',
@@ -161,16 +172,20 @@ class App extends Component {
             ]
           }}
         />
+      </>
+        
       )
     }
     return (
-      <OTPLogin
-        time={30}
-        header={<img src={logo} width={240} height={240}/>}
-        onInterNumber={(number)=>this.onInterNumber(number)}
-        onInterCode={(code)=>this.onInterCode(code)}
-        onInterPassword={(number,password)=>this.onInterPassword(number,password)}
-      />
+      <>
+        <OTPLogin
+          time={30}
+          header={<img src={logo} width={240} height={240}/>}
+          onInterNumber={(number)=>this.onInterNumber(number)}
+          onInterCode={(code)=>this.onInterCode(code)}
+          onInterPassword={(number,password)=>this.onInterPassword(number,password)}
+        />
+      </>
     )
   }
 }

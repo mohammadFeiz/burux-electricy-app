@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import src from './../../images/logo.png';
 import AIOLoading from 'aio-loading';
 export default class Loading extends Component {
   cubes2(obj = {}) {

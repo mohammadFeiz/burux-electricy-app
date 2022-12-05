@@ -2,40 +2,25 @@ import React, { Component,createRef } from "react";
 import RVD from "./../../npm/react-virtual-dom/react-virtual-dom";
 import appContext from "../../app-context";
 import Header from "../../components/header/header";
-import Tabs from "../../components/tabs/tabs";
 import noItemSrc from './../../images/not-found.png';
+import AIOButton from './../../npm/aio-button/aio-button';
 import $ from 'jquery';
 export default class OrdersHistory extends Component {
     static contextType = appContext;
     constructor(props) {
       super(props);
       this.dom = createRef()
-      this.state = {activeTabId:false,tabs:[],error:false};
+      this.state = {activeTab:false,tabs:[],error:false};
     }
     async componentDidMount() {
       $(this.dom.current).animate({height: '100%',width: '100%',left:'0%',top:'0%',opacity:1}, 300);
       let {kharidApis} = this.context;
-      let res = await kharidApis({type:"ordersHistory"});
-      console.log('res.data',res)
-      if(typeof res === 'string'){
-        this.setState({error:res});
+      let tabs = await kharidApis({type:"ordersHistory"});
+      if(typeof tabs === 'string'){
+        this.setState({error:tabs});
         return;
       }
-      let {tabs,orders} = res;
-      let tabsDic = {}
-      for(let i = 0; i < orders.length; i++){
-        let order = orders[i];
-        let {tabId} = order;
-        tabsDic[tabId] = tabsDic[tabId] || [];
-        tabsDic[tabId].push(order)
-      }
-      let Tabs = [];
-      for(let i = 0; i < tabs.length; i++){
-        let {name,id} = tabs[i];
-        let tabOrders = tabsDic[id] || [];
-        Tabs.push({title:name,id,orders:tabOrders,badge:tabOrders.length})
-      }
-      this.setState({tabs:Tabs,activeTabId:Tabs[0].id});
+      this.setState({tabs,activeTab:tabs[0].text});
     }
     onClose(){
       let { SetState} = this.context;
@@ -52,12 +37,16 @@ export default class OrdersHistory extends Component {
       return {html:<Header title="پیگیری سفارش خرید" onClose={()=>this.onClose()}/>}
     }
     tabs_layout() {
-      let {tabs,activeTabId} = this.state;
+      let {tabs,activeTab} = this.state;
       return {
         html:(
-          <Tabs tabs={tabs} activeTabId={activeTabId} onChange={(activeTabId)=>{
-            this.setState({activeTabId})
-          }}/>
+          <AIOButton 
+            type='tabs'
+            options={tabs}
+            optionValue='option.text'
+            optionAfter={(option)=><div className='tab-badge'>{option.orders.length}</div>}
+            value={activeTab} 
+            onChange={(activeTab)=>this.setState({activeTab})}/>
         )
       }
     }
@@ -67,9 +56,9 @@ export default class OrdersHistory extends Component {
       SetState({popup: {mode: "joziate-sefareshe-kharid",order: res}})
     }
     orders_layout(){
-      let { activeTabId,tabs } = this.state;
-      if(activeTabId === false){return []}
-      let tab = tabs.filter(({id})=>id === activeTabId)[0];
+      let { activeTab,tabs } = this.state;
+      if(activeTab === false){return false}
+      let tab = tabs.filter(({text})=>text === activeTab)[0];
       let orders = tab.orders;
       if(!orders.length){
         return {
@@ -179,6 +168,7 @@ export default class OrdersHistory extends Component {
       return {
         size: 36,childsProps: { align: "v" },
         row: [
+          {html:order.docStatus,className:'size12 color323130'},
           { flex: 1 },
           { html: this.splitPrice(total), className: "size14 color323130" },
           { size: 6 },

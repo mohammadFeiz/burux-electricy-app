@@ -20,6 +20,7 @@ import $ from 'jquery';
 //import functions from '../../../functions';
 import functions from '../../functions';
 import TimerGauge from '../../components/timer-gauge/timer-gauge';
+import bazargahCommingSoon from './../../images/bazargah-comming-soon.png';
 
 export default class Bazargah extends Component{
     static contextType = appContext;
@@ -250,7 +251,21 @@ export default class Bazargah extends Component{
             )
         }
         if(this.props.renderInHome){return this.renderInHome()}
-        
+        return (
+            <RVD
+                layout={{
+                    className:'main-bg',style:{width:'100%'},
+                    column:[
+                        {html:'بازارگاه',className:'size24 bold',align:'vh',size:96},
+                        {html:<img src={bazargahCommingSoon} alt={''} width={300} height={240}/>,align:'vh'},
+                        {size:24},
+                        {html:'محلی برای اخذ و ارسال سفارش های مردمی',className:'size16 color605E5C',align:'vh'},
+                        {size:24},
+                        {html:'بزودی',className:'size18 colorA19F9D',align:'vh'}
+                    ]
+                }}
+            />
+        )
         return (
             <RVD
                 layout={{

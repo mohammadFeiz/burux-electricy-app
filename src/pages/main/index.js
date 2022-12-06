@@ -31,7 +31,7 @@ import dotsloading from './../../images/simple_loading.gif';
 import SabteGarantiJadid from "../../components/garanti/sabte-garanti-jadid/sabte-garanti-jadid";
 import SabteGarantiJadidBaJoziat from "../../components/garanti/sabte-garanti-jadid-ba-joziat/sabte-garanti-jadid-ba-joziat";
 import PayameSabteGaranti from "../../components/garanti/payame-sabte-garanti/payame-sabte-garanti";
-import Logo1 from './../../images/logo1.png';
+import Logo5 from './../../images/logo5.png';
 import SignalR from '../../singalR/signalR';
 export default class Main extends Component {
   constructor(props) {
@@ -397,7 +397,7 @@ class Splash extends Component{
           style:{background:'#3B55A5',position:'fixed',width:'100%',height:'100%',left:0,top:0},
           column:[
             {size:152},
-            {html:<img src={Logo1} alt='' width={240} height={240}/>,align:'vh'},
+            {html:<img src={Logo5} alt='' width={240} height={240}/>,align:'vh'},
             {flex:1},
             {
               align:'vh',html:<img src={dotsloading} height='40px' alt=''/>

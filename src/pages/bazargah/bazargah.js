@@ -170,8 +170,9 @@ export default class Bazargah extends Component{
         }
     }
     renderInHome(){
-        let {bazargah,SetState} = this.context;
+        let {bazargah,SetState,rsa_actions} = this.context;
         if(!bazargah.active || !bazargah.wait_to_get){return false}
+        let {setNavId} = rsa_actions;
         return (
             <RVD
                 layout={{
@@ -184,7 +185,7 @@ export default class Bazargah extends Component{
                                 {size:6},
                                 {html:<div className='my-burux-badge bg0094D4'>{bazargah.wait_to_get.length}</div>,align:'vh'},
                                 {flex:1},
-                                {html:'مشاهده همه',align:'v',className:'color0094D4 size12 bold',show:!!bazargah.wait_to_get.length,attrs:{onClick:()=>SetState({activeBottomMenu:'c'})}}
+                                {html:'مشاهده همه',align:'v',className:'color0094D4 size12 bold',show:!!bazargah.wait_to_get.length,attrs:{onClick:()=>setNavId('bazargah')}}
                             ]
                         },
                         {
@@ -745,6 +746,8 @@ class JoziateSefaresheBazargah extends Component{
     }
     code_layout(){
         if(!this.getVisibility('code')){return false}
+        let {rsa_actions} = this.context;
+        let {setNavId} = rsa_actions;
         let {staticCode,code0,code1,code2} = this.state;
         code0 = parseInt(code0); code1 = parseInt(code1); code2 = parseInt(code2);
         let disabled = isNaN(code0) || isNaN(code1) ||isNaN(code2);
@@ -819,7 +822,7 @@ class JoziateSefaresheBazargah extends Component{
                                 let res = await bazargahApis({type:'taide_code_tahvil',parameter:{staticCode,orderId:this.props.orderId,dynamicCode:`${code0}${code1}${code2}`}})
                                 if(res){
                                     showMessage('کالا تحویل شد.');
-                                    this.context.SetState({activeBottomMenu:"a"})
+                                    setNavId('khane')
                                 }
                                 else{
                                     showMessage('کد معتبر نیست')

@@ -6,7 +6,6 @@ import Home from "./../home/index";
 import MyBurux from "./../my-burux/index";
 import Buy from "./../buy/index";
 import appContext from "../../app-context";
-import SideMenu from "../../components/sidemenu";
 import Loading from "../../components/loading";
 import layout from "../../layout";
 import dateCalculator from "../../utils/date-calculator";
@@ -18,8 +17,8 @@ import CategoryView from "./../../popups/category-view/category-view";
 import Joziate_Darkhasthaye_Garanti_Popup from "./../../components/garanti/joziate-darkhasthaye-garanti-popup/joziate_darkhasthaye_garanti_popup";
 import OrdersHistory from "../../popups/orders-history/orders-history";
 import Popup from "../../components/popup/popup";
-import OrderPopup from "../../popups/order-popup/order-popup";
-import "./index.css";
+import {Icon} from '@mdi/react';
+import { mdiShieldCheck,mdiCellphoneMarker,mdiClipboardList,mdiExitToApp} from "@mdi/js";
 import Bazargah from "../bazargah/bazargah";
 import AIOService from './../../aio-service/index';
 import kharidApis from "../../apis/kharid-apis";
@@ -33,6 +32,8 @@ import SabteGarantiJadidBaJoziat from "../../components/garanti/sabte-garanti-ja
 import PayameSabteGaranti from "../../components/garanti/payame-sabte-garanti/payame-sabte-garanti";
 import Logo5 from './../../images/logo5.png';
 import SignalR from '../../singalR/signalR';
+import RSA from './../../npm/react-super-app/react-super-app';
+import "./index.css";
 export default class Main extends Component {
   constructor(props) {
     super(props);
@@ -54,9 +55,7 @@ export default class Main extends Component {
     }
     let signalR=new SignalR(()=>this.state);
     signalR.start();
-    setTimeout(()=>{
-      this.setState({splashScreen:false})
-    },7000)
+    
     let images = localStorage.getItem('electricy-images');
     if(images === undefined || images === null){
       images = {};
@@ -87,10 +86,8 @@ export default class Main extends Component {
       images,
       signalR,
       messages:[],
-      splashScreen:true,
       campaigns:[],
       testedChance: true,
-      sidemenuOpen: false,
       userInfo:props.userInfo,
       updateUserInfo:props.updateUserInfo,
       allProducts:[],
@@ -110,22 +107,10 @@ export default class Main extends Component {
       guaranteePopupSubmitZIndex:0,
       joziate_darkhasthaye_garanti_popup_zIndex:0,
       ordersHistoryZIndex:0,
-      orderZIndex:0,
       order:false,
-      bottomMenuItems: [
-        { text: "خانه", icon: 19, id: "a" },
-        { text: "خرید", icon: 'buy', id: "b" },
-        { text: "بازارگاه", icon: 20, id: "c" },
-        { text: ()=>{
-          let {userInfo = {}} = this.state;
-          let {cardName = 'پروفایل'} = userInfo;
-          return cardName
-        }, icon: 21, id: "d" },
-      ],
       guaranteeItems: [],
       totalGuaranteeItems:0,
       guaranteeExistItems: [],
-      activeBottomMenu: "a",
       popup: {},
       peygiriyeSefaresheKharid_tab:undefined,
       buy_view:undefined,//temporary state
@@ -300,32 +285,15 @@ export default class Main extends Component {
       updateProductPrice,getFactorDetails
     });
   }
-  getBottomMenu() {
-    let { activeBottomMenu, bottomMenuItems } = this.state;
-    return {
-      size: 60,
-      className: "bottom-menu",
-      row: bottomMenuItems.filter(({show = ()=>true})=>show()).map(({ text, icon, id }) => {
-        let active = id === activeBottomMenu;
-        if(typeof text === 'function'){text = text()}
-        return {
-          flex: 1,
-          attrs: { onClick: () => this.setState({ activeBottomMenu: id }) },
-          column: [
-            { size: 12 },
-            {html: getSvg(icon, { fill: active ? "#3b55a5" : "#605E5C" }),align: "vh"},
-            {html: text,align: "vh",style: { fontSize: 12, color: active ? "#3b55a5" : "#6E6E6E" }}
-          ],
-        };
-      }),
-    };
-  }
-  getContent() {
-    let { activeBottomMenu,buy_view } = this.state;
-    if (activeBottomMenu === "a") {return <Home />;}
-    if (activeBottomMenu === "b") {return <Buy view={buy_view}/>;}
-    if (activeBottomMenu === "c") {return <Bazargah/>;}
-    if (activeBottomMenu === "d") {return <MyBurux />;}
+  addPopup(type){
+    let {rsa_actions} = this.state;
+    let {addPopup} = rsa_actions;
+    if(type === 'peygiriye-sefareshe-kharid'){
+      addPopup({content:()=><OrdersHistory/>,title:'پیگیری سفارش خرید'})
+    }
+    else if(type === 'darkhaste_garanti'){
+      addPopup({ content:()=><SabteGarantiJadid/>,title:'درخواست گارانتی',type:'bottom'})
+    }
   }
   render() {
     let context = {
@@ -336,25 +304,49 @@ export default class Main extends Component {
       layout:(type,parameters)=>layout(type,()=>this.state,parameters)
     };
     let { 
-      sidemenuOpen,orderZIndex,buruxlogod,splashScreen,
       cartZIndex,shippingZIndex,searchZIndex,productZIndex,categoryZIndex,
       guaranteePopupSuccessZIndex,guaranteePopupSubmitZIndex,guaranteePopupZIndex,ordersHistoryZIndex,
       joziate_darkhasthaye_garanti_popup_zIndex,messages
     } = this.state;
+    let {userInfo,logout} = this.props;
     return (
       <appContext.Provider value={context}>
-        <RVD
-          layout={{
-            className: "main-page",
-            column: [
-              { flex: 1, html: this.getContent() },
-              this.getBottomMenu(),
-            ],
+        <RSA
+          rtl={true}
+          popupConfig={{closeType:'back button',type:'fullscreen'}}
+          navs={[
+            { text: "خانه", icon: (active)=>getSvg(19, { fill: active ? "#3b55a5" : "#605E5C" }), id: "khane",headerText:getSvg('mybrxlogo') },
+            { text: "خرید", icon: (active)=>getSvg('buy', { fill: active ? "#3b55a5" : "#605E5C" }), id: "kharid" },
+            { text: "بازارگاه", icon: (active)=>getSvg(20, { fill: active ? "#3b55a5" : "#605E5C" }), id: "bazargah" },
+            { text:userInfo.cardName || 'پروفایل', icon: (active)=>getSvg(21, { fill: active ? "#3b55a5" : "#605E5C" }), id: "profile" },
+          ]}
+          sides={[
+            { text: 'بازارگاه', icon: ()=> <Icon path={mdiCellphoneMarker} size={0.8}/>},
+            { text: 'پیگیری سفارش خرید', icon: ()=> <Icon path={mdiClipboardList} size={0.8} />,onClick:()=>this.addPopup('peygiriye-sefareshe-kharid')},
+            { text: 'درخواست گارانتی', icon: ()=> <Icon path={mdiShieldCheck} size={0.8} />,onClick:()=>this.addPopup('darkhaste_garanti')},
+            { text: 'خروج از حساب کاربری', icon: ()=> <Icon path={mdiExitToApp} size={0.8} />,className:'colorA4262C',onClick:()=>logout() },
+            // { text: 'تست درگاه', icon: 17,fill:'#A4262c',onClick:()=>{
+            //     let {kharidApis} = this.context;
+            //     let amount = window.prompt('مبلغ را وارد کنید');
+            //     let url = window.prompt('آدرس بازگشت را وارد کنید');
+            //     kharidApis({type:'dargah',parameter:{amount,url}})
+            // }},
+          ]}
+          sideHeader={()=>getSvg('mybrxlogo')}
+          navId='khane'
+          body={({navId})=>{
+            if (navId === "khane") {return <Home />;}
+            if (navId === "kharid") {return <Buy/>;}
+            if (navId === "bazargah") {return <Bazargah/>;}
+            if (navId === "profile") {return <MyBurux />;}
           }}
+          getActions={({setConfitm,addPopup,removePopup,setNavId})=>{
+            this.setState({rsa_actions:{setConfitm,addPopup,removePopup,setNavId}})
+          }}
+          splash={()=><Splash/>}
+          splashTime={7000}
         />
-        {ordersHistoryZIndex !== 0 && <OrdersHistory/>}
-        {orderZIndex !== 0 && <OrderPopup/>}
-        {guaranteePopupZIndex !== 0 && <Popup style={{alignItems:'flex-end'}}><SabteGarantiJadid/></Popup>}
+        <Loading/>
         {guaranteePopupSubmitZIndex !== 0 && <Popup><SabteGarantiJadidBaJoziat/></Popup>}
         {guaranteePopupSuccessZIndex !== 0 && <Popup style={{padding:24}}><PayameSabteGaranti/></Popup>}
         {searchZIndex !== 0 && <Search/>}
@@ -363,12 +355,6 @@ export default class Main extends Component {
         {cartZIndex !== 0 && <Cart/>}
         {categoryZIndex !== 0 && <CategoryView/>}
         {joziate_darkhasthaye_garanti_popup_zIndex !== 0 && <Popup><Joziate_Darkhasthaye_Garanti_Popup/></Popup>}
-        <SideMenu
-          onClose={() => this.setState({ sidemenuOpen: false })}
-          open={sidemenuOpen}
-        />
-        <Loading />
-        {splashScreen && <Splash d={buruxlogod}/>}
       </appContext.Provider>
     );
   }

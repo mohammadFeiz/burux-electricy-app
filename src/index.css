@@ -35,6 +35,9 @@ body{
 	direction: rtl;
 	overscroll-behavior-y: contain;
 }
+.rsa-sidemenu-item svg{
+	opacity:0.7;
+}
 .page-error{
 	position: fixed;
     left: 0;

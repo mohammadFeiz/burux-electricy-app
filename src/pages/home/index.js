@@ -223,9 +223,6 @@ export default class Home extends Component {
             className:'home-page main-bg',style:{width:'100%'},
             column: [
                 {
-                    html:<Header buttons={{sidemenu:true,profile:true,gems:true,logo:true}}/>
-                },
-                {
                     flex:1,scroll:'v',
                     column: [
                         this.billboard_layout(),

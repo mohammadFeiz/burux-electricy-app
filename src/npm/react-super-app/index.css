@@ -77,19 +77,11 @@
   color: #fff;
 }
 .rsa-header{
-  height:72px;
+  height:60px;
   width:100%;
   background:#fff;
-  padding:0 24px;
   border-bottom:1px solid #ddd;
 }
-.rsa-header.touch-mode{
-    height:48px;
-    width:100%;
-    background:#fff;
-    padding:0 24px;
-    border-bottom:1px solid #ddd;
-  }
 .rsa-header-title {
   font-size: 20px;
   font-weight:bold;
@@ -135,20 +127,22 @@
 }
 
 .rsa-sidemenu{
-  background:#eee;
+  background:#fff;
   color:#666;
   width:240px;
   box-shadow:2px 2px 11px 0 rgb(0 0 0 / 16%)
 }
-
-.rsa-sidemenu-item{
-  margin:0 12px;
-  border-radius:6px;
-  font-size:16px;
+.rsa-sidemenu-header{
+  min-height: 24px;
+  padding:0 24px;
 }
+.rsa-sidemenu-item{
+  border-radius:6px;
+  font-size:14px;
+  color:#605E5C;
+}
+
 .rsa-sidemenu-item.active{
-  color:dodgerblue;
-  font-weight: bold;
 }
 .rsa-navigation-item{
   margin:0 12px;

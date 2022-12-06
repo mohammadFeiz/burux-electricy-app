@@ -1,51 +1,27 @@
-import React, { Component,createRef } from "react";
+import React, { Component } from "react";
 import RVD from "./../../npm/react-virtual-dom/react-virtual-dom";
 import appContext from "../../app-context";
-import Header from "../../components/header/header";
-import noItemSrc from './../../images/not-found.png';
 import AIOButton from './../../npm/aio-button/aio-button';
-import $ from 'jquery';
+import OrderPopup from "../order-popup/order-popup";
 export default class OrdersHistory extends Component {
     static contextType = appContext;
     constructor(props) {
       super(props);
-      this.dom = createRef()
-      this.state = {activeTab:false,tabs:[],error:false};
+      this.state = {activeTab:false,tabs:[]};
     }
     async componentDidMount() {
-      $(this.dom.current).animate({height: '100%',width: '100%',left:'0%',top:'0%',opacity:1}, 300);
       let {kharidApis} = this.context;
       let tabs = await kharidApis({type:"ordersHistory"});
-      if(typeof tabs === 'string'){
-        this.setState({error:tabs});
-        return;
-      }
-      this.setState({tabs,activeTab:tabs[0].text});
-    }
-    onClose(){
-      let { SetState} = this.context;
-        $(this.dom.current).animate({
-            height: '0%',
-            width: '0%',
-            left:'50%',
-            top:'100%',
-            opacity:0
-        }, 300,()=>SetState({ordersHistoryZIndex:0}));
-      
-    }
-    header_layout(){
-      return {html:<Header title="پیگیری سفارش خرید" onClose={()=>this.onClose()}/>}
+      try{this.setState({tabs,activeTab:tabs[0].text});}
+      catch{return}
     }
     tabs_layout() {
       let {tabs,activeTab} = this.state;
       return {
         html:(
           <AIOButton 
-            type='tabs'
-            options={tabs}
-            optionValue='option.text'
+            type='tabs' options={tabs} optionValue='option.text' value={activeTab} 
             optionAfter={(option)=><div className='tab-badge'>{option.orders.length}</div>}
-            value={activeTab} 
             onChange={(activeTab)=>this.setState({activeTab})}/>
         )
       }
@@ -65,48 +41,26 @@ export default class OrdersHistory extends Component {
           flex:1,html:'سفارشی موجود نیست',className:'size16 color605E5C bold',align:'vh'
         }
       }
-      return {
-        flex: 1,gap: 12,scroll:'v',
-        column: orders.map((o) => {
-          return {style:{overflow:'visible'},html: (<OrderCard order={o}/>)};
-        }).concat({size:300})
-      }
+      let column = orders.map((o)=>this.order_layout(o))
+      column.push({size:300})
+      return {flex: 1,gap: 12,scroll:'v',column}
     }
-    error_layout(){
-      let {error} = this.state;
-      if(!error){return false}
+    order_layout(order){
+      let {addPopup} = this.context;
       return {
-        align:'vh',flex:1,style:{opacity:0.5},
-        column:[
-          {html:<img src={noItemSrc} alt='' width='128' height='128'/>},
-          {html:error,style:{color:'#858a95'}},
-          {size:60}
-      ]
+        style:{overflow:'visible'},
+        html:<OrderCard order={order}/>,
+        attrs:{onClick:()=>addPopup({content:()=><OrderPopup order={order}/>,title:'جزيیات سفارش خرید'})}
       }
     }
     render() {
       return (
-          <RVD
-            layout={{
-              className: "fixed main-bg",
-              attrs:{ref:this.dom},
-              style:{left:'50%',top:'50%',height:'0%',width:'0%',opacity:0},
-              column: [
-                this.header_layout(),
-                this.error_layout(),
-                this.tabs_layout(),
-                { size: 12 },
-                this.orders_layout(),
-              ],
-            }}
-          />
-        
+          <RVD layout={{className: "main-bg",column: [this.tabs_layout(),{size:12},this.orders_layout()]}}/>
       );
     }
   }
 
   class OrderCard extends Component {
-    static contextType = appContext;
     unit = 'ریال';
     splitPrice(price){
       if(!price){return price}
@@ -122,76 +76,38 @@ export default class OrdersHistory extends Component {
     }
     header_layout(){
       let {order} = this.props;
-      let { mainDocNum, date} = order;
+      let {mainDocNum,date} = order;
       return {
-        align: "v",size: 36,
+        align:"v",size:36,
         row: [
-          { html: "پیش سفارش:", className: "colorA19F9D size12" },
-          { size: 4 },
-          { html: mainDocNum, className: "color605E5C size14" },
-          { flex: 1 },
-          { html: date, className: "colorA19F9D size12" },
+          {html:"پیش سفارش:",className:"colorA19F9D size12"},
+          {size:4},
+          {html:mainDocNum, className: "color605E5C size14"},
+          {flex:1},
+          {html:date,className:"colorA19F9D size12"},
         ],
-      }
-    }
-    body_layout(){
-      let {order} = this.props;
-      let { products = []} = order;
-      if(!products.length){return {size:40}}
-      products = [...products]
-      let plus = 0;
-      let showCount = 4
-      if(products.length > showCount){
-        plus = products.length - showCount;
-        products = products.slice(0,showCount)
-      }
-      return {
-        size: 40,
-        style: { whiteSpcae: "nowrap", flexWrap: "nowrap" },
-        gap:6,
-        row:[
-          {
-            gap:6,
-            row:products.map((o)=>{
-              return {
-                html:<img src={o.src} width={36} height={36} alt='' style={{border:'1px solid #eee'}}/>
-              }
-            })
-          },
-          {show:plus !== 0,html:<div style={{width:36,height:36,display:'flex',alignItems:'center',justifyContent:'center',color:'#bbb'}}>{plus + '+'}</div>}
-        ]
       }
     }
     footer_layout(){
       let {order} = this.props;
-      let { total} = order;
+      let {total} = order;
       return {
         size: 36,childsProps: { align: "v" },
         row: [
           {html:order.translate,className:'size12 color323130'},
-          { flex: 1 },
-          { html: this.splitPrice(total), className: "size14 color323130" },
-          { size: 6 },
-          { html: this.unit, className: "size12 color605E5C" },
+          {flex:1},
+          {html:this.splitPrice(total),className: "size14 color323130"},
+          {size:6},
+          {html:this.unit,className: "size12 color605E5C"},
         ],
       }
     }
     render() {
-      let {SetState} = this.context;
       return (
         <RVD
           layout={{
-            className: "box gap-no-color margin-0-12",
-            style: { padding: 12 },
-            attrs:{onClick:()=>{
-              let {order} = this.props;
-              SetState({order,orderZIndex:100})
-            }},
-            column: [
-              this.header_layout(),
-              //this.body_layout(),
-              this.footer_layout(),
-            ],
+            className: "box gap-no-color margin-0-12 padding-12",
+            column: [this.header_layout(),this.footer_layout(),],
           }}
         />
       );

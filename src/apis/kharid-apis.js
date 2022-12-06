@@ -15,72 +15,73 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
         "PageNo": 1
       });
       let results = res.data.data.results;
-      results = [
-        {docStatus:'Returned',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
-        {docStatus:'Cancelled',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
-        {docStatus:'Rejected',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
-        {docStatus:'NotSet',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
-        {docStatus:'PendingPreOrder',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
-        {docStatus:'PreOrder',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
-        {docStatus:'CustomerApproved',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
-        {docStatus:'VisitorApproved',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
-        {docStatus:'SuperVisorApproved',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
-        {docStatus:'ManagerApproved',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
-        {docStatus:'Registered',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
-        {docStatus:'SalesApproved',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
-        {docStatus:'WaitingForPayment',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
-        {docStatus:'PaymentPassed',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
-        {docStatus:'PaymentApproved',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
-        {docStatus:'WarhousePicked',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
-        {docStatus:'DeliveryPacked',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
-        {docStatus:'Delivered',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
-        {docStatus:'Invoiced',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
-        {docStatus:'PartiallyDelivered',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
-        {docStatus:'Settlled',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
-        {docStatus:'SettledWithBadDept',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
-      ]
+      // results = [
+      //   {docStatus:'Returned',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+      //   {docStatus:'Cancelled',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+      //   {docStatus:'Rejected',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+      //   {docStatus:'NotSet',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+      //   {docStatus:'PendingPreOrder',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+      //   {docStatus:'PreOrder',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+      //   {docStatus:'CustomerApproved',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+      //   {docStatus:'VisitorApproved',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+      //   {docStatus:'SuperVisorApproved',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+      //   {docStatus:'ManagerApproved',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+      //   {docStatus:'Registered',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+      //   {docStatus:'SalesApproved',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+      //   {docStatus:'WaitingForPayment',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+      //   {docStatus:'PaymentPassed',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+      //   {docStatus:'PaymentApproved',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+      //   {docStatus:'WarhousePicked',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+      //   {docStatus:'DeliveryPacked',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+      //   {docStatus:'Delivered',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+      //   {docStatus:'Invoiced',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+      //   {docStatus:'PartiallyDelivered',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+      //   {docStatus:'Settlled',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+      //   {docStatus:'SettledWithBadDept',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
+      // ]
       if(!Array.isArray(results)){return 'سفارشی تا کنون ثبت نشده است'}
       let tabs = [
         {text:'در حال بررسی',orders:[]},
-        {text:'در حال پردازش',orders:[]},
         {text:'در انتظار پرداخت',orders:[]},
+        {text:'در حال پردازش',orders:[]},
         {text:'تحویل شده',orders:[]},
         {text:'لغو شده',orders:[]},
-        {text:'مرجوع شده',orders:[]},
-        {text:'نا مشخص',orders:[]}
+        {text:'مرجوع شده',orders:[]}
       ]
       let statuses = {
-        Returned:[-390,'مرجوع شده'],
-        Cancelled:[-290,'لغو شده'],
-        Rejected:[-190,'در حال بررسی'],
-        NotSet:[0,'نا مشخص'],
-        PendingPreOrder:[100,'در حال بررسی'],
-        PreOrder:[120,'در حال بررسی'],
-        CustomerApproved:[130,'در حال بررسی'],
-        VisitorApproved:[140,'در حال بررسی'],
-        SuperVisorApproved:[150,'در حال بررسی'],
-        ManagerApproved:[160,'در حال بررسی'],
-        Registered:[190,'در حال پردازش'],
-        SalesApproved:[210,'در حال پردازش'],
-        WaitingForPayment:[220,'در انتظار پرداخت'],
-        PaymentPassed:[230,'در حال پردازش'],
-        PaymentApproved:[290,'در حال پردازش'],
-        WarhousePicked:[350,'در حال پردازش'],
-        DeliveryPacked:[370,'در حال پردازش'],
-        Delivered:[390,'تحویل شده'],
-        Invoiced:[490,'در حال پردازش'],
-        PartiallyDelivered:[380,'در حال پردازش'],
-        Settlled:[590,'نا مشخص'],
-        SettledWithBadDept:[580,'نا مشخص'],
+        Returned:[-390,'مرجوع شده','مرجوع شده'],//
+        Cancelled:[-290,'لغو شده','لغو شده'],//
+        Rejected:[-190,'در حال بررسی','رد شده'],//
+        NotSet:[0,'در حال بررسی','نا مشخص'],//
+        PendingPreOrder:[100,'در حال بررسی','ارسال شده برای ویزیتور'],//
+        PreOrder:[120,'در حال بررسی','در حال بررسی'],//
+        CustomerApproved:[130,'در حال بررسی','در حال بررسی'],//
+        VisitorApproved:[140,'در حال بررسی','در حال بررسی'],//
+        SuperVisorApproved:[150,'در حال بررسی','در حال بررسی'],//
+        ManagerApproved:[160,'در حال بررسی','در حال بررسی'],//
+        Registered:[190,'در حال بررسی','سفارش ثبت شده'],//
+        SalesApproved:[210,'در حال بررسی','تایید واحد مالی'],//
+        WaitingForPayment:[220,'در انتظار پرداخت','در انتظار پرداخت'],//
+        PaymentPassed:[230,'در حال پردازش','پرداخت شده'],//
+        PaymentApproved:[290,'در حال پردازش','پرداخت شده'],//
+        WarhousePicked:[350,'در حال پردازش','آماده سازی جهت حمل'],//
+        DeliveryPacked:[370,'در حال پردازش','آماده سازی جهت حمل'],//
+        Delivered:[390,'تحویل شده','تحویل شده'],//
+        //Invoiced:[490,'در حال پردازش'],
+        //PartiallyDelivered:[380,'در حال پردازش'],
+        //Settlled:[590,'نا مشخص'],
+        //SettledWithBadDept:[580,'نا مشخص'],
       }
       
       for (let i = 0; i < results.length; i++){
         let order = results[i];
         let {date,time} = getDateAndTime(order.mainDocDate);
+        if(!statuses[order.docStatus]){continue} 
         let tab = tabs.find(({text})=>text === statuses[order.docStatus][1]);
         tab.orders.push({
           code: order.mainDocEntry,
           docStatus:order.docStatus,
+          translate:statuses[order.docStatus][2],
           mainDocNum:order.mainDocNum,
           mainDocisDraft: order.mainDocisDraft,
           mainDocType: order.mainDocType,

@@ -168,7 +168,7 @@ export default class OrdersHistory extends Component {
       return {
         size: 36,childsProps: { align: "v" },
         row: [
-          {html:order.docStatus,className:'size12 color323130'},
+          {html:order.translate,className:'size12 color323130'},
           { flex: 1 },
           { html: this.splitPrice(total), className: "size14 color323130" },
           { size: 6 },

@@ -376,11 +376,16 @@ class WalletSetting extends Component{
         )
     }
 }
+//props:
+//mojhoodi
+//onClose
+//cards array of objects ({number,id,name})
 class BardashtPopup extends Component{
     static contextType = appContext;
     constructor(props){
         super(props);
-        this.state = {model:{amount:'',card:false},mojoodi:props.mojoodi,edit:false}
+        if(typeof props.mojoodi !== 'number'){console.error('error => BardashtPopup mojoodi props is not an number')}
+        this.state = {model:{amount:'',card:false},mojoodi:props.mojoodi}
     }
     async onSubmit(){
         let {walletApis,showMessage} = this.context;
@@ -418,8 +423,7 @@ class BardashtPopup extends Component{
                                     style:{height:48,flex:'none'},gap:6,
                                     row:[
                                         {html:'موجودی:',className:'size14 color605E5C bold',align:'v'},
-                                        {html:functions.splitPrice(mojoodi),className:'size14 color0094D4 bold',align:'v'},
-                                        {html:'تومان',className:'size14 color0094D4 bold',align:'v'}
+                                        {html:`${functions.splitPrice(mojoodi)} تومان`,className:'size14 color0094D4 bold',align:'v'},
                                     ]
                                 }}
                             />

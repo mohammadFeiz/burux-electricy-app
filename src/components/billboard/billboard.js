@@ -9,63 +9,46 @@ import burux_dey_svg from './../../svgs/burux-dey';
 import appContext from '../../app-context';
 export default class Billboard extends Component{
     static contextType = appContext;
-    render(){
-        let {campaigns,kharidApis,SetState} = this.context;
-        let {id} = this.props;
-        let size= 160;
-        let items = campaigns.map((campaign)=>{
-            let {name,id,src} = campaign;
-            return (
-                <img src={src} width='100%' onClick={async ()=>{
-                    let products = await kharidApis({type:'getCampaignProducts',parameter:campaign,cacheName:'campaign' + id});
-                    SetState({categoryZIndex:10,category:{products,name,src}})
-                }}/>
-            )
-        })
-        //let items = [];
-        if(id === 'home'){
+    svgs = [harajestan_svg(),cheraghe_khatti_svg(),burux_dey_svg()]
+    async onClick(campaign){
+        let {kharidApis,SetState} = this.context;
+        let products = await kharidApis({type:'getCampaignProducts',parameter:campaign,cacheName:'campaign' + campaign.id});
+        SetState({categoryZIndex:10,category:{products,name:campaign.name,src:campaign.src}})
+    }
+    billboard_layout(){
+        let {campaigns} = this.context,{renderIn} = this.props;
+        let items = campaigns.map((o)=><img src={o.src} width='100%' onClick={async ()=>this.onClick(o)}/>)
+        if(renderIn === 'home'){
             items.push(<img src={HomeSlide2} alt="" width='100%'/>)
             items.push(<img src={Sookhte} alt="" width='100%'/>)
         }
+        return {html:<ACS items={items}/>}
+    }
+    campaigns_layout(){
+        let {campaigns} = this.context,{renderIn} = this.props;
+        if(renderIn !== 'buy'){return false}
+        return {
+            column:[
+                {html:'جشنواره ها',className:'size14 bold padding-0-24',size:36,align:'v'},
+                {row:campaigns.map((campaign,i)=>this.campaign_layout(campaign,i))},
+                {size:12}
+            ]
+        }
+    }
+    campaign_layout(campaign,index){
+        return {
+            flex:1,align:'h',
+            attrs:{onClick:async ()=>this.onClick(campaign)},
+            column:[
+                {html:this.svgs[index]},
+                {size:3},
+                {html:campaign.name,className:'size12 bold'}
+            ]
+        }
+    }
+    render(){
         return (
-            <RVD
-                layout={{
-                    style:{width:'100%',maxWidth:600},
-                    column:[
-                        {html:<ACS items={items}/>},
-                        {
-                            show:id === 'buy',column:[
-                                {html:'جشنواره ها',className:'size14 bold padding-0-24',size:36,align:'v'},
-                                {
-                                    row:campaigns.map((campaign,i)=>{
-                                        let {name,id,src} = campaign;
-                                        return {
-                                            flex:1,align:'h',
-                                            attrs:{onClick:async ()=>{
-                                                let products = await kharidApis({type:'getCampaignProducts',parameter:campaign,cacheName:'campaign' + id});
-                                                SetState({categoryZIndex:10,category:{products,name,src}})
-                                            }},
-                                            column:[
-                                                {
-                                                    html:()=>{
-                                                        if(i === 0){return harajestan_svg()}
-                                                        if(i === 1){return cheraghe_khatti_svg()}
-                                                        if(i === 2){return burux_dey_svg()}
-                                                    }
-                                                },
-                                                {size:3},
-                                                {html:campaign.name,className:'size12 bold'}
-                                            ]
-                                        }
-                                    })
-                                },
-                                {size:12}
-                            ]
-                        }
-
-                    ]
-                }}
-            />
+            <RVD layout={{style:{width:'100%',maxWidth:600},column:[this.billboard_layout(),this.campaigns_layout()]}}/>
         )
     }
 }

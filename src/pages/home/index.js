@@ -63,7 +63,7 @@ export default class Home extends Component {
         }
     }
     billboard_layout(){
-        return { html: <Billboard id='home'/>,align:'h' }
+        return { html: <Billboard renderIn='home'/>,align:'h' }
     }
     cartAndWallet_layout(){
         let {userInfo,cart,SetState} = this.context;

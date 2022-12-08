@@ -3,10 +3,8 @@ import appContext from './../../app-context';
 import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
 import Tabs from './../../components/tabs/tabs';
 import ProductCard from './../../components/product-card/product-card';
-import Header from './../../components/header/header';
 import noItemSrc from './../../images/not-found.png';
 import $ from 'jquery';
-//props : cart,changeCount
 export default class Cart extends Component{
     static contextType = appContext;
     constructor(props){
@@ -100,28 +98,14 @@ export default class Cart extends Component{
         }
       }
     }
-    onClose(){
-      let {SetState} = this.context;
-      $(this.dom.current).animate({
-        height: '0%',
-        width: '0%',
-        left:'50%',
-        top:'100%',
-        opacity:0
-      }, 300,()=>SetState({cartZIndex:0}));
-      
-    }
-    header_layout(){
-        let {SetState,cartZIndex} = this.context;
-        return {html:<Header zIndex={cartZIndex} onClose={()=>this.onClose()} title='سبد خرید'/>}
-    }
     tabs_layout(){
       if(!this.tabs.length){return false}
       return {html:<Tabs tabs={this.tabs} activeTabId={this.state.activeTabId} onChange={(activeTabId)=>this.setState({activeTabId})}/>}
     }
     products_layout(){
       if(this.tab){
-        return {flex: 1,scroll:'v',column: this.tab.cards.map((card) => {return {html:card}})}
+        let {cards} = this.tab;
+        return {flex: 1,scroll:'v',gap:12,column:cards.concat(cards,cards,cards,cards,cards,cards,cards,cards,cards,cards,cards,cards,cards,cards).map((card) => {return {html:card}})}
       }
       return {
         style:{background:'#eee',opacity:0.5},
@@ -135,38 +119,42 @@ export default class Cart extends Component{
     }
     payment_layout(){
       if(!this.tab){return false}
-      let {SetState,cartZIndex} = this.context;
       let total = this.tab.factorDetails.DocumentTotal;
       return {
-        size: 72,className: "main-bg padding-0-12",
+        size: 72,className: "bgFFF padding-0-12 box-shadow-up",
         row: [
           {
             flex: 1,
             column: [
               { flex: 1 },
               {align: "v",html: "مبلغ قابل پرداخت",className: "color5757656 size12"},
-              {align: "v",html: this.splitPrice(total) + " ریال",className: "color323130 size16"},
+              {size:3},
+              {
+                row:[
+                  {align: "v",html: this.splitPrice(total),className: "color323130 size14 bold"},
+                  {size:4},
+                  {align: "v",html: " ریال",className: "color323130 size12"}
+                ]
+              },
               { flex: 1 },
             ],
           },
-          {html: <button onClick={()=>this.continue()} className="button-2">ادامه فرایند خرید</button>,align: "v"},
+          {html: <button onClick={()=>this.continue()} className="button-2" style={{height:36}}>ادامه فرایند خرید</button>,align: "v"},
         ],
       }
     }
     continue(){
-      let {SetState,cartZIndex} = this.context;
-      SetState({shipping:{...this.tab},shippingZIndex:cartZIndex * 10})
+      let {openPopup} = this.context;
+      openPopup('shipping',{...this.tab})
     }
     render(){
-        let {cartZIndex:zIndex} = this.context;
         this.getDetails();
         return (
             <RVD 
               layout={{
-                style:{zIndex,left:'50%',top:'100%',height:'0%',width:'0%',opacity:0},
                 attrs:{ref:this.dom},
-                flex: 1,className:'main-bg fixed',
-                column: [this.header_layout(),this.tabs_layout(),{size:12},this.products_layout(),this.payment_layout()]
+                flex: 1,className:'main-bg',
+                column: [this.tabs_layout(),{size:12},this.products_layout(),this.payment_layout()]
               }}
             />
         )

@@ -11,8 +11,9 @@ export default class OrdersHistory extends Component {
     }
     async componentDidMount() {
       let {kharidApis} = this.context;
+      let {activeTab} = this.props;
       let tabs = await kharidApis({type:"ordersHistory"});
-      try{this.setState({tabs,activeTab:tabs[0].text});}
+      try{this.setState({tabs,activeTab:activeTab || tabs[0].text});}
       catch{return}
     }
     tabs_layout() {
@@ -55,7 +56,7 @@ export default class OrdersHistory extends Component {
     }
     render() {
       return (
-          <RVD layout={{className: "main-bg",column: [this.tabs_layout(),{size:12},this.orders_layout()]}}/>
+          <RVD layout={{className: "main-bg",style:{width:'100%',height:'100%'},column: [this.tabs_layout(),{size:12},this.orders_layout()]}}/>
       );
     }
   }

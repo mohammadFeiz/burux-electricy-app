@@ -1,6 +1,7 @@
 import React,{Component} from 'react';
 import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
-import getSvg from '../../utils/getSvg';
+import {Icon} from '@mdi/react';
+import { mdiPlus,mdiMinus, mdiTrashCanOutline } from '@mdi/js';
 import AIOButton from '../aio-button/aio-button';
 import $ from 'jquery';
 import './index.css';
@@ -56,7 +57,18 @@ export default class ProductCount extends Component{
                     style:{height:36},
                     attrs:{onClick:(e)=>e.stopPropagation()},
                     row: [
-                        {html: (<div onMouseDown={(e)=>this.touchStart(1,touch,false)} onTouchStart={(e)=>this.touchStart(1,touch,true)} className={'product-count-button' + (value >= max?' disabled':'')}>+</div>),show:onChange!== undefined},
+                        {
+                            html: (
+                                <div 
+                                    onMouseDown={(e)=>this.touchStart(1,touch,false)} 
+                                    onTouchStart={(e)=>this.touchStart(1,touch,true)} 
+                                    className={'product-count-button' + (value >= max?' disabled':'')}
+                                >
+                                    <Icon path={mdiPlus} size={0.8}/>
+                                </div>
+                            ),
+                            show:onChange!== undefined
+                        },
                         { 
                             flex: 1, show:!!value,
                             html:(
@@ -84,14 +96,24 @@ export default class ProductCount extends Component{
                                 />
                             )
                         },
-                        {html: ()=>(<div onMouseDown={(e) =>this.touchStart(-1,touch,false)} onTouchStart={(e) =>this.touchStart(-1,touch,true)} className='product-count-button'>-</div>),show:value > 1 && onChange!== undefined},
+                        {
+                            html: ()=>(
+                                <div 
+                                    onMouseDown={(e) =>this.touchStart(-1,touch,false)} 
+                                    onTouchStart={(e) =>this.touchStart(-1,touch,true)} 
+                                    className='product-count-button'
+                                >
+                                    <Icon path={mdiMinus} size={0.8}/>
+                                </div>),
+                            show:value > 1 && onChange!== undefined
+                        },
                         {
                             html: ()=>(
                                 <div 
                                     onClick={(e)=>this.change(0)} 
                                     className='product-count-button'
                                 >
-                                    -
+                                    <Icon path={mdiTrashCanOutline} size={0.8}/>
                                 </div>
                             ),
                             show:value === 1 && onChange!== undefined

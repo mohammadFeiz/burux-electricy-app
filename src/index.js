@@ -154,7 +154,6 @@ class App extends Component {
       return (
         <>
         <Main logout={() => this.logout()} token={token} userInfo={userInfo} updateUserInfo={this.updateUserInfo.bind(this)}/>
-        <Loading/>
       </>
         
       )
@@ -164,15 +163,23 @@ class App extends Component {
         <>
         <RVD
           layout={{
-            className:'page-error',
-            column:[
-              {flex:1.5},
-              {html:<img src={bazarMiarzeSrc} alt={''} width={160}/>},
+            className:'page-error',style:{overflow:'visible'},
+            row:[
               {flex:1},
-              {html:<Icon path={mdiAlert} size={4}/>},
-              {html:pageError.text},
-              {html:pageError.subtext},
-              {flex:1.5}
+              {
+                className:'page-error-image',
+                column:[
+                  {flex:3},
+                  {html:<Icon path={mdiAlert} size={4}/>,align:'h'},
+                  {html:pageError.text,align:'h'},
+                  {html:pageError.subtext,align:'h'},
+                  {size:36},
+                  {html:'بارگزاری مجدد',className:'bm-reload',attrs:{onClick:()=>window.location.reload()}},
+                  {flex:2}
+                ]
+              },
+              {flex:1}
+
             ]
           }}
         />

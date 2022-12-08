@@ -1,38 +1,48 @@
 import React, { Component } from "react";
-import RVD from "./../../npm/react-virtual-dom/react-virtual-dom";
+
+//pages//////////////////////////////////
+import Home from "./../home/index";
+import Buy from "./../buy/index";
+import Bazargah from "../bazargah/bazargah";
+import MyBurux from "./../my-burux/index";
+
+//popups/////////////////////////////////////
+import OrdersHistory from "../../popups/orders-history/orders-history";
+import SabteGarantiJadid from "../../components/garanti/sabte-garanti-jadid/sabte-garanti-jadid";
+import Shipping from './../../popups/shipping/shipping';
+import Wallet from "../../popups/wallet/wallet";
+import Cart from "./../../popups/cart/cart";
+import Sefareshe_Ersal_Shode_Baraye_Vizitor from "../../popups/sefareshe-ersal-shode-baraye-vizitor/sefareshe-ersal-shode-baraye-vizitor";
+
+//npm////////////////////////////////////////
+import {Icon} from '@mdi/react';
+import { mdiShieldCheck,mdiCellphoneMarker,mdiClipboardList,mdiExitToApp, mdiCart, mdiBell} from "@mdi/js";
+import RSA from './../../npm/react-super-app/react-super-app';
+import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
+import AIOService from './../../npm/aio-service/aio-service';
+import AIOButton from './../../npm/aio-button/aio-button';
+
+
+
 import getSvg from "../../utils/getSvg";
 import Pricing from "./../../pricing";
-import Home from "./../home/index";
-import MyBurux from "./../my-burux/index";
-import Buy from "./../buy/index";
 import appContext from "../../app-context";
-import Loading from "../../components/loading";
 import layout from "../../layout";
 import dateCalculator from "../../utils/date-calculator";
 import Search from "./../../popups/search/search";
-import Shipping from './../../popups/shipping/shipping';
-import Cart from "./../../popups/cart/cart";
 import Product from "./../../popups/product/product";
 import CategoryView from "./../../popups/category-view/category-view";
 import Joziate_Darkhasthaye_Garanti_Popup from "./../../components/garanti/joziate-darkhasthaye-garanti-popup/joziate_darkhasthaye_garanti_popup";
-import OrdersHistory from "../../popups/orders-history/orders-history";
 import Popup from "../../components/popup/popup";
-import {Icon} from '@mdi/react';
-import { mdiShieldCheck,mdiCellphoneMarker,mdiClipboardList,mdiExitToApp} from "@mdi/js";
-import Bazargah from "../bazargah/bazargah";
-import AIOService from './../../aio-service/index';
 import kharidApis from "../../apis/kharid-apis";
 import bazargahApis from './../../apis/bazargah-apis';
 import walletApis from './../../apis/wallet-apis';
 import gardooneApis from './../../apis/gardoone-apis';
 import guarantiApis from './../../apis/guaranti-apis';
-import dotsloading from './../../images/simple_loading.gif';
-import SabteGarantiJadid from "../../components/garanti/sabte-garanti-jadid/sabte-garanti-jadid";
 import SabteGarantiJadidBaJoziat from "../../components/garanti/sabte-garanti-jadid-ba-joziat/sabte-garanti-jadid-ba-joziat";
 import PayameSabteGaranti from "../../components/garanti/payame-sabte-garanti/payame-sabte-garanti";
-import Logo5 from './../../images/logo5.png';
 import SignalR from '../../singalR/signalR';
-import RSA from './../../npm/react-super-app/react-super-app';
+import Splash from "../../components/spalsh/splash";
 import "./index.css";
 export default class Main extends Component {
   constructor(props) {
@@ -91,10 +101,8 @@ export default class Main extends Component {
       userInfo:props.userInfo,
       updateUserInfo:props.updateUserInfo,
       allProducts:[],
-      cart: {},//{variantId:{count,product,variant}}
-      cartZIndex:0,
       shipping:false,//{cards:[<ProductCard/>,...],cartItems:[{count,variant,product}],total:number}
-      shippingZIndex:0,
+      cart: {},//{variantId:{count,product,variant}}
       searchZIndex:0,
       productZIndex:0,
       product:false,
@@ -123,6 +131,7 @@ export default class Main extends Component {
     this.state.gardooneApis = AIOService({token,getState:()=>this.state,apis:gardooneApis,log});
     this.state.guarantiApis = AIOService({token,getState:()=>this.state,apis:guarantiApis,log});
   }
+  
   changeCart(count,variantId){
     let {cart,product,kharidApis} = this.state;
     let newCart;
@@ -285,26 +294,88 @@ export default class Main extends Component {
       updateProductPrice,getFactorDetails
     });
   }
-  addPopup(type){
+  openPopup(type,parameter){
     let {rsa_actions} = this.state;
-    let {addPopup} = rsa_actions;
+    let {addPopup,removePopup,setNavId} = rsa_actions;
     if(type === 'peygiriye-sefareshe-kharid'){
-      addPopup({content:()=><OrdersHistory/>,title:'پیگیری سفارش خرید'})
+      addPopup({content:()=><OrdersHistory activeTab={parameter}/>,title:'پیگیری سفارش خرید'})
     }
     else if(type === 'darkhaste_garanti'){
       addPopup({ content:()=><SabteGarantiJadid/>,title:'درخواست گارانتی',type:'bottom'})
     }
+    else if(type === 'wallet'){
+      addPopup({header:false,content:()=><Wallet onClose={()=>removePopup()}/>})
+    }
+    else if(type === 'cart'){
+      addPopup({content:()=><Cart/>,title:'سبد خرید'})
+    }
+    else if(type === 'shipping'){
+      this.setState({shipping:parameter},()=>{
+        addPopup({
+          content:()=><Shipping onSend={(o)=>this.ersal_baraye_vizitor(o)}/>,
+          title:'ادامه فرایند خرید'
+        })
+      })
+    }
+    else if(type === 'sefareshe-ersal-shode-baraye-vizitor'){
+      addPopup({
+        content:()=>(
+          <Sefareshe_Ersal_Shode_Baraye_Vizitor
+            orderNumber={parameter}
+            onShowInHistory={()=>{
+              removePopup('all');
+              this.openPopup('peygiriye-sefareshe-kharid','در حال بررسی');
+            }}
+            onClose={()=>{
+              removePopup('all');
+              setNavId('khane')
+            }}
+          />
+        ),
+        header:false
+      })
+    }
+  }
+  async ersal_baraye_vizitor({address,SettleType,PaymentTime,DeliveryType,PayDueDate}){
+    let {shipping,kharidApis,cart,rsa_actions} = this.state;
+    let {cartItems} = shipping;
+    let orderNumber = await kharidApis({
+      type:"sendToVisitor",
+      parameter:{address,SettleType,PaymentTime,DeliveryType,PayDueDate}
+    })
+    if(orderNumber){
+      let variantIds = cartItems.map((o)=>o.variant.id)
+      let newCart = {};
+      for(let prop in cart){
+        if(variantIds.indexOf(prop) === -1){
+          newCart[prop] = cart[prop]
+        }
+      }
+      rsa_actions.removePopup('all');
+      this.changeCart(newCart)
+      this.openPopup('sefareshe-ersal-shode-baraye-vizitor',orderNumber)
+    }
+  }
+  getProfileName(userInfo){
+    if(!userInfo.cardName){return 'پروفایل'}
+    let arr = userInfo.cardName.split(' ');
+    if(arr.length === 1){return arr[0]}
+    for(let i = 0; i < arr.length - 1; i++){
+      arr[i] = arr[i][0];
+    }
+    return arr.join(' ')
   }
   render() {
     let context = {
       ...this.state,
+      openPopup:this.openPopup.bind(this),
       changeCart:this.changeCart.bind(this),
       getCartCountByVariantId:this.getCartCountByVariantId.bind(this),
       logout: this.props.logout,
       layout:(type,parameters)=>layout(type,()=>this.state,parameters)
     };
     let { 
-      cartZIndex,shippingZIndex,searchZIndex,productZIndex,categoryZIndex,
+      searchZIndex,productZIndex,categoryZIndex,
       guaranteePopupSuccessZIndex,guaranteePopupSubmitZIndex,guaranteePopupZIndex,ordersHistoryZIndex,
       joziate_darkhasthaye_garanti_popup_zIndex,messages
     } = this.state;
@@ -314,16 +385,17 @@ export default class Main extends Component {
         <RSA
           rtl={true}
           popupConfig={{closeType:'back button',type:'fullscreen'}}
+          title={(nav)=>nav.id === 'khane'?getSvg('mybrxlogo'):(nav.id === 'profile'?'پروفایل':nav.text)}
           navs={[
-            { text: "خانه", icon: (active)=>getSvg(19, { fill: active ? "#3b55a5" : "#605E5C" }), id: "khane",headerText:getSvg('mybrxlogo') },
-            { text: "خرید", icon: (active)=>getSvg('buy', { fill: active ? "#3b55a5" : "#605E5C" }), id: "kharid" },
-            { text: "بازارگاه", icon: (active)=>getSvg(20, { fill: active ? "#3b55a5" : "#605E5C" }), id: "bazargah" },
-            { text:userInfo.cardName || 'پروفایل', icon: (active)=>getSvg(21, { fill: active ? "#3b55a5" : "#605E5C" }), id: "profile" },
+            { text: "خانه", icon: (active)=>getSvg(19, { fill: active ? "#fff" : "#605E5C" }), id: "khane" },
+            { text: "خرید", icon: (active)=>getSvg('buy', { fill: active ? "#fff" : "#605E5C" }), id: "kharid" },
+            { text: "بازارگاه", icon: (active)=>getSvg(20, { fill: active ? "#fff" : "#605E5C" }), id: "bazargah" },
+            { text:this.getProfileName(userInfo), icon: (active)=>getSvg(21, { fill: active ? "#fff" : "#605E5C" }), id: "profile" },
           ]}
           sides={[
             { text: 'بازارگاه', icon: ()=> <Icon path={mdiCellphoneMarker} size={0.8}/>},
-            { text: 'پیگیری سفارش خرید', icon: ()=> <Icon path={mdiClipboardList} size={0.8} />,onClick:()=>this.addPopup('peygiriye-sefareshe-kharid')},
-            { text: 'درخواست گارانتی', icon: ()=> <Icon path={mdiShieldCheck} size={0.8} />,onClick:()=>this.addPopup('darkhaste_garanti')},
+            { text: 'پیگیری سفارش خرید', icon: ()=> <Icon path={mdiClipboardList} size={0.8} />,onClick:()=>this.openPopup('peygiriye-sefareshe-kharid')},
+            { text: 'درخواست گارانتی', icon: ()=> <Icon path={mdiShieldCheck} size={0.8} />,onClick:()=>this.openPopup('darkhaste_garanti')},
             { text: 'خروج از حساب کاربری', icon: ()=> <Icon path={mdiExitToApp} size={0.8} />,className:'colorA4262C',onClick:()=>logout() },
             // { text: 'تست درگاه', icon: 17,fill:'#A4262c',onClick:()=>{
             //     let {kharidApis} = this.context;
@@ -333,6 +405,7 @@ export default class Main extends Component {
             // }},
           ]}
           sideHeader={()=>getSvg('mybrxlogo')}
+          header={({navId})=><Header navId={navId}/>}
           navId='khane'
           body={({navId})=>{
             if (navId === "khane") {return <Home />;}
@@ -346,13 +419,10 @@ export default class Main extends Component {
           splash={()=><Splash/>}
           splashTime={7000}
         />
-        <Loading/>
         {guaranteePopupSubmitZIndex !== 0 && <Popup><SabteGarantiJadidBaJoziat/></Popup>}
         {guaranteePopupSuccessZIndex !== 0 && <Popup style={{padding:24}}><PayameSabteGaranti/></Popup>}
         {searchZIndex !== 0 && <Search/>}
-        {shippingZIndex !== 0 && <Shipping/>}
         {productZIndex !== 0 && <Product/>}
-        {cartZIndex !== 0 && <Cart/>}
         {categoryZIndex !== 0 && <CategoryView/>}
         {joziate_darkhasthaye_garanti_popup_zIndex !== 0 && <Popup><Joziate_Darkhasthaye_Garanti_Popup/></Popup>}
       </appContext.Provider>
@@ -375,22 +445,49 @@ class Message extends Component{
     return <div className='my-burux-message'>{messages[0]}</div>
   }
 }
-class Splash extends Component{
+class Header extends Component{
+  static contextType = appContext;
+  cart_layout(){
+    let {navId} = this.props;
+    if(navId !== 'kharid'){return false}
+    let {cart} = this.context; 
+    let length = Object.keys(cart).length;
+    return {
+      html:(
+        <AIOButton
+          type="button" 
+          style={{ background: "none",width:60,color:'#605E5C' }} 
+          text={<Icon path={mdiCart} size={1}/>} 
+          badge={length > 0?length:undefined}
+          badgeAttrs={{ className: "badge-1" }} 
+          onClick={() => this.openPopup('cart')}
+        />
+      )
+    }
+  }
+  notif_layout(){
+    let {navId} = this.props;
+    if(navId !== 'khane'){return false}
+    let length = 12;
+    return {
+      html:(
+        <AIOButton
+          type="button" 
+          style={{ background: "none",width:60,color:'#605E5C' }} 
+          text={<Icon path={mdiBell} size={1}/>} 
+          badge={length > 0?length:undefined}
+          badgeAttrs={{ className: "badge-1" }} 
+        />
+      )
+    }
+  }
   render(){
     return (
       <RVD
         layout={{
-          style:{background:'#3B55A5',position:'fixed',width:'100%',height:'100%',left:0,top:0},
-          column:[
-            {size:152},
-            {html:<img src={Logo5} alt='' width={240} height={240}/>,align:'vh'},
-            {flex:1},
-            {
-              align:'vh',html:<img src={dotsloading} height='40px' alt=''/>
-            },
-            {size:24},
-            {html:'چند لحظه صبر کنید',className:'colorFFF size14',align:'vh'},
-            {size:48}
+          row:[
+            this.cart_layout(),
+            this.notif_layout()
           ]
         }}
       />

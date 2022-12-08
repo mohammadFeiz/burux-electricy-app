@@ -146,7 +146,7 @@ export default class ProductCard extends Component{
                     className:'box gap-no-color margin-0-12',
                     attrs:{onClick:()=>this.onClick()},
                     style:{
-                        padding:6,height:130,
+                        padding:6,height:130,overflow:'visible',
                         borderBottomLeftRadius:!isLast?0:undefined,
                         borderBottomRightRadius:!isLast?0:undefined,
                         borderTopLeftRadius:!isFirst?0:undefined,
@@ -183,7 +183,7 @@ export default class ProductCard extends Component{
         return (
             <RVD
                 layout={{
-                    style:{height:270,width:180,borderRadius:12,fontSize:14,...style},
+                    style:{height:270,width:180,borderRadius:12,fontSize:14,overflow:'visible',...style},
                     className:'bgFFF borderDDD',
                     attrs:{onClick:()=>this.onClick()},
                     column:[

@@ -26,16 +26,6 @@ export default class Wallet extends Component{
             showSetting:false
         }
     }
-    onClose(){
-        let {onClose} = this.props;
-        $(this.dom.current).animate({
-            height: '0%',
-            width: '0%',
-            left:'50%',
-            top:'100%',
-            opacity:0
-        }, 300,()=>onClose());
-    }
     svg_in(){
         return (
             <svg width="46" height="46" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -53,13 +43,6 @@ export default class Wallet extends Component{
         )
     }
     async componentDidMount(){
-        $(this.dom.current).animate({
-            height: '100%',
-            width: '100%',
-            left:'0%',
-            top:'0%',
-            opacity:1
-        }, 300);
         let {walletApis,showMessage} = this.context;
         let {fromDate}=this.state;
         let items = await walletApis({type:'items',parameter:fromDate,loading:false});
@@ -73,6 +56,7 @@ export default class Wallet extends Component{
     }
     header_layout(){
         let {userInfo} = this.context;
+        let {onClose} = this.props;
         return {
             className:'blue-gradient',
             column:[
@@ -81,7 +65,7 @@ export default class Wallet extends Component{
                 {
                     size:60,className:'colorFFF',
                     row:[
-                        {size:60,html:getSvg('chevronLeft',{flip:true,fill:'#fff'}),align:'vh',attrs:{onClick:()=>this.onClose()}},
+                        {size:60,html:getSvg('chevronLeft',{flip:true,fill:'#fff'}),align:'vh',attrs:{onClick:()=>onClose()}},
                         {flex:1,html:'مدیریت کیف پول',align:'v'},
                         {size:60,align:'vh',html:<Icon path={mdiCog} size={0.8}/>,attrs:{onClick:()=>this.setState({showSetting:true})}}
                     ]
@@ -269,9 +253,8 @@ export default class Wallet extends Component{
             <>
                 <RVD
                     layout={{
-                        className:'main-bg fixed',
+                        className:'main-bg',style:{height:'100%'},
                         attrs:{ref:this.dom},
-                        style:{left:'50%',top:'100%',height:'0%',width:'0%',opacity:0},
                         column:[
                             this.header_layout(),
                             this.body_layout()

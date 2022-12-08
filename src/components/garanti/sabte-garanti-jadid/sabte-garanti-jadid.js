@@ -6,28 +6,30 @@ import './index.css';
 export default class SabteGarantiJadid extends Component {
     static contextType = appContext;
     async continueWithoutSubmit(){
-        let { SetState, guarantiApis } = this.context;
+        let { openPopup, guarantiApis } = this.context;
+        let {closeParent} = this.props;
+        closeParent();
         let res = await guarantiApis({ type: "sabte_kala" });
         if (!res) { alert("error"); return; }
-        SetState({
-            guaranteePopupSuccessText: "درخواست گارانتی شما با موفقیت اعلام شد",
-            guaranteePopupSuccessSubtext: "درخواست گارانتی شما در ویزیت بعدی بررسی خواهد شد",
-            guaranteePopupSuccessZIndex: 10,
-            guaranteePopupZIndex: 0
+        openPopup('payame-sabte-garanti',{
+            text: "درخواست گارانتی شما با موفقیت اعلام شد",
+            subtext: "درخواست گارانتی شما در ویزیت بعدی بررسی خواهد شد",
         })
     }
     continueWithSubmit(){
-        let { SetState } = this.context;
-        SetState({ guaranteePopupSubmitZIndex: 10, guaranteePopupZIndex: 0 })
+        let { openPopup } = this.context;
+        let {closeParent} = this.props;
+        closeParent();
+        openPopup('sabte-garanti-jadid-ba-joziat')
     }
     header_layout(){
-        if(this.props.close === false){return false}
-        let { SetState } = this.context;
+        let { onClose } = this.props;
+        if(!onClose){return false}
         return {
             size: 36,
             row: [
                 { flex: 1 },
-                { size: 36, html: getSvg('close'), align: "vh", attrs: { onClick: () => SetState({ guaranteePopupZIndex: 0 }) } }
+                { size: 36, html: getSvg('close'), align: "vh", attrs: { onClick: () => onClose() } }
             ]
         }
     }

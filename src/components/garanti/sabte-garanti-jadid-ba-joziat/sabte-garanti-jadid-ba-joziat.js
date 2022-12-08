@@ -41,31 +41,18 @@ export default class SabteGarantiJadidBaJoziat extends Component {
         };
     }
     async onSubmit() {
-        let { guarantiApis, SetState } = this.context;
+        let { guarantiApis, openPopup,SetState } = this.context;
         let { items } = this.state;
         let res = await guarantiApis({ type: "sabte_kala", parameter: items });
         if (res) {
             let {items,total} = await guarantiApis({ type: "items" });
-            SetState({
-                guaranteeItems:items,
-                totalGuaranteeItems:total,
-                guaranteePopupSuccessText: "درخواست گارانتی شما با موفقیت ثبت شد",
-                guaranteePopupSuccessSubtext: "درخواست گارانتی شما تا 72 ساعت آینده بررسی خواهد شد",
-                guaranteePopupSuccessZIndex: 10,
-                guaranteePopupSubmitZIndex: 0
+            SetState({guaranteeItems:items,totalGuaranteeItems:total})
+            openPopup('payame-sabte-garanti',{
+                text: "درخواست گارانتی شما با موفقیت ثبت شد",
+                subtext: "درخواست گارانتی شما تا 72 ساعت آینده بررسی خواهد شد"
             });
         }
-        else {
-            SetState({
-                guaranteePopupSuccessText: "خطا",
-                guaranteePopupSuccessZIndex: 10,
-                guaranteePopupSubmitZIndex: 0
-            });
-        }
-    }
-    header_layout() {
-        let { SetState } = this.context;
-        return { html: <Header title='ثبت درخواست گارانتی جدید' onClose={() => SetState({ guaranteePopupSubmitZIndex: 0 })} /> }
+        else {openPopup('payame-sabte-garanti',{text: "خطا"});}
     }
     hint_layout(text, subtext) {
         return {
@@ -119,9 +106,9 @@ export default class SabteGarantiJadidBaJoziat extends Component {
         return (
             <RVD
                 layout={{
-                    className: "popup main-bg",
+                    className: "main-bg",
+                    style:{height:'100%'},
                     column: [
-                        this.header_layout(),
                         this.hint_layout(
                             "تاریخ مراجعه ویزیتور : تا 72 ساعت آینده",
                             "ویزیتور جهت ثبت کالاهای گارانتی در تاریخ ذکر شده به فروشگاه شما مراجعه میکند"

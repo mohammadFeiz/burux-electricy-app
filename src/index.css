@@ -481,9 +481,9 @@ button{
 
 .bottom-popup{
 	position:absolute;
-	top:unset !important;
-	left:12px !important;
-	width:calc(100% - 24px);
+	left:0;
+	top:0;
+	width:calc(100%);
 	height:fit-content;
 	border-radius: 12px 12px 0 0;
 }

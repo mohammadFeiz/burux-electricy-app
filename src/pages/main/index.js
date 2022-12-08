@@ -106,10 +106,6 @@ export default class Main extends Component {
       product:false,
       category:false,
       guaranteePopupZIndex:0,
-      guaranteePopupSuccessZIndex:0,
-      guaranteePopupSuccessText:'',
-      guaranteePopupSuccessSubtext:'',
-      guaranteePopupSubmitZIndex:0,
       joziate_darkhasthaye_garanti_popup_zIndex:0,
       ordersHistoryZIndex:0,
       order:false,
@@ -297,8 +293,15 @@ export default class Main extends Component {
     if(type === 'peygiriye-sefareshe-kharid'){
       addPopup({content:()=><OrdersHistory activeTab={parameter}/>,title:'پیگیری سفارش خرید'})
     }
-    else if(type === 'darkhaste_garanti'){
-      addPopup({ content:()=><SabteGarantiJadid/>,title:'درخواست گارانتی',type:'bottom'})
+    else if(type === 'sabte-garanti-jadid'){
+      addPopup({ content:()=><SabteGarantiJadid/>,header:false,type:'bottom'})
+    }
+    else if(type === 'payame-sabte-garanti'){
+      let {text,subtext} = parameter;
+      addPopup({ type:'center',content:()=><PayameSabteGaranti text={text} subtext={subtext} onClose={()=>removePopup()}/>,header:false})
+    }
+    else if(type === 'sabte-garanti-jadid-ba-joziat'){
+      addPopup({ content:()=><SabteGarantiJadidBaJoziat/>,title:'ثبت در خواست گارانتی جدید با جزییات'})
     }
     else if(type === 'search'){
       addPopup({ 
@@ -388,7 +391,6 @@ export default class Main extends Component {
       layout:(type,parameters)=>layout(type,()=>this.state,parameters)
     };
     let { 
-      guaranteePopupSuccessZIndex,guaranteePopupSubmitZIndex,
       joziate_darkhasthaye_garanti_popup_zIndex
     } = this.state;
     let {userInfo,logout} = this.props;
@@ -407,7 +409,7 @@ export default class Main extends Component {
           sides={[
             { text: 'بازارگاه', icon: ()=> <Icon path={mdiCellphoneMarker} size={0.8}/>},
             { text: 'پیگیری سفارش خرید', icon: ()=> <Icon path={mdiClipboardList} size={0.8} />,onClick:()=>this.openPopup('peygiriye-sefareshe-kharid')},
-            { text: 'درخواست گارانتی', icon: ()=> <Icon path={mdiShieldCheck} size={0.8} />,onClick:()=>this.openPopup('darkhaste_garanti')},
+            { text: 'درخواست گارانتی', icon: ()=> <Icon path={mdiShieldCheck} size={0.8} />,onClick:()=>this.openPopup('sabte-garanti-jadid')},
             { text: 'خروج از حساب کاربری', icon: ()=> <Icon path={mdiExitToApp} size={0.8} />,className:'colorA4262C',onClick:()=>logout() },
             // { text: 'تست درگاه', icon: 17,fill:'#A4262c',onClick:()=>{
             //     let {kharidApis} = this.context;
@@ -431,8 +433,6 @@ export default class Main extends Component {
           splash={()=><Splash/>}
           splashTime={7000}
         />
-        {guaranteePopupSubmitZIndex !== 0 && <Popup><SabteGarantiJadidBaJoziat/></Popup>}
-        {guaranteePopupSuccessZIndex !== 0 && <Popup style={{padding:24}}><PayameSabteGaranti/></Popup>}
         {joziate_darkhasthaye_garanti_popup_zIndex !== 0 && <Popup><Joziate_Darkhasthaye_Garanti_Popup/></Popup>}
       </appContext.Provider>
     );

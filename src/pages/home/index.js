@@ -137,7 +137,7 @@ export default class Home extends Component {
                                     type='button'
                                     style={{background:'none'}}
                                     position='bottom'
-                                    popOver={()=><SabteGarantiJadid close={false}/>}
+                                    popOver={({toggle})=><SabteGarantiJadid close={false} closeParent={()=>toggle()}/>}
                                 />
                             )
                         }

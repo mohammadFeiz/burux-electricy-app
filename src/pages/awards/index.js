@@ -3,8 +3,8 @@ import getSvg from './../../utils/getSvg';
 import ChanceMachin from './../../components/chance-machin/index';
 import { Icon } from '@mdi/react';
 import appContext from '../../app-context';
-import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
-import AIOButton from 'aio-button';
+import RVD from './../../interfaces/react-virtual-dom/react-virtual-dom';
+import AIOButton from './../../interfaces/aio-button/aio-button';
 import { mdiClose, mdiChevronRight, mdiChevronLeft } from '@mdi/js';
 import './index.css';
 export default class Awards extends Component {

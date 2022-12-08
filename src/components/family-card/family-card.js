@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
+import RVD from './../../interfaces/react-virtual-dom/react-virtual-dom';
 import NoSrc from './../../images/no-src.png';
 import GeneralSrc from './../../images/general.png';
 import GiantSrc from './../../images/giant.png';

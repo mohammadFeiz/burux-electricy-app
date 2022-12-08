@@ -1,9 +1,9 @@
 import React,{Component} from 'react';
-import RVD from "./../../npm/react-virtual-dom/react-virtual-dom";
+import RVD from "./../../interfaces/react-virtual-dom/react-virtual-dom";
 import appContext from "../../app-context";
 import getSvg from "../../utils/getSvg";
 import Gems_SVG from './../../utils/svgs/gems-svg';
-import AIOButton from "../aio-button/aio-button";
+import AIOButton from "./../../interfaces/aio-button/aio-button";
 //props
 //1 - title ''
 //2 - buttons {cart:boolean}

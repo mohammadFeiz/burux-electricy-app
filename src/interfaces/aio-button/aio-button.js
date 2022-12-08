@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import AIOButton from 'aio-button'; 
+import AIOButton from './../../npm/aio-button/aio-button'; 
 export default class AIOButtonInterface extends Component{
     constructor(props){
         super(props);

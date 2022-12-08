@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
+import RVD from './../../interfaces/react-virtual-dom/react-virtual-dom';
 import headerSvg from './../../images/header-svg';
 import footerSvg from './../../images/footer-svg';
 import getSvg from './../../utils/getSvg';
@@ -7,7 +7,7 @@ import appContext from '../../app-context';
 import functions from '../../functions';
 import {Icon} from '@mdi/react';
 import {mdiAccountCircle} from '@mdi/js';
-import AIOButton from './../../components/aio-button/aio-button';
+import AIOButton from './../../interfaces/aio-button/aio-button';
 import SabteGarantiJadid from '../../components/garanti/sabte-garanti-jadid/sabte-garanti-jadid';
 import Popup from '../../components/popup/popup';
 import Register from '../../components/register/register';

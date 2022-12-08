@@ -5,7 +5,7 @@ import Main from './pages/main';
 import Register from './components/register/register';
 import reportWebVitals from './reportWebVitals';
 import './index.css';
-import RVD from './npm/react-virtual-dom/react-virtual-dom';
+import RVD from './interfaces/react-virtual-dom/react-virtual-dom';
 import Loading from './components/loading/index';
 import {Icon} from '@mdi/react';
 import { mdiAlert } from '@mdi/js';

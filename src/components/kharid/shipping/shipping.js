@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
-import RVD from './../../../npm/react-virtual-dom/react-virtual-dom';
+import RVD from './../../../interfaces/react-virtual-dom/react-virtual-dom';
 import functions from './../../../functions';
-import AIOButton from './../../../npm/aio-button/aio-button';
+import AIOButton from './../../../interfaces/aio-button/aio-button';
 import appContext from './../../../app-context';
 export default class Shipping extends Component{
     static contextType = appContext;

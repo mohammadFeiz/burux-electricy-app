@@ -1,9 +1,8 @@
 import React, { Component } from "react";
-import RVD from "./../../../npm/react-virtual-dom/react-virtual-dom";
+import RVD from "./../../../interfaces/react-virtual-dom/react-virtual-dom";
 import getSvg from "./../../../utils/getSvg";
 import appContext from "./../../../app-context";
-import Table from "./../../../components/aio-table/aio-table";
-import Header from "./../../../components/header/header";
+import Table from "./../../../interfaces/aio-table/aio-table";
 import ProductCount from "./../../../components/kharid/product-count/product-count";
 export default class SabteGarantiJadidBaJoziat extends Component {
     static contextType = appContext;

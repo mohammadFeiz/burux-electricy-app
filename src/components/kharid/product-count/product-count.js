@@ -1,8 +1,8 @@
 import React,{Component} from 'react';
-import RVD from './../../../npm/react-virtual-dom/react-virtual-dom';
+import RVD from './../../../interfaces/react-virtual-dom/react-virtual-dom';
 import {Icon} from '@mdi/react';
 import { mdiPlus,mdiMinus, mdiTrashCanOutline } from '@mdi/js';
-import AIOButton from './../../../components/aio-button/aio-button';
+import AIOButton from './../../../interfaces/aio-button/aio-button';
 import $ from 'jquery';
 import './index.css';
 export default class ProductCount extends Component{

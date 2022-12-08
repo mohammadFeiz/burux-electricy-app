@@ -18,16 +18,15 @@ import Sefareshe_Ersal_Shode_Baraye_Vizitor from "./../../components/kharid/sefa
 import {Icon} from '@mdi/react';
 import { mdiShieldCheck,mdiCellphoneMarker,mdiClipboardList,mdiExitToApp, mdiCart, mdiBell, mdiPower} from "@mdi/js";
 import RSA from './../../npm/react-super-app/react-super-app';
-import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
-import AIOService from './../../npm/aio-service/aio-service';
-import AIOButton from './../../npm/aio-button/aio-button';
+import RVD from './../../interfaces/react-virtual-dom/react-virtual-dom';
+import AIOService from './../../interfaces/aio-service/aio-service';
+import AIOButton from './../../interfaces/aio-button/aio-button';
 
 
 
 import getSvg from "../../utils/getSvg";
 import Pricing from "./../../pricing";
 import appContext from "../../app-context";
-import layout from "../../layout";
 import dateCalculator from "../../utils/date-calculator";
 import Search from "./../../components/kharid/search/search";
 import Product from "./../../components/kharid/product/product";
@@ -388,7 +387,6 @@ export default class Main extends Component {
       changeCart:this.changeCart.bind(this),
       getCartCountByVariantId:this.getCartCountByVariantId.bind(this),
       logout: this.props.logout,
-      layout:(type,parameters)=>layout(type,()=>this.state,parameters)
     };
     let { 
       joziate_darkhasthaye_garanti_popup_zIndex

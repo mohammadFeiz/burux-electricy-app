@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import RVD from './../../../npm/react-virtual-dom/react-virtual-dom';
+import RVD from './../../../interfaces/react-virtual-dom/react-virtual-dom';
 import ProductCard from './../product-card/product-card';
 //props
 //1 - products [product,product,...]

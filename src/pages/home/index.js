@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
+import RVD from './../../interfaces/react-virtual-dom/react-virtual-dom';
 import getSvg from './../../utils/getSvg';
 import appContext from '../../app-context';
 import functions from '../../functions';
 import GarantiCard from '../../components/garanti/garanti-card/garanti-card';
-import AIOButton from './../../components/aio-button/aio-button';
+import AIOButton from './../../interfaces/aio-button/aio-button';
 import Awards from './../awards/index';
 import Card from '../../components/card/card';
 import SabteGarantiJadid from '../../components/garanti/sabte-garanti-jadid/sabte-garanti-jadid';

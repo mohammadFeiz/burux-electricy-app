@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import RVD from './../../../npm/react-virtual-dom/react-virtual-dom';
+import RVD from './../../../interfaces/react-virtual-dom/react-virtual-dom';
 import dateCalculator from './../../../utils/date-calculator';
 import getSvg from './../../../utils/getSvg';
 export default class PayameSabteGaranti extends Component {

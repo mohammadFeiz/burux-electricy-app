@@ -1,9 +1,9 @@
 import React,{Component,createRef} from 'react';
-import appContext from './../../app-context';
-import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
-import Tabs from './../../components/tabs/tabs';
-import ProductCard from './../../components/product-card/product-card';
-import noItemSrc from './../../images/not-found.png';
+import appContext from './../../../app-context';
+import RVD from './../../../npm/react-virtual-dom/react-virtual-dom';
+import Tabs from './../../../components/tabs/tabs';
+import ProductCard from './../product-card/product-card';
+import noItemSrc from './../../../images/not-found.png';
 import $ from 'jquery';
 export default class Cart extends Component{
     static contextType = appContext;

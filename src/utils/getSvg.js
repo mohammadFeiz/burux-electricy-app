@@ -62,13 +62,13 @@ export default function getSvg(type, conf = {}) {
           </g>
         </g>
         <defs>
-          <filter id="filter0_b_3331_15144" x="121" y="101" width="169" height="170" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+          <filter id="filter0_b_3331_15144" x="121" y="101" width="169" height="170" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
             <feFlood flood-opacity="0" result="BackgroundImageFix" />
             <feGaussianBlur in="BackgroundImageFix" stdDeviation="2" />
             <feComposite in2="SourceAlpha" operator="in" result="effect1_backgroundBlur_3331_15144" />
             <feBlend mode="normal" in="SourceGraphic" in2="effect1_backgroundBlur_3331_15144" result="shape" />
           </filter>
-          <filter id="filter1_d_3331_15144" x="129.5" y="115" width="152" height="152" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+          <filter id="filter1_d_3331_15144" x="129.5" y="115" width="152" height="152" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
             <feFlood flood-opacity="0" result="BackgroundImageFix" />
             <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
             <feOffset dy="5" />

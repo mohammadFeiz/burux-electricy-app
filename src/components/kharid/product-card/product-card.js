@@ -1,9 +1,9 @@
 import React,{Component} from 'react';
-import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
-import ProductCount from '../product-count';
-import NoSrc from './../../images/no-src.png';
-import appContext from '../../app-context';
-import AIOButton from '../aio-button/aio-button';
+import RVD from './../../../npm/react-virtual-dom/react-virtual-dom';
+import ProductCount from './../product-count/product-count';
+import NoSrc from './../../../images/no-src.png';
+import appContext from './../../../app-context';
+import AIOButton from './../../../components/aio-button/aio-button';
 //props
 //1 - product {name = '',variants = [{id}],price = 0,discountPrice = 0,discountPercent = 0,inStock = false,srcs = ['...']}
 //3 - details = [[title = '',value = '']]
@@ -130,13 +130,13 @@ export default class ProductCard extends Component{
     }
     async onClick(){
         if(this.debuggerMode){return }
-        let {SetState,kharidApis} = this.context;
-        let {product,parentZIndex = 1} = this.props;
+        let {kharidApis,openPopup} = this.context;
+        let {product} = this.props;
         if(!product.hasFullDetail){
             product = await kharidApis({type:'getProductFullDetail',parameter:{id:product.id,code:product.defaultVariant.code,product}})
             product.hasFullDetail = true;
         }
-        SetState({productZIndex:parentZIndex * 10,product})
+        openPopup('product',product)
     }
     horizontal_layout(){
         let {isLast,isFirst} = this.props;

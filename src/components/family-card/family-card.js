@@ -13,16 +13,16 @@ export default class FamilyCard extends Component{
         if(title === 'پنلی توکار'){return PaneliSrc}   
     }
     render(){
-        let {SetState,kharidApis} = this.context;
-        let {src,title,id,style,zIndex = 1} = this.props;
+        let {kharidApis,openPopup} = this.context;
+        let {title,id,style} = this.props;
         return (
             <RVD
                 layout={{
                     style:{height:180,width:140,borderRadius:12,fontSize:14,...style},
                     className:'bgFFF bold borderDDD',
                     attrs:{onClick:async ()=>{
-                        SetState({
-                            categoryZIndex:zIndex * 10,
+                        openPopup('category',{
+                            name:'خانواده ی ' + title,
                             category:{
                                 name:'خانواده ی ' + title,
                                 products:await kharidApis({type:'familyProducts',parameter:{id},cache:12 * 60,cacheName:`products-of-family-with-id-${id}`}) 

@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import RVD from "./../../npm/react-virtual-dom/react-virtual-dom";
-import appContext from "../../app-context";
-import AIOButton from './../../npm/aio-button/aio-button';
-import OrderPopup from "../order-popup/order-popup";
+import RVD from "./../../../components/kharid/orders-history/orders-history";
+import appContext from "./../../../app-context";
+import AIOButton from './../../../npm/aio-button/aio-button';
+import OrderPopup from "./../order-popup/order-popup";
 export default class OrdersHistory extends Component {
     static contextType = appContext;
     constructor(props) {

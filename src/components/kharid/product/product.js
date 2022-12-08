@@ -1,19 +1,18 @@
 import React, { Component,Fragment } from 'react';
-import AIOButton from './../../components/aio-button/aio-button';
-import ProductCount from './../../components/product-count/index';
-import Header from './../../components/header/header';
-import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
-import appContext from './../../app-context';
-import getSvg from './../../utils/getSvg';
+import AIOButton from './../../../components/aio-button/aio-button';
+import ProductCount from './../product-count/product-count';
+import RVD from './../../../npm/react-virtual-dom/react-virtual-dom';
+import appContext from './../../../app-context';
+import getSvg from './../../../utils/getSvg';
 import { mdiChevronLeft } from '@mdi/js';
 import {Icon} from '@mdi/react';
-import functions from '../../functions';
+import functions from './../../../functions';
 export default class Product extends Component {
     static contextType = appContext;
     componentDidMount(){
         this.mounted = true;
         this.getVariants()
-        let { product } = this.context;
+        let { product } = this.props;
         let firstVariant = product.inStock ? (product.variants.filter((o) => o.inStock === null ? false : !!o.inStock)[0]) : undefined;
         this.setState({
             optionValues: firstVariant ? { ...firstVariant.optionValues } : undefined, showDetails: true,
@@ -21,7 +20,7 @@ export default class Product extends Component {
         });
     }
     getVariants() {
-        let { product } = this.context;
+        let { product } = this.props;
         let { variants, optionTypes } = product;
         let optionTypesDict = {}
         let optionValuesDict = {}
@@ -51,7 +50,7 @@ export default class Product extends Component {
         this.options = res;
     }
     getVariantBySelected(selected) {
-        let { product } = this.context;
+        let { product } = this.props;
         for (let i = 0; i < product.variants.length; i++) {
             let variant = product.variants[i];
             let { optionValues } = variant;
@@ -99,21 +98,8 @@ export default class Product extends Component {
         let variantId = selectedVariant.id;
         changeCart(count, variantId);
     }
-    header_layout(){
-        let {SetState,productZIndex} = this.context;
-        return {
-            html:(
-                <Header 
-                    zIndex={productZIndex} 
-                    onClose={()=>SetState({product:false,productZIndex:0})} 
-                    title='خرید کالا'
-                    buttons={{cart:true}}
-                />
-            ),
-            style:{overflow:'visible'}}
-    }
     body_layout() {
-        let { product } = this.context;
+        let { product } = this.props;
         let { name, optionTypes, details, srcs } = product;
         let { srcIndex,selectedVariant } = this.state;
         return {
@@ -130,7 +116,7 @@ export default class Product extends Component {
         };
     }
     image_layout(name, code, src) {
-        let { product } = this.context, { srcIndex } = this.state;
+        let { product } = this.props, { srcIndex } = this.state;
         return {
             size: 346, className: "box margin-0-12",
             column: [
@@ -152,7 +138,7 @@ export default class Product extends Component {
         };
     }
     options_layout() {
-        let { product } = this.context;
+        let { product } = this.props;
         if (product.optionTypes.length < 2) { return false }
         let {selectedVariant} = this.state;
         return {
@@ -209,7 +195,7 @@ export default class Product extends Component {
                                         let active = false,style;
                                         if(optionValues[id] === undefined){
                                             console.error(`
-in product by id = ${this.context.product.id} there is an optionType by id = ${id}. but in optionValues we can find this id. optionValues is ${JSON.stringify(optionValues)}
+in product by id = ${this.props.product.id} there is an optionType by id = ${id}. but in optionValues we can find this id. optionValues is ${JSON.stringify(optionValues)}
                                             `)
                                         }
                                         else{
@@ -258,18 +244,14 @@ in product by id = ${this.context.product.id} there is an optionType by id = ${i
         };
     }
     showCart_layout(){
-        let { SetState,productZIndex,cart } = this.context;
+        let { cart,openPopup } = this.context;
         if(!Object.keys(cart).length){return false}
         return {
             className:'padding-0-12 bgFFF',size:36,align:'v',
             row:[
                 {html:'مشاهده',className:'colorA19F9D size12 bold',align:'v'},
                 {size:4},
-                {html:'سبد خرید',className:'color0094D4 size12 bold',align:'v',attrs:{
-                    onClick:()=>{
-                        SetState({cartZIndex:productZIndex * 10})
-                    }
-                }},
+                {html:'سبد خرید',className:'color0094D4 size12 bold',align:'v',attrs:{onClick:()=>openPopup('cart')}},
                 {size:4},
                 {html:<Icon path={mdiChevronLeft} size={0.8} color={'#0094D4'}/>,align:'vh'}
             ]
@@ -286,7 +268,7 @@ in product by id = ${this.context.product.id} there is an optionType by id = ${i
         };
     }
     addToCart_layout() {
-        let { getCartCountByVariantId,SetState,productZIndex } = this.context;
+        let { getCartCountByVariantId } = this.context;
         let { selectedVariant } = this.state;
         if (!selectedVariant || !selectedVariant.inStock || selectedVariant.inStock === null) {
             return { html: '' }
@@ -350,14 +332,12 @@ in product by id = ${this.context.product.id} there is an optionType by id = ${i
     }
     render() {
         if(!this.mounted){return null}
-        let {productZIndex:zIndex} = this.context;
         return (
             <RVD
                 layout={{
-                    className: "main-bg fixed",
-                    style:{zIndex},
+                    className: "main-bg",
+                    style:{height:'100%'},
                     column: [
-                        this.header_layout(), 
                         this.body_layout(),
                         {size:12},
                         this.showCart_layout(), 

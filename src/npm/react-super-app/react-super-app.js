@@ -18,7 +18,14 @@ export default class ReactSuperApp extends Component {
         touch,
         popups:[],
         sideOpen:false,
-        addPopup:(o)=>this.setState({popups:this.state.popups.concat(o)}),
+        addPopup:(o)=>{
+          let {popups} = this.state;
+          if(o.id){//agar popup ba in id baz hast oon ro beband ke tekrari popup add nashe
+            popups = popups.filter(({id})=>id !== o.id);
+            this.state.popups = popups;
+          }
+          this.setState({popups:popups.concat(o)})
+        },
         removePopup:(id)=>{
           let {popups} = this.state;
           if(id === undefined){popups.pop();}

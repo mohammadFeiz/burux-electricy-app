@@ -1,14 +1,12 @@
 import React,{Component} from 'react';
-import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
-import ProductCard from '../product-card/product-card';
-import appContext from '../../app-context';
+import RVD from './../../../npm/react-virtual-dom/react-virtual-dom';
+import ProductCard from './../product-card/product-card';
 //props
 //1 - products [product,product,...]
 //2 - title(text) required
 //3 - showAll(function) optional
 //4 - onClick(function) optional 
 export default class CategorySlider extends Component{
-    static contextType = appContext;
     products_layout(){
       let {products} = this.props;
       if(!products){return this.productsLoading_layout()}

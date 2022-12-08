@@ -1,7 +1,6 @@
 import getSvg from "./utils/getSvg";
 import functions from "./functions";
 import AIOButton from "./components/aio-button/aio-button";
-import ProductCount from "./components/product-count/index";
 import NoSrc from './images/no-src.png';
 export default function layout(type,getState, parameters = {}) {
     let $$ = {

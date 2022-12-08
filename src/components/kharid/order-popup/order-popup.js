@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import RVD from "./../../npm/react-virtual-dom/react-virtual-dom";
-import appContext from "../../app-context";
-import functions from "../../functions";
+import RVD from "./../../../npm/react-virtual-dom/react-virtual-dom";
+import appContext from "./../../../app-context";
+import functions from "./../../../functions";
 export default class OrderPopup extends Component {
     static contextType = appContext;
     state = {details:{}}

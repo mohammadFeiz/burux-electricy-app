@@ -1,9 +1,8 @@
 import React,{Component} from 'react';
-import appContext from './../../app-context';
-import Header from './../../components/header/header';
-import SearchBox from './../../components/search-box/index';
-import ProductCard from './../../components/product-card/product-card';
-import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
+import appContext from './../../../app-context';
+import SearchBox from './../../../components/search-box/index';
+import ProductCard from './../product-card/product-card';
+import RVD from './../../../npm/react-virtual-dom/react-virtual-dom';
 export default class Search extends Component {
     static contextType = appContext;
     constructor(props) {
@@ -54,15 +53,12 @@ export default class Search extends Component {
       }
     }
     render() {
-      let { SetState,searchZIndex } = this.context;
-      let { searchFamilies, result } = this.state;
       return (
-        <div className="popup-container">
           <RVD
             layout={{
-              className: "popup main-bg",
+              className: "main-bg",
+              style:{height:'100%'},
               column: [
-                {html:<Header zIndex={searchZIndex} title='جستجو در محصولات' onClose={()=>SetState({searchZIndex:0})} buttons={{cart:true}}/>},
                 {html:<SearchBox onChange={async (searchValue)=>await this.changeSearch(searchValue)}/>},
                 {size: 200,align: "vh",className: "size20 color323130 bold",show: false,html: "در میان ان کالا جستجو"},
                 {size: 48,align: "v",className: "size14 color323130 bold padding-0-24",html: "محصولات"},
@@ -71,7 +67,6 @@ export default class Search extends Component {
               ],
             }}
           />
-        </div>
       );
     }
   }

@@ -1,25 +1,21 @@
 import React, { Component } from 'react';
-import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
-import Header from './../../components/header/header';
-import ProductCard from './../../components/product-card/product-card';
-import SearchBox from './../../components/search-box/index';
-import appContext from './../../app-context';
+import RVD from './../../../npm/react-virtual-dom/react-virtual-dom';
+import ProductCard from './../product-card/product-card';
+import SearchBox from './../../../components/search-box/index';
 export default class CategoryView extends Component {
-    static contextType = appContext;
     constructor(props) {
         super(props);
         this.state = { searchValue: '' }
     }
     render() {
-        let {categoryZIndex:zIndex,SetState,category} = this.context;
-        let { name,products,src} = category;
+        let {category} = this.props;
+        let { products,src} = category;
         let {searchValue} = this.state;
         return (
             <RVD
                 layout={{
-                    className:'fixed main-bg',style:{zIndex,overflow:'hidden'},
+                    className:'main-bg',style:{height:'100%',overflow:'hidden'},
                     column: [
-                        {html:(<Header zIndex={zIndex} title={name} buttons={{cart:true}} onClose={()=>SetState({categoryZIndex:0,category:false})}/>)},
                         {html:<SearchBox value={searchValue} onChange={(searchValue)=>this.setState({searchValue})}/>},
                         {
                             flex:1,scroll: "v",
@@ -31,7 +27,7 @@ export default class CategoryView extends Component {
                                     column: products.map((product, i) => {
                                         let { searchValue } = this.state;
                                         if (searchValue && product.name.indexOf(searchValue) === -1) { return false; }
-                                        return {html:<ProductCard parentZIndex={zIndex} product={product} isFirst={i === 0} isLast={i === products.length - 1} type='horizontal' />,style:{overflow:'visible'}}
+                                        return {html:<ProductCard product={product} isFirst={i === 0} isLast={i === products.length - 1} type='horizontal' />,style:{overflow:'visible'}}
                                     })
                                 }
                             ]

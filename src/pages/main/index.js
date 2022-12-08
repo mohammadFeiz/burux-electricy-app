@@ -7,16 +7,16 @@ import Bazargah from "../bazargah/bazargah";
 import MyBurux from "./../my-burux/index";
 
 //popups/////////////////////////////////////
-import OrdersHistory from "../../popups/orders-history/orders-history";
+import OrdersHistory from "./../../components/kharid/orders-history/orders-history";
 import SabteGarantiJadid from "../../components/garanti/sabte-garanti-jadid/sabte-garanti-jadid";
-import Shipping from './../../popups/shipping/shipping';
+import Shipping from './../../components/kharid/shipping/shipping';
 import Wallet from "../../popups/wallet/wallet";
-import Cart from "./../../popups/cart/cart";
-import Sefareshe_Ersal_Shode_Baraye_Vizitor from "../../popups/sefareshe-ersal-shode-baraye-vizitor/sefareshe-ersal-shode-baraye-vizitor";
+import Cart from "./../../components/kharid/cart/cart";
+import Sefareshe_Ersal_Shode_Baraye_Vizitor from "./../../components/kharid/sefareshe-ersal-shode-baraye-vizitor/sefareshe-ersal-shode-baraye-vizitor";
 
 //npm////////////////////////////////////////
 import {Icon} from '@mdi/react';
-import { mdiShieldCheck,mdiCellphoneMarker,mdiClipboardList,mdiExitToApp, mdiCart, mdiBell} from "@mdi/js";
+import { mdiShieldCheck,mdiCellphoneMarker,mdiClipboardList,mdiExitToApp, mdiCart, mdiBell, mdiPower} from "@mdi/js";
 import RSA from './../../npm/react-super-app/react-super-app';
 import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
 import AIOService from './../../npm/aio-service/aio-service';
@@ -29,9 +29,9 @@ import Pricing from "./../../pricing";
 import appContext from "../../app-context";
 import layout from "../../layout";
 import dateCalculator from "../../utils/date-calculator";
-import Search from "./../../popups/search/search";
-import Product from "./../../popups/product/product";
-import CategoryView from "./../../popups/category-view/category-view";
+import Search from "./../../components/kharid/search/search";
+import Product from "./../../components/kharid/product/product";
+import CategoryView from "./../../components/kharid/category-view/category-view";
 import Joziate_Darkhasthaye_Garanti_Popup from "./../../components/garanti/joziate-darkhasthaye-garanti-popup/joziate_darkhasthaye_garanti_popup";
 import Popup from "../../components/popup/popup";
 import kharidApis from "../../apis/kharid-apis";
@@ -87,7 +87,7 @@ export default class Main extends Component {
           this.setState({bazargah:{...bazargah,active:res}})
         },
         // active:this.props.userInfo.isBazargahActive,
-        active:true,
+        active:false,
         forsate_ersale_sefareshe_bazargah:backOffice.forsate_ersale_sefareshe_bazargah,
         forsate_akhze_sefareshe_bazargah:backOffice.forsate_akhze_sefareshe_bazargah
       },
@@ -103,10 +103,7 @@ export default class Main extends Component {
       allProducts:[],
       shipping:false,//{cards:[<ProductCard/>,...],cartItems:[{count,variant,product}],total:number}
       cart: {},//{variantId:{count,product,variant}}
-      searchZIndex:0,
-      productZIndex:0,
       product:false,
-      categoryZIndex:0,
       category:false,
       guaranteePopupZIndex:0,
       guaranteePopupSuccessZIndex:0,
@@ -303,11 +300,27 @@ export default class Main extends Component {
     else if(type === 'darkhaste_garanti'){
       addPopup({ content:()=><SabteGarantiJadid/>,title:'درخواست گارانتی',type:'bottom'})
     }
+    else if(type === 'search'){
+      addPopup({ 
+        content:()=><Search/>,title:'جستجو در محصولات',
+        header:()=><Header type='popup' popupId='search'/>
+      })
+    }
+    else if(type === 'product'){
+      addPopup({
+        content:()=><Product product={parameter}/>,
+        title:'خرید کالا',id:'product',
+        header:()=><Header type='popup' popupId='product'/>
+      })
+    }
+    else if (type === 'category'){
+      addPopup({content:()=><CategoryView category={parameter.category}/>,title:parameter.name})
+    }
     else if(type === 'wallet'){
       addPopup({header:false,content:()=><Wallet onClose={()=>removePopup()}/>})
     }
     else if(type === 'cart'){
-      addPopup({content:()=><Cart/>,title:'سبد خرید'})
+      addPopup({content:()=><Cart/>,title:'سبد خرید',id:'cart'})
     }
     else if(type === 'shipping'){
       this.setState({shipping:parameter},()=>{
@@ -375,9 +388,8 @@ export default class Main extends Component {
       layout:(type,parameters)=>layout(type,()=>this.state,parameters)
     };
     let { 
-      searchZIndex,productZIndex,categoryZIndex,
-      guaranteePopupSuccessZIndex,guaranteePopupSubmitZIndex,guaranteePopupZIndex,ordersHistoryZIndex,
-      joziate_darkhasthaye_garanti_popup_zIndex,messages
+      guaranteePopupSuccessZIndex,guaranteePopupSubmitZIndex,
+      joziate_darkhasthaye_garanti_popup_zIndex
     } = this.state;
     let {userInfo,logout} = this.props;
     return (
@@ -405,7 +417,7 @@ export default class Main extends Component {
             // }},
           ]}
           sideHeader={()=>getSvg('mybrxlogo')}
-          header={({navId})=><Header navId={navId}/>}
+          header={({navId})=><Header type='page' navId={navId}/>}
           navId='khane'
           body={({navId})=>{
             if (navId === "khane") {return <Home />;}
@@ -421,9 +433,6 @@ export default class Main extends Component {
         />
         {guaranteePopupSubmitZIndex !== 0 && <Popup><SabteGarantiJadidBaJoziat/></Popup>}
         {guaranteePopupSuccessZIndex !== 0 && <Popup style={{padding:24}}><PayameSabteGaranti/></Popup>}
-        {searchZIndex !== 0 && <Search/>}
-        {productZIndex !== 0 && <Product/>}
-        {categoryZIndex !== 0 && <CategoryView/>}
         {joziate_darkhasthaye_garanti_popup_zIndex !== 0 && <Popup><Joziate_Darkhasthaye_Garanti_Popup/></Popup>}
       </appContext.Provider>
     );
@@ -448,8 +457,14 @@ class Message extends Component{
 class Header extends Component{
   static contextType = appContext;
   cart_layout(){
-    let {navId} = this.props;
-    if(navId !== 'kharid'){return false}
+    let {openPopup} = this.context;
+    let {navId,type,popupId} = this.props;
+    if(type === 'page'){
+      if(['kharid'].indexOf(navId) === -1){return false}
+    }
+    if(type === 'popup'){
+      if(['product','search'].indexOf(popupId) === -1){return false}
+    }
     let {cart} = this.context; 
     let length = Object.keys(cart).length;
     return {
@@ -460,14 +475,15 @@ class Header extends Component{
           text={<Icon path={mdiCart} size={1}/>} 
           badge={length > 0?length:undefined}
           badgeAttrs={{ className: "badge-1" }} 
-          onClick={() => this.openPopup('cart')}
+          onClick={() => openPopup('cart')}
         />
       )
     }
   }
   notif_layout(){
-    let {navId} = this.props;
-    if(navId !== 'khane'){return false}
+    let {navId,type} = this.props;
+    if(type === 'popup'){return false}
+    if(type === 'page' && navId !== 'khane'){return false}
     let length = 12;
     return {
       html:(
@@ -481,13 +497,30 @@ class Header extends Component{
       )
     }
   }
+  bazargahPower_layout(){
+    let {bazargah} = this.context;
+    let {navId,type} = this.props;
+    if(type !== 'page' || navId !== 'bazargah' || !bazargah.active){return false}
+    return {
+      html:(
+        <AIOButton
+          type="button" 
+          style={{ background: "none",width:60,color:'#605E5C' }} 
+          text={<Icon path={mdiPower} size={1.2}/>} 
+          onClick={()=>bazargah.setActivity(false)}
+        />
+      )
+    }
+  }
   render(){
     return (
       <RVD
         layout={{
+          gap:6,
           row:[
             this.cart_layout(),
-            this.notif_layout()
+            this.notif_layout(),
+            this.bazargahPower_layout()
           ]
         }}
       />

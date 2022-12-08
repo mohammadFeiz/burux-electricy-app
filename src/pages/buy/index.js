@@ -2,9 +2,8 @@ import React, { Component } from "react";
 import RVD from "./../../npm/react-virtual-dom/react-virtual-dom";
 import appContext from "../../app-context";
 import Tabs from "../../components/tabs/tabs";
-import CategorySlider from "../../components/category-slider/category-slider";
+import CategorySlider from "./../../components/kharid/category-slider/category-slider";
 import SearchBox from "../../components/search-box/index";
-import Header from "../../components/header/header";
 import FamilyCard from './../../components/family-card/family-card';
 import "./index.css";
 import Billboard from "../../components/billboard/billboard";
@@ -97,13 +96,13 @@ export default class Buy extends Component {
     }
   }
   tab2(){
-    let {SetState} = this.context;
+    let {openPopup} = this.context;
     let {categories = []} = this.state;
     return {
       flex: 1,className:'box gap-no-color padding-12',scroll:'v',gap: 24,
       column:categories.map((o)=>{
         return {
-          attrs:{onClick:()=>SetState({categoryZIndex:10,category:{products:o.products,name:o.name}})},
+          attrs:{onClick:()=>openPopup('category',{name:o.name,category:{products:o.products,name:o.name}})},
           column:[
             {size:200,html:<img src={o.src} alt='' height='100%'/>,align:'vh'},
             {size:36,align:'vh',html:o.name,className:'color323130 size16 bold'}
@@ -131,7 +130,7 @@ export default class Buy extends Component {
     }
   }
   sliders(){
-    let {SetState} = this.context;
+    let {openPopup} = this.context;
     let sliders = [['newOrders','جدید ترین محصولات'],['bestSellings','پر فروش ترین محصولات'],['recommendeds','پیشنهاد سفارش']]
     return {
       gap:12,className:'margin-0-12',
@@ -142,9 +141,7 @@ export default class Buy extends Component {
           html:()=>(
             <CategorySlider 
               title={name} products={this.state[key]} 
-              showAll={()=>{
-                SetState({categoryZIndex:10,category:{products,name}})
-              }}
+              showAll={()=>openPopup('category',{name,category:{products,name}})}
             />
           )
         }
@@ -152,12 +149,12 @@ export default class Buy extends Component {
     }
   }
   render() {
-    let {SetState} = this.context;
+    let {openPopup} = this.context;
     return (
       <RVD layout={{
         flex: 1,className: "buy-page main-bg",style: { width: "100%" },
         column: [
-          {html:<SearchBox onClick={()=>SetState({searchZIndex:10})}/>},
+          {html:<SearchBox onClick={()=>openPopup('search')}/>},
           {size:12},
           this.tabs()
         ]

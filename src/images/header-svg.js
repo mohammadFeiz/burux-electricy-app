@@ -139,7 +139,7 @@ export default function header_svg() {
                 </g>
             </g>
             <defs>
-                <filter id="filter0_d_4354_16197" x="105" y="50" width="201.064" height="56.9995" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                <filter id="filter0_d_4354_16197" x="105" y="50" width="201.064" height="56.9995" filterUnits="userSpaceOnUse" colorInterpolation-filters="sRGB">
                     <feFlood flood-opacity="0" result="BackgroundImageFix" />
                     <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
                     <feOffset dy="3" />

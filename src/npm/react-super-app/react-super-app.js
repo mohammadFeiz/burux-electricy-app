@@ -9,21 +9,37 @@ import './index.css';
 export default class ReactSuperApp extends Component {
     constructor(props){
       super(props);
-      let {touch = 'ontouchstart' in document.documentElement} = this.props;
+      let {touch = 'ontouchstart' in document.documentElement,splash,splashTime = 7000} = props;
       this.state = {
         navId:this.getNavId(),
+        splash,
+        showSplash:true,
         confirm:false,
         touch,
         popups:[],
         sideOpen:false,
-        addPopup:(o)=>this.setState({popups:this.state.popups.concat(o)}),
-        removePopup:()=>{
+        addPopup:(o)=>{
           let {popups} = this.state;
-          popups.pop();
+          if(o.id){//agar popup ba in id baz hast oon ro beband ke tekrari popup add nashe
+            popups = popups.filter(({id})=>id !== o.id);
+            this.state.popups = popups;
+          }
+          this.setState({popups:popups.concat(o)})
+        },
+        removePopup:(id)=>{
+          let {popups} = this.state;
+          if(id === undefined){popups.pop();}
+          else if(id === 'all'){
+            this.state.popups = [];
+            popups = [];
+          }
+          else{popups = popups.filter((o)=>o.id !== id);}
           this.setState({popups})
         },
         setConfirm:this.setConfirm.bind(this),
+        setNavId:(navId)=>this.setState({navId})
       }
+      if(splash){setTimeout(()=>this.setState({splash:false}),splashTime)}
       if(props.getActions){props.getActions({...this.state})}
     }
     setConfirm(obj){
@@ -70,22 +86,23 @@ export default class ReactSuperApp extends Component {
       if(!navs.length){return false}
       let {touch,navId} = this.state;
       let props = {navs,navHeader,navId,onChange:(navId)=>this.setState({navId}),touch,rtl}
-      return {html: (<Navigation {...props}/>)};
+      return {style:{overflow:'visible'},html: (<Navigation {...props}/>)};
     }
     page_layout(nav){
-      let {body} = this.props;
+      let {body = ()=>''} = this.props;
       return {flex:1,column:[this.header_layout(nav),{flex:1,html:<div className='rsa-body'>{body(this.state)}</div>}]} 
     }
     header_layout(nav){
         let {touch} = this.state;
-        let {header,sides = []} = this.props;
+        let {header,sides = [],title = ()=>nav.text} = this.props;
+        if(header === false){return false}
         return {
           style:{flex:'none'},align:'v',className:'rsa-header' + (touch?' touch-mode':''),
           row:[
-            {show:!!sides.length,html:<Icon path={mdiMenu} size={1}/>,align:'vh',attrs:{onClick:()=>this.setState({sideOpen:!this.state.sideOpen})}},
-            {show:!!sides.length,size:12},
-            {flex:1,html:nav.headerText || nav.text,className:'rsa-header-title'},
-            {show:!!header,html:()=>header(this.state)} 
+            {size:60,show:!!sides.length,html:<Icon path={mdiMenu} size={1}/>,align:'vh',attrs:{onClick:()=>this.setState({sideOpen:!this.state.sideOpen})}},
+            {show:!sides.length,size:24},
+            {flex:1,html:title(nav),className:'rsa-header-title'},
+            {show:!!header,html:()=>header(this.state)},
           ]
         }
     }
@@ -107,17 +124,21 @@ export default class ReactSuperApp extends Component {
         }
     }
     render() {
-      let {confirm,popups,removePopup,touch,sideOpen,navId} = this.state;
-      let {navs,sides = [],sideId,rtl,sideHeader,style} = this.props;
+      let {confirm,popups,removePopup,touch,sideOpen,navId,splash} = this.state;
+      let {navs,sides = [],sideId,rtl,sideHeader,style,popupConfig = {}} = this.props;
       let nav = navs?this.getNavById(navId):false;
       return (
         <>
           {touch && <RVD layout={{style,className: 'rsa' + (rtl?' rtl':' ltr') + (popups.length?' has-opened-popup':''),column: [this.page_layout(nav),this.navigation_layout()]}}/>}
           {!touch && <RVD layout={{style,className: 'rsa' + (rtl?' rtl':' ltr') + (popups.length?' has-opened-popup':''),row: [this.navigation_layout(),this.page_layout(nav)]}}/>}
-          {popups.length && popups.map((o,i)=><Popup key={i} {...o} index={i} removePopup={()=>removePopup()} rtl={rtl}/>)}
+          {
+            popups.length && 
+            popups.map((o,i)=>{
+              return <Popup key={i} {...popupConfig} {...o} index={i} removePopup={()=>removePopup()} rtl={rtl}/>
+            })}
           {confirm && <Confirm {...confirm} onClose={()=>this.setState({confirm:false})}/>}
-          {sides.length && sideOpen && <SideMenu sideHeader={sideHeader} sides={sides} sideId={sideId} sideOpen={sideOpen} rtl={rtl} onClose={()=>this.setState({sideOpen:false})}/>}
-          <Loading />
+          {sides.length && <SideMenu sideHeader={sideHeader} sides={sides} sideId={sideId} sideOpen={sideOpen} rtl={rtl} onClose={()=>this.setState({sideOpen:false})}/>}
+          {splash && splash()}
         </>
       );
     }
@@ -131,7 +152,7 @@ export default class ReactSuperApp extends Component {
     }
     items_layout(navs,level){
       return {
-        gap:12,flex:1,scroll:'v',
+        flex:1,scroll:'v',
         column:navs.filter(({show = ()=>true})=>show()).map((o,i)=>{
           if(o.navs){
             let {openDic} = this.state;
@@ -149,13 +170,15 @@ export default class ReactSuperApp extends Component {
       let open = openDic[id] === undefined?true:openDic[id]
       this.setState({openDic:{...openDic,[id]:!open}})
     }
-    item_layout({id,icon,text,navs},level = 0){
+    item_layout(o,level = 0){
       let {onChange,navId,rtl} = this.props;
       let {openDic} = this.state;
-      let open = openDic[id] === undefined?true:openDic[id]
+      let {id,icon,navs} = o;
+      let text = typeof o.text === 'function'?o.text():o.text;
       let active = id === navId;
+      let open = openDic[id] === undefined?true:openDic[id]
       return {
-        size:36,className:'rsa-navigation-item' + (active?' active':''),attrs:{onClick:()=>navs?this.toggle(id):onChange(id)},
+        className:'rsa-navigation-item' + (active?' active':''),attrs:{onClick:()=>navs?this.toggle(id):onChange(id)},
         row:[
           {size:level * 16},
           {size:24,html:navs?<Icon path={open?mdiChevronDown:(rtl?mdiChevronLeft:mdiChevronRight)} size={1}/>:'',align:'vh'},
@@ -170,8 +193,9 @@ export default class ReactSuperApp extends Component {
       return {
           flex:1,className:'rsa-bottom-menu-item' + (active?' active':''),attrs:{onClick:()=>onChange(id)},
           column:[
-            {flex:1},
+            {flex:2},
             {show:!!icon,html:()=>icon(active),align:'vh'},
+            {flex:1},
             {html:text,align:'vh',className:'rsa-bottom-menu-item-text'},
             {flex:1}
           ]
@@ -186,22 +210,22 @@ export default class ReactSuperApp extends Component {
     }
   }
   class SideMenu extends Component {
-    state = {open:false}
     header_layout() {
       let {sideHeader} = this.props;
       if(!sideHeader){return false}
-      return {align: 'vh',gap:12,html: sideHeader()};
+      return {html: sideHeader(),className:'rsa-sidemenu-header'};
     }
     items_layout(){
-      let {sides,onChange,sideId} = this.props;
+      let {sides,sideId,onClose} = this.props;
       return {
         gap:12,
-        column:sides.map(({icon,text,id},i)=>{
+        column:sides.map((o,i)=>{
+          let {icon = ()=><div style={{width:12}}></div>,text,id,className,onClick = ()=>{}} = o;
           let active = id === sideId;
           return {
-            size:36,className:'rsa-sidemenu-item' + (active?' active':''),attrs:{onClick:()=>onChange(id)},
+            size:36,className:'rsa-sidemenu-item' + (active?' active':'') + (className?' ' + className:''),attrs:{onClick:()=>{onClick(o); onClose()}},
             row:[
-              {show:!!icon,size:48,html:icon(active),align:'vh'},
+              {size:48,html:icon(active),align:'vh'},
               {html:text,align:'v'}
             ]
           }
@@ -213,50 +237,17 @@ export default class ReactSuperApp extends Component {
       setTimeout(()=>this.setState({open:true}),0)  
     }
     render() {
-      let {onClose,rtl} = this.props;
-      let {open} = this.state;
+      let {onClose,rtl,sideOpen} = this.props;
       return (
           <RVD 
             layout={{
-              className: 'rsa-sidemenu-container' + (open?' open':'') + (rtl?' rtl':' ltr'),
+              className: 'rsa-sidemenu-container' + (sideOpen?' open':'') + (rtl?' rtl':' ltr'),
               row:[
-                {className: 'rsa-sidemenu',column: [{size:24},this.header_layout(),{size:24},this.items_layout()]},
+                {className: 'rsa-sidemenu',column: [this.header_layout(),this.items_layout()]},
                 {flex:1,attrs:{onClick:()=>onClose()}}
               ]
             }} 
           />
-      );
-    }
-  }
-
-  class Loading extends Component{
-    cubes2(obj = {}){
-      var {count = 5,thickness = [5,16],delay = 0.1,borderRadius = 0,colors = ['dodgerblue'],duration = 1,gap = 3} = obj;
-      let Thickness = Array.isArray(thickness)?thickness:[thickness,thickness];
-      let getStyle1 = (i)=>{
-        return {
-          width:Thickness[0],height:Thickness[1],background:colors[i % colors.length],margin:`0 ${gap/2}px`,
-          animation: `${duration}s loadingScaleY infinite ease-in-out ${i * delay + 1}s`,
-          borderRadius:borderRadius + 'px'
-        }
-      }
-      let chars = ['B','U','R','U','X']
-      let items = [];
-      for(var i = 0; i < count; i++){
-        items.push(<div key={i} className='cube' style={getStyle1(i)}>{chars[i]}</div>)
-      }
-      return (
-        <div className="rect" style={{width:'100%',display:'flex',alignItems:'center',justifyContent:'center',background:'transparent'}}>
-          {items}
-        </div>
-      )
-    }
-    
-    render(){
-      return (
-        <div className='loading'>
-          {this.cubes2({thickness:[12,90],colors:['transparent']})}
-        </div>
       );
     }
   }
@@ -290,23 +281,26 @@ class Popup extends Component{
     }
     async onClose(){
       let {removePopup,onClose} = this.props;
-      if(onClose){
-        let res = await onClose();
-        if(res === false){return}
-        removePopup()
-      }
-      else{removePopup()}
+      $(this.dom.current).animate({left:'50%',top:'100%',height:'0%',width:'0%',opacity:0}, 300,async ()=>{
+        if(onClose){
+          let res = await onClose();
+          if(res === false){return}
+          removePopup()
+        }
+        else{removePopup()}
+      });
+      
     }
     header_layout(){
-      let {onClose = ()=>this.onClose(),title,header,onBack,rtl} = this.props;
+      let {onClose = ()=>this.onClose(),title,header,rtl,closeType = 'close button'} = this.props;
       if(header === false){return false}
       return {
         size:48,className:'rsa-popup-header',
         row:[
-          {show:!!onBack,size:36,html:<Icon path={rtl?mdiChevronRight:mdiChevronLeft} size={1}/>,align:'vh',attrs:{onClick:()=>onBack()}},
+          {show:closeType === 'back button' && onClose !== false,size:36,html:<Icon path={rtl?mdiChevronRight:mdiChevronLeft} size={1}/>,align:'vh',attrs:{onClick:()=>onClose()}},
           {flex:1,html:title,align:'v',className:'rsa-popup-title'},
           {show:!!header,html:()=><div style={{display:'flex',alignItems:'center'}}>{header()}</div>},
-          {show:onClose !== false,size:36,html:<Icon path={mdiClose} size={0.8}/>,align:'vh',attrs:{onClick:()=>onClose()}}
+          {show:closeType === 'close button' && onClose !== false,size:36,html:<Icon path={mdiClose} size={0.8}/>,align:'vh',attrs:{onClick:()=>onClose()}}
         ]
       }
     }

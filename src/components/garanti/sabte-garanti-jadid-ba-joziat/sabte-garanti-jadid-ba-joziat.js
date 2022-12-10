@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import RVD from "./../../../npm/react-virtual-dom/react-virtual-dom";
+import RVD from "./../../../interfaces/react-virtual-dom/react-virtual-dom";
 import getSvg from "./../../../utils/getSvg";
 import appContext from "./../../../app-context";
-import Table from "./../../../components/aio-table/aio-table";
-import Header from "./../../../components/header/header";
-import ProductCount from "./../../../components/product-count";
+import Table from "./../../../interfaces/aio-table/aio-table";
+import ProductCount from "./../../../components/kharid/product-count/product-count";
+import AIOButton from "../../../interfaces/aio-button/aio-button";
 export default class SabteGarantiJadidBaJoziat extends Component {
     static contextType = appContext;
     constructor(props) {
@@ -24,48 +24,28 @@ export default class SabteGarantiJadidBaJoziat extends Component {
                     },
                     template: (row) => { return 'X' },
                 },
-                { title: "عنوان", getValue: (row) => row.Name },
+                { title: "عنوان", field: 'row.Name' },
                 {
-                    title: "تعداد", getValue: (row) => row.Qty, width: 120,
-                    template: (row) => {
-                        return (
-                            <ProductCount value={row.Qty} onChange={(value) => {
-                                let { items } = this.state;
-                                row.Qty = value;
-                                this.setState({ items });
-                            }} />
-                        )
-                    }
+                    title: "تعداد", field: 'row.Qty', width: 120,
+                    template: 'count'
                 },
             ]
         };
     }
     async onSubmit() {
-        let { guarantiApis, SetState } = this.context;
+        let { guarantiApis, openPopup,SetState,rsa_actions } = this.context;
         let { items } = this.state;
         let res = await guarantiApis({ type: "sabte_kala", parameter: items });
         if (res) {
             let {items,total} = await guarantiApis({ type: "items" });
-            SetState({
-                guaranteeItems:items,
-                totalGuaranteeItems:total,
-                guaranteePopupSuccessText: "درخواست گارانتی شما با موفقیت ثبت شد",
-                guaranteePopupSuccessSubtext: "درخواست گارانتی شما تا 72 ساعت آینده بررسی خواهد شد",
-                guaranteePopupSuccessZIndex: 10,
-                guaranteePopupSubmitZIndex: 0
+            rsa_actions.removePopup('all');
+            SetState({guaranteeItems:items,totalGuaranteeItems:total})
+            openPopup('payame-sabte-garanti',{
+                text: "درخواست گارانتی شما با موفقیت ثبت شد",
+                subtext: "درخواست گارانتی شما تا 72 ساعت آینده بررسی خواهد شد"
             });
         }
-        else {
-            SetState({
-                guaranteePopupSuccessText: "خطا",
-                guaranteePopupSuccessZIndex: 10,
-                guaranteePopupSubmitZIndex: 0
-            });
-        }
-    }
-    header_layout() {
-        let { SetState } = this.context;
-        return { html: <Header title='ثبت درخواست گارانتی جدید' onClose={() => SetState({ guaranteePopupSubmitZIndex: 0 })} /> }
+        else {openPopup('payame-sabte-garanti',{text: "خطا"});}
     }
     hint_layout(text, subtext) {
         return {
@@ -91,19 +71,31 @@ export default class SabteGarantiJadidBaJoziat extends Component {
             flex: 1,
             html: (
                 <Table
-                    paging={false} columns={tableColumns} model={items}
-                    toolbarItems={[
-                        {
-                            type: "select", text: "افزودن کالا", className: 'button-1', optionText: 'option.Name', optionValue: 'option.Code',
-                            popupAttrs: { style: { maxHeight: 400, bottom: 0, top: 'unset', position: 'fixed', left: 0, width: '100%' } },
-                            options: guaranteeExistItems,
-                            onChange: (value, obj) => {
-                                let { items } = this.state;
-                                items.push({ Name: obj.text, Code: obj.value, Qty: 1 });
-                                this.setState({ items });
-                            },
+                    templates={{
+                        count:(row) => {
+                            return (
+                                <ProductCount value={row.Qty} onChange={(value) => {
+                                    let { items } = this.state;
+                                    row.Qty = value;
+                                    this.setState({ items });
+                                }} />
+                            )
                         }
-                    ]}
+                    }}
+                    paging={false} columns={tableColumns} model={items} rtl={true}
+                    toolbar={()=>{
+                        return (
+                            <AIOButton type='select' text="افزودن کالا" className='button-1'optionText='option.Name' optionValue='option.Code'
+                                popupAttrs={{ style: { maxHeight: 400, bottom: 0, top: 'unset', position: 'fixed', left: 0, width: '100%' }}}
+                                options={guaranteeExistItems}
+                                onChange={(value, obj) => {
+                                    let { items } = this.state;
+                                    items.push({ Name: obj.text, Code: obj.value, Qty: 1 });
+                                    this.setState({ items });
+                                }}
+                            />
+                        )
+                    }}
                 />
             ),
         }
@@ -119,9 +111,9 @@ export default class SabteGarantiJadidBaJoziat extends Component {
         return (
             <RVD
                 layout={{
-                    className: "popup main-bg",
+                    className: "main-bg",
+                    style:{height:'100%'},
                     column: [
-                        this.header_layout(),
                         this.hint_layout(
                             "تاریخ مراجعه ویزیتور : تا 72 ساعت آینده",
                             "ویزیتور جهت ثبت کالاهای گارانتی در تاریخ ذکر شده به فروشگاه شما مراجعه میکند"

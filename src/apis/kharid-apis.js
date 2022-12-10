@@ -3,9 +3,9 @@ import nosrcImage from './../images/no-src.png';
 import nosrc from './../images/no-src.png';
 export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOServiceShowAlert}) {
   let baseUrl = `https://apimy.burux.com/api/v1`;
-  let {userInfo} = getState();
   return {
     async ordersHistory() {
+      let {userInfo} = getState();
       let res = await Axios.post(`${baseUrl}/BOne/GetOrders`, {
         "FieldName": "cardcode",
         "FieldValue": userInfo.cardCode,
@@ -39,7 +39,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
       //   {docStatus:'Settlled',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
       //   {docStatus:'SettledWithBadDept',mainDocEntry:'123456',mainDocNum:'53453',mainDocisDraft:false,mainDocTotal:10},
       // ]
-      if(!Array.isArray(results)){return 'سفارشی تا کنون ثبت نشده است'}
+      
       let tabs = [
         {text:'در حال بررسی',orders:[]},
         {text:'در انتظار پرداخت',orders:[]},
@@ -48,6 +48,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
         {text:'لغو شده',orders:[]},
         {text:'مرجوع شده',orders:[]}
       ]
+      if(!Array.isArray(results)){return tabs}
       let statuses = {
         Returned:[-390,'مرجوع شده','مرجوع شده'],//
         Cancelled:[-290,'لغو شده','لغو شده'],//
@@ -259,12 +260,9 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
       return result;
     },
     async userInfo() {
+      let {userInfo} = getState();
       let res = await Axios.post(`${baseUrl}/BOne/GetCustomer`, { "DocCode": userInfo.cardCode });
-
-      if(res.status===401){
-        return false;
-      }
-
+      if(res.status===401){return false;}
       try { res = res.data.data.customer }
       catch { res = {} }
       return res
@@ -370,6 +368,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
       return getState().updateProductPrice(res,);
     },
     async preOrders() {
+      let {userInfo} = getState();
       let preOrders = { waitOfVisitor: 0, waitOfPey: 0 };
       let res = await Axios.post(`${baseUrl}/Visit/PreOrderStat`, { CardCode: userInfo.cardCode });
       if (!res || !res.data || !res.data.data) {
@@ -612,13 +611,25 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
       }
       return finalResult;
     },
-    async sendToVisitor(obj) {
-      let res = await Axios.post(`${baseUrl}/BOne/AddNewOrder`, obj);
+    async sendToVisitor({address,SettleType,PaymentTime,DeliveryType,PayDueDate}) {
+      let {userInfo,shipping} = getState();
+      let body = {
+        "marketdoc":{
+          "CardCode":userInfo.cardCode,
+          "CardGroupCode": userInfo.groupCode,
+          "MarketingLines":shipping.cartItems.map((o)=>{
+            return { ItemCode: o.variant.code, ItemQty: o.count }
+          }),
+          "DeliverAddress":address,
+          "marketingdetails":{}
+        },
+        SettleType,PaymentTime,DeliveryType,PayDueDate
+      }
+      let res = await Axios.post(`${baseUrl}/BOne/AddNewOrder`, body);
       try { return res.data.data[0].docEntry }
       catch { return false }
     },
     async getProductFullDetail({id,code,product}){
-
       //پروداکت رو همینجوری برای اینکه یک چیزی ریترن بشه فرستادم تو از کد و آی دی آبجکت کامل پروداکت رو بساز و ریترن کن
       let res = await Axios.post(`${baseUrl}/Spree/Products`,
             {
@@ -713,6 +724,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
       await Axios.get(`${baseUrl}/BOne/RefreshCentralInvetoryProducts`);
     },
     async getTaxonProducts({ loadType,Taxons,Name,msf }) {
+      let { userInfo } = getState();
       let res = await Axios.post(`${baseUrl}/Spree/Products`,
         {
           CardCode: userInfo.cardCode,
@@ -749,7 +761,6 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
       //     "ItemCode": skusId // should be an array
       //   });
 
-      const {userInfo} = getState();
       const spreeData = res.data.data;
       // const b1Data = b1Res.data.data;
       const b1Data = userInfo.itemPrices.map((i)=>{
@@ -773,6 +784,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
       return this.getMappedAllProducts({ spreeResult: spreeData, b1Result: b1Data, loadType });
     },
     async getProductsByTaxonId({ Taxons }) {
+      let { userInfo } = getState();
       let res = await Axios.post(`${baseUrl}/Spree/Products`,
         {
           CardCode: userInfo.cardCode,
@@ -788,7 +800,6 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
         return false
       }
 
-      const {userInfo} = getState();
       const spreeData = res.data.data;
       const b1Data = userInfo.itemPrices.map((i)=>{
         const onHand=i.inventory.filter(x=>x.whsCode==="01");
@@ -862,6 +873,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
       return allProducts;
     },
     async getProductsWithCalculation(skusId) {
+      let { userInfo } = getState();
       let res = await Axios.post(`${baseUrl}/BOne/GetItemsByItemCode`,
         {
           "CardCode": userInfo.cardCode,

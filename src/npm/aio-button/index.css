@@ -369,6 +369,16 @@ body.aio-button-open{
     box-sizing: border-box;
     align-items: center;
   }
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .aio-button-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .aio-button-tabs {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
   .aio-button-tabs-option{
     display:flex;
     flex-shrink:0;

@@ -1,22 +1,17 @@
 import React, { Component } from 'react';
-import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
+import RVD from './../../interfaces/react-virtual-dom/react-virtual-dom';
 import getSvg from './../../utils/getSvg';
 import appContext from '../../app-context';
 import functions from '../../functions';
 import GarantiCard from '../../components/garanti/garanti-card/garanti-card';
-import AIOButton from './../../components/aio-button/aio-button';
-import './index.css';
+import AIOButton from './../../interfaces/aio-button/aio-button';
 import Awards from './../awards/index';
 import Card from '../../components/card/card';
-import Header from '../../components/header/header';
-import ReactHtmlSlider from './../../components/react-html-slider/react-html-slider';
 import SabteGarantiJadid from '../../components/garanti/sabte-garanti-jadid/sabte-garanti-jadid';
 import Billboard from '../../components/billboard/billboard';
-import Flip from '../../components/flip/flip';
-import Popup from '../../components/popup/popup';
-import Wallet from '../../popups/wallet/wallet';
 import blankGuarantee from './../../images/blank-guarantee.png';
 import Bazargah from '../bazargah/bazargah';
+import './index.css';
 
 export default class Home extends Component {
     static contextType = appContext;
@@ -26,16 +21,9 @@ export default class Home extends Component {
             gems: 500,
             showAwards:false,
             testedChance:false,
-            showWallet:false,
             searchValue: '',
             showCallPopup:false,
-            preOrders: { waitOfVisitor: 0, waitOfPey: 0 },
-            myNearItems: [
-                { price: 600000, distance: 1.2 },
-                { price: 100000, distance: 24.0 },
-                { price: 200000, distance: 14.1 },
-                { price: 300000, distance: 28.5 },
-            ]
+            preOrders: { waitOfVisitor: 0, waitOfPey: 0 }
         }
     }
     async getPreOrders() {
@@ -66,7 +54,7 @@ export default class Home extends Component {
         return { html: <Billboard renderIn='home'/>,align:'h' }
     }
     cartAndWallet_layout(){
-        let {userInfo,cart,SetState} = this.context;
+        let {userInfo,cart,openPopup} = this.context;
         return {
             style:{overflow:'visible'},
             className:'padding-0-12',
@@ -76,7 +64,7 @@ export default class Home extends Component {
                     html:(
                         <Card
                             type='card1' title='کیف پول' value={functions.splitPrice(Math.max(userInfo.ballance,0))} unit='ریال'
-                            icon={getSvg(29,{width:30,height:30})} onClick={()=>this.setState({showWallet:true})}
+                            icon={getSvg(29,{width:30,height:30})} onClick={()=>openPopup('wallet')}
                         />
                     )
                 },
@@ -86,7 +74,7 @@ export default class Home extends Component {
                     html:(
                         <Card
                             type='card1' title='سبد خرید' value={Object.keys(cart).length} unit='کالا'
-                            icon={getSvg(28,{width:30,height:30})} onClick={()=>SetState({cartZIndex:10})}
+                            icon={getSvg(28,{width:30,height:30})} onClick={()=>openPopup('cart')}
                         />
                     )
                 }
@@ -94,7 +82,7 @@ export default class Home extends Component {
         }
     }
     preOrders_layout(){
-        let {SetState} = this.context;
+        let {openPopup} = this.context;
         let {preOrders} = this.state;
         if(!preOrders){return false}
         return {
@@ -109,7 +97,7 @@ export default class Home extends Component {
                             html:(
                                 <Card
                                     type='card2' icon={getSvg('paperRocket')} title='در حال بررسی' value={preOrders.waitOfVisitor}
-                                    unit='سفارش' onClick={()=>SetState({ordersHistoryZIndex:10})}
+                                    unit='سفارش' onClick={()=>openPopup('peygiriye-sefareshe-kharid','در حال بررسی')}
                                 />
                             )
                         },
@@ -119,7 +107,7 @@ export default class Home extends Component {
                             html:(
                                 <Card
                                     type='card2' icon={getSvg('pending')} title='در انتظار پرداخت' value={preOrders.waitOfPey}
-                                    unit='سفارش' onClick={()=>SetState({ordersHistoryZIndex:10})}
+                                    unit='سفارش' onClick={()=>openPopup('peygiriye-sefareshe-kharid','در انتظار پرداخت')}
                                 />
                             )
                         }
@@ -129,7 +117,7 @@ export default class Home extends Component {
         }
     }
     garanti_layout(){
-        let {guaranteeItems = [],SetState} = this.context;
+        let {guaranteeItems = [],SetState,openPopup} = this.context;
         return {
             className:'padding-0-12',
             style:{marginTop:12},
@@ -149,7 +137,7 @@ export default class Home extends Component {
                                     type='button'
                                     style={{background:'none'}}
                                     position='bottom'
-                                    popOver={()=><SabteGarantiJadid close={false}/>}
+                                    popOver={({toggle})=><SabteGarantiJadid close={false} closeParent={()=>toggle()}/>}
                                 />
                             )
                         }
@@ -187,7 +175,7 @@ export default class Home extends Component {
                 {size:1},
                 {
                     show:guaranteeItems.length > 0,
-                    attrs:{onClick:()=>SetState({joziate_darkhasthaye_garanti_popup_zIndex:10})},
+                    attrs:{onClick:()=>openPopup('joziate-darkhast-haye_garanti')},
                     size:48,html:'مشاهده جزییات درخواست های گارانتی ها',className:'box color0094D4 size12 bold',align:'vh',style:{borderRadius:'0 0 14px 14px'}
                 }
             ]
@@ -222,9 +210,6 @@ export default class Home extends Component {
             flex: 1,
             className:'home-page main-bg',style:{width:'100%'},
             column: [
-                {
-                    html:<Header buttons={{sidemenu:true,profile:true,gems:true,logo:true}}/>
-                },
                 {
                     flex:1,scroll:'v',
                     column: [
@@ -272,19 +257,13 @@ export default class Home extends Component {
         this.getPreOrders();
     }
     render() {
-        let {showAwards,showWallet,showCallPopup} = this.state;
+        let {showAwards,showCallPopup} = this.state;
         return (
             <>
                 <RVD layout={this.getContent()} />
                 {
                     showAwards &&
                     <Awards onClose={()=>this.setState({showAwards:false})}/>
-                }
-                {
-                    showWallet &&
-                    <Popup>
-                        <Wallet onClose={()=>this.setState({showWallet:false})}/>
-                    </Popup>
                 }
                 <AIOButton 
                     text={getSvg(showCallPopup?'phoneClose':'phone')}

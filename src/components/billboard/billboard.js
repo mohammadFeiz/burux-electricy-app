@@ -2,7 +2,7 @@ import React ,{Component} from 'react';
 import ACS from './../../npm/aio-content-slider/aio-content-slider';
 import HomeSlide2 from './../../images/home-slide-2.png';
 import Sookhte from './../../images/banner1111.png';
-import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
+import RVD from './../../interfaces/react-virtual-dom/react-virtual-dom';
 import harajestan_svg from './../../svgs/harajestan';
 import cheraghe_khatti_svg from './../../svgs/cheraghe-khatti';
 import burux_dey_svg from './../../svgs/burux-dey';
@@ -11,9 +11,9 @@ export default class Billboard extends Component{
     static contextType = appContext;
     svgs = [harajestan_svg(),cheraghe_khatti_svg(),burux_dey_svg()]
     async onClick(campaign){
-        let {kharidApis,SetState} = this.context;
+        let {kharidApis,openPopup} = this.context;
         let products = await kharidApis({type:'getCampaignProducts',parameter:campaign,cacheName:'campaign' + campaign.id});
-        SetState({categoryZIndex:10,category:{products,name:campaign.name,src:campaign.src}})
+        openPopup('category',{category:{products,name:campaign.name,src:campaign.src},name:campaign.name})
     }
     billboard_layout(){
         let {campaigns} = this.context,{renderIn} = this.props;

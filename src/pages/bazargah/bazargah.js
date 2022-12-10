@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
+import RVD from './../../interfaces/react-virtual-dom/react-virtual-dom';
 import BazargahSVG from './../../utils/svgs/bazargah-svg';
 import bazargahNoItemSrc from './../../images/bazargah-no-items.png';
 import appContext from '../../app-context';
@@ -7,16 +7,15 @@ import bulbSrc from './../../images/10w-bulb.png';
 import Header from '../../components/header/header';
 import Tabs from '../../components/tabs/tabs';
 import getSvg from '../../utils/getSvg';
-import AIOButton from '../../components/aio-button/aio-button';
+import AIOButton from './../../interfaces/aio-button/aio-button';
 import ReactHtmlSlider from './../../components/react-html-slider/react-html-slider';
 import Popup from '../../components/popup/popup';
 import {Icon} from '@mdi/react';
-import Form from '../../components/form/form';
+import Form from './../../interfaces/aio-form-react/aio-form-react';
 import {mdiCheck} from '@mdi/js';
 import Slider from 'r-range-slider';
 import Map from '../../components/map/map';
 import bazargahBlankSrc from './../../images/blank-bazargah.png';
-import $ from 'jquery';
 //import functions from '../../../functions';
 import functions from '../../functions';
 import TimerGauge from '../../components/timer-gauge/timer-gauge';
@@ -170,8 +169,9 @@ export default class Bazargah extends Component{
         }
     }
     renderInHome(){
-        let {bazargah,SetState} = this.context;
+        let {bazargah,SetState,rsa_actions} = this.context;
         if(!bazargah.active || !bazargah.wait_to_get){return false}
+        let {setNavId} = rsa_actions;
         return (
             <RVD
                 layout={{
@@ -184,7 +184,7 @@ export default class Bazargah extends Component{
                                 {size:6},
                                 {html:<div className='my-burux-badge bg0094D4'>{bazargah.wait_to_get.length}</div>,align:'vh'},
                                 {flex:1},
-                                {html:'مشاهده همه',align:'v',className:'color0094D4 size12 bold',show:!!bazargah.wait_to_get.length,attrs:{onClick:()=>SetState({activeBottomMenu:'c'})}}
+                                {html:'مشاهده همه',align:'v',className:'color0094D4 size12 bold',show:!!bazargah.wait_to_get.length,attrs:{onClick:()=>setNavId('bazargah')}}
                             ]
                         },
                         {
@@ -251,41 +251,34 @@ export default class Bazargah extends Component{
             )
         }
         if(this.props.renderInHome){return this.renderInHome()}
+        if(!bazargah.active){
+            return (
+                <RVD
+                    layout={{
+                        className:'main-bg',style:{width:'100%'},
+                        column:[
+                            {html:'بازارگاه',className:'size24 bold',align:'vh',size:96},
+                            {html:<img src={bazargahCommingSoon} alt={''} width={300} height={240}/>,align:'vh'},
+                            {size:24},
+                            {html:'محلی برای اخذ و ارسال سفارش های مردمی',className:'size16 color605E5C',align:'vh'},
+                            {size:24},
+                            {html:'بزودی',className:'size18 colorA19F9D',align:'vh'}
+                        ]
+                    }}
+                />
+            )
+        }
         return (
             <RVD
                 layout={{
                     className:'main-bg',style:{width:'100%'},
                     column:[
-                        {html:'بازارگاه',className:'size24 bold',align:'vh',size:96},
-                        {html:<img src={bazargahCommingSoon} alt={''} width={300} height={240}/>,align:'vh'},
-                        {size:24},
-                        {html:'محلی برای اخذ و ارسال سفارش های مردمی',className:'size16 color605E5C',align:'vh'},
-                        {size:24},
-                        {html:'بزودی',className:'size18 colorA19F9D',align:'vh'}
-                    ]
-                }}
-            />
-        )
-        return (
-            <RVD
-                layout={{
-                    className:'main-bg',style:{width:'100%'},
-                    column:[
-                        {html:<Header title='بازارگاه' buttons={{sidemenu:true,bazargahPower:bazargah.active === true}}/>},
                         this.bazargahPower_layout(),
                         this.tabs_layout(),
-                        //this.notifType_layout(),
                         {size:12},
                         this.wait_to_get_layout(),
                         this.wait_to_send_layout(),
-                        {size:12},
-                        // {flex:1},
-                        // {html:BazargahSVG,align:'vh'},
-                        // {html:'بازارگاه',className:'color323130 size20 bold',align:'h'},
-                        // {html:'محلی برای اخذ و ارسال سفارش های مردمی',className:'color605E5C size16',align:'h'},
-                        // {size:12},
-                        // {html:'بزودی',className:'colorA19F9D size18',align:'h'},
-                        // {flex:1}
+                        {size:12}
                     ]
                 }}
             />
@@ -745,6 +738,8 @@ class JoziateSefaresheBazargah extends Component{
     }
     code_layout(){
         if(!this.getVisibility('code')){return false}
+        let {rsa_actions} = this.context;
+        let {setNavId} = rsa_actions;
         let {staticCode,code0,code1,code2} = this.state;
         code0 = parseInt(code0); code1 = parseInt(code1); code2 = parseInt(code2);
         let disabled = isNaN(code0) || isNaN(code1) ||isNaN(code2);
@@ -819,7 +814,7 @@ class JoziateSefaresheBazargah extends Component{
                                 let res = await bazargahApis({type:'taide_code_tahvil',parameter:{staticCode,orderId:this.props.orderId,dynamicCode:`${code0}${code1}${code2}`}})
                                 if(res){
                                     showMessage('کالا تحویل شد.');
-                                    this.context.SetState({activeBottomMenu:"a"})
+                                    setNavId('khane')
                                 }
                                 else{
                                     showMessage('کد معتبر نیست')

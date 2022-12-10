@@ -45,7 +45,7 @@ function AIOServiceShowAlert(obj = {}){
       $('.' + dui).remove()
   }})
 }
-export default function services({getState,apis,token,validations = {},defaults = {}}) {
+export default function services({getState,apis,token,validations = {},defaults = {},loader}) {
   function getDateAndTime(value){
     let dateCalculator = AIODate();
     let adate,atime;
@@ -66,12 +66,26 @@ export default function services({getState,apis,token,validations = {},defaults 
   let reqInstance;
   if(token){reqInstance = Axios.create({headers: {Authorization : `Bearer ${token}`}})}
   else{reqInstance = Axios;}
-  return Service(apis({Axios:reqInstance,getState,getDateAndTime,arabicToFarsi,token,AIOServiceShowAlert}),validations,defaults)
+  return Service(apis({Axios:reqInstance,getState,getDateAndTime,arabicToFarsi,token,AIOServiceShowAlert}),validations,defaults,loader)
 }
 
+function AIOServiceLoading(){
+  return (`
+    <div class="aio-service-loading">
+      <div class="aio-service-loading-0">
+        <div class="aio-service-loading-1">
+          <div class="aio-service-loading-2" style="animation: 1s ease-in-out 0.0s infinite normal none running aioserviceloading;"></div>
+          <div class="aio-service-loading-2" style="animation: 1s ease-in-out 0.1s infinite normal none running aioserviceloading;"></div>
+          <div class="aio-service-loading-2" style="animation: 1s ease-in-out 0.2s infinite normal none running aioserviceloading;"></div>
+          <div class="aio-service-loading-2" style="animation: 1s ease-in-out 0.3s infinite normal none running aioserviceloading;"></div>
+          <div class="aio-service-loading-2" style="animation: 1s ease-in-out 0.4s infinite normal none running aioserviceloading;"></div>
+        </div>
+      </div>
+    </div>
+  `)
+}
 
-
-function Service(services,validations,defaults) {
+function Service(services,validations,defaults,loader) {
   function getFromCache(key, minutes) {
     if (minutes === true) { minutes = Infinity }
     let storage = localStorage.getItem(key);
@@ -85,16 +99,16 @@ function Service(services,validations,defaults) {
     localStorage.setItem(key, JSON.stringify({ time, data }))
   }
   return async ({ type, parameter, loading = true, cache, cacheName }) => {
-    if (loading) {$(".loading").css("display", "flex"); }
+    if (loading) {$("body").append(typeof loader === 'function'?loader():AIOServiceLoading()); }
     if (cache) {
       let a = getFromCache(cacheName ? 'storage-' + cacheName : 'storage-' + type, cache);
       if (a !== false) {
-        $(".loading").css("display", "none");
+        $(".aio-service-loading").remove();
         return a
       }
       if (!services[type]) {debugger;}
       let result = await services[type](parameter);
-      $(".loading").css("display", "none");
+      $(".aio-service-loading").remove();
       setToCache(cacheName ? 'storage-' + cacheName : 'storage-' + type, result);
       return result;
     }
@@ -102,7 +116,7 @@ function Service(services,validations,defaults) {
     let result;
     try{result = await services[type](parameter);}
     catch{result = defaults[type];} 
-    $(".loading").css("display", "none");
+    $(".aio-service-loading").remove();
     let validation = validations[type];
     if(validation){
       let message = validation(result);

@@ -40,7 +40,7 @@ export default function footerSvg(){
 <path d="M100.166 86.1221V81.5732H95.2095V85.8278C95.2095 86.0686 94.9684 86.2559 94.6737 86.2559H92.3966C92.2894 86.2559 92.1287 86.3362 92.1287 88.9317C92.1287 91.447 92.2894 91.6076 92.3966 91.6076H94.6737C98.0224 91.6076 100.166 89.4669 100.166 86.1221Z" fill="#A19F9D"/>
 </g>
 <defs>
-<filter id="filter0_i_4354_18067" x="0" y="0" width="105" height="107" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<filter id="filter0_i_4354_18067" x="0" y="0" width="105" height="107" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
 <feFlood flood-opacity="0" result="BackgroundImageFix"/>
 <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
 <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>

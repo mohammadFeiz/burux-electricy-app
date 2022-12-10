@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
+import RVD from './../../interfaces/react-virtual-dom/react-virtual-dom';
 import headerSvg from './../../images/header-svg';
 import footerSvg from './../../images/footer-svg';
 import getSvg from './../../utils/getSvg';
@@ -7,7 +7,7 @@ import appContext from '../../app-context';
 import functions from '../../functions';
 import {Icon} from '@mdi/react';
 import {mdiAccountCircle} from '@mdi/js';
-import AIOButton from './../../components/aio-button/aio-button';
+import AIOButton from './../../interfaces/aio-button/aio-button';
 import SabteGarantiJadid from '../../components/garanti/sabte-garanti-jadid/sabte-garanti-jadid';
 import Popup from '../../components/popup/popup';
 import Register from '../../components/register/register';
@@ -31,9 +31,10 @@ export default class MyBurux extends Component{
                 //{after:getSvg('chevronLeft'),text:'جایزه ها',icon:getSvg(15),onClick:()=>{}},
                 {after:getSvg('chevronLeft'),text:'حساب ها',icon:getSvg(14),onClick:()=>{}},
                 {after:getSvg('chevronLeft'),text:'جزییات درخواست های گارانتی',icon:getSvg(14),onClick:async ()=>{
-                    let {SetState,guarantiApis} = this.context;
+                    let {SetState,guarantiApis,openPopup} = this.context;
                     let {items,total} = await guarantiApis({type:'items'});
-                    SetState({guaranteeItems:items,totalGuaranteeItems:total,joziate_darkhasthaye_garanti_popup_zIndex:10}) 
+                    SetState({guaranteeItems:items,totalGuaranteeItems:total});
+                    openPopup('joziate-darkhast-haye-garanti'); 
                 }},
                 //{after:getSvg('chevronLeft'),text:'قوانین و مقررات',icon:getSvg(16),onClick:()=>{}},
                 {after:getSvg('chevronLeft'),text:'خروج از حساب کاربری',icon:getSvg(17),onClick:()=>this.context.logout(),style:{color:'#A4262C'}},

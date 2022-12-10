@@ -19,7 +19,7 @@ import {Icon} from '@mdi/react';
 import { mdiShieldCheck,mdiCellphoneMarker,mdiClipboardList,mdiExitToApp, mdiCart, mdiBell, mdiPower} from "@mdi/js";
 import RSA from './../../npm/react-super-app/react-super-app';
 import RVD from './../../interfaces/react-virtual-dom/react-virtual-dom';
-import AIOService from './../../interfaces/aio-service/aio-service';
+import AIOService from './../../npm/aio-service/aio-service';
 import AIOButton from './../../interfaces/aio-button/aio-button';
 
 

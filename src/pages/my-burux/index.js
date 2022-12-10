@@ -31,9 +31,10 @@ export default class MyBurux extends Component{
                 //{after:getSvg('chevronLeft'),text:'جایزه ها',icon:getSvg(15),onClick:()=>{}},
                 {after:getSvg('chevronLeft'),text:'حساب ها',icon:getSvg(14),onClick:()=>{}},
                 {after:getSvg('chevronLeft'),text:'جزییات درخواست های گارانتی',icon:getSvg(14),onClick:async ()=>{
-                    let {SetState,guarantiApis} = this.context;
+                    let {SetState,guarantiApis,openPopup} = this.context;
                     let {items,total} = await guarantiApis({type:'items'});
-                    SetState({guaranteeItems:items,totalGuaranteeItems:total,joziate_darkhasthaye_garanti_popup_zIndex:10}) 
+                    SetState({guaranteeItems:items,totalGuaranteeItems:total});
+                    openPopup('joziate-darkhast-haye-garanti'); 
                 }},
                 //{after:getSvg('chevronLeft'),text:'قوانین و مقررات',icon:getSvg(16),onClick:()=>{}},
                 {after:getSvg('chevronLeft'),text:'خروج از حساب کاربری',icon:getSvg(17),onClick:()=>this.context.logout(),style:{color:'#A4262C'}},

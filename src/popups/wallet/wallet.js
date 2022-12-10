@@ -8,23 +8,14 @@ import Form from "./../../interfaces/aio-form-react/aio-form-react";
 import noItemSrc from './../../images/not-found.png';
 import AIOButton from './../../interfaces/aio-button/aio-button';
 import {Icon} from '@mdi/react';
-import {mdiCog,mdiClose} from '@mdi/js';
-import Popup from './../../components/popup/popup';
-import Header from './../../components/header/header';
-import $ from 'jquery';
+import {mdiCog} from '@mdi/js';
 import './index.css';
 export default class Wallet extends Component{
     static contextType = appContext
     constructor(props){
         super(props);
         this.dom = createRef();
-        this.state = {
-            fromDate:'',
-            toDate:false,
-            items:[],
-            cards:[],
-            showSetting:false
-        }
+        this.state = {fromDate:'',toDate:false,items:[],cards:[]}
     }
     svg_in(){
         return (
@@ -49,13 +40,11 @@ export default class Wallet extends Component{
         let cards = []; 
         let res = await walletApis({type:'ettelaate_banki'})
         if(typeof res === 'string'){showMessage(res);}
-        else{
-            cards = res;
-        }
+        else{cards = res;}
         this.setState({items,cards})
     }
     header_layout(){
-        let {userInfo} = this.context;
+        let {userInfo,openPopup} = this.context;
         let {onClose} = this.props;
         return {
             className:'blue-gradient',
@@ -67,7 +56,14 @@ export default class Wallet extends Component{
                     row:[
                         {size:60,html:getSvg('chevronLeft',{flip:true,fill:'#fff'}),align:'vh',attrs:{onClick:()=>onClose()}},
                         {flex:1,html:'مدیریت کیف پول',align:'v'},
-                        {size:60,align:'vh',html:<Icon path={mdiCog} size={0.8}/>,attrs:{onClick:()=>this.setState({showSetting:true})}}
+                        {
+                            size:60,align:'vh',html:<Icon path={mdiCog} size={0.8}/>,
+                            attrs:{
+                                onClick:()=>{
+                                    let {cards} = this.state;
+                                    openPopup('tanzimate-kife-pool',{cards,onChange:(cards)=>this.setState({cards})})
+                                }}
+                            }
                     ]
                 },
                 {
@@ -248,7 +244,6 @@ export default class Wallet extends Component{
         }
     }
     render(){
-        let {showSetting,cards} = this.state;
         return (
             <>
                 <RVD
@@ -261,104 +256,12 @@ export default class Wallet extends Component{
                         ]
                     }}
                 />
-                {
-                    showSetting && <WalletSetting cards={cards} onChange={(cards)=>this.setState({cards})} onClose={()=>this.setState({showSetting:false})}/>
-                }
             </>
         )
     }
 }
 
-class WalletSetting extends Component{
-    static contextType = appContext;
-    header_layout(){
-        let {onClose} = this.props;
-        return {
-            html:<Header title='تنظیمات کیف پول' onClose={()=>onClose()}/>
-        }
-    }
-    
-    cards_layout(){
-        let {cards,onChange} = this.props;
-        return {
-            column:[
-                {
-                    size:48,className:'margin-0-12',
-                    row:[
-                        {flex:1,html:'کارت ها',align:'v'},
-                        {
-                            html:(
-                                <AIOButton
-                                    type='button' style={{background:'none'}} caret={false}
-                                    className='color0094D4 size12 bold'
-                                    text='افزودن کارت جدید'
-                                    position='bottom'
-                                    popOver={({toggle})=>{
-                                        return (
-                                            <AddCard
-                                                onAdd={(model)=>onChange([...cards,model])}
-                                                onClose={()=>toggle()}
-                                            />
-                                        )
-                                    }}
-                                />
-                            ),align:'v'
-                        }
-                    ]
-                },
-                {
-                    gap:12,
-                    column:cards.map(({number,name,id})=>{
-                        return {
-                            size:60,className:'box margin-0-12',
-                            row:[
-                                {size:12},
-                                {
-                                    flex:1,
-                                    column:[
-                                        {flex:1},
-                                        {html:number,className:'size14'},
-                                        {html:name,className:'size12 bold color605E5C'},
-                                        {flex:1}
-                                    ]
-                                },
-                                {
-                                    size:48,html:<Icon path={mdiClose} size={0.8}/>,align:'vh',
-                                    attrs:{
-                                        onClick:async ()=>{
-                                            let {walletApis,showMessage} = this.context;
-                                            let res = await walletApis({type:'hazfe_cart',parameter:id})
-                                            if(typeof res === 'string'){showMessage(res);}
-                                            else if(res === true){
-                                             onChange(cards.filter((o)=>o.id !== id))
-                                            } 
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    })
-                }
-            ]
-        }
-    }
-    render(){
-        return (
-            <Popup>
-                <RVD
-                    layout={{
-                        className:'main-bg fixed',
-                        
-                        column:[
-                            this.header_layout(),
-                            this.cards_layout()
-                        ]
-                    }}
-                />
-            </Popup> 
-        )
-    }
-}
+
 //props:
 //mojhoodi
 //onClose
@@ -419,44 +322,7 @@ class BardashtPopup extends Component{
         )
     }
 }
-class AddCard extends Component{
-    static contextType = appContext;
-    constructor(props){
-        super(props);
-        this.state = {model:{name:'',number:''}}
-    }
-    async onSubmit(){
-        let {walletApis,showMessage} = this.context;
-        let {onClose,onAdd} = this.props;
-        let {model} = this.state;
-        let res = await walletApis({type:'afzoozane_cart',parameter:model})
-        if(typeof res === 'string'){showMessage(res); onClose()}
-        else if(res === true){
-            onAdd(model);
-            onClose()
-        } 
-    }
-    render(){
-        let {model} = this.state;
-        return (
-            <Form
-                rtl={true} lang={'fa'}
-                model={model}
-                footerAttrs={{style:{background:'#fff'}}}
-                rowStyle={{marginBottom:12}}
-                bodyStyle={{background:'#fff',padding:12,paddingBottom:36}}
-                onChange={(model)=>this.setState({model})}
-                header={{title:'افزودن کارت',style:{background:'#fff'}}}
-                inputs={[
-                    {type:'text',field:'model.number',label:'شماره کارت',validations:[['required']]},
-                    {type:'text',field:'model.name',label:'نام دارنده کارت',validations:[['required']]}
-                ]}
-                onSubmit={()=>this.onSubmit()}
-                submitText='افزودن'
-            />
-        )
-    }
-}
+
 class VarizPopup extends Component{
     static contextType = appContext;
     constructor(props){

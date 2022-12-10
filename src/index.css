@@ -690,3 +690,27 @@ button{
 	border-radius:24px;
 	padding:0 24px;
 }
+
+.button-17 {
+	background: #fff;
+	box-sizing: border-box;
+	cursor: pointer;
+	font-family: inherit;
+	font-size: 14px;
+	height: 42px;
+	min-width:42px;
+	user-select: none;
+	-webkit-user-select: none;
+  }
+  .button-17:hover {
+	background: #F6F9FE;
+	color: #174ea6;
+  }
+  .button-17:active {
+	outline: none;
+  }
+  .button-17:focus {
+	outline: none;
+	border: 2px solid #4285f4;
+  }
+  

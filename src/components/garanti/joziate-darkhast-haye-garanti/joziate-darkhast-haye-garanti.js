@@ -1,15 +1,13 @@
 import React,{Component,createRef} from 'react';
-import GarantiCard from './../garanti-card/garanti-card';
-import Header from './../../header/header';
-import RVD from './../../../interfaces/react-virtual-dom/react-virtual-dom';
-import appContext from './../../../app-context';
+import GarantiCard from '../garanti-card/garanti-card'
+import RVD from '../../../interfaces/react-virtual-dom/react-virtual-dom'
+import appContext from '../../../app-context'
 import SearchBox from '../../search-box';
-import $ from 'jquery';
-import AIOButton from './../../../interfaces/aio-button/aio-button';
+import AIOButton from '../../../interfaces/aio-button/aio-button'
 import {Icon} from '@mdi/react';
 import noItemSrc from './../../../images/not-found.png';
 import {mdiSort,mdiArrowDown,mdiArrowUp} from '@mdi/js'
-export default class Joziate_Darkhasthaye_Garanti_Popup extends Component{
+export default class JoziateDarkhastHayeGaranti extends Component{
     static contextType = appContext;
     constructor(props){
         super(props);
@@ -23,28 +21,6 @@ export default class Joziate_Darkhasthaye_Garanti_Popup extends Component{
                 {text:'مرتب سازی بر حسب تعداد اقلام کاهشی',value:'3',before:(<Icon path={mdiArrowDown} size={0.8}/>)},
             ]
         }
-    }
-    onClose(){
-        let {SetState} = this.context;
-        $(this.dom.current).animate({
-            height: '0%',
-            width: '0%',
-            left:'50%',
-            top:'100%',
-            opacity:0
-        }, 300,()=>SetState({joziate_darkhasthaye_garanti_popup_zIndex:0}));
-    }
-    header_layout(){
-        return {html:<Header title='جزيیات درخواست های گارانتی' onClose={()=>this.onClose()}/>}
-    }
-    componentDidMount(){
-        $(this.dom.current).animate({
-            height: '100%',
-            width: '100%',
-            left:'0%',
-            top:'0%',
-            opacity:1
-        }, 300);
     }
     sort(value){
         let {guaranteeItems,SetState} = this.context;
@@ -111,37 +87,40 @@ export default class Joziate_Darkhasthaye_Garanti_Popup extends Component{
         });
     }
     render(){
-        let {guaranteeItems,joziate_darkhasthaye_garanti_popup_zIndex:zIndex} = this.context;
+        let {guaranteeItems} = this.context;
         let {searchValue,sorts} = this.state;
         return (
             <RVD
                 layout={{
-                    className:'fixed main-bg',
-                    style:{zIndex,left:'50%',top:'100%',height:'0%',width:'0%',opacity:0},
+                    className:'main-bg',
+                    style:{height:'100%'},
                     attrs:{ref:this.dom},
                     column:[
-                        this.header_layout(),
+                        {size:12},
                         {
-                            show:guaranteeItems.length !== 0,
+                            show:guaranteeItems.length !== 0,style:{overflow:'visible'},
                             row:[
                                 {
+                                    style:{overflow:'visible'},
                                     flex:1,html:<SearchBox placeholder='شماره درخواست گارانتی را جستجو کنید' value={searchValue} onChange={(searchValue)=>{
                                         this.setState({searchValue})
                                     }}/>,className:'margin-0-12 round-6'
                                 },
                                 {
-                                    size:48,
+                                    size:48,align:'vh',style:{overflow:'visible'},
                                     html:(
                                         <AIOButton
                                             text={<Icon path={mdiSort} size={0.8}/>}
                                             type={'select'} caret={false}
-                                            style={{background:'#fff'}}
+                                            style={{background:'none'}}
                                             options={sorts}
                                             optionClassName='"size12 color605E5C bold"'
                                             onChange={(value)=>this.sort(value)}
                                         />
                                     )
-                                }                            ]
+                                },
+                                {size:12}
+                            ]
                         },
                         {size:12},
                         {

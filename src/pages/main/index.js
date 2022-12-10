@@ -11,8 +11,10 @@ import OrdersHistory from "./../../components/kharid/orders-history/orders-histo
 import SabteGarantiJadid from "../../components/garanti/sabte-garanti-jadid/sabte-garanti-jadid";
 import Shipping from './../../components/kharid/shipping/shipping';
 import Wallet from "../../popups/wallet/wallet";
+import TanzimateKifePool from "../../components/kife-pool/tanzimate-kife-pool/tanzimate-kife-pool";
 import Cart from "./../../components/kharid/cart/cart";
 import Sefareshe_Ersal_Shode_Baraye_Vizitor from "./../../components/kharid/sefareshe-ersal-shode-baraye-vizitor/sefareshe-ersal-shode-baraye-vizitor";
+import JoziateDarkhastHayeGaranti from "./../../components/garanti/joziate-darkhast-haye-garanti/joziate-darkhast-haye-garanti";
 
 //npm////////////////////////////////////////
 import {Icon} from '@mdi/react';
@@ -31,8 +33,6 @@ import dateCalculator from "../../utils/date-calculator";
 import Search from "./../../components/kharid/search/search";
 import Product from "./../../components/kharid/product/product";
 import CategoryView from "./../../components/kharid/category-view/category-view";
-import Joziate_Darkhasthaye_Garanti_Popup from "./../../components/garanti/joziate-darkhasthaye-garanti-popup/joziate_darkhasthaye_garanti_popup";
-import Popup from "../../components/popup/popup";
 import kharidApis from "../../apis/kharid-apis";
 import bazargahApis from './../../apis/bazargah-apis';
 import walletApis from './../../apis/wallet-apis';
@@ -105,7 +105,6 @@ export default class Main extends Component {
       product:false,
       category:false,
       guaranteePopupZIndex:0,
-      joziate_darkhasthaye_garanti_popup_zIndex:0,
       ordersHistoryZIndex:0,
       order:false,
       guaranteeItems: [],
@@ -295,6 +294,9 @@ export default class Main extends Component {
     else if(type === 'sabte-garanti-jadid'){
       addPopup({ content:()=><SabteGarantiJadid/>,header:false,type:'bottom'})
     }
+    else if(type === 'joziate-darkhast-haye-garanti'){
+      addPopup({ content:()=><JoziateDarkhastHayeGaranti/>,title:'جزییات درخواست های گارانتی'})
+    }
     else if(type === 'payame-sabte-garanti'){
       let {text,subtext} = parameter;
       addPopup({ type:'center',content:()=><PayameSabteGaranti text={text} subtext={subtext} onClose={()=>removePopup()}/>,header:false})
@@ -320,6 +322,9 @@ export default class Main extends Component {
     }
     else if(type === 'wallet'){
       addPopup({header:false,content:()=><Wallet onClose={()=>removePopup()}/>})
+    }
+    else if(type === 'tanzimate-kife-pool'){
+      addPopup({content:()=><TanzimateKifePool cards={parameter.cards} onChange={parameter.onChange}/>,title:'تنظیمات کیف پول'})
     }
     else if(type === 'cart'){
       addPopup({content:()=><Cart/>,title:'سبد خرید',id:'cart'})
@@ -388,9 +393,6 @@ export default class Main extends Component {
       getCartCountByVariantId:this.getCartCountByVariantId.bind(this),
       logout: this.props.logout,
     };
-    let { 
-      joziate_darkhasthaye_garanti_popup_zIndex
-    } = this.state;
     let {userInfo,logout} = this.props;
     return (
       <appContext.Provider value={context}>
@@ -431,7 +433,6 @@ export default class Main extends Component {
           splash={()=><Splash/>}
           splashTime={7000}
         />
-        {joziate_darkhasthaye_garanti_popup_zIndex !== 0 && <Popup><Joziate_Darkhasthaye_Garanti_Popup/></Popup>}
       </appContext.Provider>
     );
   }

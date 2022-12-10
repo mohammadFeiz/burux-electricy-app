@@ -16,7 +16,6 @@ import {mdiCheck} from '@mdi/js';
 import Slider from 'r-range-slider';
 import Map from '../../components/map/map';
 import bazargahBlankSrc from './../../images/blank-bazargah.png';
-import $ from 'jquery';
 //import functions from '../../../functions';
 import functions from '../../functions';
 import TimerGauge from '../../components/timer-gauge/timer-gauge';

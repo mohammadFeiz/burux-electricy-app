@@ -9,8 +9,7 @@ import RVD from './interfaces/react-virtual-dom/react-virtual-dom';
 import Loading from './components/loading/index';
 import {Icon} from '@mdi/react';
 import { mdiAlert } from '@mdi/js';
-import logo from './images/logo1.png';
-import bazarMiarzeSrc from './images/bazar miarze.png';
+import logo from './images/logo5.png';
 import {OTPLogin} from './npm/aio-login/aio-login';
 import $ from 'jquery';
 

@@ -4,6 +4,7 @@ import getSvg from "./../../../utils/getSvg";
 import appContext from "./../../../app-context";
 import Table from "./../../../interfaces/aio-table/aio-table";
 import ProductCount from "./../../../components/kharid/product-count/product-count";
+import AIOButton from "../../../interfaces/aio-button/aio-button";
 export default class SabteGarantiJadidBaJoziat extends Component {
     static contextType = appContext;
     constructor(props) {
@@ -23,28 +24,21 @@ export default class SabteGarantiJadidBaJoziat extends Component {
                     },
                     template: (row) => { return 'X' },
                 },
-                { title: "عنوان", getValue: (row) => row.Name },
+                { title: "عنوان", field: 'row.Name' },
                 {
-                    title: "تعداد", getValue: (row) => row.Qty, width: 120,
-                    template: (row) => {
-                        return (
-                            <ProductCount value={row.Qty} onChange={(value) => {
-                                let { items } = this.state;
-                                row.Qty = value;
-                                this.setState({ items });
-                            }} />
-                        )
-                    }
+                    title: "تعداد", field: 'row.Qty', width: 120,
+                    template: 'count'
                 },
             ]
         };
     }
     async onSubmit() {
-        let { guarantiApis, openPopup,SetState } = this.context;
+        let { guarantiApis, openPopup,SetState,rsa_actions } = this.context;
         let { items } = this.state;
         let res = await guarantiApis({ type: "sabte_kala", parameter: items });
         if (res) {
             let {items,total} = await guarantiApis({ type: "items" });
+            rsa_actions.removePopup('all');
             SetState({guaranteeItems:items,totalGuaranteeItems:total})
             openPopup('payame-sabte-garanti',{
                 text: "درخواست گارانتی شما با موفقیت ثبت شد",
@@ -77,19 +71,31 @@ export default class SabteGarantiJadidBaJoziat extends Component {
             flex: 1,
             html: (
                 <Table
-                    paging={false} columns={tableColumns} model={items}
-                    toolbarItems={[
-                        {
-                            type: "select", text: "افزودن کالا", className: 'button-1', optionText: 'option.Name', optionValue: 'option.Code',
-                            popupAttrs: { style: { maxHeight: 400, bottom: 0, top: 'unset', position: 'fixed', left: 0, width: '100%' } },
-                            options: guaranteeExistItems,
-                            onChange: (value, obj) => {
-                                let { items } = this.state;
-                                items.push({ Name: obj.text, Code: obj.value, Qty: 1 });
-                                this.setState({ items });
-                            },
+                    templates={{
+                        count:(row) => {
+                            return (
+                                <ProductCount value={row.Qty} onChange={(value) => {
+                                    let { items } = this.state;
+                                    row.Qty = value;
+                                    this.setState({ items });
+                                }} />
+                            )
                         }
-                    ]}
+                    }}
+                    paging={false} columns={tableColumns} model={items} rtl={true}
+                    toolbar={()=>{
+                        return (
+                            <AIOButton type='select' text="افزودن کالا" className='button-1'optionText='option.Name' optionValue='option.Code'
+                                popupAttrs={{ style: { maxHeight: 400, bottom: 0, top: 'unset', position: 'fixed', left: 0, width: '100%' }}}
+                                options={guaranteeExistItems}
+                                onChange={(value, obj) => {
+                                    let { items } = this.state;
+                                    items.push({ Name: obj.text, Code: obj.value, Qty: 1 });
+                                    this.setState({ items });
+                                }}
+                            />
+                        )
+                    }}
                 />
             ),
         }

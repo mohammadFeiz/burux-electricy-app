@@ -63,10 +63,10 @@ export default function services({getState,apis,token,validations = {},defaults 
     try{return value.replace(/ك/g, "ک").replace(/ي/g, "ی");}
     catch{return value}
   }
-  let reqInstance;
-  if(token){reqInstance = Axios.create({headers: {Authorization : `Bearer ${token}`}})}
-  else{reqInstance = Axios;}
-  return Service(apis({Axios:reqInstance,getState,getDateAndTime,arabicToFarsi,token,AIOServiceShowAlert}),validations,defaults,loader)
+  if(token){
+    Axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  }
+  return Service(apis({Axios,getState,getDateAndTime,arabicToFarsi,token,AIOServiceShowAlert}),validations,defaults,loader)
 }
 
 function AIOServiceLoading(){

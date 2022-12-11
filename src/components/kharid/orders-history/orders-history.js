@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import RVD from "./../../../components/kharid/orders-history/orders-history";
+import RVD from "./../../../interfaces/react-virtual-dom/react-virtual-dom";
 import appContext from "./../../../app-context";
 import AIOButton from './../../../interfaces/aio-button/aio-button';
 import OrderPopup from "./../order-popup/order-popup";

@@ -25,8 +25,8 @@ export default class MyBurux extends Component{
             customerCode:'c19428',shopName:'فروشگاه الکتریکی تهران',visitorName:'علی محمدی',nationalCode:'0386481784',
             parts:[
                 {after:getSvg('chevronLeft'),text:'پیگیری سفارش خرید',icon:getSvg(13),onClick:()=>{
-                    let {SetState} = this.context;
-                    SetState({ordersHistoryZIndex:10})
+                    let {openPopup} = this.context;
+                    openPopup('peygiriye-sefareshe-kharid')
                 }},
                 //{after:getSvg('chevronLeft'),text:'جایزه ها',icon:getSvg(15),onClick:()=>{}},
                 {after:getSvg('chevronLeft'),text:'حساب ها',icon:getSvg(14),onClick:()=>{}},

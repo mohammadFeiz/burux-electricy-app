@@ -207,7 +207,8 @@ export default class AIOForm extends Component {
     )
   }
   getInput_html(obj,input){
-    return input.html(this.getModel());
+    let {html = ()=>''} = input;
+    return html(this.getModel());
   }
   getFix(input,rtl,type){
     let fix_props = this.props[type + 'Attrs'] || {};
@@ -379,6 +380,7 @@ export default class AIOForm extends Component {
     let {lang = 'en'} = this.props;
     let {validations = []} = o
     if(!validations.length){return ''}
+    
     let a = { 
       value,title:o.label,lang,
       validations:validations.map((a)=>{

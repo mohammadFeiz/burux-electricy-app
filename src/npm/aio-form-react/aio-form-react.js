@@ -379,7 +379,6 @@ export default class AIOForm extends Component {
     let {lang = 'en'} = this.props;
     let {validations = []} = o
     if(!validations.length){return ''}
-    
     let a = { 
       value,title:o.label,lang,
       validations:validations.map((a)=>{

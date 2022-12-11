@@ -10,11 +10,10 @@ export default class GarantiCard extends Component{
         if(color === 'یخی'){return '#edf0d8'}
     }
     getStatus(){
-        return false
         let {StatusCode,StatusText} = this.props;
         let types = {'0':{text:'در حال بررسی',color:'#662D91'},'1':{text:'اعلام به ویزیتور',color:'#005478'}}
         let color = types[StatusCode.toString()].color;
-        return <div style={{padding:'2px 12px',borderRadius:24,color,background:color + '30'}} className='size12'>{StatusText}</div>
+        return <div style={{padding:'0 12px',borderRadius:24,color,background:color + '30'}} className='size12'>{StatusText}</div>
     }
     detail_layout(index){
         let size = 36;
@@ -66,6 +65,7 @@ export default class GarantiCard extends Component{
                                     {html:CreateTime,className:'size12 colorA19F9D'}
                                 ]
                             },
+                            {html:this.getStatus()},
                             {column:Details.map((o,i)=>this.detail_layout(i))}
                         ]
                     }}

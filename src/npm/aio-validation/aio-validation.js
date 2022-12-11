@@ -24,9 +24,9 @@ export default function AIOValidation(props) {
         return lang === 'fa'?dict[text]:text
       },
       getMessage(target,{be,validation,unit = ''}){
-        if(validation.message){return validation.message}
         let [a,b,params = {}] = validation;
-        let {title = props.title,target:targetPresentation = target} = params;
+        let {title = props.title,target:targetPresentation = target,message} = params;
+        if(message){return message}
         return `${title} ${this.translate(be)} ${JSON.stringify(targetPresentation)} ${unit}` + (props.lang === 'fa'?' باشد':'')
       },
       contain(target,validation,value){
@@ -199,7 +199,7 @@ export default function AIOValidation(props) {
             result = target(value);
           }
           else if(type === 'required'){
-            if(value === undefined || value === '' || value === false || value.length === 0){
+            if(value === undefined || value === null || value === '' || value === false || value.length === 0){
               let {title = props.title} = params;
               if(lang === 'en'){return `${title} is required`}
               if(lang === 'fa'){return `وارد کردن ${title} ضروری است`}

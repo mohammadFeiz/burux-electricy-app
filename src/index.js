@@ -190,7 +190,7 @@ class App extends Component {
       <>
         <OTPLogin
           time={30}
-          header={<img src={logo} width={240} height={240}/>}
+          header={<img src={logo} width={160} height={160}/>}
           onInterNumber={(number)=>this.onInterNumber(number)}
           onInterCode={(code)=>this.onInterCode(code)}
           onInterPassword={(number,password)=>this.onInterPassword(number,password)}

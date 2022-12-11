@@ -17,12 +17,12 @@ export default class Register extends Component{
         let {
             latitude = 35.699739,longitude = 51.338097,cardCode = '',firstName = '',lastName = '',
             phoneNumber,//دیفالت ندارد و همیشه باید مقدارش ارسال بشه
-            storeName = '',address = '',userProvince = '',userCity = '',landline = ''
+            storeName = '',address = '',userProvince = '',userCity = '',landline = '',password = ''
         } = model;
         this.cities = allCities.filter(({province})=>province === userProvince)
         this.state = {
             prevProvince:userProvince,
-            model:{latitude,cardCode,longitude,firstName,lastName,phoneNumber,storeName,address,userProvince,userCity,landline},
+            model:{latitude,cardCode,longitude,firstName,lastName,phoneNumber,storeName,address,userProvince,userCity,landline,password,re_password:password},
             showMap:false
         }
     }
@@ -99,6 +99,8 @@ export default class Register extends Component{
                         {label:'نام',type:'text',field:'model.firstName',rowKey:'1',validations:[['required']]},
                         {type:'html',html:()=>'',rowKey:'1',rowWidth:12},
                         {label:'نام خانوادگی',type:'text',field:'model.lastName',rowKey:'1',validations:[['required']]},
+                        {label:'رمز عبور',type:'password',field:'model.password',validations:[['required'],['length>',5]]},
+                        {label:'تکرار رمز عبور',type:'password',field:'model.re_password',validations:[['=','model.password',{message:'تکرار رمز عبور با رمز عبور مطابقت ندارد'}]]},
                         {label:'تلفن همراه',type:'text',field:'model.phoneNumber',rowKey:'3',disabled:false},
                         {type:'html',html:()=>'',rowKey:'3',rowWidth:12},
                         {label:'تلفن ثابت',type:'text',field:'model.landline',rowKey:'3'},

@@ -1,6 +1,8 @@
 import React,{Component} from 'react';
 import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
 import AIOStorage from './../../npm/aio-storage/aio-storage';
+import {Icon} from '@mdi/react';
+import {mdiCellphone,mdiLock} from '@mdi/js';
 import './index.css';
 export class OTPLogin extends Component{
     constructor(props){
@@ -64,7 +66,7 @@ export class OTPLogin extends Component{
             column: [
               { size: 48 },
               this.header_layout(),
-              { size: 48 },
+              { size: 24 },
               { 
                 show:mode === 'inter-phone',align:'h',
                 html:()=>(
@@ -103,7 +105,7 @@ export class OTPLogin extends Component{
   class NumberForm extends Component{
     constructor(props){
       super(props);
-      this.state = {number:'',password:'',error:'شماره همراه خود را وارد کنید',remainingTime:props.time,mode:'password'}
+      this.state = {number:'',password:'',error:'شماره همراه خود را وارد کنید',remainingTime:props.time,mode:'otp'}
     }
     componentDidMount(){
       this.update()
@@ -146,23 +148,100 @@ export class OTPLogin extends Component{
       let {loading,onInterPassword} = this.props;
       if(type === 'number'){
         return (
-          <input key={mode}
-            type='number' tabIndex={0} className='otp-login-phone-input' disabled={loading}
-            onKeyDown={(e) => {if (e.keyCode === 13) { this.onSubmit() }}}
-            value={number} onChange={(e) => this.onChangeNumber(e)} placeholder='09...'
-          />
+          <div className='otp-login-input'>
+            <div className='otp-login-input-icon'>
+              <Icon path={mdiCellphone} size={0.8} />
+            </div>
+            <input key={mode}
+              type='number' tabIndex={0} disabled={loading}
+              onKeyDown={(e) => {if (e.keyCode === 13) { this.onSubmit() }}}
+              value={number} onChange={(e) => this.onChangeNumber(e)} placeholder='09...'
+            />
+          </div>
         )
       }
       if(type === 'password'){
         return (
-          <input key={mode}
-            type='password' tabIndex={0} className='otp-login-phone-input' style={{textAlign:'center'}}
-            onKeyDown={(e) => {if (e.keyCode === 13) { onInterPassword(password) }}}
-            value={password} onChange={(e) => this.setState({password:e.target.value})}
-          />
+          <div className='otp-login-input'>
+            <div className='otp-login-input-icon'>
+              <Icon path={mdiLock} size={0.8} />
+            </div>
+            <input key={mode}
+              type='password' tabIndex={0}
+              onKeyDown={(e) => {if (e.keyCode === 13) { onInterPassword(password) }}}
+              value={password} onChange={(e) => this.setState({password:e.target.value})}
+            />
+          </div>
         )
       }
       
+    }
+    title_layout(){
+      return { html: 'ورود | ثبت نام', className: 'otp-login-text1' }
+    }
+    subtitle_layout(){
+      let {error,remainingTime,mode,password} = this.state;
+      if(remainingTime){
+        if(mode === 'otp'){
+          return { html: `شماره تلفن همراه خود را پس از ${remainingTime} ثانیه وارد کنید`, className: 'otp-login-text2' }
+        }
+      }
+      else{
+        if(mode === 'otp'){
+          return {html:'شماره تلفن همراه خود را وارد کنید. پیامکی حاوی کد برای شما ارسال میشود',className:'otp-login-text2'}
+        }
+        if(mode === 'password'){
+          return {html:'شماره تلفن همراه و رمز عبور را وارد کنید.',className:'otp-login-text2'}
+        }
+      }
+    }
+    inputs_layout(){
+      let {remainingTime,mode} = this.state;
+      if(remainingTime){return false}
+      return {
+        gap:12,
+        column:[
+          {style:{padding:'0 12px'},html: ()=>this.getInput('number')},
+          { show:mode === 'password',style:{padding:'0 12px'},html: ()=>this.getInput('password') }
+        ]
+      }
+    }
+    error_layout(){
+      let {error,remainingTime,mode,password} = this.state;
+      if(remainingTime){return false}
+      return {
+        className:'otp-login-error-container',
+        column:[
+          { show:!!error,html: error, align: 'v', className: 'otp-login-error'},
+          { show:mode === 'password' && password.length < 6,html: 'رمز عبور باید حداقل 6 کاراکتر باشد', align: 'v', className: 'otp-login-error'}  
+        ]
+      }
+    }
+    submit_layout(){
+      let {error,remainingTime,mode,password} = this.state;
+      let {loading} = this.props;
+      if(remainingTime){return false}
+      return {
+        style:{padding:'0 12px'},
+        html: (
+          <button 
+            className='otp-login-submit' 
+            onClick={() => {
+              if(!!error || loading || (mode === 'password' && password.length < 6)){return}
+              this.onSubmit()
+            }}
+          >{loading?'در حال ارسال شماره همراه':'ورود'}</button>)
+      }
+    }
+    or_layout(){
+      return {
+        gap:6,className:'padding-0-12',
+        row:[
+          {flex:1,html:<div className='otp-login-splitter'></div>,align:'v'},
+          {html:'یا',align:'v',className:'otp-login-or'},
+          {flex:1,html:<div className='otp-login-splitter'></div>,align:'v'},
+        ]
+      }
     }
     render(){
       let {error,remainingTime,mode,password} = this.state;
@@ -175,39 +254,15 @@ export class OTPLogin extends Component{
               {
                 style:{overflow:'visible'},
                 column: [
-                  { html: 'ورود | ثبت نام', className: 'otp-login-text1' },
-                  { size: 12 },
-                  { show:!!!remainingTime && mode === 'otp',html: 'شماره تلفن همراه خود را وارد کنید. پیامکی حاوی کد برای شما ارسال میشود', className: 'otp-login-text2' },
-                  { show:!!!remainingTime && mode === 'password',html: 'شماره تلفن همراه خود را وارد کنید.', className: 'otp-login-text2' },
-                  { show:!!remainingTime && mode === 'otp',html: `شماره تلفن همراه خود را پس از ${remainingTime} ثانیه وارد کنید`, className: 'otp-login-text2' },
-                  { size: 12 },
-                  { show:!!!remainingTime,style:{padding:'0 12px'},html: ()=>this.getInput('number') },
-                  { show:!!!remainingTime,html: error,size: 24, align: 'v', className: 'otp-login-error'},
-                  { 
-                    show:mode === 'password',
-                    column:[
-                      {html: 'رمز عبور را وارد کنید.', className: 'otp-login-text2'},
-                      {size:12},
-                      { show:!!!remainingTime,style:{padding:'0 12px'},html: ()=>this.getInput('password') },
-                      { html: password.length < 6?'رمز عبور باید حداقل 6 کاراکتر باشد':'',size: 24, align: 'v', className: 'otp-login-error'}  
-                    ] 
-                  },
+                  this.title_layout(),
                   {size:12},
-                  {
-                    style:{padding:'0 12px'},show:!!!remainingTime,
-                    html: (<button className='otp-login-submit' disabled={!!error || loading || (mode === 'password' && password.length < 6)} onClick={() => this.onSubmit()}>
-                      {loading?'در حال ارسال شماره همراه':'ورود'}
-                    </button>)
-                  },
+                  this.subtitle_layout(),
                   {size:12},
-                  {
-                    gap:6,className:'padding-0-12',
-                    row:[
-                      {flex:1,html:<div style={{height:1,background:'#ddd',width:'100%'}}></div>,align:'v'},
-                      {html:'یا',align:'v',className:'otp-login-or'},
-                      {flex:1,html:<div style={{height:1,background:'#ddd',width:'100%'}}></div>,align:'v'},
-                    ]
-                  },
+                  this.inputs_layout(),
+                  this.error_layout(),
+                  this.submit_layout(),
+                  {size:12},
+                  this.or_layout(),
                   {size:12},
                   {show:mode === 'otp',html:<button className='otp-login-password' onClick={()=>this.setState({mode:'password',number:'',password:''})}>ورود با رمز عبور</button>,className:'padding-0-12',style:{overflow:'visible'}},
                   {show:mode === 'password',html:<button className='otp-login-password' onClick={()=>this.setState({mode:'otp',number:'',password:''})}>ورود با کد یکبار مصرف</button>,className:'padding-0-12',style:{overflow:'visible'}}
@@ -256,7 +311,11 @@ export class OTPLogin extends Component{
               { size: 24 },
               {
                 style:{padding:'0 12px'},
-                html: (<input className='otp-code' type='number' value={code} onChange={(e) => this.onChange(e.target.value)} maxLength={4} placeholder='- - - -'/>)
+                html: (
+                  <div className='otp-login-input'>
+                    <input className='otp-login-code' type='number' value={code} onChange={(e) => this.onChange(e.target.value)} maxLength={4} placeholder='- - - -'/>
+                  </div>
+                )
               },
               { size: 16 },
               {
@@ -286,7 +345,7 @@ export class OTPLogin extends Component{
               { size: 12 },
               {
                 attrs: { onClick: () => onClose() },
-                className: 'otp-login-text2',
+                className: 'otp-login-change-phone',
                 html: 'تغییر شماره تلفن'
               }
             ]

@@ -518,7 +518,7 @@ class Header extends Component{
           gap:6,
           row:[
             this.cart_layout(),
-            this.notif_layout(),
+            //this.notif_layout(),
             this.bazargahPower_layout()
           ]
         }}

@@ -73,7 +73,7 @@ export default class Cart extends Component{
             title:campaign?campaign.name:undefined,//2
             isFirst:i === 0,isLast: i === tabsDictionary[tabId].cartItems.length - 1,
             parentZIndex:cartZIndex,
-            changeCount:(count) => changeCart(count,variant.id)
+            changeCount:(count) => changeCart(count,variant.id,product)
           }
           return <ProductCard {...props} showIsInCart={false}/>
         })

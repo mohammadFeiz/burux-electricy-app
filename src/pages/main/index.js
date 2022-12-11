@@ -123,8 +123,8 @@ export default class Main extends Component {
     this.state.guarantiApis = AIOService({token,getState:()=>this.state,apis:guarantiApis,log});
   }
   
-  changeCart(count,variantId){
-    let {cart,product,kharidApis} = this.state;
+  changeCart(count,variantId,product){
+    let {cart,kharidApis} = this.state;
     let newCart;
     if(typeof count === 'object'){
       newCart = {...count}

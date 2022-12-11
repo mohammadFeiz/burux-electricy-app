@@ -95,8 +95,9 @@ export default class Product extends Component {
     changeCount(count) {
         let { changeCart } = this.context;
         let { selectedVariant } = this.state;
+        let {product} = this.props;
         let variantId = selectedVariant.id;
-        changeCart(count, variantId);
+        changeCart(count, variantId,product);
     }
     body_layout() {
         let { product } = this.props;

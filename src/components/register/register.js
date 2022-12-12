@@ -59,10 +59,10 @@ export default class Register extends Component{
     }
     async onSubmit(){
         let {model} = this.state;
-        let {mode} = this.props;
+        let {mode,baseUrl} = this.props;
         let url = {
-            'register':`https://apimy.burux.com/api/v1/Users/NewUser`,
-            'edit':`https://apimy.burux.com/api/v1/Users/UpdateUser`
+            'register':`${baseUrl}/Users/NewUser`,
+            'edit':`${baseUrl}/Users/UpdateUser`
         }[mode];
         model.landlineNumber = model.landline
         let res = await Axios.post(url, model);

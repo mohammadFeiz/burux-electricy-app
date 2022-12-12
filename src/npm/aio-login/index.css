@@ -1,11 +1,4 @@
-.otp-login{
-    position:fixed;
-    left:0;
-    top:0;
-    width:100%;
-    height:100%;
-    background:#3B55A5; 
-}
+
 .otp-login-code {
     color:#999;
     text-align:center;
@@ -21,7 +14,7 @@
     background:#aaa;
     width:100%;
 }
-.otp-login-password{
+.otp-login-change-mode{
     width:100%;
     background: none;
     border: 0;
@@ -94,6 +87,7 @@
     outline:none;
     background:none;
     height:100%;
+    width:100%;
 }
 .otp-login-input-icon{
     width:40px;
@@ -109,4 +103,7 @@
     background:#1265db;
     border:none;
     color:#fff;
+    display:flex;
+    align-items: center;
+    justify-content: center;
 }

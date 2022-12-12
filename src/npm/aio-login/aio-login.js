@@ -2,14 +2,14 @@ import React,{Component} from 'react';
 import RVD from './../../npm/react-virtual-dom/react-virtual-dom';
 import AIOStorage from './../../npm/aio-storage/aio-storage';
 import {Icon} from '@mdi/react';
-import {mdiCellphone,mdiLock} from '@mdi/js';
+import {mdiCellphone,mdiLock,mdiLoading} from '@mdi/js';
 import './index.css';
 export class OTPLogin extends Component{
     constructor(props){
       super(props);
       this.storage = AIOStorage('otp-login');
       this.state = {
-        mode:'inter-phone',error:'',number:'',loading:false
+        mode:'inter-phone',error:'',number:''
       }
     }
     getDelta(){
@@ -22,9 +22,7 @@ export class OTPLogin extends Component{
       let delta = this.getDelta(number);
       if(delta >= time * 1000){
         console.log('send phone number to server',number);
-        this.setState({loading:true})
         let res = await onInterNumber(number);
-        this.setState({loading:false})
         this.storage.save(new Date().getTime(),'lastTime');
         if(typeof res === 'string'){
           this.setState({mode:'error',error:res,number:''})
@@ -48,15 +46,8 @@ export class OTPLogin extends Component{
           this.setState({ error: res,mode:'error' })
       }
     }
-    header_layout() {
-      let {header} = this.props;
-      if(!header){return false}
-      return {
-        html: header, align: 'vh'
-      }
-    }
     render(){
-      let {mode,number,error,loading} = this.state;
+      let {mode,number,error} = this.state;
       let {time} = this.props;
       return (
         <RVD
@@ -64,14 +55,10 @@ export class OTPLogin extends Component{
             className:'otp-login',
             scroll: 'v',
             column: [
-              { size: 48 },
-              this.header_layout(),
-              { size: 24 },
               { 
                 show:mode === 'inter-phone',align:'h',
                 html:()=>(
                   <NumberForm
-                    loading={loading} 
                     time={time}
                     onSubmit={(number)=>this.onInterPhone(number)}
                     onInterPassword={(number,password)=>this.onInterPassword(number,password)}
@@ -86,14 +73,13 @@ export class OTPLogin extends Component{
                     number={number}
                     time={time}
                     getDelta={this.getDelta.bind(this)}
-                    onSubmit={(code)=>this.onInterCode(code)} 
-                    onClose={()=>this.setState({ mode: 'inter-phone' })}
+                    onSubmit={async (code)=>await this.onInterCode(code)} 
+                    onClose={()=>this.setState({ mode: 'inter-phone'})}
                     onResend={async (number)=>await this.onInterPhone(number)}
                   />
                 )
               },
               { show:mode === 'error',html:()=><CodeError error={error} onClose={()=>this.setState({ error: '',mode:'inter-phone' })}/>},
-              { size: 300 }
             ]
           }}
         />
@@ -131,21 +117,21 @@ export class OTPLogin extends Component{
       if (value.length > 11) { return }
       this.setState({number:value,error:this.getError(value)})
     }
-    onSubmit(){
+    async onSubmit(){
       let {error,number,password,mode} = this.state;
       if(error){return}
       if(mode === 'otp'){
         let {onSubmit} = this.props;
-        onSubmit(number)
+        await onSubmit(number)
       }
       else if(mode === 'password'){
         let {onInterPassword} = this.props;
-        onInterPassword(number,password);
+        await onInterPassword(number,password);
       }
     }
     getInput(type){
       let {number,mode,password} = this.state;
-      let {loading,onInterPassword} = this.props;
+      let {onInterPassword} = this.props;
       if(type === 'number'){
         return (
           <div className='otp-login-input'>
@@ -153,7 +139,7 @@ export class OTPLogin extends Component{
               <Icon path={mdiCellphone} size={0.8} />
             </div>
             <input key={mode}
-              type='number' tabIndex={0} disabled={loading}
+              type='number' tabIndex={0}
               onKeyDown={(e) => {if (e.keyCode === 13) { this.onSubmit() }}}
               value={number} onChange={(e) => this.onChangeNumber(e)} placeholder='09...'
             />
@@ -180,7 +166,7 @@ export class OTPLogin extends Component{
       return { html: 'ورود | ثبت نام', className: 'otp-login-text1' }
     }
     subtitle_layout(){
-      let {error,remainingTime,mode,password} = this.state;
+      let {remainingTime,mode} = this.state;
       if(remainingTime){
         if(mode === 'otp'){
           return { html: `شماره تلفن همراه خود را پس از ${remainingTime} ثانیه وارد کنید`, className: 'otp-login-text2' }
@@ -219,33 +205,43 @@ export class OTPLogin extends Component{
     }
     submit_layout(){
       let {error,remainingTime,mode,password} = this.state;
-      let {loading} = this.props;
       if(remainingTime){return false}
       return {
         style:{padding:'0 12px'},
         html: (
-          <button 
-            className='otp-login-submit' 
-            onClick={() => {
-              if(!!error || loading || (mode === 'password' && password.length < 6)){return}
-              this.onSubmit()
-            }}
-          >{loading?'در حال ارسال شماره همراه':'ورود'}</button>)
+          <SubmitButton 
+            disabled={!!error || (mode === 'password' && password.length < 6)}
+            onClick={async () => await this.onSubmit()}
+          />
+        )
       }
     }
-    or_layout(){
+    changeMode_layout(){
+      let {mode,remainingTime} = this.state;
+      if(remainingTime){return false}
       return {
-        gap:6,className:'padding-0-12',
-        row:[
-          {flex:1,html:<div className='otp-login-splitter'></div>,align:'v'},
-          {html:'یا',align:'v',className:'otp-login-or'},
-          {flex:1,html:<div className='otp-login-splitter'></div>,align:'v'},
+        column:[
+          {
+            gap:6,className:'padding-0-12',
+            row:[
+              {flex:1,html:<div className='otp-login-splitter'></div>,align:'v'},
+              {html:'یا',align:'v',className:'otp-login-or'},
+              {flex:1,html:<div className='otp-login-splitter'></div>,align:'v'},
+            ]
+          },
+          {
+            html:(
+              <button 
+                className='otp-login-change-mode' 
+                onClick={()=>this.setState({mode:mode === 'otp'?'password':'otp',number:'',password:''})}
+              >{mode === 'otp'?'ورود با رمز عبور':'ورود با کد یکبار مصرف'}</button>
+            ),
+            className:'padding-0-12',style:{overflow:'visible'}
+          }
         ]
       }
     }
     render(){
-      let {error,remainingTime,mode,password} = this.state;
-      let {loading} = this.props;
       return (
         <RVD
           layout={{
@@ -262,10 +258,7 @@ export class OTPLogin extends Component{
                   this.error_layout(),
                   this.submit_layout(),
                   {size:12},
-                  this.or_layout(),
-                  {size:12},
-                  {show:mode === 'otp',html:<button className='otp-login-password' onClick={()=>this.setState({mode:'password',number:'',password:''})}>ورود با رمز عبور</button>,className:'padding-0-12',style:{overflow:'visible'}},
-                  {show:mode === 'password',html:<button className='otp-login-password' onClick={()=>this.setState({mode:'otp',number:'',password:''})}>ورود با کد یکبار مصرف</button>,className:'padding-0-12',style:{overflow:'visible'}}
+                  this.changeMode_layout()
                 ]
               },
               { size: 16 }
@@ -282,6 +275,35 @@ export class OTPLogin extends Component{
       this.state = {code:'',recode:false}
       this.update();
     }
+    label_layout(){
+      let {number} = this.props;
+      return {
+        column:[
+          {html: 'کد تایید را وارد کنید',className: 'otp-login-text1'},
+          { size: 12 },
+          {html: `کد تایید برای شماره ${number} پیامک شد`,className: 'otp-login-text2'}    
+        ]
+      }
+    }
+    input_layout(){
+      let {code} = this.state;
+      return {
+        style:{padding:'0 12px'},
+        html: (
+          <div className='otp-login-input'>
+            <input className='otp-login-code' type='number' value={code} onChange={(e) => this.onChange(e.target.value)} maxLength={4} placeholder='- - - -'/>
+          </div>
+        )
+      }
+    }
+    submit_layout(){
+      let {onSubmit} = this.props;
+      let {code} = this.state;
+      return {
+        style:{padding:'0 12px'},
+        html: (<SubmitButton disabled={isNaN(+code) || code.length !== 4} onClick={async () => await onSubmit(code)}/>)
+      }
+    }
     update(){
       let {getDelta,number,time} = this.props;
       clearTimeout(this.tiomeout);
@@ -296,58 +318,57 @@ export class OTPLogin extends Component{
       if (code.length > 4) { return }
       this.setState({code});
     }
+    remainingTime_layout(){
+      let {recode,remainingTime} = this.state;
+      if(recode || !remainingTime){return false}
+      return {
+        gap: 3,className: 'otp-login-text3', align: 'h',
+        row: [
+          { html: `${remainingTime} ثانیه`, style: {fontWeight:'bold' }},
+          { html: 'مانده تا دریافت مجدد کد' }
+        ]
+      }
+    }
+    recode_layout(){
+      let {number,onResend} = this.props;
+      let {recode} = this.state;
+      if(!recode){return false}
+      return {
+        style:{padding:'0 12px'}, show: recode, align: 'h',
+        html: (
+          <button className='button-3' style={{ width: 'fit-content' }} 
+            onClick={async () => {
+              await onResend(number);
+              this.update();
+            }}
+          >دریافت مجدد کد</button>
+        )
+      }
+    }
+    changePhone_layout(){
+      let {onClose} = this.props;
+      return {
+        attrs: { onClick: () => onClose() },
+        className: 'otp-login-change-phone',
+        html: 'تغییر شماره تلفن'
+      }
+    }
     render(){
-      let {number,onSubmit,onClose,onResend} = this.props;
-      let {code,recode,remainingTime} = this.state;
-      console.log(code);
       return (
         <RVD
           layout={{
             className:'otp-login-form',
             column: [
-              {html: 'کد تایید را وارد کنید',className: 'otp-login-text1'},
-              { size: 12 },
-              {html: `کد تایید برای شماره ${number} پیامک شد`,className: 'otp-login-text2'},
+              this.label_layout(),
               { size: 24 },
-              {
-                style:{padding:'0 12px'},
-                html: (
-                  <div className='otp-login-input'>
-                    <input className='otp-login-code' type='number' value={code} onChange={(e) => this.onChange(e.target.value)} maxLength={4} placeholder='- - - -'/>
-                  </div>
-                )
-              },
+              this.input_layout(),
               { size: 16 },
-              {
-                style:{padding:'0 12px'},
-                html: (<button className='otp-login-submit' disabled={code.length !== 4} onClick={() => onSubmit(code)}>تایید</button>)
-              },
+              this.submit_layout(),
               { size: 16 },
-              {
-                show: !recode && !!remainingTime, gap: 3,
-                className: 'otp-login-text3', align: 'h',
-                row: [
-                  { html: `${remainingTime} ثانیه`, style: {fontWeight:'bold' }},
-                  { html: 'مانده تا دریافت مجدد کد' }
-                ]
-              },
-              {
-                style:{padding:'0 12px'}, show: recode, align: 'h',
-                html: (
-                  <button className='button-3' style={{ width: 'fit-content' }} 
-                    onClick={async () => {
-                      await onResend(number);
-                      this.update();
-                    }}
-                  >دریافت مجدد کد</button>
-                )
-              },
+              this.remainingTime_layout(),
+              this.recode_layout(),
               { size: 12 },
-              {
-                attrs: { onClick: () => onClose() },
-                className: 'otp-login-change-phone',
-                html: 'تغییر شماره تلفن'
-              }
+              this.changePhone_layout()
             ]
           }}
         />
@@ -360,6 +381,7 @@ export class OTPLogin extends Component{
       return (
         <RVD
           layout={{
+            className:'otp-login-form',
             column: [
               { html: error, className: 'otp-login-error', align: 'vh' },
               { size: 24 },
@@ -367,6 +389,37 @@ export class OTPLogin extends Component{
             ]
           }}
         />
+      )
+    }
+  }
+
+
+  class SubmitButton extends Component{
+    state = {loading:false}
+    async onClick(){
+      let {onClick} = this.props;
+      let {loading} = this.state;
+      if(loading){return;}
+      this.setState({loading:true})
+      await onClick();
+      this.setState({loading:false})
+    }
+    render(){
+      let {disabled} = this.props;
+      let {loading} = this.state;
+      return (
+        <>
+          <button 
+            className='otp-login-submit' 
+            disabled={disabled}
+            onClick={() => this.onClick()}
+          >{loading?(<><Icon path={mdiLoading} size={1} spin={0.2} style={{margin:'0 6px'}}/>در حال ارسال</>):'ورود'}</button>
+          {
+            loading &&
+            <div style={{position:'fixed',width:'100%',height:'100%',left:0,top:0,zIndex:100000000000000000000000000000000000000}}></div> 
+          }
+        </>
+        
       )
     }
   }

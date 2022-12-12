@@ -1,6 +1,5 @@
 import Axios from "axios";
-export default function apis({getState,token,getDateAndTime,showAlert}) {
-  let baseUrl = 'https://apimy.burux.com/api/v1';
+export default function apis({getState,token,getDateAndTime,showAlert,baseUrl}) {
   let {userInfo} = getState();
   return {
     async items(gregorianDate){

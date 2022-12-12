@@ -46,7 +46,7 @@ export default class MyBurux extends Component{
         return {className:'margin-0-12',style:{overflow:'visible'},html:<Card type='card4' items={parts}/>}
     }
     getContent(){
-        let {totalGuaranteeItems,userInfo} = this.context;
+        let {totalGuaranteeItems,userInfo,openPopup} = this.context;
         let slpname,slpcode;
         try{
             slpname = userInfo.slpname || 'تایین نشده';
@@ -88,7 +88,14 @@ export default class MyBurux extends Component{
                             rows={[
                                 [['کد مشتری',userInfo.cardCode],['نام فروشگاه',userInfo.storeName]],
                                 [['نام ویزیتور',slpname],['کد ویزیتور',slpcode]],
-                                [['گروه مشتری',userInfo.groupName]]
+                                [
+                                    ['گروه مشتری',userInfo.groupName],
+                                    [
+                                        'رمز ورود',
+                                        <button 
+                                            style={{background:'none',border:'none',outline:'none',color:'#3b55a5',fontWeight:'bold'}}
+                                            onClick={()=>openPopup('password')}
+                                        >مشاهده و ویرایش</button>]]
                                 
                             ]}
                             onClick={()=>this.setState({showProfile:true})}
@@ -155,7 +162,7 @@ export default class MyBurux extends Component{
     }
     render(){
         let {showProfile,showWallet} = this.state;
-        let {userInfo,updateUserInfo} = this.context;
+        let {userInfo,updateUserInfo,baseUrl} = this.context;
         return (<>
             <RVD layout={this.getContent()}/>
             {
@@ -166,7 +173,7 @@ export default class MyBurux extends Component{
                             layout={{
                                 className:'fixed',
                                 html:(
-                                    <Register mode='edit' model={{...userInfo}} 
+                                    <Register baseUrl={baseUrl} mode='edit' model={{...userInfo}} 
                                         onClose={()=>this.setState({showProfile:false})}
                                         onSubmit={(userInfo)=>{
                                             updateUserInfo(userInfo)

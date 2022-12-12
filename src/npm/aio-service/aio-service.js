@@ -45,7 +45,7 @@ function AIOServiceShowAlert(obj = {}){
       $('.' + dui).remove()
   }})
 }
-export default function services({getState,apis,token,validations = {},defaults = {},loader}) {
+export default function services({getState,apis,token,validations = {},defaults = {},loader,baseUrl}) {
   function getDateAndTime(value){
     let dateCalculator = AIODate();
     let adate,atime;
@@ -66,7 +66,7 @@ export default function services({getState,apis,token,validations = {},defaults 
   if(token){
     Axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   }
-  return Service(apis({Axios,getState,getDateAndTime,arabicToFarsi,token,AIOServiceShowAlert}),validations,defaults,loader)
+  return Service(apis({Axios,getState,getDateAndTime,arabicToFarsi,token,AIOServiceShowAlert,baseUrl}),validations,defaults,loader)
 }
 
 function AIOServiceLoading(){

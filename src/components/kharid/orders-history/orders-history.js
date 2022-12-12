@@ -47,11 +47,11 @@ export default class OrdersHistory extends Component {
       return {flex: 1,gap: 12,scroll:'v',column}
     }
     order_layout(order){
-      let {addPopup} = this.context;
+      let {openPopup} = this.context;
       return {
         style:{overflow:'visible'},
         html:<OrderCard order={order}/>,
-        attrs:{onClick:()=>addPopup({content:()=><OrderPopup order={order}/>,title:'جزيیات سفارش خرید'})}
+        attrs:{onClick:()=>openPopup('joziate-sefareshe-kharid',order)}
       }
     }
     render() {

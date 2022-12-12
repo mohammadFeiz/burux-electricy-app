@@ -97,16 +97,16 @@ export default class OrderPopup extends Component {
       let {details = {}} = this.state;
       let {products = []} = details;
       return {
-        gap: 2,className:'margin-0-12',
+        gap: 2,className:'margin-0-12',style:{overflow:'visible'},
         column: products.map((o, i) => {
-          return (
-            <ProductCard
-              isFirst={i === 0} isLast={i === products.length - 1}
-              price={o.price} details={o.details}
-              discountPrice={o.discountPrice} discountPercent={o.discountPercent}
-              campaign={o.campaign} src={o.src} count={o.count}
-            />
-          )
+          return {
+            style:{overflow:'visible'},
+            html:(
+              <ProductCard {...o}
+                isFirst={i === 0} isLast={i === products.length - 1}
+              />
+            )
+          }
         })
       }
     }
@@ -115,6 +115,7 @@ export default class OrderPopup extends Component {
         <RVD
           layout={{
             className: "main-bg",
+            style:{height:'100%'},
             column: [
               {
                 flex: 1,scroll: "v",gap: 12,
@@ -147,8 +148,8 @@ export default class OrderPopup extends Component {
       return {flex:1,html:<img src={src} width={'100%'} alt=''/>}
     }
     count_layout(){
-      let {count} = this.props;
-      return {size:24,count}
+      let {itemQty} = this.props;
+      return {size:24,html:itemQty,align:'vh'}
     }
     campaign_layout(){
       let {campaign} = this.props;
@@ -156,8 +157,8 @@ export default class OrderPopup extends Component {
       return {html:campaign.name,className:'size10',style:{color:'rgb(253, 185, 19)'}}
     }
     name_layout(){
-      let {name} = this.props;
-      return {html:name,className:'size14 color575756 bold'}
+      let {itemName} = this.props;
+      return {html:itemName,className:'size12 color575756 bold'}
     }
     details_layout(){
       let {details = []} = this.props;
@@ -169,13 +170,13 @@ export default class OrderPopup extends Component {
       }
     }
     discount_layout(){
-      let {discountPercent,discountPrice} = this.props;
+      let {discountPercent,priceAfterVat} = this.props;
       if(!discountPercent){return false}
       return {
         gap:4,
         row:[
             {flex:1},
-            {html:functions.splitPrice(discountPrice),className:'size14 colorA19F9D',align:'v'},
+            {html:<del>{functions.splitPrice(priceAfterVat)}</del>,className:'size14 colorA19F9D',align:'v'},
             {html:<div style={{background:'#FFD335',color:'#fff',padding:'1px 3px',fontSize:12,borderRadius:6}}>{discountPercent + '%'}</div>,align:'v'},
         ]  
       }
@@ -193,7 +194,7 @@ export default class OrderPopup extends Component {
       return (
         <RVD
           layout={{
-            className:'box gap-no-color',gap:12,style:this.getStyle(),
+            className:'box gap-no-color',style:this.getStyle(),
             row:[
               {
                 size:96,
@@ -202,17 +203,21 @@ export default class OrderPopup extends Component {
                     this.count_layout()
                 ]
               },
+              {size:3},
               {
                   flex:1,gap:6,
                   column:[
+                      {size:3},
                       this.campaign_layout(),
                       this.name_layout(),
                       {flex:1},
                       this.details_layout(),
                       this.discount_layout(),
-                      this.price_layout()
+                      this.price_layout(),
+                      {size:3}
                   ]
-              }
+              },
+              {size:6}
             ] 
           }}
         />

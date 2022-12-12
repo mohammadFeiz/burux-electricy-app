@@ -16,7 +16,7 @@ import $ from 'jquery';
 class App extends Component {
   constructor(props) {
     super(props);
-    this.apiBaseUrl = "https://apimy.burux.com/api/v1";
+    this.apiBaseUrl = "https://retailerapp.bbeta.ir/api/v1";
     this.state = { isAutenticated: false, registered: false,pageError:false,userInfo:{}}
   }
 
@@ -67,6 +67,10 @@ class App extends Component {
     }
     else
       return loginResult.data.message;
+  }
+  async updatePassword(password){
+    return true
+    debugger;
   }
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -135,6 +139,11 @@ class App extends Component {
       slpphone:'09123534314'
     }
   }
+  header_layout(){
+    return {
+      html:<img src={logo} width={160} height={160} alt=''/>,align:'vh'
+    }
+  }
   render() {
     if (!this.mounted) { return <Loading/> }
     let { isAutenticated, userInfo, token, registered ,pageError,loading} = this.state;
@@ -142,6 +151,7 @@ class App extends Component {
       if (!registered) {
         return (
           <Register
+            baseUrl={this.apiBaseUrl}
             mode='register'
             model={{PhoneNumber:userInfo.phoneNumber}}
             onClose={()=>this.setState({ isAutenticated: false })}
@@ -152,7 +162,14 @@ class App extends Component {
       localStorage.setItem('brxelctoken', JSON.stringify({ token, userInfo }));
       return (
         <>
-        <Main logout={() => this.logout()} token={token} userInfo={userInfo} updateUserInfo={this.updateUserInfo.bind(this)}/>
+        <Main 
+          logout={() => this.logout()} 
+          token={token} 
+          userInfo={userInfo} 
+          updateUserInfo={this.updateUserInfo.bind(this)} 
+          updatePassword={this.updatePassword.bind(this)} 
+          baseUrl={this.apiBaseUrl}
+        />
       </>
         
       )
@@ -187,15 +204,28 @@ class App extends Component {
       )
     }
     return (
-      <>
-        <OTPLogin
-          time={30}
-          header={<img src={logo} width={160} height={160}/>}
-          onInterNumber={(number)=>this.onInterNumber(number)}
-          onInterCode={(code)=>this.onInterCode(code)}
-          onInterPassword={(number,password)=>this.onInterPassword(number,password)}
-        />
-      </>
+      <RVD
+        layout={{
+          style:{position:'fixed',left:0,top:0,width:'100%',height:'100%',background:'#3B55A5',overflowY:'auto'},
+          column:[
+            {size:48},
+            this.header_layout(),
+            {size:24},
+            {
+              html:(
+                <OTPLogin
+                  time={30}
+                  header={<img src={logo} width={160} height={160}/>}
+                  onInterNumber={(number)=>this.onInterNumber(number)}
+                  onInterCode={(code)=>this.onInterCode(code)}
+                  onInterPassword={(number,password)=>this.onInterPassword(number,password)}
+                />
+              )
+            },
+            {flex:1,style:{minHeight:240}}
+          ]
+        }}
+      />
     )
   }
 }

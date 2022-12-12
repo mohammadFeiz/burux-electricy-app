@@ -1,8 +1,7 @@
 import Axios from "axios";
 import nosrcImage from './../images/no-src.png';
 import nosrc from './../images/no-src.png';
-export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOServiceShowAlert}) {
-  let baseUrl = `https://apimy.burux.com/api/v1`;
+export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOServiceShowAlert,baseUrl}) {
   return {
     async ordersHistory() {
       let {userInfo} = getState();
@@ -146,10 +145,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
       let Skus = [];
       const products = result.marketingLines.map((i) => {
         Skus.push(i.itemCode)
-        return {
-          name: i.itemName,itemCode: i.itemCode, discountPrice: i.priceAfterVat, dicountPercent: i.discountPercent, price: i.price, count: i.itemQty, src: nosrcImage,
-          details: []
-        };
+        return {...i,src: nosrcImage,details: []};
       })
       
       let srcs = await Axios.post(`${baseUrl}/Spree/Products`, { 

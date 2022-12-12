@@ -15,6 +15,8 @@ import TanzimateKifePool from "../../components/kife-pool/tanzimate-kife-pool/ta
 import Cart from "./../../components/kharid/cart/cart";
 import Sefareshe_Ersal_Shode_Baraye_Vizitor from "./../../components/kharid/sefareshe-ersal-shode-baraye-vizitor/sefareshe-ersal-shode-baraye-vizitor";
 import JoziateDarkhastHayeGaranti from "./../../components/garanti/joziate-darkhast-haye-garanti/joziate-darkhast-haye-garanti";
+import OrderPopup from "./../../components/kharid/order-popup/order-popup";
+import PasswordPopup from "../../components/password-popup/password-popup";
 
 //npm////////////////////////////////////////
 import {Icon} from '@mdi/react';
@@ -99,6 +101,7 @@ export default class Main extends Component {
       testedChance: true,
       userInfo:props.userInfo,
       updateUserInfo:props.updateUserInfo,
+      updatePassword:props.updatePassword,
       allProducts:[],
       shipping:false,//{cards:[<ProductCard/>,...],cartItems:[{count,variant,product}],total:number}
       cart: {},//{variantId:{count,product,variant}}
@@ -114,13 +117,13 @@ export default class Main extends Component {
       peygiriyeSefaresheKharid_tab:undefined,
       buy_view:undefined,//temporary state
     };
-    let {token} = this.props;
+    let {token,baseUrl} = this.props;
     let log = true;
-    this.state.kharidApis = AIOService({token,getState:()=>this.state,apis:kharidApis,log});
-    this.state.bazargahApis = AIOService({token,getState:()=>this.state,apis:bazargahApis,log});
-    this.state.walletApis = AIOService({token,getState:()=>this.state,apis:walletApis,log});
-    this.state.gardooneApis = AIOService({token,getState:()=>this.state,apis:gardooneApis,log});
-    this.state.guarantiApis = AIOService({token,getState:()=>this.state,apis:guarantiApis,log});
+    this.state.kharidApis = AIOService({token,getState:()=>this.state,apis:kharidApis,log,baseUrl});
+    this.state.bazargahApis = AIOService({token,getState:()=>this.state,apis:bazargahApis,log,baseUrl});
+    this.state.walletApis = AIOService({token,getState:()=>this.state,apis:walletApis,log,baseUrl});
+    this.state.gardooneApis = AIOService({token,getState:()=>this.state,apis:gardooneApis,log,baseUrl});
+    this.state.guarantiApis = AIOService({token,getState:()=>this.state,apis:guarantiApis,log,baseUrl});
   }
   
   changeCart(count,variantId,product){
@@ -288,8 +291,14 @@ export default class Main extends Component {
   openPopup(type,parameter){
     let {rsa_actions} = this.state;
     let {addPopup,removePopup,setNavId} = rsa_actions;
-    if(type === 'peygiriye-sefareshe-kharid'){
-      addPopup({content:()=><OrdersHistory activeTab={parameter}/>,title:'پیگیری سفارش خرید'})
+    if(type === 'password'){
+      addPopup({content:()=><PasswordPopup/>,title:'مشاهده و ویرایش رمز عبور'})
+    }
+    else if(type === 'peygiriye-sefareshe-kharid'){
+      addPopup({content:()=><OrdersHistory activeTab={parameter}/>,title:'جزيیات سفارش خرید'})
+    }
+    if(type === 'joziate-sefareshe-kharid'){
+      addPopup({content:()=><OrderPopup order={parameter}/>,title:'پیگیری سفارش خرید'})
     }
     else if(type === 'sabte-garanti-jadid'){
       addPopup({ content:()=><SabteGarantiJadid/>,header:false,type:'bottom'})
@@ -377,13 +386,14 @@ export default class Main extends Component {
     }
   }
   getProfileName(userInfo){
-    if(!userInfo.cardName){return 'پروفایل'}
-    let arr = userInfo.cardName.split(' ');
-    if(arr.length === 1){return arr[0]}
-    for(let i = 0; i < arr.length - 1; i++){
-      arr[i] = arr[i][0];
+    let str = userInfo.cardName;
+    if(!str){return 'پروفایل'}
+    if(str.length > 10){
+      let s = str.slice(0,5);
+      let e = str.slice(str.length - 5,str.length);
+      return `${s}..${e}`
     }
-    return arr.join(' ')
+    return str
   }
   render() {
     let context = {
@@ -392,6 +402,7 @@ export default class Main extends Component {
       changeCart:this.changeCart.bind(this),
       getCartCountByVariantId:this.getCartCountByVariantId.bind(this),
       logout: this.props.logout,
+      baseUrl:this.props.baseUrl
     };
     let {userInfo,logout} = this.props;
     return (
@@ -427,8 +438,8 @@ export default class Main extends Component {
             if (navId === "bazargah") {return <Bazargah/>;}
             if (navId === "profile") {return <MyBurux />;}
           }}
-          getActions={({setConfitm,addPopup,removePopup,setNavId})=>{
-            this.setState({rsa_actions:{setConfitm,addPopup,removePopup,setNavId}})
+          getActions={({setConfirm,addPopup,removePopup,setNavId})=>{
+            this.setState({rsa_actions:{setConfirm,addPopup,removePopup,setNavId}})
           }}
           splash={()=><Splash/>}
           splashTime={7000}

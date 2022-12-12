@@ -388,12 +388,8 @@ export default class Main extends Component {
   getProfileName(userInfo){
     let str = userInfo.cardName;
     if(!str){return 'پروفایل'}
-    if(str.length > 10){
-      let s = str.slice(0,5);
-      let e = str.slice(str.length - 5,str.length);
-      return `${s}..${e}`
-    }
-    return str
+    if(str.length <= 12){return str}
+    return <marquee behavior='scroll' scrollAmount={3} direction='right'>{str}</marquee> 
   }
   render() {
     let context = {

@@ -204,7 +204,7 @@ export class OTPLogin extends Component{
       }
     }
     submit_layout(){
-      let {error,remainingTime,mode,password} = this.state;
+      let {error,remainingTime,mode,password,number} = this.state;
       if(remainingTime){return false}
       return {
         style:{padding:'0 12px'},

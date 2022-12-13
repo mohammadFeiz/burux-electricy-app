@@ -58,6 +58,7 @@ class App extends Component {
     }
   }
   async onInterPassword(number,password){
+    debugger
     //if error return error message
     const loginResult = await Axios.get(`${this.apiBaseUrl}/Users/Login?phoneNumber=${number}&password=${password}`);
     if (loginResult.data.isSuccess){

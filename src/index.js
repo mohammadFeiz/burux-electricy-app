@@ -71,6 +71,11 @@ class App extends Component {
   async updatePassword(password){
     //در صورت موفقیت ریترن ترو
     //در صورت خطا ریترن متن خطا
+    const setPasswordResult = await Axios.get(`${this.apiBaseUrl}/Users/SetPassword?password=${password}`);
+    if (setPasswordResult.data.isSuccess && setPasswordResult.data.data.length)
+      return true;
+    else
+      return setPasswordResult.data.message;
   }
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////

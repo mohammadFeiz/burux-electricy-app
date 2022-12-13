@@ -39,7 +39,6 @@ export default class PasswordPopup extends Component{
                 onSubmit={changePassword?()=>this.updatePassword():undefined}
                 submitText='ویرایش رمز عبور'
                 inputs={[
-                    {label:'رمز فعلی',type:'text',field:'model.currentPassword',disabled:true},
                     {type:'html',html:()=><button className='button-2' onClick={()=>this.setState({changePassword:true})}>ویرایش رمز عبور</button>,show:!changePassword},
                     {
                         label:'رمز عبور',type:'password',field:'model.password',

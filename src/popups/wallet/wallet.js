@@ -309,7 +309,7 @@ class BardashtPopup extends Component{
                                     style:{height:48,flex:'none'},gap:6,
                                     row:[
                                         {html:'موجودی:',className:'size14 color605E5C bold',align:'v'},
-                                        {html:`${functions.splitPrice(mojoodi)} تومان`,className:'size14 color0094D4 bold',align:'v'},
+                                        {html:`${functions.splitPrice(mojoodi)} تومان`,className:'size14 color3B55A5 bold',align:'v'},
                                     ]
                                 }}
                             />

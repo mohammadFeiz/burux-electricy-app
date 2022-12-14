@@ -30,7 +30,7 @@ export default class Sefareshe_Ersal_Shode_Baraye_Vizitor extends Component{
           {html:'شماره درخواست:',className:'color605#5C size12'},
           {html:orderNumber,className:'color605E5C size12 bold'},
           {flex:1},
-          {html:'مشاهده درخواست',className:'color0094D4 size14 bold',attrs:{onClick:()=>onShowInHistory()}}
+          {html:'مشاهده درخواست',className:'color3B55A5 size14 bold',attrs:{onClick:()=>onShowInHistory()}}
         ]
       }
     }

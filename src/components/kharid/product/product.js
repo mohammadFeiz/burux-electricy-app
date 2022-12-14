@@ -252,7 +252,7 @@ in product by id = ${this.props.product.id} there is an optionType by id = ${id}
             row:[
                 {html:'مشاهده',className:'colorA19F9D size12 bold',align:'v'},
                 {size:4},
-                {html:'سبد خرید',className:'color0094D4 size12 bold',align:'v',attrs:{onClick:()=>openPopup('cart')}},
+                {html:'سبد خرید',className:'color3B55A5 size12 bold',align:'v',attrs:{onClick:()=>openPopup('cart')}},
                 {size:4},
                 {html:<Icon path={mdiChevronLeft} size={0.8} color={'#0094D4'}/>,align:'vh'}
             ]

@@ -12,7 +12,11 @@ export default class GarantiCard extends Component{
     getStatus(){
         let {StatusCode,StatusText} = this.props;
         let types = {'0':{text:'در حال بررسی',color:'#662D91'},'1':{text:'اعلام به ویزیتور',color:'#005478'}}
-        let color = types[StatusCode.toString()].color;
+        let color;
+        try{
+            color = types[StatusCode.toString()].color;
+        }
+        catch{color = '#000'}
         return <div style={{padding:'0 12px',borderRadius:24,color,background:color + '30'}} className='size12'>{StatusText}</div>
     }
     detail_layout(index){

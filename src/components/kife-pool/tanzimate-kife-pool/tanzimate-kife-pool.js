@@ -20,7 +20,7 @@ export default class TanzimateKifePool extends Component{
                             html:(
                                 <AIOButton
                                     type='button' style={{background:'none'}} caret={false}
-                                    className='color0094D4 size12 bold'
+                                    className='color3B55A5 size12 bold'
                                     text='افزودن کارت جدید'
                                     position='bottom'
                                     popOver={({toggle})=>{

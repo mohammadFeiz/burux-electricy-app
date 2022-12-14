@@ -103,7 +103,7 @@ class Card3 extends Component{
                     gap:1,
                     column:[
                         this.rows_layout(rows),
-                        {style:{background:'#fff',borderRadius:'0 0 12px 12px'},show:!!footer,size:40,align:'vh',html:footer,className:'color0094D4 size12 bold',attrs:{onClick}}
+                        {style:{background:'#fff',borderRadius:'0 0 12px 12px'},show:!!footer,size:40,align:'vh',html:footer,className:'color3B55A5 size12 bold',attrs:{onClick}}
                     ]
                 }}
             />

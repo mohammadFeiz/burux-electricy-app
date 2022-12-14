@@ -182,9 +182,9 @@ export default class Bazargah extends Component{
                             row:[
                                 {html: "بازارگاه",className: "size14 color323130 bold padding-0-12",size: 48,align: "v"},
                                 {size:6},
-                                {html:<div className='my-burux-badge bg0094D4'>{bazargah.wait_to_get.length}</div>,align:'vh'},
+                                {html:<div className='my-burux-badge bg3B55A5'>{bazargah.wait_to_get.length}</div>,align:'vh'},
                                 {flex:1},
-                                {html:'مشاهده همه',align:'v',className:'color0094D4 size12 bold',show:!!bazargah.wait_to_get.length,attrs:{onClick:()=>setNavId('bazargah')}}
+                                {html:'مشاهده همه',align:'v',className:'color3B55A5 size12 bold',show:!!bazargah.wait_to_get.length,attrs:{onClick:()=>setNavId('bazargah')}}
                             ]
                         },
                         {
@@ -622,7 +622,7 @@ class JoziateSefaresheBazargah extends Component{
                                 <AIOButton
                                     type='button'
                                     style={{background:'none'}}
-                                    className='color0094D4 bold size14'
+                                    className='color3B55A5 bold size14'
                                     text='افزودن پیک جدید'
                                     position='bottom'
                                     popOver={(obj)=><AddDeliverer onSuccess={(model)=>{
@@ -851,7 +851,7 @@ class JoziateSefaresheBazargah extends Component{
                             html:(
                                 <a href={`tel:${deliverer.mobile}`} style={{display:'flex',alignItems:'center'}}>
                                     {getSvg('phone',{style:{transform:'scale(0.6)'}})}
-                                    <span className='color0094D4 size14 bold'>تماس</span>
+                                    <span className='color3B55A5 size14 bold'>تماس</span>
                                 </a>
                             )
                         }

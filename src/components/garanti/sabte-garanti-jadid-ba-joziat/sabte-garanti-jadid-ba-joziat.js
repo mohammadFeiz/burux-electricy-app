@@ -106,7 +106,7 @@ export default class SabteGarantiJadidBaJoziat extends Component {
                 {
                     flex:1,
                     column:[
-                        {html:title,size:36,align:'v',className:'color0094D4 size16 bold'},
+                        {html:title,size:36,align:'v',className:'color3B55A5 size16 bold'},
                         {html:text,className:'size12 color605E5C'}
                     ]
                 },

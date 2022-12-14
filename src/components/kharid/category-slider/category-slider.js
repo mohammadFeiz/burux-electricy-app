@@ -65,7 +65,7 @@ export default class CategorySlider extends Component{
                 row:[
                   {html:title,className: "size14 color323130 bold",align: "v"},
                   {flex:1},
-                  {show:showAll !== undefined && products !== undefined,html: "مشاهده همه",className: "size12 color0094D4 bold",align: "v",attrs:{onClick:()=>showAll()}}
+                  {show:showAll !== undefined && products !== undefined,html: "مشاهده همه",className: "size12 color3B55A5 bold",align: "v",attrs:{onClick:()=>showAll()}}
                 ]
               },
               this.products_layout(),

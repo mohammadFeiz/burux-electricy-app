@@ -8,7 +8,8 @@ export default class Splash extends Component{
       return (
         <RVD
           layout={{
-            style:{background:'#3B55A5',position:'fixed',width:'100%',height:'100%',left:0,top:0},
+            style:{position:'fixed',width:'100%',height:'100%',left:0,top:0},
+            className:'bg3B55A5',
             column:[
               {size:152},
               {html:<img src={Logo5} alt='' width={240} height={240}/>,align:'vh'},

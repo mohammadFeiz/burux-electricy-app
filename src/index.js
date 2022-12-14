@@ -212,7 +212,8 @@ class App extends Component {
     return (
       <RVD
         layout={{
-          style:{position:'fixed',left:0,top:0,width:'100%',height:'100%',background:'#3B55A5',overflowY:'auto'},
+          style:{position:'fixed',left:0,top:0,width:'100%',height:'100%',overflowY:'auto'},
+          className:'bg3B55A5',
           column:[
             {size:48},
             this.header_layout(),

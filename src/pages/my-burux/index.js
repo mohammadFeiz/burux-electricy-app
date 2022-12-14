@@ -93,7 +93,8 @@ export default class MyBurux extends Component{
                                     [
                                         'رمز ورود',
                                         <button 
-                                            style={{background:'none',border:'none',outline:'none',color:'#3b55a5',fontWeight:'bold'}}
+                                            style={{background:'none',border:'none',outline:'none',fontWeight:'bold'}}
+                                            className='color3B55A5'
                                             onClick={()=>openPopup('password')}
                                         >مشاهده و ویرایش</button>]]
                                 

@@ -131,7 +131,7 @@ export default class Home extends Component {
                                 <AIOButton
                                     text='ثبت درخواست جدید'
                                     caret={false}
-                                    className='color0094D4 size12 bold'
+                                    className='color3B55A5 size12 bold'
                                     before={getSvg('plusBox')}
                                     type='button'
                                     style={{background:'none'}}
@@ -175,7 +175,7 @@ export default class Home extends Component {
                 {
                     show:guaranteeItems.length > 0,
                     attrs:{onClick:()=>openPopup('joziate-darkhast-haye_garanti')},
-                    size:48,html:'مشاهده جزییات درخواست های گارانتی ها',className:'box color0094D4 size12 bold',align:'vh',style:{borderRadius:'0 0 14px 14px'}
+                    size:48,html:'مشاهده جزییات درخواست های گارانتی ها',className:'box color3B55A5 size12 bold',align:'vh',style:{borderRadius:'0 0 14px 14px'}
                 }
             ]
         }
@@ -189,7 +189,7 @@ export default class Home extends Component {
                     flex: 1,
                     column: [
                         {size:12},
-                        { align:'v',row: [{ html: '5',className: 'color0094D4 size28 bold', align: 'v' }, { size: 6 }, { html: 'الماس', align: 'v',className: 'color323130 size18 bold'}]},
+                        { align:'v',row: [{ html: '5',className: 'color3B55A5 size28 bold', align: 'v' }, { size: 6 }, { html: 'الماس', align: 'v',className: 'color323130 size18 bold'}]},
                         { html: 'به ازای اخذ هر سفارش از بازارگاه',className: 'color605E5C bold size14',align:'v' },
                         {size:12},
                         

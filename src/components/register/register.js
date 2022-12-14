@@ -230,7 +230,7 @@ class ShowMap extends Component{
             size:72,style:{position:'absolute',bottom:12,left:12,width:'calc(100% - 24px)',overflow:'visible',zIndex:100000000000},
             className:'box-shadow',align:'vh',
             column:[
-                {html:`latitude:${latitude.toFixed(6)} - Lonitude:${longitude.toFixed(6)}`,style:{width:'100%',background:'rgba(255,255,255,.8)',fontSize:12,borderRadius:5},align:'h',className:'color0094D4'},
+                {html:`latitude:${latitude.toFixed(6)} - Lonitude:${longitude.toFixed(6)}`,style:{width:'100%',background:'rgba(255,255,255,.8)',fontSize:12,borderRadius:5},align:'h',className:'color3B55A5'},
                 {size:6},
                 {html:<button onClick={()=>onChange(latitude,longitude)} className='button-2 box-shadow'>تایید موقعیت</button>,style:{background:'orange',width:'100%'}},
             ]

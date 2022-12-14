@@ -62,7 +62,8 @@ class App extends Component {
     //if error return error message
     const loginResult = await Axios.get(`${this.apiBaseUrl}/Users/Login?phoneNumber=${number}&password=${password}`);
     if (loginResult.data.isSuccess){
-      const userInfo = loginResult.data.data;
+      const res = loginResult.data.data;
+      let userInfo = await this.getUserInfo(res)
       const token = userInfo.accessToken.access_token;
       this.setState({ isAutenticated: true, userInfo, token });
     }

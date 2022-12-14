@@ -110,7 +110,7 @@ export default class SabteGarantiJadidBaJoziat extends Component {
                         {html:text,className:'size12 color605E5C'}
                     ]
                 },
-                {size:36,align:'vh',html:<Icon path={mdiChevronLeft} size={1}/>}
+                {show:!!onClick,size:36,align:'vh',html:<Icon path={mdiChevronLeft} size={1}/>}
             ]
         }
     }

@@ -15,10 +15,12 @@ export default class Register extends Component{
         this.dom = createRef();
         let {model} = props;
         let {
-            latitude = 35.699739,longitude = 51.338097,cardCode = '',firstName = '',lastName = '',
+            latitude,longitude,cardCode = '',firstName = '',lastName = '',
             phoneNumber,//دیفالت ندارد و همیشه باید مقدارش ارسال بشه
             storeName = '',address = '',userProvince = '',userCity = '',landline = '',password = ''
         } = model;
+        latitude = typeof latitude !== 'number'?35.699739:latitude;
+        longitude = typeof longitude !== 'number'?51.338097:longitude;
         this.cities = allCities.filter(({province})=>province === userProvince)
         this.state = {
             prevProvince:userProvince,
@@ -99,8 +101,12 @@ export default class Register extends Component{
                         {label:'نام',type:'text',field:'model.firstName',rowKey:'1',validations:[['required']]},
                         {type:'html',html:()=>'',rowKey:'1',rowWidth:12},
                         {label:'نام خانوادگی',type:'text',field:'model.lastName',rowKey:'1',validations:[['required']]},
-                        {label:'رمز عبور',type:'password',field:'model.password',validations:[['required'],['length>',5]]},
-                        {label:'تکرار رمز عبور',type:'password',field:'model.re_password',validations:[['=','model.password',{message:'تکرار رمز عبور با رمز عبور مطابقت ندارد'}]]},
+                        {label:'رمز عبور',type:'password',field:'model.password',validations:[['required'],['length>',5]],show:mode === 'register'},
+                        {
+                            label:'تکرار رمز عبور',type:'password',field:'model.re_password',
+                            validations:[['=','model.password',{message:'تکرار رمز عبور با رمز عبور مطابقت ندارد'}]],
+                            show:mode === 'register'
+                        },
                         {label:'تلفن همراه',type:'text',field:'model.phoneNumber',rowKey:'3',disabled:false},
                         {type:'html',html:()=>'',rowKey:'3',rowWidth:12},
                         {label:'تلفن ثابت',type:'text',field:'model.landline',rowKey:'3'},
@@ -177,6 +183,7 @@ export default class Register extends Component{
                 />
                 {showMap && <ShowMap latitude={model.latitude} longitude={model.longitude} onClose={()=>this.setState({showMap:false})} onChange={(latitude,longitude)=>{
                     let {model} = this.state;
+                    debugger;
                     model.latitude = latitude;
                     model.longitude = longitude;
                     this.setState({model,showMap:false})

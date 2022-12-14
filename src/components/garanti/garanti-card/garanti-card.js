@@ -16,7 +16,7 @@ export default class GarantiCard extends Component{
         try{
             color = types[StatusCode.toString()].color;
         }
-        catch{color = '#000'}
+        catch{color = '#000000'}
         return <div style={{padding:'0 12px',borderRadius:24,color,background:color + '30'}} className='size12'>{StatusText}</div>
     }
     detail_layout(index){

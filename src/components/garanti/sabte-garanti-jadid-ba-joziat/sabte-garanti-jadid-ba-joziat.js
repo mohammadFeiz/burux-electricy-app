@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import RVD from "./../../../interfaces/react-virtual-dom/react-virtual-dom";
-import getSvg from "./../../../utils/getSvg";
 import appContext from "./../../../app-context";
 import Table from "./../../../interfaces/aio-table/aio-table";
 import ProductCount from "./../../../components/kharid/product-count/product-count";
 import AIOButton from "../../../interfaces/aio-button/aio-button";
+import {Icon} from '@mdi/react';
+import {mdiChevronLeft,mdiClose} from '@mdi/js';
 export default class SabteGarantiJadidBaJoziat extends Component {
     static contextType = appContext;
     constructor(props) {
@@ -12,18 +13,6 @@ export default class SabteGarantiJadidBaJoziat extends Component {
         this.state = {
             items: [],
             tableColumns: [
-                {
-                    title: "", width: 36,
-                    cellAttrs: (row) => {
-                        return {
-                            onClick: () => {
-                                let { items } = this.state;
-                                this.setState({ items: items.filter((o) => row.Code !== o.Code) })
-                            }
-                        }
-                    },
-                    template: (row) => { return 'X' },
-                },
                 { title: "عنوان", field: 'row.Name' },
                 {
                     title: "تعداد", field: 'row.Qty', width: 120,
@@ -47,23 +36,6 @@ export default class SabteGarantiJadidBaJoziat extends Component {
         }
         else {openPopup('payame-sabte-garanti',{text: "خطا"});}
     }
-    hint_layout(text, subtext) {
-        return {
-            className: "box margin-0-12",
-            style: { padding: 12 },
-            column: [
-                { html: text, className: "size16 color605E5C" },
-                { size: 12 },
-                {
-                    row: [
-                        { size: 16, html: getSvg(42), align: "vh" },
-                        { size: 6 },
-                        { flex: 1, className: "size12 color00B5A5", html: subtext }
-                    ],
-                },
-            ],
-        }
-    }
     table_layout() {
         let { guaranteeExistItems } = this.context;
         let { tableColumns, items } = this.state;
@@ -71,21 +43,39 @@ export default class SabteGarantiJadidBaJoziat extends Component {
             flex: 1,
             html: (
                 <Table
+                    className='margin-12'
+                    style={{padding:0}}
+                    headerHeight={36}
+                    rowHeight={48}
+                    columnGap={1}
                     templates={{
                         count:(row) => {
                             return (
                                 <ProductCount value={row.Qty} onChange={(value) => {
                                     let { items } = this.state;
                                     row.Qty = value;
-                                    this.setState({ items });
+                                    if(value === 0){
+                                        this.setState({ items: items.filter((o) => row.Code !== o.Code) })
+                                    }
+                                    else{
+                                        this.setState({ items });
+                                    }
+                                    
                                 }} />
                             )
+                        },
+                        remove:(row)=>{
+                            return <Icon path={mdiClose} size={0.8} onClick={()=>{
+                                let { items } = this.state;
+                                
+                            }}/>
+                            
                         }
                     }}
                     paging={false} columns={tableColumns} model={items} rtl={true}
                     toolbar={()=>{
                         return (
-                            <AIOButton type='select' text="افزودن کالا" className='button-1'optionText='option.Name' optionValue='option.Code'
+                            <AIOButton type='select' text="افزودن کالا" className='button-4' optionText='option.Name' optionValue='option.Code'
                                 popupAttrs={{ style: { maxHeight: 400, bottom: 0, top: 'unset', position: 'fixed', left: 0, width: '100%' }}}
                                 options={guaranteeExistItems}
                                 onChange={(value, obj) => {
@@ -107,6 +97,23 @@ export default class SabteGarantiJadidBaJoziat extends Component {
             html: <button disabled={!items.length} className='button-2' onClick={() => this.onSubmit()}>ثبت درخواست</button>, 
         }
     }
+    panel_layout(title,text,onClick){
+        return {
+            attrs:{onClick},
+            style:{background:'#EFF0FF',paddingLeft:0},
+            className:'padding-12 margin-0-12 round-8 box-shadow',
+            row:[
+                {
+                    flex:1,
+                    column:[
+                        {html:title,size:36,align:'v',className:'color0094D4 size16 bold'},
+                        {html:text,className:'size12 color605E5C'}
+                    ]
+                },
+                {size:36,align:'vh',html:<Icon path={mdiChevronLeft} size={1}/>}
+            ]
+        }
+    }
     render() {
         return (
             <RVD
@@ -114,12 +121,13 @@ export default class SabteGarantiJadidBaJoziat extends Component {
                     className: "main-bg",
                     style:{height:'100%'},
                     column: [
-                        this.hint_layout(
+                        {size:12},
+                        this.panel_layout(
                             "تاریخ مراجعه ویزیتور : تا 72 ساعت آینده",
                             "ویزیتور جهت ثبت کالاهای گارانتی در تاریخ ذکر شده به فروشگاه شما مراجعه میکند"
                         ),
                         { size: 12 },
-                        this.hint_layout(
+                        this.panel_layout(
                             "کالاهای گارانتی",
                             "با ثبت کالاهای درخواستی برای گارانتی، درخواست شما در اولویت قرار میگیرد."
                         ),

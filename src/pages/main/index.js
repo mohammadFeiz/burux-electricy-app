@@ -301,7 +301,7 @@ export default class Main extends Component {
       addPopup({content:()=><OrderPopup order={parameter}/>,title:'پیگیری سفارش خرید'})
     }
     else if(type === 'sabte-garanti-jadid'){
-      addPopup({ content:()=><SabteGarantiJadid/>,header:false,type:'bottom'})
+      addPopup({ content:()=><SabteGarantiJadid/>,title:'درخواست مرجوع کالای سوخته'})
     }
     else if(type === 'joziate-darkhast-haye-garanti'){
       addPopup({ content:()=><JoziateDarkhastHayeGaranti/>,title:'جزییات درخواست های گارانتی'})

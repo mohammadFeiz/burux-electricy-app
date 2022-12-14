@@ -7,7 +7,6 @@ import GarantiCard from '../../components/garanti/garanti-card/garanti-card';
 import AIOButton from './../../interfaces/aio-button/aio-button';
 import Awards from './../awards/index';
 import Card from '../../components/card/card';
-import SabteGarantiJadid from '../../components/garanti/sabte-garanti-jadid/sabte-garanti-jadid';
 import Billboard from '../../components/billboard/billboard';
 import blankGuarantee from './../../images/blank-guarantee.png';
 import Bazargah from '../bazargah/bazargah';
@@ -117,7 +116,7 @@ export default class Home extends Component {
         }
     }
     garanti_layout(){
-        let {guaranteeItems = [],SetState,openPopup} = this.context;
+        let {guaranteeItems = [],openPopup} = this.context;
         return {
             className:'padding-0-12',
             style:{marginTop:12},
@@ -137,7 +136,7 @@ export default class Home extends Component {
                                     type='button'
                                     style={{background:'none'}}
                                     position='bottom'
-                                    popOver={({toggle})=><SabteGarantiJadid close={false} closeParent={()=>toggle()}/>}
+                                    onClick={()=>openPopup('sabte-garanti-jadid')}
                                 />
                             )
                         }

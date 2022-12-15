@@ -154,7 +154,7 @@ export class OTPLogin extends Component{
             </div>
             <input key={mode}
               type='password' tabIndex={0}
-              onKeyDown={(e) => {if (e.keyCode === 13) { onInterPassword(password) }}}
+              onKeyDown={(e) => {if (e.keyCode === 13) { onInterPassword(number,password) }}}
               value={password} onChange={(e) => this.setState({password:e.target.value})}
             />
           </div>

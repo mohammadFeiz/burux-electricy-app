@@ -88,7 +88,7 @@ export default class Main extends Component {
           this.setState({bazargah:{...bazargah,active:res}})
         },
         // active:this.props.userInfo.isBazargahActive,
-        active:false,
+        active:true,
         forsate_ersale_sefareshe_bazargah:backOffice.forsate_ersale_sefareshe_bazargah,
         forsate_akhze_sefareshe_bazargah:backOffice.forsate_akhze_sefareshe_bazargah
       },

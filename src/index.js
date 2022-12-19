@@ -16,7 +16,7 @@ import $ from 'jquery';
 class App extends Component {
   constructor(props) {
     super(props);
-    this.apiBaseUrl = "https://retailerapp.bbeta.ir/api/v1";
+    this.apiBaseUrl = "https://localhost:44339/api/v1";
     this.state = { isAutenticated: false, registered: false,pageError:false,userInfo:{}}
   }
 
@@ -72,8 +72,9 @@ class App extends Component {
   async updatePassword(password){
     //در صورت موفقیت ریترن ترو
     //در صورت خطا ریترن متن خطا
+    debugger;
     const setPasswordResult = await Axios.get(`${this.apiBaseUrl}/Users/SetPassword?password=${password}`);
-    if (setPasswordResult.data.isSuccess && setPasswordResult.data.data.length)
+    if (setPasswordResult.data.isSuccess)
       return true;
     else
       return setPasswordResult.data.message;

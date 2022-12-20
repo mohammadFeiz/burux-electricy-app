@@ -14,18 +14,19 @@ export default class JoziateDarkhastHayeGaranti extends Component{
         this.dom = createRef();
         this.state = {
             searchValue:'',
+            sortValue:false,
             sorts:[
-                {text:'مرتب سازی بر اساس تاریخ افزایشی',value:'0',before:(<Icon path={mdiArrowUp} size={0.8}/>)},
-                {text:'مرتب سازی بر اساس تاریخ کاهشی',value:'1',before:(<Icon path={mdiArrowDown} size={0.8}/>)},
-                {text:'مرتب سازی بر حسب تعداد اقلام افزایشی',value:'2',before:(<Icon path={mdiArrowUp} size={0.8}/>)},
-                {text:'مرتب سازی بر حسب تعداد اقلام کاهشی',value:'3',before:(<Icon path={mdiArrowDown} size={0.8}/>)},
+                {text:'قدیمی ترین',value:'0',before:(<Icon path={mdiArrowUp} size={0.8}/>)},
+                {text:'جدید ترین',value:'1',before:(<Icon path={mdiArrowDown} size={0.8}/>)},
+                {text:'کمترین اقلام',value:'2',before:(<Icon path={mdiArrowUp} size={0.8}/>)},
+                {text:'بیشترین اقلام',value:'3',before:(<Icon path={mdiArrowDown} size={0.8}/>)},
             ]
         }
     }
-    sort(value){
+    sort(sortValue){
         let {guaranteeItems,SetState} = this.context;
         let res;
-        if(value === '0'){
+        if(sortValue === '0'){
             res = this.Sort(guaranteeItems,[
                 {dir:'inc',active:true,field:(o)=>{
                     let date = o.CreateTime.split('/');
@@ -40,7 +41,7 @@ export default class JoziateDarkhastHayeGaranti extends Component{
                 }}
             ])
         }
-        else if(value === '1'){
+        else if(sortValue === '1'){
             res = this.Sort(guaranteeItems,[
                 {dir:'dec',active:true,field:(o)=>{
                     let date = o.CreateTime.split('/');
@@ -55,7 +56,7 @@ export default class JoziateDarkhastHayeGaranti extends Component{
                 }}
             ])
         }
-        else if(value === '2'){
+        else if(sortValue === '2'){
             res = this.Sort(guaranteeItems,[
                 {dir:'inc',active:true,field:(o)=>{
                     let {Details = []} = o;
@@ -63,7 +64,7 @@ export default class JoziateDarkhastHayeGaranti extends Component{
                 }}
             ])
         }
-        else if(value === '3'){
+        else if(sortValue === '3'){
             res = this.Sort(guaranteeItems,[
                 {dir:'dec',active:true,field:(o)=>{
                     let {Details = []} = o;
@@ -71,6 +72,7 @@ export default class JoziateDarkhastHayeGaranti extends Component{
                 }}
             ])
         }
+        this.setState({sortValue})
         SetState({guaranteeItems:res})
     }
     Sort(model,sorts){
@@ -88,7 +90,7 @@ export default class JoziateDarkhastHayeGaranti extends Component{
     }
     render(){
         let {guaranteeItems} = this.context;
-        let {searchValue,sorts} = this.state;
+        let {searchValue,sorts,sortValue} = this.state;
         return (
             <RVD
                 layout={{
@@ -102,16 +104,18 @@ export default class JoziateDarkhastHayeGaranti extends Component{
                             row:[
                                 {
                                     style:{overflow:'visible'},
-                                    flex:1,html:<SearchBox placeholder='شماره درخواست گارانتی را جستجو کنید' value={searchValue} onChange={(searchValue)=>{
+                                    flex:1,html:<SearchBox placeholder='جستجوی شماره درخواست' value={searchValue} onChange={(searchValue)=>{
                                         this.setState({searchValue})
-                                    }}/>,className:'margin-0-12 round-6'
+                                    }}/>
                                 },
                                 {
-                                    size:48,align:'vh',style:{overflow:'visible'},
+                                    align:'vh',style:{overflow:'visible'},
                                     html:(
                                         <AIOButton
-                                            text={<Icon path={mdiSort} size={0.8}/>}
+                                            text={sortValue === false?<Icon path={mdiSort} size={0.8}/>:undefined}
+                                            before={sortValue === false?undefined:<Icon path={mdiSort} size={0.8}/>}
                                             type={'select'} caret={false}
+                                            value={sortValue}
                                             style={{background:'none'}}
                                             options={sorts}
                                             optionClassName='"size12 color605E5C bold"'

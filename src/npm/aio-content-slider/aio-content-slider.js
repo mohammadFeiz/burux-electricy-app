@@ -155,15 +155,17 @@ export default class ReactHTMLSlider extends Component {
     let left,items;
     if(moving){left = this.state.left; items = this.getItems()}
     else{left = 0; items = [this.props.items[this.index]]}
+    let downEvent = {
+      ['ontouchstart' in document.documentElement?'onTouchStart':'onMouseDown']:this.mouseDown.bind(this)
+    }
     return (
     <div className='rh-slider' {...attrs} ref={this.dom}>
       <div 
         className='rh-slider-items' style={{left}}
-        onMouseDown={this.mouseDown.bind(this)}
-        onTouchStart={this.mouseDown.bind(this)}
+        {...downEvent}
         draggable={false}
         onDragStart={(e)=>e.preventDefault()}
-      >{items.map((o,i)=><div key={i} className='rh-slider-item'>{o}</div>)}</div>  
+      >{items.map((o,i)=><div key={i} className='rh-slider-item msf'>{o}</div>)}</div>  
       {this.getArrow('left')}
       {this.getArrow('right')}
       <ReactSliderDots attrs={{}} index={this.index} length={this.props.items.length}/>

@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import RVD from './../../../interfaces/react-virtual-dom/react-virtual-dom';
 import dateCalculator from './../../../utils/date-calculator';
 import getSvg from './../../../utils/getSvg';
+import appContext from '../../../app-context';
 export default class PayameSabteGaranti extends Component {
+    static contextType = appContext;
     constructor(props) {
         super(props);
         this.today = dateCalculator().getToday('jalali', 'minute')
@@ -35,7 +37,7 @@ export default class PayameSabteGaranti extends Component {
     time_layout(){
         let today = this.today;
         return {
-            size: 60,className: "size16 bold color605E5C",align: "vh",
+            size: 60,className: "size12 bold color605E5C",align: "v",
             html: `ثبت درخواست در ${`${today[3]}:${today[4]} ${today[0]}/${today[1]}/${today[2]}`}`
         }
     }
@@ -44,6 +46,7 @@ export default class PayameSabteGaranti extends Component {
         return {html: (<button onClick={() => onClose()} className="button-2">بازگشت</button>)}
     }
     render() {
+        let {openPopup,rsa_actions} = this.context;
         return (
             <RVD
                 layout={{
@@ -57,6 +60,11 @@ export default class PayameSabteGaranti extends Component {
                         this.text_layout(),
                         { size: 24 },
                         this.subtext_layout(),
+                        { size: 24 },
+                        {html:'مشاهده در لیست درخواست های گارانتی',align:'v',className:'color006F9E size10 bold',attrs:{onClick:()=>{
+                            rsa_actions.removePopup();
+                            openPopup('joziate-darkhast-haye-garanti')
+                        }}},
                         { flex: 1 },
                         this.time_layout(),
                         this.backButton_layout(),

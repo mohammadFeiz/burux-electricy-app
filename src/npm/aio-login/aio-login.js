@@ -25,6 +25,7 @@ export class OTPLogin extends Component{
         let res = await onInterNumber(number);
         this.storage.save(new Date().getTime(),'lastTime');
         if(typeof res === 'string'){
+          this.storage.save(new Date().getTime() - (time * 1000),'lastTime');
           this.setState({mode:'error',error:res,number:''})
           return
         }
@@ -154,7 +155,7 @@ export class OTPLogin extends Component{
             </div>
             <input key={mode}
               type='password' tabIndex={0}
-              onKeyDown={(e) => {if (e.keyCode === 13) { onInterPassword(number,password) }}}
+              onKeyDown={(e) => {if (e.keyCode === 13) { this.onSubmit() }}}
               value={password} onChange={(e) => this.setState({password:e.target.value})}
             />
           </div>
@@ -167,23 +168,21 @@ export class OTPLogin extends Component{
     }
     subtitle_layout(){
       let {remainingTime,mode} = this.state;
-      if(remainingTime){
-        if(mode === 'otp'){
+      if(mode === 'otp'){
+        if(remainingTime){
           return { html: `شماره تلفن همراه خود را پس از ${remainingTime} ثانیه وارد کنید`, className: 'otp-login-text2' }
         }
-      }
-      else{
-        if(mode === 'otp'){
+        else{
           return {html:'شماره تلفن همراه خود را وارد کنید. پیامکی حاوی کد برای شما ارسال میشود',className:'otp-login-text2'}
         }
-        if(mode === 'password'){
-          return {html:'شماره تلفن همراه و رمز عبور را وارد کنید.',className:'otp-login-text2'}
-        }
+      }
+      if(mode === 'password'){
+        return {html:'شماره تلفن همراه و رمز عبور را وارد کنید.',className:'otp-login-text2'}
       }
     }
     inputs_layout(){
       let {remainingTime,mode} = this.state;
-      if(remainingTime){return false}
+      if(remainingTime && mode === 'otp'){return false}
       return {
         gap:12,
         column:[
@@ -194,7 +193,7 @@ export class OTPLogin extends Component{
     }
     error_layout(){
       let {error,remainingTime,mode,password} = this.state;
-      if(remainingTime){return false}
+      if(remainingTime && mode === 'otp'){return false}
       return {
         className:'otp-login-error-container',
         column:[
@@ -204,8 +203,8 @@ export class OTPLogin extends Component{
       }
     }
     submit_layout(){
-      let {error,remainingTime,mode,password,number} = this.state;
-      if(remainingTime){return false}
+      let {error,remainingTime,mode,password} = this.state;
+      if(remainingTime && mode === 'otp'){return false}
       return {
         style:{padding:'0 12px'},
         html: (
@@ -217,8 +216,7 @@ export class OTPLogin extends Component{
       }
     }
     changeMode_layout(){
-      let {mode,remainingTime} = this.state;
-      if(remainingTime){return false}
+      let {mode} = this.state;
       return {
         column:[
           {
@@ -350,7 +348,7 @@ export class OTPLogin extends Component{
       return {
         attrs: { onClick: () => onClose() },
         className: 'otp-login-change-phone',
-        html: 'تغییر شماره تلفن'
+        html: 'تغییر شماره تلفن یا ورود با رمز'
       }
     }
     render(){

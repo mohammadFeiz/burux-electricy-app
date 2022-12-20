@@ -127,6 +127,7 @@ export default class Main extends Component {
   }
   
   changeCart(count,variantId,product){
+    debugger;
     let {cart,kharidApis} = this.state;
     let newCart;
     if(typeof count === 'object'){
@@ -389,7 +390,7 @@ export default class Main extends Component {
     let str = userInfo.cardName;
     if(!str){return 'پروفایل'}
     if(str.length <= 12){return str}
-    return <marquee behavior='scroll' scrollAmount={3} direction='right'>{str}</marquee> 
+    return <marquee behavior='scroll' scrollamount={3} direction='right'>{str}</marquee> 
   }
   render() {
     let context = {
@@ -414,7 +415,7 @@ export default class Main extends Component {
             { text:this.getProfileName(userInfo), icon: (active)=>getSvg(21, { fill: active ? "#fff" : "#605E5C" }), id: "profile" },
           ]}
           sides={[
-            { text: 'بازارگاه', icon: ()=> <Icon path={mdiCellphoneMarker} size={0.8}/>},
+            { text: 'بازارگاه', icon: ()=> <Icon path={mdiCellphoneMarker} size={0.8}/>,onClick:()=>this.state.rsa_actions.setNavId('bazargah')},
             { text: 'پیگیری سفارش خرید', icon: ()=> <Icon path={mdiClipboardList} size={0.8} />,onClick:()=>this.openPopup('peygiriye-sefareshe-kharid')},
             { text: 'درخواست گارانتی', icon: ()=> <Icon path={mdiShieldCheck} size={0.8} />,onClick:()=>this.openPopup('sabte-garanti-jadid')},
             { text: 'خروج از حساب کاربری', icon: ()=> <Icon path={mdiExitToApp} size={0.8} />,className:'colorA4262C',onClick:()=>logout() },

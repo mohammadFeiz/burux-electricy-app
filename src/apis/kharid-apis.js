@@ -119,7 +119,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
         PurchaseQuotation: 540000006,
         PurchaseRequest: 1470000113,
       };
-
+      
       const campaignDictionary = {
         NA: 1,
         LinearSpecialSale: 2,
@@ -134,7 +134,6 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
         HotDelivery: 11,
         HotSummer2022: 12,
       }
-        
       let res = await Axios.post(`${baseUrl}/BOne/GetDocument`, {
         "DocEntry": order.code,
         "DocType": docTypeDictionary[order.mainDocType],
@@ -196,6 +195,11 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
         'BySalesMan':'ارسال توسط ویزیتور'
       }
       let nahve_pardakht = dic2[result.marketingdetails.paymentTime];
+      let discount;
+      try{
+        discount = result.marketingdetails.documentDiscount || 0;
+      }
+      catch{discount = 0;}
       return {
         products,
         nahve_ersal:dic3[result.marketingdetails.deliveryType],
@@ -203,14 +207,15 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
         nahve_pardakht,
         paymentMethod: result.paymentdetails.paymentTermName,
         visitorName: result.marketingdetails.slpName,
+        visitorCode: result.marketingdetails.slpCode,
         customerName: result.cardName,
         customerCode: result.cardCode,
         customerGroup: result.cardGroupCode,
-        basePrice: result.documentTotal,
+        basePrice: result.documentTotal + discount,
         campaignName: campaignDictionary[result.marketingdetails.campaign],
         address: result.deliverAddress,
-        phone: userInfo.phone1,
-        mobile: userInfo.phone2,
+        phone: userInfo.landline,
+        mobile: userInfo.phoneNumber,
       }
     },
     async joziatepeygiriyesefareshekharid(order) {
@@ -719,7 +724,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
     async refreshB1CentralInvetoryProducts() {
       await Axios.get(`${baseUrl}/BOne/RefreshCentralInvetoryProducts`);
     },
-    async getTaxonProducts({ loadType,Taxons,Name,msf }) {
+    async getTaxonProducts({ loadType,Taxons,Name }) {
       let { userInfo } = getState();
       let res = await Axios.post(`${baseUrl}/Spree/Products`,
         {

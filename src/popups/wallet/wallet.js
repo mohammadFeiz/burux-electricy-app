@@ -300,7 +300,7 @@ class BardashtPopup extends Component{
                 inputs={[
                     {type:'html',html:()=><span className="size12 bold" style={{height:36}}>مبلغ انتخابی حداکثر تا # ساعت به حساب شما واریز میشود</span>},
                     {type:'select',options:cards,optionValue:'option.id',optionSubtext:'option.name',optionText:'option.number',field:'model.card',label:'انتخاب کارت'},
-                    {type:'number',field:'model.amount',affix:'تومان',label:'مبلغ برداشت',validations:[['required'],['<=',mojoodi]]},
+                    {type:'number',field:'model.amount',affix:'ریال',label:'مبلغ برداشت',validations:[['required'],['<=',mojoodi]]},
                     {
                         type:'html',
                         html:()=>(
@@ -309,7 +309,7 @@ class BardashtPopup extends Component{
                                     style:{height:48,flex:'none'},gap:6,
                                     row:[
                                         {html:'موجودی:',className:'size14 color605E5C bold',align:'v'},
-                                        {html:`${functions.splitPrice(mojoodi)} تومان`,className:'size14 color3B55A5 bold',align:'v'},
+                                        {html:`${functions.splitPrice(mojoodi)} ریال`,className:'size14 color3B55A5 bold',align:'v'},
                                     ]
                                 }}
                             />
@@ -353,7 +353,7 @@ class VarizPopup extends Component{
                 onChange={(model)=>this.setState({model})}
                 header={{title:'افزایش موجودی کیف پول',style:{background:'#fff'}}}
                 inputs={[
-                    {type:'number',field:'model.amount',affix:'تومان',label:'مبلغ افزایش موجودی',validations:[['required'],['>=',10000]]}
+                    {type:'number',field:'model.amount',affix:'ریال',label:'مبلغ افزایش موجودی',validations:[['required'],['>=',10000]]}
                 ]}
                 onSubmit={()=>this.onSubmit()}
                 submitText='پرداخت'

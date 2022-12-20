@@ -17,19 +17,19 @@ export default class SearchBox extends Component{
         },800)
     }
     render(){
-        let { onClick=()=>{}} = this.props; 
+        let { onClick=()=>{},placeholder = 'کالای مد نظر خود را جستجو کنید'} = this.props; 
         let {value} = this.state;
         return (
             <RVD
                 layout={{
                     className:'search-box',
                     row: [
-                        { size: 60, html: getSvg(26), align: 'vh' },
+                        { size: 48, html: getSvg(26), align: 'vh' },
                         {
                             flex: 1, html: (
                                 <input
                                     type='text' value={value} 
-                                    placeholder='کالای مد نظر خود را جستجو کنید'
+                                    placeholder={placeholder}
                                     onChange={(e)=>this.change(e)}
                                     onClick={(e) => onClick()}
                                 />

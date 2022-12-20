@@ -87,7 +87,7 @@ export default class Home extends Component {
         return {
             className:'padding-0-12',style:{overflow:'visible'},
             column:[
-                {html: "پیش سفارشات",className: "size14 color323130 bold padding-0-12",size: 48,align: "v"},
+                //{html: "پیش سفارشات",className: "size14 color323130 bold padding-0-12",size: 48,align: "v"},
                 {
                     size:72,style:{overflow:'visible'},
                     row: [
@@ -95,18 +95,8 @@ export default class Home extends Component {
                             flex:1,style:{overflow:'visible'},
                             html:(
                                 <Card
-                                    type='card2' icon={getSvg('paperRocket')} title='در حال بررسی' value={preOrders.waitOfVisitor}
-                                    unit='سفارش' onClick={()=>openPopup('peygiriye-sefareshe-kharid','در حال بررسی')}
-                                />
-                            )
-                        },
-                        {size:12},
-                        {
-                            flex:1,style:{overflow:'visible'},
-                            html:(
-                                <Card
-                                    type='card2' icon={getSvg('pending')} title='در انتظار پرداخت' value={preOrders.waitOfPey}
-                                    unit='سفارش' onClick={()=>openPopup('peygiriye-sefareshe-kharid','در انتظار پرداخت')}
+                                    type='card2' icon={getSvg('paperRocket')} title='پیگیری سفارشات'
+                                    onClick={()=>openPopup('peygiriye-sefareshe-kharid')}
                                 />
                             )
                         }
@@ -114,6 +104,36 @@ export default class Home extends Component {
                 },
             ]
         }
+        // return {
+        //     className:'padding-0-12',style:{overflow:'visible'},
+        //     column:[
+        //         {html: "پیش سفارشات",className: "size14 color323130 bold padding-0-12",size: 48,align: "v"},
+        //         {
+        //             size:72,style:{overflow:'visible'},
+        //             row: [
+        //                 {
+        //                     flex:1,style:{overflow:'visible'},
+        //                     html:(
+        //                         <Card
+        //                             type='card2' icon={getSvg('paperRocket')} title='در حال بررسی' value={preOrders.waitOfVisitor}
+        //                             unit='سفارش' onClick={()=>openPopup('peygiriye-sefareshe-kharid','در حال بررسی')}
+        //                         />
+        //                     )
+        //                 },
+        //                 {size:12},
+        //                 {
+        //                     flex:1,style:{overflow:'visible'},
+        //                     html:(
+        //                         <Card
+        //                             type='card2' icon={getSvg('pending')} title='در انتظار پرداخت' value={preOrders.waitOfPey}
+        //                             unit='سفارش' onClick={()=>openPopup('peygiriye-sefareshe-kharid','در انتظار پرداخت')}
+        //                         />
+        //                     )
+        //                 }
+        //             ]
+        //         },
+        //     ]
+        // }
     }
     garanti_layout(){
         let {guaranteeItems = [],openPopup} = this.context;
@@ -174,7 +194,7 @@ export default class Home extends Component {
                 {size:1},
                 {
                     show:guaranteeItems.length > 0,
-                    attrs:{onClick:()=>openPopup('joziate-darkhast-haye_garanti')},
+                    attrs:{onClick:()=>openPopup('joziate-darkhast-haye-garanti')},
                     size:48,html:'مشاهده جزییات درخواست های گارانتی ها',className:'box color3B55A5 size12 bold',align:'vh',style:{borderRadius:'0 0 14px 14px'}
                 }
             ]

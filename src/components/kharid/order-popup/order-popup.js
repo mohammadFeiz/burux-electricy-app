@@ -5,13 +5,15 @@ import functions from "./../../../functions";
 export default class OrderPopup extends Component {
     static contextType = appContext;
     state = {details:{}}
-    getRow(key, value,show = true) {
+    getRow(key, value = '-------------',show = true) {
+      if(value === null){value = '-------------'}
       if(!show){return false}
       return {
         align: "v",
         row: [
-          { size: 110, html: key + " : ", className: "size12 colorA19F9D" },
-          { flex: 1, html: value, className: "size12" },
+          { size: 110, html: key + " : ", className: "size10 bold" },
+          {flex:1},
+          { html: value, className: "size12" },
         ],
       };
     }
@@ -55,26 +57,33 @@ export default class OrderPopup extends Component {
       let {order} = this.props;
       let res = await kharidApis({type:'pardakhte_kharid',parameter:{order}})
     }
+    splitter_layout(){
+      return {
+        html:'',style:{borderBottom:'1px solid #ccc'}
+      }
+    }
     details_layout(){
       let {userInfo} = this.context;
       let {order} = this.props;
       let {details = {}} = this.state;
+      details.basePrice = details.basePrice || 0
       return {
         className: "box gap-no-color margin-0-12 padding-12",gap: 12,
         column: [
           this.getRow("پیش فاکتور", order.mainDocNum),
           this.getRow("تاریخ ثبت", order.date),
-          { size: 12 },
+          this.splitter_layout(),
           this.getRow("نام مشتری",details.customerName + " - " + details.customerCode),
           this.getRow("گروه مشتری", userInfo.groupName),
           this.getRow("نام کمپین", details.campaignName),
-          this.getRow("قیمت پایه", functions.splitPrice(details.basePrice)),
+          this.getRow("قیمت پایه", functions.splitPrice(details.basePrice) + ' ریال'),
           this.getRow("نام ویزیتور", details.visitorName),
-          { size: 12 },
+          this.getRow("کد ویزیتور", details.visitorCode),
+          this.splitter_layout(),
           this.getRow("آدرس", details.address),
           this.getRow("تلفن همراه", details.mobile),
           this.getRow("تلفن ثابت", details.phone),
-          { size: 12 },
+          this.splitter_layout(),
           this.getRow("نحوه ارسال", details.nahve_ersal),
           this.getRow("نحوه پرداخت", details.nahve_pardakht),
           this.getRow("مهلت تسویه", details.mohlate_tasvie,!!details.mohlate_tasvie),
@@ -117,6 +126,7 @@ export default class OrderPopup extends Component {
             className: "main-bg",
             style:{height:'100%'},
             column: [
+              {size:12},
               {
                 flex: 1,scroll: "v",gap: 12,
                 column: [

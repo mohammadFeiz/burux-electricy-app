@@ -69,16 +69,31 @@ body{
 	opacity:0.7;
 }
 .rsa-header{
+	background:linear-gradient(180deg, white, #ebebeb);
+}
+.rsa-header svg{
+	border-radius: 28px;
+	padding:6px;
+	background: #f2f2f2;
+    box-shadow: inset 1px 1px 2px 0px rgb(0 0 0 / 8%);
+}
+.rsa-header-title{
 	font-size:18px !important;
+	color:#666 !important;
 }
 .rsa-popup-header{
-	background:#fff;
+	background:linear-gradient(180deg, white, #ebebeb);
 	box-shadow: 0 0 6px 0 rgba(0,0,0,0.2);
 	z-index:10;
 	border-bottom:none;
-	border-radius:0;
 	font-size:16px;
-	color:#605E5C;
+	height:60px !important;
+}
+.rsa-popup-header svg{
+	border-radius: 100%;
+	padding:6px;
+    background: #f2f2f2;
+    box-shadow: inset 1px 1px 2px 0px rgb(0 0 0 / 8%);
 }
 .page-error{
 	position: fixed;

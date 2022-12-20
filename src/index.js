@@ -72,7 +72,6 @@ class App extends Component {
   async updatePassword(password){
     //در صورت موفقیت ریترن ترو
     //در صورت خطا ریترن متن خطا
-    debugger;
     const setPasswordResult = await Axios.get(`${this.apiBaseUrl}/Users/SetPassword?password=${password}`);
     if (setPasswordResult.data.isSuccess)
       return true;
@@ -132,6 +131,11 @@ class App extends Component {
         return null;
     });
     let {customer = {}} = b1Info;
+    let ballance = customer.ballance;
+    if(isNaN(ballance)){
+      console.error(`b1Info.customer.ballance is ${ballance} but we set it on 0`)
+      ballance = 0;
+    }
     return {
       ...userInfo,
       cardCode:userInfo.cardCode,
@@ -142,7 +146,7 @@ class App extends Component {
       slpcode:customer.slpcode,
       slpname:customer.slpname,
       groupCode:customer.groupCode,
-      ballance:-customer.ballance,
+      ballance:-ballance,
       slpphone:'09123534314'
     }
   }

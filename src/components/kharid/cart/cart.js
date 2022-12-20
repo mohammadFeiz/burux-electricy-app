@@ -3,6 +3,7 @@ import appContext from './../../../app-context';
 import RVD from './../../../interfaces/react-virtual-dom/react-virtual-dom';
 import Tabs from './../../../components/tabs/tabs';
 import ProductCard from './../product-card/product-card';
+import AIOButton from '../../../interfaces/aio-button/aio-button';
 import noItemSrc from './../../../images/not-found.png';
 import $ from 'jquery';
 export default class Cart extends Component{
@@ -100,7 +101,20 @@ export default class Cart extends Component{
     }
     tabs_layout(){
       if(!this.tabs.length){return false}
-      return {html:<Tabs tabs={this.tabs} activeTabId={this.state.activeTabId} onChange={(activeTabId)=>this.setState({activeTabId})}/>}
+      return {
+        html:(
+          <AIOButton 
+            type='tabs' 
+            options={this.tabs}  
+            optionStyle={{flex:this.tabs.length <= 3?1:undefined}}
+            value={this.state.activeTabId} 
+            optionAfter={(option)=><div className='tab-badge'>{option.badge}</div>}
+            optionText='option.title'
+            optionValue='option.id'
+            onChange={(activeTabId)=>this.setState({activeTabId})}
+          />
+        )
+      }
     }
     products_layout(){
       if(this.tab){

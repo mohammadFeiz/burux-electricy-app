@@ -339,6 +339,7 @@ in product by id = ${this.props.product.id} there is an optionType by id = ${id}
                     className: "main-bg",
                     style:{height:'100%'},
                     column: [
+                        {size:12},
                         this.body_layout(),
                         {size:12},
                         this.showCart_layout(), 

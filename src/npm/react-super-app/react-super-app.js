@@ -297,7 +297,8 @@ class Popup extends Component{
       return {
         size:48,className:'rsa-popup-header',
         row:[
-          {show:closeType === 'back button' && onClose !== false,size:36,html:<Icon path={rtl?mdiChevronRight:mdiChevronLeft} size={1}/>,align:'vh',attrs:{onClick:()=>onClose()}},
+          {show:closeType === 'back button' && onClose !== false,html:<Icon path={rtl?mdiChevronRight:mdiChevronLeft} size={1}/>,align:'vh',attrs:{onClick:()=>onClose()}},
+          {show:closeType === 'back button' && onClose !== false,size:6},
           {flex:1,html:title,align:'v',className:'rsa-popup-title'},
           {show:!!header,html:()=><div style={{display:'flex',alignItems:'center'}}>{header()}</div>},
           {show:closeType === 'close button' && onClose !== false,size:36,html:<Icon path={mdiClose} size={0.8}/>,align:'vh',attrs:{onClick:()=>onClose()}}

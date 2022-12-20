@@ -1,4 +1,4 @@
-import React,{Component} from 'react';
+import React,{Component, createRef} from 'react';
 import RVD from './../../../interfaces/react-virtual-dom/react-virtual-dom';
 import {Icon} from '@mdi/react';
 import { mdiPlus,mdiMinus, mdiTrashCanOutline } from '@mdi/js';
@@ -128,6 +128,7 @@ export default class ProductCount extends Component{
 class CountPopup extends Component{
     constructor(props){
         super(props);
+        this.dom = createRef();
         this.state = {value:props.value}
     }
     render(){
@@ -148,9 +149,13 @@ class CountPopup extends Component{
                                     html:(
                                         <input 
                                             type='number' value={value} min={0}
+                                            ref={this.dom}
                                             onChange={(e)=>{
                                                 let val = e.target.value;
                                                 this.setState({value:val});
+                                            }}
+                                            onClick={()=>{
+                                                $(this.dom.current).focus().select()
                                             }}
                                             style={{width:'100%',border:'none',border:'1px solid lightblue',height:36,textAlign:'center',borderRadius:4}}
                                         />

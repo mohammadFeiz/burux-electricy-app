@@ -65,6 +65,13 @@ body{
 	transition: all .3s;
 	width: 92%;
   }
+  .rsa-sidemenu {
+    background: #fff;
+    color: #666;
+    width: 240px;
+    box-shadow: -7px 0px 20px 0px rgb(0 0 0 / 15%);
+    border-left: 1px solid #a4a4a542;
+}
 .rsa-sidemenu-item svg{
 	opacity:0.7;
 }
@@ -220,7 +227,7 @@ button{
 	color:#D83B01;
 }
 .colorA4262C{
-	color:#a4262C;
+	color:#d0000a;
 }
 .bgD83B01{
 	background:#D83B01;

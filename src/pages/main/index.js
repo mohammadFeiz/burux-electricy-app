@@ -426,7 +426,7 @@ export default class Main extends Component {
             //     kharidApis({type:'dargah',parameter:{amount,url}})
             // }},
           ]}
-          sideHeader={()=>getSvg('mybrxlogo')}
+          sideHeader={()=><div style={{padding:'24px 0'}}>{getSvg('mybrxlogo')}</div>}
           header={({navId})=><Header type='page' navId={navId}/>}
           navId='khane'
           body={({navId})=>{

@@ -19,6 +19,7 @@ export default class Register extends Component{
             phoneNumber,//دیفالت ندارد و همیشه باید مقدارش ارسال بشه
             storeName = '',address = '',userProvince = '',userCity = '',landline = '',password = ''
         } = model;
+        latitude = 35.699739;
         latitude = isNaN(parseFloat(latitude))?35.699739:parseFloat(latitude);
         longitude = isNaN(parseFloat(longitude))?35.699739:parseFloat(longitude);
         this.cities = allCities.filter(({province})=>province === userProvince)
@@ -107,7 +108,7 @@ export default class Register extends Component{
                             validations:[['=','model.password',{message:'تکرار رمز عبور با رمز عبور مطابقت ندارد'}]],
                             show:mode === 'register'
                         },
-                        {label:'تلفن همراه',type:'text',field:'model.phoneNumber',rowKey:'3',disabled:false},
+                        {label:'تلفن همراه',type:'text',field:'model.phoneNumber',rowKey:'3',disabled:mode === 'edit'},
                         {type:'html',html:()=>'',rowKey:'3',rowWidth:12},
                         {label:'تلفن ثابت',type:'text',field:'model.landline',rowKey:'3'},
                         {label:'نام فروشگاه',type:'text',field:'model.storeName',validations:[['required']]},
@@ -124,6 +125,7 @@ export default class Register extends Component{
                                 />
                             )
                         }},
+                        {type:'html',html:()=><div style={{color:'red'}}>تنظیم موقعیت جغرافیایی الزامیست</div>,show:model.latitude === 35.699739 && model.longitude === 35.699739},
                         {label:'استان',type:'select',field:'model.userProvince',rowKey:'2',options:provinces,optionText:'option',optionValue:'option',validations:[['required']]},
                         {type:'html',html:()=>'',rowKey:'2',rowWidth:12},
                         {label:'شهر',type:'select',field:'model.userCity',options:this.cities,optionValue:'option.text',rowKey:'2',validations:[['required']]},

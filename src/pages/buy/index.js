@@ -81,6 +81,7 @@ export default class Buy extends Component {
       flex: 1,style:{overflow:'hidden'},show:view.type === 'main',
       column: [
         {html:<Tabs tabs={tabs} activeTabId={activeTabId} onChange={(activeTabId)=>this.setState({activeTabId})}/>},
+        {size:12},
         this['tab' + activeTabId]()
       ],
     }
@@ -149,14 +150,12 @@ export default class Buy extends Component {
     }
   }
   render() {
-    let {openPopup} = this.context;
     return (
       <RVD layout={{
         flex: 1,className: "buy-page main-bg",style: { width: "100%" },
         column: [
-          {html:<SearchBox onClick={()=>openPopup('search')}/>},
-          {size:12},
-          this.tabs()
+          this.tabs(),
+          {size:12}
         ]
       }}/>
     )

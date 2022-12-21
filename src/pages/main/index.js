@@ -20,7 +20,7 @@ import PasswordPopup from "../../components/password-popup/password-popup";
 
 //npm////////////////////////////////////////
 import {Icon} from '@mdi/react';
-import { mdiShieldCheck,mdiCellphoneMarker,mdiClipboardList,mdiExitToApp, mdiCart, mdiBell, mdiPower} from "@mdi/js";
+import { mdiShieldCheck,mdiCellphoneMarker,mdiClipboardList,mdiExitToApp, mdiCart, mdiBell, mdiPower, mdiMagnify} from "@mdi/js";
 import RSA from './../../npm/react-super-app/react-super-app';
 import RVD from './../../interfaces/react-virtual-dom/react-virtual-dom';
 import AIOService from './../../npm/aio-service/aio-service';
@@ -478,8 +478,9 @@ class Header extends Component{
       html:(
         <AIOButton
           type="button" 
-          style={{ background: "none",width:60,color:'#605E5C' }} 
-          text={<Icon path={mdiCart} size={1}/>} 
+          className='header-icon'
+          style={{ background: "none",color:'#605E5C' }} 
+          text={<Icon path={mdiCart} size={0.7}/>} 
           badge={length > 0?length:undefined}
           badgeAttrs={{ className: "badge-1" }} 
           onClick={() => openPopup('cart')}
@@ -496,8 +497,9 @@ class Header extends Component{
       html:(
         <AIOButton
           type="button" 
-          style={{ background: "none",width:60,color:'#605E5C' }} 
-          text={<Icon path={mdiBell} size={1}/>} 
+          className='header-icon'
+          style={{ background: "none",color:'#605E5C' }} 
+          text={<Icon path={mdiBell} size={0.7}/>} 
           badge={length > 0?length:undefined}
           badgeAttrs={{ className: "badge-1" }} 
         />
@@ -512,9 +514,26 @@ class Header extends Component{
       html:(
         <AIOButton
           type="button" 
-          style={{ background: "none",width:60,color:'#605E5C' }} 
-          text={<Icon path={mdiPower} size={1.2}/>} 
+          className='header-icon'
+          style={{ background: "none",color:'#605E5C' }} 
+          text={<Icon path={mdiPower} size={0.7}/>} 
           onClick={()=>bazargah.setActivity(false)}
+        />
+      )
+    }
+  }
+  buySearch_layout(){
+    let {openPopup} = this.context;
+    let {navId,type} = this.props;
+    if(type !== 'page' || navId !== 'kharid'){return false}
+    return {
+      html:(
+        <AIOButton
+          type="button" 
+          className='header-icon'
+          style={{ background: "none",color:'#605E5C' }} 
+          text={<Icon path={mdiMagnify} size={0.7}/>} 
+          onClick={()=>openPopup('search')}
         />
       )
     }
@@ -523,11 +542,13 @@ class Header extends Component{
     return (
       <RVD
         layout={{
-          gap:6,
+          style:{paddingLeft:12},
           row:[
+            this.buySearch_layout(),
             this.cart_layout(),
             //this.notif_layout(),
-            this.bazargahPower_layout()
+            this.bazargahPower_layout(),
+            
           ]
         }}
       />

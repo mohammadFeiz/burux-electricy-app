@@ -627,7 +627,7 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
         SettleType,PaymentTime,DeliveryType,PayDueDate
       }
       let res = await Axios.post(`${baseUrl}/BOne/AddNewOrder`, body);
-      try { return res.data.data[0].docEntry }
+      try { return res.data.data[0].docNum }
       catch { return false }
     },
     async getProductFullDetail({id,code,product}){

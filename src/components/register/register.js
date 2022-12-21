@@ -19,8 +19,8 @@ export default class Register extends Component{
             phoneNumber,//دیفالت ندارد و همیشه باید مقدارش ارسال بشه
             storeName = '',address = '',userProvince = '',userCity = '',landline = '',password = ''
         } = model;
-        latitude = typeof latitude !== 'number'?35.699739:latitude;
-        longitude = typeof longitude !== 'number'?51.338097:longitude;
+        latitude = isNaN(parseFloat(latitude))?35.699739:parseFloat(latitude);
+        longitude = isNaN(parseFloat(longitude))?35.699739:parseFloat(longitude);
         this.cities = allCities.filter(({province})=>province === userProvince)
         this.state = {
             prevProvince:userProvince,
@@ -183,7 +183,6 @@ export default class Register extends Component{
                 />
                 {showMap && <ShowMap latitude={model.latitude} longitude={model.longitude} onClose={()=>this.setState({showMap:false})} onChange={(latitude,longitude)=>{
                     let {model} = this.state;
-                    debugger;
                     model.latitude = latitude;
                     model.longitude = longitude;
                     this.setState({model,showMap:false})

@@ -731,7 +731,8 @@ export default function kharidApis({getState,token,getDateAndTime,showAlert,AIOS
           CardCode: userInfo.cardCode,
           Taxons,
           PerPage:250,
-          Name,
+          // Name,
+          Skame:Name,
           // ProductFields:"id,name,type,sku,slug,images,option_types,variants,default_variant,product_properties",
           // VariantFields:"id,sku,type,option_values,images,option_types,product_properties",
           Include: loadType === 0 ? "default_variant,images" : "variants,option_types,product_properties,taxons,images,default_variant"
